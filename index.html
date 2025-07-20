@@ -86,7 +86,7 @@
       </style>
       <span class="sr-only">Background image showing roasted coffee beans and a steaming mug</span>
       <div class="relative z-10 text-center px-6 py-20">
-        <h1 class="text-4xl md:text-6xl font-bold text-white drop-shadow-lg mb-4">Data‑Driven Coffee, Roasted for <span class="text-[#22c55e] drop-shadow font-extrabold">You</span></h1>
+        <h1 class="text-4xl md:text-6xl font-bold text-white drop-shadow-lg mb-4">Data‑Driven Coffee, Roasted for <span class="text-[#22c55e] drop-shadow font-extrabold">you</span></h1>
         <p class="text-lg md:text-2xl text-white mb-6 drop-shadow">Discover your perfect roast with our personalized profiling quiz.</p>
         <a class="bg-[#16a34a] text-white px-6 py-3 rounded-full font-medium text-lg hover:bg-[#22c55e] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-200" href="#quiz">Take the Quiz ↓</a>
       </div>
@@ -255,7 +255,7 @@
           label: "What's your coffee budget?",
           type: 'range',
           name: 'priceRange',
-          min: 0, max: 100, step: 1,
+          min: 12, max: 100, step: 1,
           help: "Drag the slider to choose how much you're comfortable paying.",
           required: true,
           left: '$12', right: '$100+'
@@ -313,7 +313,7 @@
           label: 'What kind of water do you brew with?',
           type: 'radio',
           name: 'waterType',
-          options: ['Unfiltered tap','Filtered','Recipe','RO/Purified water'],
+          options: ['Unfiltered tap','Filtered tap','Recipe','Distilled'],
           help: 'Choose the type you use most often.',
           required: true
         }
@@ -333,46 +333,144 @@
       const loadingSpinner = document.getElementById('loadingSpinner');
       const submitMessage = document.getElementById('submitMessage');
 
+      // Add this helper function to map slider values to descriptive labels
+      function getSliderLabel(name, value) {
+        value = Number(value);
+        if (name === 'roastLevel') {
+          if (value <= 20) return 'Very Light';
+          if (value <= 40) return 'Light';
+          if (value <= 60) return 'Medium';
+          if (value <= 80) return 'Dark';
+          return 'Very Dark';
+        }
+        if (name === 'flavorNutty' || name === 'flavorFruity' || name === 'flavorFloral' || name === 'flavorSmoky') {
+          if (value <= 20) return 'Not at all';
+          if (value <= 40) return 'A little';
+          if (value <= 60) return 'Somewhat';
+          if (value <= 80) return 'A lot';
+          return 'Love it!';
+        }
+        if (name === 'personality') {
+          if (value <= 20) return 'Comforting';
+          if (value <= 40) return 'Familiar';
+          if (value <= 60) return 'Balanced';
+          if (value <= 80) return 'Adventurous';
+          return 'Complex';
+        }
+        if (name === 'acidity') {
+          if (value <= 20) return 'Very Low';
+          if (value <= 40) return 'Low';
+          if (value <= 60) return 'Medium';
+          if (value <= 80) return 'High';
+          return 'Very High';
+        }
+        if (name === 'body') {
+          if (value <= 20) return 'Very Light';
+          if (value <= 40) return 'Light';
+          if (value <= 60) return 'Medium';
+          if (value <= 80) return 'Full';
+          return 'Very Full';
+        }
+        if (name === 'tasteSweetBitter') {
+          if (value <= 20) return 'Very Sweet';
+          if (value <= 40) return 'Sweet';
+          if (value <= 60) return 'Balanced';
+          if (value <= 80) return 'Bitter';
+          return 'Very Bitter';
+        }
+        if (name === 'tasteSmoothTart') {
+          if (value <= 20) return 'Very Smooth';
+          if (value <= 40) return 'Smooth';
+          if (value <= 60) return 'Balanced';
+          if (value <= 80) return 'Tart';
+          return 'Very Tart';
+        }
+        if (name === 'priceRange') {
+          if (value <= 20) return 'Budget';
+          if (value <= 40) return 'Value';
+          if (value <= 60) return 'Standard';
+          if (value <= 80) return 'Premium';
+          return 'Luxury';
+        }
+        return '';
+      }
+
       function renderQuestion(idx) {
         const q = quizData[idx];
         let html = `<div class='w-full'>`;
-        html += `<label class='block font-semibold text-lg mb-2'>${q.label}${q.required ? ' <span class="text-red-500">*</span>' : ''}</label>`;
-        if (q.help) html += `<p class='text-sm text-gray-600 mb-3'>${q.help}</p>`;
-        if (q.type === 'range') {
-          const val = answers[q.name] ?? q.min;
-          html += `<input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${q.name}' value='${val}' class='w-full accent-[#22c55e]' id='${q.name}' />`;
-          if (q.left || q.right) {
-            html += `<div class='flex justify-between text-sm text-gray-600 mt-1'><span>${q.left ?? ''}</span><span>${q.right ?? ''}</span></div>`;
-          }
-          if (q.name === 'priceRange') {
-            html += `<div class='text-center text-base mt-2'><span id='${q.name}Value'>$${val}</span></div>`;
-          } else {
-            html += `<div class='text-center text-base mt-2'><span id='${q.name}Value'>${val}</span></div>`;
-          }
-        } else if (q.type === 'multi-range') {
+        if (q.type === 'multi-range' && q.names[0] === 'flavorNutty') {
+          html += `<label class='block font-semibold text-lg mb-2'>${q.label}${q.required ? ' <span class="text-red-500">*</span>' : ''}</label>`;
+          if (q.help) html += `<p class='text-sm text-gray-600 mb-3'>${q.help}</p>`;
           html += `<div class='grid grid-cols-1 md:grid-cols-2 gap-6 mt-2'>`;
           q.names.forEach((name, i) => {
-            const val = answers[name] ?? q.min;
-            html += `<div><span class='text-sm'>${q.flavors[i]}</span><input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${name}' value='${val}' class='w-full accent-[#22c55e]' id='${name}' /><div class='text-center text-base mt-1'><span id='${name}Value'>${val}</span></div></div>`;
+            const val = (answers[name] ?? 50);
+            html += `<div><span class='text-sm'>${q.flavors[i]}</span><input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${name}' value='${val}' class='w-full accent-[#22c55e]' id='${name}' /><div class='text-center text-base mt-1'><span class='block text-xs text-gray-500 mt-1' id='${name}Label'>${getSliderLabel(name, val)}</span></div></div>`;
           });
           html += `</div>`;
-        } else if (q.type === 'radio') {
-          html += `<div class='flex flex-wrap gap-3 mt-2 pill-input'>`;
-          q.options.forEach(opt => {
-            const checked = answers[q.name] === opt ? 'checked' : '';
-            html += `<label class='inline-flex items-center cursor-pointer transition font-medium'><input type='radio' name='${q.name}' value='${opt}' class='sr-only' ${checked} /><span>${opt}</span></label>`;
-          });
+        } else if (q.type === 'multi-range' && q.names[0] === 'tasteSweetBitter') {
+          html += `<label class='block font-semibold text-lg mb-2'>${q.label}${q.required ? ' <span class="text-red-500">*</span>' : ''}</label>`;
+          if (q.help) html += `<p class='text-sm text-gray-600 mb-3'>${q.help}</p>`;
+          html += `<div class='mt-4 space-y-4'>`;
+          // Sweet ←→ Bitter
+          const val1 = (answers['tasteSweetBitter'] ?? 50);
+          html += `<div class='flex items-center gap-2'>
+            <span class='text-sm w-16 text-left'>Sweet</span>
+            <input type='range' min='0' max='100' step='1' name='tasteSweetBitter' value='${val1}' class='w-full accent-[#22c55e]' id='tasteSweetBitter' />
+            <span class='text-sm w-16 text-right'>Bitter</span>
+          </div><div class='text-center text-base mt-1'><span class='block text-xs text-gray-500 mt-1' id='tasteSweetBitterLabel'>${getSliderLabel('tasteSweetBitter', val1)}</span></div>`;
+          // Smooth ←→ Tart
+          const val2 = (answers['tasteSmoothTart'] ?? 50);
+          html += `<div class='flex items-center gap-2'>
+            <span class='text-sm w-16 text-left'>Smooth</span>
+            <input type='range' min='0' max='100' step='1' name='tasteSmoothTart' value='${val2}' class='w-full accent-[#22c55e]' id='tasteSmoothTart' />
+            <span class='text-sm w-16 text-right'>Tart</span>
+          </div><div class='text-center text-base mt-1'><span class='block text-xs text-gray-500 mt-1' id='tasteSmoothTartLabel'>${getSliderLabel('tasteSmoothTart', val2)}</span></div>`;
           html += `</div>`;
-        } else if (q.type === 'checkbox') {
-          html += `<div class='flex flex-wrap gap-3 mt-2 pill-input'>`;
-          q.options.forEach((opt, i) => {
-            const checked = answers[q.names[i]] ? 'checked' : '';
-            html += `<label class='inline-flex items-center cursor-pointer transition font-medium'><input type='checkbox' name='${q.names[i]}' value='1' class='sr-only' ${checked} /><span>${opt}</span></label>`;
-          });
-          html += `</div>`;
-        } else if (q.type === 'text') {
-          const val = answers[q.name] ?? '';
-          html += `<input type='text' name='${q.name}' value='${val}' class='w-full mt-2 border-gray-300 rounded p-2' placeholder='${q.help ?? ''}' />`;
+        } else {
+          html += `<label class='block font-semibold text-lg mb-2'>${q.label}${q.required ? ' <span class="text-red-500">*</span>' : ''}</label>`;
+          if (q.help) html += `<p class='text-sm text-gray-600 mb-3'>${q.help}</p>`;
+          if (q.type === 'range') {
+            const val = (q.name === 'priceRange') ? (answers[q.name] ?? 35) : (answers[q.name] ?? 50);
+            html += `<input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${q.name}' value='${val}' class='w-full accent-[#22c55e]' id='${q.name}' />`;
+            if (q.name === 'priceRange') {
+              html += `<div class='text-center text-base mt-2'><span id='${q.name}Value'>$${val}</span><span class='block text-xs text-gray-500 mt-1' id='${q.name}Label'>${getSliderLabel(q.name, val)}</span></div>`;
+            } else {
+              html += `<div class='text-center text-base mt-2'><span class='block text-xs text-gray-500 mt-1' id='${q.name}Label'>${getSliderLabel(q.name, val)}</span></div>`;
+            }
+          } else if (q.type === 'multi-range') {
+            if (q.names[0] === 'flavorNutty') {
+              html += `<div class='grid grid-cols-1 md:grid-cols-2 gap-6 mt-2'>`;
+              q.names.forEach((name, i) => {
+                const val = (answers[name] ?? 50);
+                html += `<div><span class='text-sm'>${q.flavors[i]}</span><input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${name}' value='${val}' class='w-full accent-[#22c55e]' id='${name}' /><div class='text-center text-base mt-1'><span class='block text-xs text-gray-500 mt-1' id='${name}Label'>${getSliderLabel(name, val)}</span></div></div>`;
+              });
+              html += `</div>`;
+            } else {
+              html += `<div class='grid grid-cols-1 md:grid-cols-2 gap-6 mt-2'>`;
+              q.names.forEach((name, i) => {
+                const val = (answers[name] ?? 50);
+                html += `<div><span class='text-sm'>${q.flavors[i]}</span><input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${name}' value='${val}' class='w-full accent-[#22c55e]' id='${name}' /><div class='text-center text-base mt-1'><span class='block text-xs text-gray-500 mt-1' id='${name}Label'>${getSliderLabel(name, val)}</span></div></div>`;
+              });
+              html += `</div>`;
+            }
+          } else if (q.type === 'radio') {
+            html += `<div class='flex flex-wrap gap-3 mt-2 pill-input'>`;
+            q.options.forEach(opt => {
+              const checked = answers[q.name] === opt ? 'checked' : '';
+              html += `<label class='inline-flex items-center cursor-pointer transition font-medium'><input type='radio' name='${q.name}' value='${opt}' class='sr-only' ${checked} /><span>${opt}</span></label>`;
+            });
+            html += `</div>`;
+          } else if (q.type === 'checkbox') {
+            html += `<div class='flex flex-wrap gap-3 mt-2 pill-input'>`;
+            q.options.forEach((opt, i) => {
+              const checked = answers[q.names[i]] ? 'checked' : '';
+              html += `<label class='inline-flex items-center cursor-pointer transition font-medium'><input type='checkbox' name='${q.names[i]}' value='1' class='sr-only' ${checked} /><span>${opt}</span></label>`;
+            });
+            html += `</div>`;
+          } else if (q.type === 'text') {
+            const val = answers[q.name] ?? '';
+            html += `<input type='text' name='${q.name}' value='${val}' class='w-full mt-2 border-gray-300 rounded p-2' placeholder='${q.help ?? ''}' />`;
+          }
         }
         html += `</div>`;
         quizCard.innerHTML = html;
@@ -380,15 +478,51 @@
         if (q.type === 'range') {
           const input = document.getElementById(q.name);
           const valueSpan = document.getElementById(q.name + 'Value');
-          input.addEventListener('input', e => { valueSpan.textContent = e.target.value; });
-          input.addEventListener('change', e => { valueSpan.textContent = e.target.value; });
+          const labelSpan = document.getElementById(q.name + 'Label');
+          input.addEventListener('input', e => { valueSpan.textContent = e.target.value; labelSpan.textContent = getSliderLabel(q.name, e.target.value); });
+          input.addEventListener('change', e => { valueSpan.textContent = e.target.value; labelSpan.textContent = getSliderLabel(q.name, e.target.value); });
         } else if (q.type === 'multi-range') {
-          q.names.forEach(name => {
-            const input = document.getElementById(name);
-            const valueSpan = document.getElementById(name + 'Value');
-            input.addEventListener('input', e => { valueSpan.textContent = e.target.value; });
-            input.addEventListener('change', e => { valueSpan.textContent = e.target.value; });
-          });
+          if (q.names[0] === 'flavorNutty') {
+            const input1 = document.getElementById('flavorNutty');
+            const valueSpan1 = document.getElementById('flavorNuttyValue');
+            const labelSpan1 = document.getElementById('flavorNuttyLabel');
+            input1.addEventListener('input', e => { labelSpan1.textContent = getSliderLabel('flavorNutty', e.target.value); });
+            input1.addEventListener('change', e => { labelSpan1.textContent = getSliderLabel('flavorNutty', e.target.value); });
+            const input2 = document.getElementById('flavorFruity');
+            const valueSpan2 = document.getElementById('flavorFruityValue');
+            const labelSpan2 = document.getElementById('flavorFruityLabel');
+            input2.addEventListener('input', e => { labelSpan2.textContent = getSliderLabel('flavorFruity', e.target.value); });
+            input2.addEventListener('change', e => { labelSpan2.textContent = getSliderLabel('flavorFruity', e.target.value); });
+            const input3 = document.getElementById('flavorFloral');
+            const valueSpan3 = document.getElementById('flavorFloralValue');
+            const labelSpan3 = document.getElementById('flavorFloralLabel');
+            input3.addEventListener('input', e => { labelSpan3.textContent = getSliderLabel('flavorFloral', e.target.value); });
+            input3.addEventListener('change', e => { labelSpan3.textContent = getSliderLabel('flavorFloral', e.target.value); });
+            const input4 = document.getElementById('flavorSmoky');
+            const valueSpan4 = document.getElementById('flavorSmokyValue');
+            const labelSpan4 = document.getElementById('flavorSmokyLabel');
+            input4.addEventListener('input', e => { labelSpan4.textContent = getSliderLabel('flavorSmoky', e.target.value); });
+            input4.addEventListener('change', e => { labelSpan4.textContent = getSliderLabel('flavorSmoky', e.target.value); });
+          } else if (q.names[0] === 'tasteSweetBitter') {
+            const input1 = document.getElementById('tasteSweetBitter');
+            const valueSpan1 = document.getElementById('tasteSweetBitterValue');
+            const labelSpan1 = document.getElementById('tasteSweetBitterLabel');
+            input1.addEventListener('input', e => { labelSpan1.textContent = getSliderLabel('tasteSweetBitter', e.target.value); });
+            input1.addEventListener('change', e => { labelSpan1.textContent = getSliderLabel('tasteSweetBitter', e.target.value); });
+            const input2 = document.getElementById('tasteSmoothTart');
+            const valueSpan2 = document.getElementById('tasteSmoothTartValue');
+            const labelSpan2 = document.getElementById('tasteSmoothTartLabel');
+            input2.addEventListener('input', e => { labelSpan2.textContent = getSliderLabel('tasteSmoothTart', e.target.value); });
+            input2.addEventListener('change', e => { labelSpan2.textContent = getSliderLabel('tasteSmoothTart', e.target.value); });
+          } else {
+            q.names.forEach(name => {
+              const input = document.getElementById(name);
+              const valueSpan = document.getElementById(name + 'Value');
+              const labelSpan = document.getElementById(name + 'Label');
+              input.addEventListener('input', e => { labelSpan.textContent = getSliderLabel(name, e.target.value); });
+              input.addEventListener('change', e => { labelSpan.textContent = getSliderLabel(name, e.target.value); });
+            });
+          }
         }
       }
 
