@@ -57,6 +57,10 @@
       font-weight: 500;
       margin-left: 0.1em;
     }
+    /* Fix scroll offset for anchor links */
+    html {
+      scroll-padding-top: 80px;
+    }
   </style>
 </head>
 <body class="font-sans antialiased text-gray-800 bg-gray-50">
@@ -105,8 +109,8 @@
       <span class="sr-only">Background image showing roasted coffee beans and a steaming mug</span>
       <div class="relative z-10 text-center px-6 py-20">
         <h1 class="text-4xl md:text-6xl font-bold text-white drop-shadow-lg mb-4" style="font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif; font-weight: 600;">Data‑driven coffee, roasted for <span class="text-[#22c55e] drop-shadow font-extrabold">you</span></h1>
-        <p class="text-lg md:text-2xl text-white mb-6 drop-shadow">Discover your perfect roast with our personalized profiling quiz.</p>
-        <a class="bg-[#16a34a] text-white px-6 py-3 rounded-full font-medium text-lg hover:bg-[#22c55e] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-200" href="#quiz">Take the quiz ↓</a>
+        <p class="text-lg md:text-2xl text-white mb-6 drop-shadow">Answer a few questions, sip, rate, repeat — our AI adapts every bag until it’s perfect for you.</p>
+        <a class="bg-[#16a34a] text-white px-6 py-3 rounded-full font-medium text-lg hover:bg-[#22c55e] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-200" href="#quiz">Take the quiz</a>
       </div>
     </section>
     <section id="how-it-works" class="py-16 bg-gray-100">
@@ -133,7 +137,7 @@
     </section>
     <section id="quiz" class="py-16 bg-white">
       <div class="container mx-auto px-6">
-        <h2 class="text-3xl font-bold text-center mb-8">Find your perfect roast</h2>
+        <h2 class="text-3xl font-bold text-center mb-8">Train your coffee AI</h2>
         <form class="max-w-3xl mx-auto bg-white/90 shadow-xl rounded-2xl p-6 md:p-10 transition-all duration-300" id="quizForm" aria-label="Coffee Preference Quiz">
           <!-- Step Indicator and Progress Bar -->
           <div class="mb-6">
@@ -152,8 +156,10 @@
           <div class="bg-gray-100 p-4 rounded text-sm hidden" id="summary" aria-live="polite"></div>
           <div class="flex flex-col sm:flex-row justify-between mt-6 gap-2">
             <button class="bg-[#22c55e] text-white px-6 py-3 rounded font-semibold text-base hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 hidden transition-all duration-150" id="submitBtn" type="submit">Submit</button>
-            <button class="bg-[#22c55e] text-white px-6 py-3 rounded font-semibold text-base hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 disabled:opacity-50 transition-all duration-150" id="nextBtn" type="button">Next</button>
-            <button class="bg-gray-300 text-gray-800 px-6 py-3 rounded font-semibold text-base hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition-all duration-150" disabled id="prevBtn" type="button">Previous</button>
+            <div class="flex flex-col sm:flex-row gap-2 sm:ml-auto">
+              <button class="bg-[#22c55e] text-white px-6 py-3 rounded font-semibold text-base hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 disabled:opacity-50 transition-all duration-150 order-1 sm:order-2" id="nextBtn" type="button">Next</button>
+              <button class="bg-gray-300 text-gray-800 px-6 py-3 rounded font-semibold text-base hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition-all duration-150 order-2 sm:order-1" disabled id="prevBtn" type="button">Previous</button>
+            </div>
           </div>
           <div id="loadingSpinner" class="hidden flex justify-center items-center mt-4">
             <svg class="animate-spin h-8 w-8 text-[#22c55e]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
