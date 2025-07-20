@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RoastPortal – Personalized Coffee Quiz | Find Your Perfect Roast</title>
+  <meta name="description" content="Discover your ideal coffee roast with our interactive quiz and personalized recommendations." />
+  <meta name="keywords" content="coffee, roasting, personalized, quiz, beans, brew" />
+  <meta property="og:title" content="Roast Portal – Personalized Coffee Quiz | Find Your Perfect Roast" />
+  <meta property="og:description" content="Take the Roast Portal quiz to get a custom coffee profile crafted just for you." />
+  <meta property="og:image" content="https://roastportal.com/images/og-image.jpg" />
+  <meta property="og:url" content="https://roastportal.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Roast Portal – Personalized Coffee Quiz | Find Your Perfect Roast" />
+  <meta name="twitter:description" content="Take the Roast Portal quiz to get a custom coffee profile crafted just for you." />
+  <meta name="twitter:image" content="https://roastportal.com/images/og-image.jpg" />
+  <link rel="canonical" href="https://roastportal.com/" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand-dark: #2b1608; --brand-light: #f5f0ea; }
+    .pill-input input { display: none; }
+    .pill-input input:checked + span {
+      background-color: #22c55e;
+      color: #fff;
+      border-color: #22c55e;
+    }
+    .pill-input label span {
+      transition: background 0.2s, color 0.2s, border 0.2s;
+      padding: 0.5rem 1.25rem;
+      border-radius: 9999px;
+      border: 1px solid #d1d5db;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .question { display: none; min-height: 200px; }
+    .question.active { display: block; }
+    .fade-enter { opacity: 0; transform: translateY(20px); transition: opacity 0.3s, transform 0.3s; }
+    .fade-enter-active { opacity: 1; transform: translateY(0); }
+    .fade-exit { opacity: 1; transform: translateY(0); transition: opacity 0.3s, transform 0.3s; }
+    .fade-exit-active { opacity: 0; transform: translateY(-20px); }
+  </style>
+</head>
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
+  <header class="bg-white shadow sticky top-0 z-50">
+    <nav class="container mx-auto flex justify-between items-center py-4 px-6 md:py-4 md:px-8" aria-label="Main navigation">
+      <a href="#hero" class="flex items-center gap-x-4 md:gap-x-8" aria-label="RoastPortal Home">
+        <img src="images/favicon.png" alt="RoastPortal logo" class="h-8" />
+        <span class="text-2xl font-extrabold tracking-tight select-none" style="font-family: 'Inter', 'Segoe UI', Arial, sans-serif; letter-spacing: -0.01em;">
+          <span class="text-[#2b1608]">Roast</span><span class="text-[#2b1608]">Portal</span>
+        </span>
+      </a>
+      <div class="flex items-center">
+        <a class="text-[#2b1608] font-semibold hover:underline px-4 py-2 md:px-6 md:py-2 rounded transition-colors duration-150" href="/login">Login</a>
+      </div>
+    </nav>
+  </header>
+  <main id="main-content">
+    <section id="hero" class="relative bg-cover bg-center min-h-[60vh] flex items-center justify-center overflow-hidden" style="background-image: url('images/hero-banner.png');">
+      <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-[#2b1608]/90 via-black/80 to-black/90"></div>
+      <!-- Animated gradient overlay -->
+      <div aria-hidden="true" class="absolute inset-0 z-10 pointer-events-none animate-heroGradient"></div>
+      <style>
+        @keyframes heroGradient {
+          0% {
+            background: radial-gradient(circle at 30% 40%, rgba(34,197,94,0.10) 0%, rgba(43,22,8,0.08) 100%);
+          }
+          25% {
+            background: radial-gradient(circle at 70% 60%, rgba(43,22,8,0.12) 0%, rgba(34,197,94,0.08) 100%);
+          }
+          50% {
+            background: radial-gradient(circle at 60% 30%, rgba(34,197,94,0.09) 0%, rgba(43,22,8,0.08) 100%);
+          }
+          75% {
+            background: radial-gradient(circle at 40% 70%, rgba(43,22,8,0.10) 0%, rgba(34,197,94,0.09) 100%);
+          }
+          100% {
+            background: radial-gradient(circle at 30% 40%, rgba(34,197,94,0.10) 0%, rgba(43,22,8,0.08) 100%);
+          }
+        }
+        .animate-heroGradient {
+          animation: heroGradient 30s ease-in-out infinite;
+          opacity: 1;
+          z-index: 10;
+        }
+      </style>
+      <span class="sr-only">Background image showing roasted coffee beans and a steaming mug</span>
+      <div class="relative z-10 text-center px-6 py-20">
+        <h1 class="text-4xl md:text-6xl font-bold text-white drop-shadow-lg mb-4">Data‑Driven Coffee, Roasted for <span class="text-[#22c55e] drop-shadow font-extrabold">You</span></h1>
+        <p class="text-lg md:text-2xl text-white mb-6 drop-shadow">Discover your perfect roast with our personalized profiling quiz.</p>
+        <a class="bg-[#16a34a] text-white px-6 py-3 rounded-full font-medium text-lg hover:bg-[#22c55e] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-200" href="#quiz">Take the Quiz ↓</a>
+      </div>
+    </section>
+    <section id="how-it-works" class="py-16 bg-gray-100">
+      <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12">How It Works</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <article class="text-center p-6 bg-white rounded-lg shadow-lg">
+            <div class="text-5xl font-extrabold text-[#2b1608] mb-4">1</div>
+            <h3 class="text-xl font-semibold mb-2">Share Your Taste</h3>
+            <p class="text-gray-600 text-base px-4">Share your coffee preferences with our AI.</p>
+          </article>
+          <article class="text-center p-6 bg-white rounded-lg shadow-lg">
+            <div class="text-5xl font-extrabold text-[#2b1608] mb-4">2</div>
+            <h3 class="text-xl font-semibold mb-2">Enjoy Your Roast</h3>
+            <p class="text-gray-600 text-base px-4">Enjoy a roast crafted just for you.</p>
+          </article>
+          <article class="text-center p-6 bg-white rounded-lg shadow-lg">
+            <div class="text-5xl font-extrabold text-[#2b1608] mb-4">3</div>
+            <h3 class="text-xl font-semibold mb-2">Refine Your Cup</h3>
+            <p class="text-gray-600 text-base px-4">Give feedback to refine your perfect cup.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section id="quiz" class="py-16 bg-white">
+      <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-8">Find Your Perfect Roast</h2>
+        <form class="max-w-3xl mx-auto bg-white/90 shadow-xl rounded-2xl p-6 md:p-10 transition-all duration-300" id="quizForm" aria-label="Coffee Preference Quiz">
+          <!-- Step Indicator and Progress Bar -->
+          <div class="mb-6">
+            <div class="flex justify-between items-center mb-2">
+              <div></div>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+              <div id="progressBar" class="bg-[#22c55e] h-3 rounded-full transition-all duration-300" style="width:0%"></div>
+            </div>
+          </div>
+          <!-- Quiz Card -->
+          <div id="quizCard" class="relative min-h-[220px] flex flex-col justify-center items-center">
+            <!-- Question will be rendered here -->
+          </div>
+          <div id="errorMessage" class="hidden text-red-500 text-sm font-medium mt-2 mb-0"></div>
+          <div class="bg-gray-100 p-4 rounded text-sm hidden" id="summary" aria-live="polite"></div>
+          <div class="flex flex-col sm:flex-row justify-between mt-6 gap-2">
+            <button class="bg-[#22c55e] text-white px-6 py-3 rounded font-semibold text-base hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 hidden transition-all duration-150" id="submitBtn" type="submit">Submit</button>
+            <button class="bg-[#22c55e] text-white px-6 py-3 rounded font-semibold text-base hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 disabled:opacity-50 transition-all duration-150" id="nextBtn" type="button">Next</button>
+            <button class="bg-gray-300 text-gray-800 px-6 py-3 rounded font-semibold text-base hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition-all duration-150" disabled id="prevBtn" type="button">Previous</button>
+          </div>
+          <div id="loadingSpinner" class="hidden flex justify-center items-center mt-4">
+            <svg class="animate-spin h-8 w-8 text-[#22c55e]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+          </div>
+          <div id="submitMessage" class="hidden text-center text-lg font-semibold mt-4"></div>
+        </form>
+      </div>
+    </section>
+    <section class="container mx-auto px-6 max-w-3xl mt-12" aria-label="Frequently Asked Questions">
+      <h2 class="text-3xl font-bold text-center mb-8">FAQ</h2>
+      <div class="space-y-4">
+        <details class="border border-gray-200 rounded-lg p-4">
+          <summary class="pl-2 font-semibold cursor-pointer">How does it work?</summary>
+          <p class="mt-2 text-gray-600">You answer a questionnaire. We send you your first personalized bag of coffee. You try it and give us feedback about that specific bag. We take your feedback and use AI to further improve how we roast coffee for you. Your next bag of coffee is upgraded with the new changes. After you try it, you can give us feedback again and we will continue to improve your coffee until it is perfect for you.</p>
+        </details>
+        <details class="border border-gray-200 rounded-lg p-4">
+          <summary class="pl-2 font-semibold cursor-pointer">What makes you different from other coffee subscription services?</summary>
+          <p class="mt-2 text-gray-600">Other services have a fixed number of coffee blends to choose from and they try to help you find which blend you would like best. We start with what you tell us you are looking for and then create a blend just for you. When you give us feedback on your blend, we tweak your blend just for you. Our goal is to work with you to create the perfect blend for you.</p>
+        </details>
+        <details class="border border-gray-200 rounded-lg p-4">
+          <summary class="pl-2 font-semibold cursor-pointer">What is a blend?</summary>
+          <p class="mt-2 text-gray-600">Other roasters mix one or more types of coffee together that are roasted in a specific way to create a blend that the roaster likes and then sells to a mass market. We believe blends should be personal to each individual. We use the same levers to create a blend, but by using AI, we are able to create a blend that isn’t trying to align with what our personal taste preferences are, but align with your taste preferences.</p>
+        </details>
+        <details class="border border-gray-200 rounded-lg p-4">
+          <summary class="pl-2 font-semibold cursor-pointer">What if I want to have more than one blend?</summary>
+          <p class="mt-2 text-gray-600">That’s easy. Just go into your settings and create a new blend. Any new blend you create will be optimized separately. You can specify how often you want us to send you each blend you have created.</p>
+        </details>
+        <details class="border border-gray-200 rounded-lg p-4">
+          <summary class="pl-2 font-semibold cursor-pointer">Do I need to give feedback every time?</summary>
+          <p class="mt-2 text-gray-600">No. If you don’t give feedback, we send you the same coffee as before.</p>
+        </details>
+        <details class="border border-gray-200 rounded-lg p-4">
+          <summary class="pl-2 font-semibold cursor-pointer">How do I pause my subscription?</summary>
+          <p class="mt-2 text-gray-600">Just turn on “vacation mode” in your settings.</p>
+        </details>
+        <details class="border border-gray-200 rounded-lg p-4">
+          <summary class="pl-2 font-semibold cursor-pointer">How often will I get a new bag of coffee?</summary>
+          <p class="mt-2 text-gray-600">After you open a new bag of coffee and leave feedback, we start creating the next version of your coffee and send it to you when done. We package it to remain fresh until you need it. If you don’t provide any feedback, we estimate when you will be running low on coffee and try to time it so we send you a new bag before you run out.</p>
+        </details>
+        <details class="border border-gray-200 rounded-lg p-4">
+          <summary class="pl-2 font-semibold cursor-pointer">How much does the coffee cost?</summary>
+          <p class="mt-2 text-gray-600">You get to choose how much you pay. Paying more impacts how much we are able to optimize the quality of your coffee.</p>
+        </details>
+        <details class="border border-gray-200 rounded-lg p-4">
+          <summary class="pl-2 font-semibold cursor-pointer">What sizes of coffee can I buy?</summary>
+          <p class="mt-2 text-gray-600">Currently we only sell 12oz bags of coffee. Please let us know if you would like to buy in bulk: support@roastportal.com.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+  <footer class="bg-gray-800 text-gray-200 py-8">
+    <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
+      <a href="#hero" class="md:order-1" aria-label="Back to top">
+        <img src="images/favicon.png" alt="RoastPortal logo" class="h-8" />
+      </a>
+      <p class="md:order-2">© 2025 RoastPortal. All rights reserved.</p>
+      <div class="flex space-x-4 md:order-3">
+        <a href="/terms" class="hover:underline">Terms</a>
+        <a href="mailto:hello@roastportal.com" class="hover:underline">Contact</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // --- Modern Quiz UI/UX with Progress Bar ---
+      const quizData = [
+        {
+          label: 'What roast level do you enjoy most?',
+          type: 'range',
+          name: 'roastLevel',
+          min: 0, max: 100, step: 1,
+          help: 'Slide from light to dark to show your preference.',
+          required: true,
+          left: 'Light', right: 'Dark'
+        },
+        {
+          label: 'Which flavor notes do you love?',
+          type: 'multi-range',
+          names: ['flavorNutty','flavorFruity','flavorFloral','flavorSmoky'],
+          min: 0, max: 100, step: 1,
+          help: 'Move each slider to show how much you enjoy the flavor.',
+          required: true,
+          flavors: ['Nutty','Fruity','Floral','Smoky']
+        },
+        {
+          label: 'How do you usually brew your coffee?',
+          type: 'radio',
+          name: 'brewMethod',
+          options: ['Drip','Pour-over','French Press','Espresso','Single-Serve Pod','Cold Brew'],
+          help: 'Select the method you reach for most often.',
+          required: true
+        },
+        {
+          label: 'What brewing equipment do you have?',
+          type: 'text',
+          name: 'equipmentDetails',
+          help: 'Let us know about your setup.',
+          required: true
+        },
+        {
+          label: 'Would you like us to grind the beans for you?',
+          type: 'radio',
+          name: 'grindService',
+          options: ['Yes','No'],
+          help: 'Choose yes if you want ready-to-brew ground coffee.',
+          required: true
+        },
+        {
+          label: 'How do you usually take your coffee?',
+          type: 'checkbox',
+          names: ['addBlack','addMilk','addDairyFree','addSugar'],
+          options: ['Black','Milk / Cream','Dairy-free Milk','Sugar / Syrup'],
+          help: 'Select all the extras you enjoy.',
+          required: true
+        },
+        {
+          label: "What's your coffee budget?",
+          type: 'range',
+          name: 'priceRange',
+          min: 0, max: 100, step: 1,
+          help: "Drag the slider to choose how much you're comfortable paying.",
+          required: true,
+          left: '$12', right: '$100+'
+        },
+        {
+          label: 'Is there anything else we should know?',
+          type: 'text',
+          name: 'additionalNotes',
+          help: 'Share any notes that could help us match you better.',
+          required: false
+        },
+        {
+          label: 'How adventurous is your coffee personality?',
+          type: 'range',
+          name: 'personality',
+          min: 0, max: 100, step: 1,
+          help: 'Slide from comforting to bold.',
+          required: true,
+          left: 'Comforting & Familiar', right: 'Adventurous & Complex'
+        },
+        {
+          label: 'How acidic do you like your coffee?',
+          type: 'range',
+          name: 'acidity',
+          min: 0, max: 100, step: 1,
+          help: 'Slide to set how bright you like it.',
+          required: true
+        },
+        {
+          label: 'How full-bodied do you like your coffee to feel?',
+          type: 'range',
+          name: 'body',
+          min: 0, max: 100, step: 1,
+          help: 'Slide to set the body you enjoy.',
+          required: true
+        },
+        {
+          label: 'Where do you like your flavor balance?',
+          type: 'multi-range',
+          names: ['tasteSweetBitter','tasteSmoothTart'],
+          min: 0, max: 100, step: 1,
+          help: 'Adjust the sliders to show your taste.',
+          required: true,
+          flavors: ['Sweet ←→ Bitter','Smooth ←→ Tart']
+        },
+        {
+          label: 'About how many cups do you drink on a normal day?',
+          type: 'radio',
+          name: 'cupsPerDay',
+          options: ['1-2','3-5','6+'],
+          help: 'Pick the range that fits your routine.',
+          required: true
+        },
+        {
+          label: 'What kind of water do you brew with?',
+          type: 'radio',
+          name: 'waterType',
+          options: ['Unfiltered tap','Filtered','Recipe','RO/Purified water'],
+          help: 'Choose the type you use most often.',
+          required: true
+        }
+      ];
+
+      let current = 0;
+      let answers = {};
+
+      const quizCard = document.getElementById('quizCard');
+      const stepIndicator = document.getElementById('stepIndicator');
+      const progressBar = document.getElementById('progressBar');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const submitBtn = document.getElementById('submitBtn');
+      const errorMessage = document.getElementById('errorMessage');
+      const summary = document.getElementById('summary');
+      const loadingSpinner = document.getElementById('loadingSpinner');
+      const submitMessage = document.getElementById('submitMessage');
+
+      function renderQuestion(idx) {
+        const q = quizData[idx];
+        let html = `<div class='w-full'>`;
+        html += `<label class='block font-semibold text-lg mb-2'>${q.label}${q.required ? ' <span class="text-red-500">*</span>' : ''}</label>`;
+        if (q.help) html += `<p class='text-sm text-gray-600 mb-3'>${q.help}</p>`;
+        if (q.type === 'range') {
+          const val = answers[q.name] ?? q.min;
+          html += `<input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${q.name}' value='${val}' class='w-full accent-[#22c55e]' id='${q.name}' />`;
+          if (q.left || q.right) {
+            html += `<div class='flex justify-between text-sm text-gray-600 mt-1'><span>${q.left ?? ''}</span><span>${q.right ?? ''}</span></div>`;
+          }
+          if (q.name === 'priceRange') {
+            html += `<div class='text-center text-base mt-2'><span id='${q.name}Value'>$${val}</span></div>`;
+          } else {
+            html += `<div class='text-center text-base mt-2'><span id='${q.name}Value'>${val}</span></div>`;
+          }
+        } else if (q.type === 'multi-range') {
+          html += `<div class='grid grid-cols-1 md:grid-cols-2 gap-6 mt-2'>`;
+          q.names.forEach((name, i) => {
+            const val = answers[name] ?? q.min;
+            html += `<div><span class='text-sm'>${q.flavors[i]}</span><input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${name}' value='${val}' class='w-full accent-[#22c55e]' id='${name}' /><div class='text-center text-base mt-1'><span id='${name}Value'>${val}</span></div></div>`;
+          });
+          html += `</div>`;
+        } else if (q.type === 'radio') {
+          html += `<div class='flex flex-wrap gap-3 mt-2 pill-input'>`;
+          q.options.forEach(opt => {
+            const checked = answers[q.name] === opt ? 'checked' : '';
+            html += `<label class='inline-flex items-center cursor-pointer transition font-medium'><input type='radio' name='${q.name}' value='${opt}' class='sr-only' ${checked} /><span>${opt}</span></label>`;
+          });
+          html += `</div>`;
+        } else if (q.type === 'checkbox') {
+          html += `<div class='flex flex-wrap gap-3 mt-2 pill-input'>`;
+          q.options.forEach((opt, i) => {
+            const checked = answers[q.names[i]] ? 'checked' : '';
+            html += `<label class='inline-flex items-center cursor-pointer transition font-medium'><input type='checkbox' name='${q.names[i]}' value='1' class='sr-only' ${checked} /><span>${opt}</span></label>`;
+          });
+          html += `</div>`;
+        } else if (q.type === 'text') {
+          const val = answers[q.name] ?? '';
+          html += `<input type='text' name='${q.name}' value='${val}' class='w-full mt-2 border-gray-300 rounded p-2' placeholder='${q.help ?? ''}' />`;
+        }
+        html += `</div>`;
+        quizCard.innerHTML = html;
+        // Add listeners for dynamic value display
+        if (q.type === 'range') {
+          const input = document.getElementById(q.name);
+          const valueSpan = document.getElementById(q.name + 'Value');
+          input.addEventListener('input', e => { valueSpan.textContent = e.target.value; });
+          input.addEventListener('change', e => { valueSpan.textContent = e.target.value; });
+        } else if (q.type === 'multi-range') {
+          q.names.forEach(name => {
+            const input = document.getElementById(name);
+            const valueSpan = document.getElementById(name + 'Value');
+            input.addEventListener('input', e => { valueSpan.textContent = e.target.value; });
+            input.addEventListener('change', e => { valueSpan.textContent = e.target.value; });
+          });
+        }
+      }
+
+      function updateProgress() {
+        progressBar.style.width = `${((current + 1) / quizData.length) * 100}%`;
+      }
+
+      function validateCurrent() {
+        const q = quizData[current];
+        if (!q.required) return true;
+        if (q.type === 'range') {
+          return typeof answers[q.name] !== 'undefined';
+        } else if (q.type === 'multi-range') {
+          return q.names.every(name => typeof answers[name] !== 'undefined');
+        } else if (q.type === 'radio') {
+          return typeof answers[q.name] !== 'undefined';
+        } else if (q.type === 'checkbox') {
+          return q.names.some(name => answers[name]);
+        } else if (q.type === 'text') {
+          return (answers[q.name] ?? '').trim() !== '';
+        }
+        return true;
+      }
+
+      function showError(msg) {
+        errorMessage.textContent = msg;
+        errorMessage.classList.remove('hidden');
+      }
+      function hideError() {
+        errorMessage.classList.add('hidden');
+      }
+
+      function render() {
+        renderQuestion(current);
+        updateProgress();
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = !validateCurrent() || current === quizData.length - 1;
+        submitBtn.classList.toggle('hidden', current !== quizData.length - 1);
+        nextBtn.classList.toggle('hidden', current === quizData.length - 1);
+        hideError();
+      }
+
+      // Handle input changes
+      quizCard.addEventListener('input', e => {
+        const q = quizData[current];
+        if (q.type === 'range') {
+          answers[q.name] = e.target.value;
+          render();
+        } else if (q.type === 'multi-range') {
+          if (q.names.includes(e.target.name)) {
+            answers[e.target.name] = e.target.value;
+            render();
+          }
+        } else if (q.type === 'radio') {
+          answers[q.name] = e.target.value;
+          render();
+        } else if (q.type === 'checkbox') {
+          if (q.names.includes(e.target.name)) {
+            answers[e.target.name] = e.target.checked;
+            render();
+          }
+        } else if (q.type === 'text') {
+          answers[q.name] = e.target.value;
+          // Do NOT call render() here to avoid losing focus
+        }
+      });
+
+      // Optionally, call render() on blur/change for text input if needed
+      quizCard.addEventListener('change', e => {
+        const q = quizData[current];
+        if (q.type === 'text' && e.target.type === 'text') {
+          render();
+        }
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (current > 0) {
+          current--;
+          render();
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        if (!validateCurrent()) {
+          showError('Please answer this required question.');
+          return;
+        }
+        if (current < quizData.length - 1) {
+          current++;
+          render();
+        }
+      });
+
+      submitBtn.addEventListener('click', e => {
+        e.preventDefault();
+        if (!validateCurrent()) {
+          showError('Please answer this required question.');
+          return;
+        }
+        // Show summary
+        let html = '<div class="mb-2 font-semibold text-lg">Review your answers:</div>';
+        quizData.forEach(q => {
+          let val = '';
+          if (q.type === 'range') val = answers[q.name];
+          else if (q.type === 'multi-range') val = q.names.map(n => answers[n]).join(', ');
+          else if (q.type === 'radio') val = answers[q.name];
+          else if (q.type === 'checkbox') val = q.names.filter(n => answers[n]).map((n,i) => q.options[i]).join(', ');
+          else if (q.type === 'text') val = answers[q.name];
+          html += `<div class="mb-1"><strong>${q.label.replace('?', '')}:</strong> ${val || '<span class=text-gray-400>Not answered</span>'}</div>`;
+        });
+        summary.innerHTML = html;
+        summary.classList.remove('hidden');
+        submitBtn.disabled = true;
+        loadingSpinner.classList.remove('hidden');
+        // Simulate async submit
+        setTimeout(() => {
+          loadingSpinner.classList.add('hidden');
+          submitBtn.disabled = false;
+          submitMessage.textContent = 'Thanks for submitting!';
+          submitMessage.classList.remove('hidden');
+          summary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 1200);
+      });
+
+      // Initial render
+      render();
+
+      // Fade transition CSS
+      const style = document.createElement('style');
+      style.innerHTML = `
+        .question { opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+        .question.active { opacity: 1; pointer-events: auto; }
+        .fade-in { animation: fadeInQ 0.4s; }
+        @keyframes fadeInQ { from { opacity: 0; } to { opacity: 1; } }
+      `;
+      document.head.appendChild(style);
+
+      // Required indicator for labels
+      quizData.forEach(q => {
+        const label = document.querySelector(`#quizCard label[for="${q.name}"]`);
+        if (label && !label.innerHTML.includes('*')) {
+          label.innerHTML += ' <span class="text-red-500">*</span>';
+        }
+      });
+
+      // Error message on Next if not answered
+      nextBtn.addEventListener('click', () => {
+        if (current < quizData.length - 1 && !validateCurrent()) {
+          showError('Please answer this required question.');
+          return;
+        }
+        current++;
+        render();
+      });
+
+      // After quiz reset, reset Next button
+      const quizForm = document.getElementById('quizForm');
+      quizForm.addEventListener('reset', function() {
+        current = 0;
+        answers = {};
+        render();
+      });
+
+      quizForm.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (current < quizData.length - 1) {
+            if (validateCurrent()) {
+              current++;
+              render();
+            } else {
+              showError('Please answer this required question.');
+            }
+          } else if (current === quizData.length - 1) {
+            if (validateCurrent()) {
+              // Allow submit
+              submitBtn.click();
+            } else {
+              showError('Please answer this required question.');
+            }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
