@@ -20,6 +20,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <style>
     :root { --brand-dark: #2b1608; --brand-light: #f5f0ea; }
     .pill-input input { display: none; }
@@ -39,37 +42,68 @@
     .question { display: none; min-height: 200px; }
     .question.active { display: block; }
     .wordmark {
-      font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif;
+      font-family: 'Kanit', 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif;
       font-size: 2rem;
-      font-weight: 700;
+      font-weight: 400;
       letter-spacing: 0.04em;
-      display: inline-block;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
       padding: 0.125em 0.5em;
       background: transparent;
-      margin-left: 0.25rem;
+      margin-left: 0;
+      text-transform: uppercase;
+      line-height: 1.1;
     }
-    .wordmark .roast {
+    .wordmark .roast, .wordmark .portal {
       color: #2b1608;
-      font-weight: 700;
-    }
-    .wordmark .portal {
-      color: #2b1608;
-      font-weight: 500;
-      margin-left: 0.1em;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+      text-align: left;
+      width: 100%;
+      display: block;
     }
     /* Fix scroll offset for anchor links */
     html {
       scroll-padding-top: 80px;
     }
+    html, body {
+      font-family: 'Kanit', 'Poppins', 'Nunito', 'Playfair Display', 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+    textarea {
+      font-size: 1.15rem;
+      padding: 1rem;
+      border: 2px solid #d1d5db;
+      border-radius: 0.75rem;
+      background: #f8fafc;
+      color: #2b1608;
+      transition: border 0.2s, box-shadow 0.2s;
+      min-height: 4.5rem;
+      outline: none;
+    }
+    textarea:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 2px #bbf7d0;
+      background: #fff;
+      text-align: center;
+    }
+    #quizCard {
+      min-height: 420px;
+      padding-top: 2.5rem;
+      padding-bottom: 2.5rem;
+    }
   </style>
 </head>
 <body class="font-sans antialiased text-gray-800 bg-gray-50">
   <header class="bg-white shadow sticky top-0 z-50">
-    <nav class="container mx-auto flex justify-between items-center py-4 px-6 md:py-4 md:px-8" aria-label="Main navigation">
-      <a href="#hero" class="flex items-center gap-x-4 md:gap-x-8" aria-label="RoastPortal Home">
-        <img src="images/favicon.png" alt="RoastPortal logo" class="h-8" />
+    <nav class="container mx-auto flex justify-between items-center py-2 px-6 md:py-2 md:px-8" aria-label="Main navigation">
+      <a href="#hero" class="flex items-center gap-x-2 md:gap-x-4 pl-2 md:pl-4" aria-label="RoastPortal Home">
+        <img src="images/favicon.png" alt="RoastPortal logo" class="h-10" />
         <span class="wordmark">
-          <span class="roast">Roast</span><span class="portal">Portal</span>
+          <span class="roast">Roast</span>
+          <span class="portal">Portal</span>
         </span>
       </a>
       <div class="flex items-center">
@@ -231,7 +265,7 @@
           label: 'What roast level do you enjoy most?',
           type: 'radio',
           name: 'roastLevel',
-          options: ['Light', 'Light-Medium', 'Medium-Dark', 'Dark'],
+          options: ['Light', 'Light-Medium', 'Medium', 'Medium-Dark', 'Dark'],
           help: 'Select the roast you prefer most.',
           required: false
         },
@@ -285,20 +319,13 @@
           left: '$12', right: '$100'
         },
         {
-          label: 'Is there anything else we should know?',
-          type: 'text',
-          name: 'additionalNotes',
-          help: 'Share any notes that could help us match you better.',
-          required: false
-        },
-        {
           label: 'How adventurous is your coffee personality?',
           type: 'range',
           name: 'personality',
           min: 0, max: 100, step: 1,
           help: 'Slide from comforting to bold.',
           required: false,
-                    left: 'Comforting & Familiar', right: 'Adventurous & Complex'
+          left: 'Comforting & Familiar', right: 'Adventurous & Complex'
         },
         {
           label: 'Where do you like your flavor balance?',
@@ -324,7 +351,14 @@
           options: ['Unfiltered tap','Filtered tap','Recipe','Distilled'],
           help: 'Choose the type you use most often.',
           required: false
-        }
+        },
+        {
+          label: 'Is there anything else we should know?',
+          type: 'text',
+          name: 'additionalNotes',
+          help: 'Share any notes that could help us match you better.',
+          required: false
+        },
       ];
 
       let current = 0;
@@ -352,11 +386,12 @@
           return 'Very Dark';
         }
         if (name === 'flavorNutty' || name === 'flavorFruity' || name === 'flavorFloral' || name === 'flavorSmoky') {
-          if (value <= 20) return 'Not at all';
-          if (value <= 40) return 'A little';
-          if (value <= 60) return 'Somewhat';
-          if (value <= 80) return 'A lot';
-          return 'Love it!';
+          if (value == 0) return 'Not at all';
+          if (value > 0 && value < 25) return 'A little';
+          if (value >= 25 && value < 50) return 'Somewhat';
+          if (value >= 50 && value < 75) return 'A lot';
+          if (value >= 75 && value < 100) return 'Really like it';
+          if (value == 100) return 'Love it!';
         }
         if (name === 'personality') {
           if (value <= 20) return 'Comforting';
@@ -389,6 +424,28 @@
         }
         return '';
       }
+
+      // Default values for each quiz field
+      const quizDefaults = {
+        roastLevel: 'Medium',
+        flavorNutty: 50,
+        flavorFruity: 50,
+        flavorFloral: 50,
+        flavorSmoky: 50,
+        brewMethod: 'Drip',
+        equipmentDetails: 'None',
+        grindService: 'No',
+        addMilk: false,
+        addDairyFree: false,
+        addSugar: false,
+        priceRange: 35,
+        additionalNotes: '',
+        personality: 50,
+        tasteSweetBitter: 50,
+        tasteSmoothTart: 50,
+        cupsPerDay: '1-2',
+        waterType: 'Unfiltered tap'
+      };
 
       function renderQuestion(idx) {
         if (idx < 0 || idx >= quizData.length) {
@@ -471,28 +528,69 @@
           }
         } else if (q.type === 'range') {
           const val = answers[q.name] ?? (q.name === 'priceRange' ? 35 : 50);
-          quizCard.innerHTML = `
-            <div class='w-full'>
-              <label class='block font-semibold text-lg mb-2'>${q.label}</label>
-              <div class='text-gray-500 text-sm mb-2'>${q.help || ''}</div>
-              <input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${q.name}' value='${val}' class='w-full accent-[#22c55e] mb-2' id='${q.name}' />
-              <div class='flex justify-between text-sm text-gray-500 mb-1'>
-                <span>${q.left || ''}</span>
-                <span>${q.right || ''}</span>
+          if (q.name === 'priceRange') {
+            quizCard.innerHTML = `
+              <div class='w-full relative'>
+                <label class='block font-semibold text-lg mb-2'>${q.label}</label>
+                <div class='text-gray-500 text-sm mb-2'>${q.help || ''}</div>
+                <div class='relative w-full flex items-center'>
+                  <input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${q.name}' value='${val}' class='w-full accent-[#22c55e] mb-2' id='${q.name}' />
+                  <span id='${q.name}Value' class='absolute pointer-events-none px-2 py-1 rounded bg-white border border-gray-300 text-[#22c55e] font-bold text-base shadow' style='top:-2.2rem; left:0;'>$${val}</span>
+                </div>
+                <div class='flex justify-between text-sm text-gray-500 mb-1'>
+                  <span>${q.left || ''}</span>
+                  <span>${q.right || ''}</span>
+                </div>
               </div>
-              <div class='text-center'>
-                <span id='${q.name}Value' class='text-lg font-semibold'>${q.name === 'priceRange' ? '$' + val : val}</span>
+            `;
+            const input = document.getElementById(q.name);
+            const valueSpan = document.getElementById(q.name + 'Value');
+            // Function to update value and position
+            function updateSliderValue() {
+              const min = Number(input.min);
+              const max = Number(input.max);
+              const val = Number(input.value);
+              valueSpan.textContent = `$${val}`;
+              // Calculate percent position
+              const percent = (val - min) / (max - min);
+              // Get slider width
+              const sliderWidth = input.offsetWidth;
+              // Thumb size and offset fudge factor
+              const thumbSize = 32;
+              const offset = thumbSize / 2;
+              // Position value span
+              valueSpan.style.left = `calc(${percent * 100}% - ${offset - percent * thumbSize}px)`;
+            }
+            input.addEventListener('input', e => {
+              answers[q.name] = e.target.value;
+              updateSliderValue();
+            });
+            // Initial position
+            setTimeout(updateSliderValue, 10);
+          } else {
+            quizCard.innerHTML = `
+              <div class='w-full'>
+                <label class='block font-semibold text-lg mb-2'>${q.label}</label>
+                <div class='text-gray-500 text-sm mb-2'>${q.help || ''}</div>
+                <input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${q.name}' value='${val}' class='w-full accent-[#22c55e] mb-2' id='${q.name}' />
+                <div class='flex justify-between text-sm text-gray-500 mb-1'>
+                  <span>${q.left || ''}</span>
+                  <span>${q.right || ''}</span>
+                </div>
+                <div class='text-center'>
+                  <span id='${q.name}Value' class='text-lg font-semibold'>${val}</span>
+                </div>
               </div>
-            </div>
-          `;
-          const input = document.getElementById(q.name);
-          const valueSpan = document.getElementById(q.name + 'Value');
-          const labelSpan = document.getElementById(q.name + 'Label');
-          input.addEventListener('input', e => {
-            valueSpan.textContent = e.target.value;
-            labelSpan.textContent = getSliderLabel(q.name, e.target.value);
-            answers[q.name] = e.target.value;
-          });
+            `;
+            const input = document.getElementById(q.name);
+            const valueSpan = document.getElementById(q.name + 'Value');
+            const labelSpan = document.getElementById(q.name + 'Label');
+            input.addEventListener('input', e => { 
+              valueSpan.textContent = e.target.value; 
+              labelSpan.textContent = getSliderLabel(q.name, e.target.value);
+              answers[q.name] = e.target.value;
+            });
+          }
         } else if (q.type === 'multi-range') {
           if (q.names[0] === 'flavorNutty') {
             quizCard.innerHTML = `
@@ -565,6 +663,15 @@
           `;
           const textarea = quizCard.querySelector('textarea');
           textarea.value = val;
+          textarea.addEventListener('focus', e => {
+            // Center cursor in textarea on focus
+            const len = e.target.value.length;
+            // If empty, just focus; if not, set selection to middle
+            if (len > 0) {
+              const mid = Math.floor(len / 2);
+              e.target.setSelectionRange(mid, mid);
+            }
+          });
           textarea.addEventListener('keydown', e => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
@@ -728,12 +835,17 @@
           // Add timestamp
           formData.append('timestamp', new Date().toISOString());
           
-          // Add all answers
-          Object.keys(answers).forEach(key => {
-            const value = answers[key];
-            if (value !== undefined && value !== null && value !== '') {
-              formData.append(key, value);
+          // Add all answers, using defaults if missing
+          Object.keys(quizDefaults).forEach(key => {
+            let value = answers[key];
+            if (value === undefined || value === null || value === '') {
+              value = quizDefaults[key];
             }
+            // For checkboxes, ensure boolean is sent as 'TRUE'/'FALSE'
+            if (typeof quizDefaults[key] === 'boolean') {
+              value = value ? 'TRUE' : 'FALSE';
+            }
+            formData.append(key, value);
           });
           
           // Submit to Google Apps Script
