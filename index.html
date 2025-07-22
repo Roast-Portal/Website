@@ -11,6 +11,7 @@
   <meta property="og:image" content="https://roastportal.com/images/og-image.jpg" />
   <meta property="og:url" content="https://roastportal.com/" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="robots" content="index,follow" />
   <meta name="twitter:title" content="Roast Portal – Personalized Coffee Quiz | Find Your Perfect Roast" />
   <meta name="twitter:description" content="Take the Roast Portal quiz to get a custom coffee profile crafted just for you." />
   <meta name="twitter:image" content="https://roastportal.com/images/og-image.jpg" />
@@ -94,13 +95,21 @@
       padding-top: 2.5rem;
       padding-bottom: 2.5rem;
     }
+    @keyframes fadeInLoadingMsg {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .sequential-fade-in {
+      opacity: 0;
+      animation: fadeInLoadingMsg 0.7s ease forwards;
+    }
   </style>
 </head>
 <body class="font-sans antialiased text-gray-800 bg-gray-50">
   <header class="bg-white shadow sticky top-0 z-50">
     <nav class="container mx-auto flex justify-between items-center py-2 px-6 md:py-2 md:px-8" aria-label="Main navigation">
       <a href="#hero" class="flex items-center gap-x-2 md:gap-x-4 pl-2 md:pl-4" aria-label="RoastPortal Home">
-        <img src="images/favicon.png" alt="RoastPortal logo" class="h-10" />
+        <img src="images/favicon.png" alt="RoastPortal logo" class="h-10" loading="lazy" />
         <span class="wordmark">
           <span class="roast">Roast</span>
           <span class="portal">Portal</span>
@@ -173,6 +182,8 @@
       <div class="container mx-auto px-6">
         <h2 class="text-3xl font-bold text-center mb-8">Train your coffee AI</h2>
         <form method="POST" action="#" class="max-w-3xl mx-auto bg-white/90 shadow-xl rounded-2xl p-6 md:p-10 transition-all duration-300" id="quizForm" aria-label="Coffee Preference Quiz">
+          <input type="hidden" name="formType" value="quiz" />
+          <input type="hidden" name="userId" id="quizUserId" />
           <!-- Step Indicator and Progress Bar -->
           <div class="mb-6">
             <div class="flex justify-between items-center mb-2">
@@ -247,7 +258,7 @@
   <footer class="bg-gray-800 text-gray-200 py-8">
     <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
       <a href="#hero" class="md:order-1" aria-label="Back to top">
-        <img src="images/favicon.png" alt="RoastPortal logo" class="h-8" />
+        <img src="images/favicon.png" alt="RoastPortal logo" class="h-8" loading="lazy" />
       </a>
       <p class="md:order-2">© 2025 RoastPortal. All rights reserved.</p>
       <div class="flex space-x-4 md:order-3">
@@ -258,7 +269,7 @@
   </footer>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbycyuhiCcG-zW3S0jLNFvxxx-TKPUghXoXXlJSJPDrZxX0CMkXABY0L7Lb9nxtUAG1Mdg/exec';
+      const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbycyuhiCcG-zW3S0jLNFvxxx-TKPUghXoXXlJSJPDrZxX0CMkXABY0L7Lb9nxtUAG1Mdg/exec?tab=Quiz';
       // --- Modern Quiz UI/UX with Progress Bar ---
       const quizData = [
         {
@@ -434,7 +445,8 @@
       }
 
       // Store userId for mapping form1 and form2
-      let userId = null;
+      let userId = sessionStorage.getItem('userId') || generateUUID();
+      sessionStorage.setItem('userId', userId);
 
       // Default values for each quiz field
       const quizDefaults = {
@@ -824,80 +836,92 @@
 
       // After quiz reset, reset Next button
       const quizForm = document.getElementById('quizForm');
+      document.getElementById('quizUserId').value = userId;
       quizForm.addEventListener('reset', function() {
         current = 0;
         answers = {};
         render();
       });
 
-      // Form submission handler
-      quizForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        // Show loading state
-        loadingSpinner.classList.remove('hidden');
-        submitBtn.disabled = true;
-        hideError();
-        
-        try {
-          // Prepare form data
-          const formData = new FormData();
-          
-          // Add timestamp
-          formData.append('timestamp', new Date().toISOString());
-          
-          // Generate and store userId if not already set
-          if (!userId) userId = generateUUID();
-          formData.append('userId', userId);
+      // Add contact form HTML (initially hidden)
+      const contactFormHTML = `
+        <form id="contactForm" method="POST" class="space-y-4" style="display:none;">
+          <input type="hidden" name="formType" value="contact">
+          <input type="hidden" name="userId" id="contactUserId" value="${userId}">
+          <div>
+            <label for="contactEmail" class="block text-left font-medium mb-1">Email</label>
+            <input type="email" id="contactEmail" name="contactEmail" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
+          </div>
+          <div>
+            <label for="contactPhone" class="block text-left font-medium mb-1">Phone</label>
+            <input type="tel" id="contactPhone" name="contactPhone" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
+          </div>
+          <button type="submit" class="w-full bg-[#22c55e] text-white font-semibold py-2 rounded hover:bg-[#16a34a] transition">Buy Now</button>
+        </form>
+      `;
+      // In DOMContentLoaded, after quizForm is rendered:
+      quizForm.insertAdjacentHTML('afterend', contactFormHTML);
+      const contactForm = document.getElementById('contactForm');
+      contactForm.style.display = 'none';
+      document.getElementById('contactUserId').value = userId;
 
-          // Add all answers, using defaults if missing
-          Object.keys(quizDefaults).forEach(key => {
-            let value = answers[key];
-            if (value === undefined || value === null || value === '') {
-              value = quizDefaults[key];
-            }
-            // For checkboxes, ensure boolean is sent as 'TRUE'/'FALSE'
-            if (typeof quizDefaults[key] === 'boolean') {
-              value = value ? 'TRUE' : 'FALSE';
-            }
-            formData.append(key, value);
-          });
-          
-          // Submit to Google Apps Script
-          const response = await fetch(API_ENDPOINT, {
-            method: 'POST',
-            body: formData
-          });
-          if (!response.ok) {
-            throw new Error('Request failed');
-          }
-          
-          // Show personalized result card with fun message and form 2
-          showResultCard();
-          
-        } catch (error) {
-          console.error('Submission error:', error);
-          showError('There was an error submitting your responses. Please try again.');
-        } finally {
-          loadingSpinner.classList.add('hidden');
-          submitBtn.disabled = false;
+      const ENDPOINT = 'https://script.google.com/macros/s/AKfycbybfq6Z7l93gnXL_bkgqxAozDF_6PHC72wzCzkTAsYrtFrOnIYfoQiqC4yWb8xCHFVxPw/exec';
+      function post(form, tab) {
+        const url = ENDPOINT + '?tab=' + encodeURIComponent(tab);
+        return fetch(url, { method:'POST', body: new FormData(form) })
+               .then(r=>r.json());
+      }
+
+      quizForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        document.getElementById('quizUserId').value    = userId;
+        document.getElementById('contactUserId').value = userId;
+        sessionStorage.setItem('userId', userId);
+        const resp = await post(quizForm, 'Quiz');
+        if (resp.status==='OK') {
+          quizForm.style.display    = 'none';
+          contactForm.style.display = 'block';
+        } else {
+          alert('Quiz submission failed.');
+        }
+      });
+
+      contactForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        document.getElementById('contactUserId').value = userId;
+        const resp = await post(contactForm, 'ContactCapture');
+        if (resp.status==='OK') {
+          contactForm.innerHTML = '<p>✅ Thank you! We got your answers.</p>';
+          sessionStorage.removeItem('userId');
+        } else {
+          alert('Contact submission failed.');
         }
       });
 
       // --- Personalized Result Card and Form 2 ---
       function showResultCard() {
+        if (!userId) {
+          const stored = sessionStorage.getItem('userId');
+          if (stored) userId = stored;
+        }
+        // Hide quiz navigation and error elements
+        errorMessage.classList.add('hidden');
+        errorMessage.textContent = '';
+        submitBtn.classList.add('hidden');
+        nextBtn.classList.add('hidden');
+        prevBtn.classList.add('hidden');
         // Generate a fun, personalized message based on answers
         let funFact = '';
         if (answers.flavorFruity > 75) {
-          funFact = "You have a vibrant, adventurous palate—fruity coffees are your jam! 🍓";
+          funFact = "You have a vibrant, adventurous palate—fruity coffees are your jam!";
         } else if (answers.flavorNutty > 75) {
-          funFact = "You love cozy, nutty flavors—your perfect cup is warm and comforting! 🥜";
+          funFact = "You love cozy, nutty flavors—your perfect cup is warm and comforting!";
         } else if (answers.flavorSmoky > 75) {
-          funFact = "You’re bold! Smoky, intense roasts are your style. 🔥";
+          funFact = "You’re bold! Smoky, intense roasts are your style.";
         } else if (answers.flavorFloral > 75) {
-          funFact = "You appreciate delicate, floral notes—your taste is refined! 🌸";
+          funFact = "You appreciate delicate, floral notes—your taste is refined!";
         } else if (answers.personality > 75) {
-          funFact = "You’re a coffee explorer—always up for something new and complex! 🌍";
+          funFact = "You’re a coffee explorer—always up for something new and complex!";
         } else {
           funFact = "Our AI is crafting your perfect blend based on what you like.";
         }
@@ -905,8 +929,8 @@
         // Helper to animate radar chart with enhanced visuals
         function animateRadarChart(values, labels, containerId) {
           const numAxes = values.length;
-          const radius = 36;
-          const center = 40;
+          const radius = 55;
+          const center = 70;
           const angleStep = (2 * Math.PI) / numAxes;
           let progress = 0;
           const steps = 36;
@@ -953,7 +977,7 @@
         const flavorLabels = ['Nutty', 'Fruity', 'Floral', 'Smoky'];
         const funGraphic = `
           <div class="flex justify-center my-4">
-            <svg id="radarChartSVG" width="110" height="110" viewBox="0 0 80 80" style="background:#fff; border-radius:16px; box-shadow:0 4px 24px 0 #0002;">
+            <svg id="radarChartSVG" width="180" height="180" viewBox="0 0 140 140" style="background:#fff; border-radius:16px; box-shadow:0 4px 24px 0 #0002;">
               <defs>
                 <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                   <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -963,13 +987,13 @@
                   </feMerge>
                 </filter>
               </defs>
-              <circle cx="40" cy="40" r="38" stroke="#22c55e" stroke-width="3" fill="#fff" />
+              <circle cx="70" cy="70" r="55" stroke="#22c55e" stroke-width="3" fill="#fff" />
               <!-- Axes -->
               <g stroke="#d1d5db" stroke-width="1.5">
-                <line x1="40" y1="40" x2="40" y2="8" />
-                <line x1="40" y1="40" x2="72" y2="40" />
-                <line x1="40" y1="40" x2="40" y2="72" />
-                <line x1="40" y1="40" x2="8" y2="40" />
+                <line x1="70" y1="70" x2="70" y2="20" />
+                <line x1="70" y1="70" x2="120" y2="70" />
+                <line x1="70" y1="70" x2="70" y2="120" />
+                <line x1="70" y1="70" x2="20" y2="70" />
               </g>
               <!-- Radar shape -->
               <path class="radar" d="" fill="#22c55e55" stroke="#22c55e" stroke-width="3" filter="url(#glow)" />
@@ -978,24 +1002,24 @@
               <circle id="radar-dot-1" r="5" fill="#22c55e" stroke="#fff" stroke-width="2" />
               <circle id="radar-dot-2" r="5" fill="#22c55e" stroke="#fff" stroke-width="2" />
               <circle id="radar-dot-3" r="5" fill="#22c55e" stroke="#fff" stroke-width="2" />
-              <!-- Value Labels removed for clarity -->
-              <!-- Labels -->
-              <text x="40" y="16" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b1608">Nutty</text>
-              <text x="70" y="44" text-anchor="start" font-size="13" font-weight="bold" fill="#2b1608">Fruity</text>
-              <text x="40" y="74" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b1608">Floral</text>
-              <text x="10" y="44" text-anchor="end" font-size="13" font-weight="bold" fill="#2b1608">Smoky</text>
+              <!-- Labels: only one set -->
+              <text x="70" y="32" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b1608" dominant-baseline="middle">Nutty</text>
+              <text x="120" y="75" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b1608" dominant-baseline="middle">Fruity</text>
+              <text x="70" y="128" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b1608" dominant-baseline="middle">Floral</text>
+              <text x="20" y="75" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b1608" dominant-baseline="middle">Smoky</text>
             </svg>
           </div>
         `;
 
         // Replace quiz card with result and form 2
         quizCard.innerHTML = `
-          <div class="text-center">
-            <h2 class="text-2xl font-bold mb-2">Your coffee profile is in the works...</h2>
-            <div class="text-lg mb-4">${funFact}</div>
+          <div class="bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-3">Your custom blend is ready!</h2>
+            <p class="text-base text-gray-600 mb-6">Enter your info below to get your personalized coffee.</p>
+            <div class="text-sm text-gray-500 mb-4">${funFact}</div>
             ${funGraphic}
-            <div class="text-base text-gray-600 mb-6">Your personalized blend is ready! Enter your info below to purchase your custom coffee.</div>
-            <form id="userInfoForm" class="max-w-sm mx-auto space-y-4">
+            <form id="userInfoForm" class="space-y-4">
+              <input type="hidden" name="formType" value="contact" />
               <input type="hidden" name="userId" value="${userId}" />
               <div>
                 <label for="userName" class="block text-left font-medium mb-1">Name</label>
@@ -1014,6 +1038,9 @@
             <div id="userInfoSuccess" class="hidden text-green-600 font-semibold mt-4">Thank you! We'll be in touch soon.</div>
           </div>
         `;
+
+        // Ensure result card is visible
+        quizCard.scrollIntoView({ behavior: 'smooth' });
 
         // Animate the radar chart after rendering
         setTimeout(() => {
