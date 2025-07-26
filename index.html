@@ -155,8 +155,9 @@
         <label class="block font-medium mb-1" for="contactPhone">Phone</label>
         <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" type="tel" id="contactPhone" name="contactPhone" required>
       </div>
-      <button class="w-full bg-[#22c55e] text-white font-semibold py-2 rounded hover:bg-[#16a34a] transition" type="submit">Buy Now</button>
-      <p id="contactSuccess" class="hidden text-center text-[#16a34a] font-semibold mt-4">✅ Thank you! We have your details.</p>
+      <button class="w-full bg-[#22c55e] text-white font-semibold py-2 rounded hover:bg-[#16a34a] transition" type="submit">Buy Now</button>
+      <p id="contactError" class="hidden text-center text-red-500 font-semibold mt-2"></p>
+      <p id="contactSuccess" class="hidden text-center text-[#16a34a] font-semibold mt-4">Thank you! We have your details.</p>
     </form>
   </div>
 </section>
@@ -392,6 +393,20 @@ function submitToSheet(tab, formData){
 /* QUIZ SUBMIT -----------------------------------------------------*/
 quizForm.addEventListener('submit',async e=>{
   e.preventDefault();
+  
+  const submitButton = document.getElementById('submitBtn');
+  const originalButtonHTML = submitButton.innerHTML;
+  submitButton.disabled = true;
+  submitButton.innerHTML = `
+    <span class="inline-flex items-center">
+      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      Submitting...
+    </span>`;
+  errorMessage.classList.add('hidden');
+
   /* inject every answer as hidden input so formData carries them */
   Object.entries(answers).forEach(([k,v])=>{
     const hidden=document.createElement('input');
@@ -405,21 +420,42 @@ quizForm.addEventListener('submit',async e=>{
     contactForm.classList.remove('hidden');
     window.scrollTo({top:contactForm.offsetTop,behavior:'smooth'});
   }else{
-    errorMessage.textContent='Submission failed. Please retry.'; errorMessage.classList.remove('hidden');
+    errorMessage.textContent='Submission failed. Please retry.';
+    errorMessage.classList.remove('hidden');
+    submitButton.disabled = false;
+    submitButton.innerHTML = originalButtonHTML;
   }
 });
 
 /* CONTACT SUBMIT --------------------------------------------------*/
 contactForm.addEventListener('submit',async e=>{
   e.preventDefault();
+
+  const submitButton = contactForm.querySelector('button[type="submit"]');
+  const originalButtonHTML = submitButton.innerHTML;
+  submitButton.disabled = true;
+  submitButton.innerHTML = `
+    <span class="inline-flex items-center justify-center">
+      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      Submitting...
+    </span>`;
+  document.getElementById('contactError').classList.add('hidden');
+
   const fd=new FormData(contactForm); fd.set('userId',userId);
   const res=await submitToSheet(TAB_CONTACT,fd);
   if(res.status==='OK'){
-    contactForm.querySelector('button').disabled=true;
+    submitButton.innerHTML = 'Submitted!';
     document.getElementById('contactSuccess').classList.remove('hidden');
     sessionStorage.removeItem('userId');
   }else{
-    alert('Contact submission failed. Try again.');
+    const contactError = document.getElementById('contactError');
+    contactError.textContent = 'Submission failed. Please try again.';
+    contactError.classList.remove('hidden');
+    submitButton.disabled = false;
+    submitButton.innerHTML = originalButtonHTML;
   }
 });
 </script>
