@@ -4,1087 +4,424 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RoastPortal – Personalized Coffee Quiz | Find Your Perfect Roast</title>
-  <meta name="description" content="Discover your ideal coffee roast with our interactive quiz and personalized recommendations." />
-  <meta name="keywords" content="coffee, roasting, personalized, quiz, beans, brew" />
-  <meta property="og:title" content="Roast Portal – Personalized Coffee Quiz | Find Your Perfect Roast" />
-  <meta property="og:description" content="Take the Roast Portal quiz to get a custom coffee profile crafted just for you" />
-  <meta property="og:image" content="https://roastportal.com/images/og-image.jpg" />
-  <meta property="og:url" content="https://roastportal.com/" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="robots" content="index,follow" />
-  <meta name="twitter:title" content="Roast Portal – Personalized Coffee Quiz | Find Your Perfect Roast" />
-  <meta name="twitter:description" content="Take the Roast Portal quiz to get a custom coffee profile crafted just for you." />
-  <meta name="twitter:image" content="https://roastportal.com/images/og-image.jpg" />
-  <link rel="canonical" href="https://roastportal.com/" />
-  <link rel="icon" type="image/png" href="images/favicon.png" />
+
+  <!-- ╔═════════════ SEO & Social ═════════════╗ -->
+  <meta name="description"  content="Discover your ideal coffee roast with our interactive quiz and personalized recommendations.">
+  <meta name="keywords"     content="coffee, roasting, personalized, quiz, beans, brew">
+  <meta property="og:title"       content="RoastPortal – Personalized Coffee Quiz | Find Your Perfect Roast">
+  <meta property="og:description" content="Take the RoastPortal quiz to get a custom coffee profile crafted just for you">
+  <meta property="og:image"       content="https://roastportal.com/images/og-image.jpg">
+  <meta property="og:url"         content="https://roastportal.com/">
+  <meta name="twitter:card"       content="summary_large_image">
+  <meta name="twitter:title"      content="RoastPortal – Personalized Coffee Quiz | Find Your Perfect Roast">
+  <meta name="twitter:description"content="Take the RoastPortal quiz to get a custom coffee profile crafted just for you.">
+  <meta name="twitter:image"      content="https://roastportal.com/images/og-image.jpg">
+  <link rel="canonical" href="https://roastportal.com/">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+  <!-- ╔═════════════ Fonts & Tailwind ═════════════╗ -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap"  rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap"     rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+  <!-- ╔═════════════ Page‑specific CSS ═════════════╗ -->
   <style>
-    :root { --brand-dark: #2b1608; --brand-light: #f5f0ea; }
-    .pill-input input { display: none; }
-    .pill-input input:checked + span {
-      background-color: #22c55e;
-      color: #fff;
-      border-color: #22c55e;
+    :root{--brand-dark:#2b1608;--brand-light:#f5f0ea}
+    .pill-input input{display:none}
+    .pill-input input:checked + span{background:#22c55e;color:#fff;border-color:#22c55e}
+    .pill-input label span{transition:.2s;padding:.5rem 1.25rem;border-radius:9999px;border:1px solid #d1d5db;cursor:pointer;display:inline-block}
+    .question{display:none;min-height:200px}.question.active{display:block}
+    .wordmark{font-family:'Kanit','Poppins','Nunito',sans-serif;font-size:2rem;letter-spacing:.04em;text-transform:uppercase;line-height:1.1}
+    .wordmark .roast,.wordmark .portal{color:#2b1608;margin:0;padding:0;display:block}
+    html{scroll-padding-top:80px}html,body{font-family:'Kanit','Poppins','Nunito','Playfair Display',sans-serif}
+    textarea{font-size:1.15rem;padding:1rem;border:2px solid #d1d5db;border-radius:.75rem;background:#f8fafc;color:#2b1608;transition:border .2s,box-shadow .2s;min-height:4.5rem}
+    textarea:focus{border-color:#22c55e;box-shadow:0 0 0 2px #bbf7d0;background:#fff;text-align:center}
+    #quizCard{min-height:420px;padding-top:2.5rem;padding-bottom:2.5rem}
+    @keyframes fadeInLoadingMsg{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .sequential-fade-in{opacity:0;animation:fadeInLoadingMsg .7s ease forwards}
+    /* hero gradient animation */
+    @keyframes heroGradient{
+      0%{background:radial-gradient(circle at 30% 40%,rgba(34,197,94,.10)0%,rgba(43,22,8,.08)100%)}
+      25%{background:radial-gradient(circle at 70% 60%,rgba(43,22,8,.12)0%,rgba(34,197,94,.08)100%)}
+      50%{background:radial-gradient(circle at 60% 30%,rgba(34,197,94,.09)0%,rgba(43,22,8,.08)100%)}
+      75%{background:radial-gradient(circle at 40% 70%,rgba(43,22,8,.10)0%,rgba(34,197,94,.09)100%)}
+      100%{background:radial-gradient(circle at 30% 40%,rgba(34,197,94,.10)0%,rgba(43,22,8,.08)100%)}
     }
-    .pill-input label span {
-      transition: background 0.2s, color 0.2s, border 0.2s;
-      padding: 0.5rem 1.25rem;
-      border-radius: 9999px;
-      border: 1px solid #d1d5db;
-      cursor: pointer;
-      display: inline-block;
-    }
-    .question { display: none; min-height: 200px; }
-    .question.active { display: block; }
-    .wordmark {
-      font-family: 'Kanit', 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif;
-      font-size: 2rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 0.125em 0.5em;
-      background: transparent;
-      margin-left: 0;
-      text-transform: uppercase;
-      line-height: 1.1;
-    }
-    .wordmark .roast, .wordmark .portal {
-      color: #2b1608;
-      font-weight: 400;
-      margin: 0;
-      padding: 0;
-      text-align: left;
-      width: 100%;
-      display: block;
-    }
-    /* Fix scroll offset for anchor links */
-    html {
-      scroll-padding-top: 80px;
-    }
-    html, body {
-      font-family: 'Kanit', 'Poppins', 'Nunito', 'Playfair Display', 'Inter', 'Segoe UI', Arial, sans-serif;
-    }
-    textarea {
-      font-size: 1.15rem;
-      padding: 1rem;
-      border: 2px solid #d1d5db;
-      border-radius: 0.75rem;
-      background: #f8fafc;
-      color: #2b1608;
-      transition: border 0.2s, box-shadow 0.2s;
-      min-height: 4.5rem;
-      outline: none;
-    }
-    textarea:focus {
-      border-color: #22c55e;
-      box-shadow: 0 0 0 2px #bbf7d0;
-      background: #fff;
-      text-align: center;
-    }
-    #quizCard {
-      min-height: 420px;
-      padding-top: 2.5rem;
-      padding-bottom: 2.5rem;
-    }
-    @keyframes fadeInLoadingMsg {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .sequential-fade-in {
-      opacity: 0;
-      animation: fadeInLoadingMsg 0.7s ease forwards;
-    }
+    .animate-heroGradient{animation:heroGradient 30s ease-in-out infinite;opacity:1}
   </style>
 </head>
+
 <body class="font-sans antialiased text-gray-800 bg-gray-50">
-  <header class="bg-white shadow sticky top-0 z-50">
-    <nav class="container mx-auto flex justify-between items-center py-2 px-6 md:py-2 md:px-8" aria-label="Main navigation">
-      <a href="#hero" class="flex items-center gap-x-2 md:gap-x-4 pl-2 md:pl-4" aria-label="RoastPortal Home">
-        <img src="images/favicon.png" alt="RoastPortal logo" class="h-10" loading="lazy" />
-        <span class="wordmark">
-          <span class="roast">Roast</span>
-          <span class="portal">Portal</span>
-        </span>
-      </a>
-      <div class="flex items-center">
-        <a class="text-[#2b1608] font-semibold hover:underline px-4 py-2 md:px-6 md:py-2 rounded transition-colors duration-150" href="/login">Login</a>
-      </div>
-    </nav>
-  </header>
-  <main id="main-content">
-    <section id="hero" class="relative bg-cover bg-center min-h-[60vh] flex items-center justify-center overflow-hidden" style="background-image: url('images/hero-banner.png');">
-      <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-[#2b1608]/90 via-black/80 to-black/90"></div>
-      <!-- Animated gradient overlay -->
-      <div aria-hidden="true" class="absolute inset-0 z-10 pointer-events-none animate-heroGradient"></div>
-      <style>
-        @keyframes heroGradient {
-          0% {
-            background: radial-gradient(circle at 30% 40%, rgba(34,197,94,0.10) 0%, rgba(43,22,8,0.08) 100%);
-          }
-          25% {
-            background: radial-gradient(circle at 70% 60%, rgba(43,22,8,0.12) 0%, rgba(34,197,94,0.08) 100%);
-          }
-          50% {
-            background: radial-gradient(circle at 60% 30%, rgba(34,197,94,0.09) 0%, rgba(43,22,8,0.08) 100%);
-          }
-          75% {
-            background: radial-gradient(circle at 40% 70%, rgba(43,22,8,0.10) 0%, rgba(34,197,94,0.09) 100%);
-          }
-          100% {
-            background: radial-gradient(circle at 30% 40%, rgba(34,197,94,0.10) 0%, rgba(43,22,8,0.08) 100%);
-          }
-        }
-        .animate-heroGradient {
-          animation: heroGradient 30s ease-in-out infinite;
-          opacity: 1;
-          z-index: 10;
-        }
-      </style>
-      <span class="sr-only">Background image showing roasted coffee beans and a steaming mug</span>
-      <div class="relative z-10 text-center px-6 py-20">
-        <h1 class="text-4xl md:text-6xl font-bold text-white drop-shadow-lg mb-4" style="font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif; font-weight: 600;">Data‑driven coffee, <br> roasted for <span class="text-[#22c55e] drop-shadow font-extrabold">you</span></h1>
-        <p class="text-lg md:text-2xl text-white mb-6 drop-shadow">Answer a few questions, sip, rate, repeat — our AI adapts every bag until it’s perfect for you.</p>
-        <a class="bg-[#16a34a] text-white px-6 py-3 rounded-full font-medium text-lg hover:bg-[#22c55e] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-200" href="#quiz">Take the quiz</a>
-      </div>
-    </section>
-    <section id="how-it-works" class="py-16 bg-gray-100">
-      <div class="container mx-auto px-6">
-        <h2 class="text-3xl font-bold text-center mb-12">How it works</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <article class="text-center p-6 bg-white rounded-lg shadow-lg">
-            <div class="text-5xl font-extrabold text-[#2b1608] mb-4">1</div>
-            <h3 class="text-xl font-semibold mb-2">Share your taste</h3>
-            <p class="text-gray-600 text-base px-4">Share your coffee preferences with our AI.</p>
-          </article>
-          <article class="text-center p-6 bg-white rounded-lg shadow-lg">
-            <div class="text-5xl font-extrabold text-[#2b1608] mb-4">2</div>
-            <h3 class="text-xl font-semibold mb-2">Enjoy your roast</h3>
-            <p class="text-gray-600 text-base px-4">Enjoy a roast crafted just for you.</p>
-          </article>
-          <article class="text-center p-6 bg-white rounded-lg shadow-lg">
-            <div class="text-5xl font-extrabold text-[#2b1608] mb-4">3</div>
-            <h3 class="text-xl font-semibold mb-2">Refine your cup</h3>
-            <p class="text-gray-600 text-base px-4">Give feedback to refine your perfect cup.</p>
-          </article>
+
+<!-- ╔═════════════ HEADER ═════════════╗ -->
+<header class="bg-white shadow sticky top-0 z-50">
+  <nav class="container mx-auto flex justify-between items-center py-2 px-6 md:py-2 md:px-8" aria-label="Main navigation">
+    <a href="#hero" class="flex items-center gap-x-4" aria-label="RoastPortal Home">
+      <img src="images/favicon.png" alt="RoastPortal logo" class="h-10" loading="lazy">
+      <span class="wordmark"><span class="roast">Roast</span><span class="portal">Portal</span></span>
+    </a>
+    <a class="text-[#2b1608] font-semibold hover:underline px-4 py-2 rounded transition-colors" href="/login">Login</a>
+  </nav>
+</header>
+
+<!-- ╔═════════════ HERO ═════════════╗ -->
+<section id="hero" class="relative bg-cover bg-center min-h-[60vh] flex items-center justify-center overflow-hidden" style="background-image:url('images/hero-banner.png')">
+  <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-[#2b1608]/90 via-black/80 to-black/90"></div>
+  <div aria-hidden="true" class="absolute inset-0 animate-heroGradient pointer-events-none"></div>
+  <span class="sr-only">Background showing roasted coffee beans and a steaming mug</span>
+
+  <div class="relative z-10 text-center px-6 py-20">
+    <h1 class="text-4xl md:text-6xl font-bold text-white drop-shadow mb-4" style="font-family:'Poppins',sans-serif;font-weight:600">
+      Data‑driven coffee,<br>roasted for <span class="text-[#22c55e] drop-shadow font-extrabold">you</span>
+    </h1>
+    <p class="text-lg md:text-2xl text-white mb-6 drop-shadow">
+      Answer a few questions, sip, rate, repeat — our AI adapts every bag until it’s perfect for you.
+    </p>
+    <a class="bg-[#16a34a] text-white px-6 py-3 rounded-full font-medium text-lg hover:bg-[#22c55e] transition-colors" href="#quiz">Take the quiz</a>
+  </div>
+</section>
+
+<!-- ╔═════════════ HOW IT WORKS ═════════════╗ -->
+<section id="how-it-works" class="py-16 bg-gray-100">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-12">How it works</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <article class="text-center p-6 bg-white rounded-lg shadow-lg">
+        <div class="text-5xl font-extrabold text-[#2b1608] mb-4">1</div>
+        <h3 class="text-xl font-semibold mb-2">Share your taste</h3>
+        <p class="text-gray-600 text-base px-4">Tell our AI what you like.</p>
+      </article>
+      <article class="text-center p-6 bg-white rounded-lg shadow-lg">
+        <div class="text-5xl font-extrabold text-[#2b1608] mb-4">2</div>
+        <h3 class="text-xl font-semibold mb-2">Enjoy your roast</h3>
+        <p class="text-gray-600 text-base px-4">We send a roast crafted just for you.</p>
+      </article>
+      <article class="text-center p-6 bg-white rounded-lg shadow-lg">
+        <div class="text-5xl font-extrabold text-[#2b1608] mb-4">3</div>
+        <h3 class="text-xl font-semibold mb-2">Refine your cup</h3>
+        <p class="text-gray-600 text-base px-4">Give feedback so the next bag is even better.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ╔═════════════ QUIZ ═════════════╗ -->
+<section id="quiz" class="py-16 bg-white">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-8">Train your coffee AI</h2>
+
+    <!-- ▶ FORM 1 : QUIZ ◀ -->
+    <form id="quizForm" class="max-w-3xl mx-auto bg-white/90 shadow-xl rounded-2xl p-6 md:p-10" aria-label="Coffee Preference Quiz">
+      <input type="hidden" name="formType" value="quiz">
+      <input type="hidden" name="userId" id="quizUserId">
+
+      <!-- Progress bar -->
+      <div class="mb-6">
+        <div class="w-full bg-gray-200 rounded-full h-3">
+          <div id="progressBar" class="bg-[#22c55e] h-3 rounded-full transition-all" style="width:0%"></div>
         </div>
       </div>
-    </section>
-    <section id="quiz" class="py-16 bg-white">
-      <div class="container mx-auto px-6">
-        <h2 class="text-3xl font-bold text-center mb-8">Train your coffee AI</h2>
-        <form method="POST" action="#" class="max-w-3xl mx-auto bg-white/90 shadow-xl rounded-2xl p-6 md:p-10 transition-all duration-300" id="quizForm" aria-label="Coffee Preference Quiz">
-          <input type="hidden" name="formType" value="quiz" />
-          <input type="hidden" name="userId" id="quizUserId" />
-          <!-- Step Indicator and Progress Bar -->
-          <div class="mb-6">
-            <div class="flex justify-between items-center mb-2">
-              <div></div>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-3">
-              <div id="progressBar" class="bg-[#22c55e] h-3 rounded-full transition-all duration-300" style="width:0%"></div>
-            </div>
-          </div>
-          <!-- Quiz Card -->
-          <div id="quizCard" class="relative min-h-[220px] flex flex-col justify-center items-center">
-            <!-- Question will be rendered here -->
-          </div>
-          <div id="errorMessage" class="hidden text-red-500 text-sm font-medium mt-2 mb-0"></div>
-          <div class="bg-gray-100 p-4 rounded text-sm hidden" id="summary" aria-live="polite"></div>
-          <div class="flex flex-col sm:flex-row justify-between mt-6 gap-2">
-            <button class="bg-[#22c55e] text-white px-6 py-3 rounded font-semibold text-base hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 hidden transition-all duration-150" id="submitBtn" type="submit">Submit</button>
-            <div class="flex flex-col sm:flex-row gap-2 sm:ml-auto">
-              <button class="bg-[#22c55e] text-white px-6 py-3 rounded font-semibold text-base hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 disabled:opacity-50 transition-all duration-150 order-1 sm:order-2" id="nextBtn" type="button">Next</button>
-              <button class="bg-gray-300 text-gray-800 px-6 py-3 rounded font-semibold text-base hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition-all duration-150 order-2 sm:order-1" disabled id="prevBtn" type="button">Previous</button>
-            </div>
-          </div>
-          <div id="loadingSpinner" class="hidden flex justify-center items-center mt-4">
-            <svg class="animate-spin h-8 w-8 text-[#22c55e]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
-          </div>
-          <div id="submitMessage" class="hidden text-center text-lg font-semibold mt-4"></div>
-        </form>
+
+      <!-- Dynamic question container -->
+      <div id="quizCard" class="relative min-h-[220px] flex flex-col justify-center items-center"></div>
+
+      <p id="errorMessage" class="hidden text-red-500 text-sm font-medium mt-2"></p>
+
+      <!-- Navigation buttons -->
+      <div class="flex flex-col sm:flex-row justify-between mt-6 gap-2">
+        <button id="submitBtn" class="bg-[#22c55e] text-white px-6 py-3 rounded font-semibold hidden" type="submit">Submit</button>
+        <div class="flex flex-col sm:flex-row gap-2 sm:ml-auto">
+          <button id="nextBtn" class="bg-[#22c55e] text-white px-6 py-3 rounded font-semibold order-2 sm:order-2">Next</button>
+          <button id="prevBtn" class="bg-gray-300 text-gray-800 px-6 py-3 rounded font-semibold order-1 sm:order-1" disabled>Previous</button>
+        </div>
       </div>
-    </section>
-    <section class="container mx-auto px-6 max-w-3xl mt-12 mb-16" aria-label="Frequently Asked Questions">
-      <h2 class="text-3xl font-bold text-center mb-8">FAQ</h2>
-      <div class="space-y-4">
-        <details class="border border-gray-200 rounded-lg p-4">
-          <summary class="pl-2 font-semibold cursor-pointer">How does it work?</summary>
-          <p class="mt-2 text-gray-600">You answer a questionnaire. We send you your first personalized bag of coffee. You try it and give us feedback about that specific bag. We take your feedback and use AI to further improve how we roast coffee for you. Your next bag of coffee is upgraded with the new changes. After you try it, you can give us feedback again and we will continue to improve your coffee until it is perfect for you.</p>
-        </details>
-        <details class="border border-gray-200 rounded-lg p-4">
-          <summary class="pl-2 font-semibold cursor-pointer">What makes you different from other coffee subscription services?</summary>
-          <p class="mt-2 text-gray-600">Other services have a fixed number of coffee blends to choose from and they try to help you find which blend you would like best. We start with what you tell us you are looking for and then create a blend just for you. When you give us feedback on your blend, we tweak your blend just for you. Our goal is to work with you to create the perfect blend for you.</p>
-        </details>
-        <details class="border border-gray-200 rounded-lg p-4">
-          <summary class="pl-2 font-semibold cursor-pointer">What is a blend?</summary>
-          <p class="mt-2 text-gray-600">Other roasters mix one or more types of coffee together that are roasted in a specific way to create a blend that the roaster likes and then sells to a mass market. We believe blends should be personal to each individual. We use the same levers to create a blend, but by using AI, we are able to create a blend that isn’t trying to align with what our personal taste preferences are, but align with your taste preferences.</p>
-        </details>
-        <details class="border border-gray-200 rounded-lg p-4">
-          <summary class="pl-2 font-semibold cursor-pointer">What if I want to have more than one blend?</summary>
-          <p class="mt-2 text-gray-600">That’s easy. Just go into your settings and create a new blend. Any new blend you create will be optimized separately. You can specify how often you want us to send you each blend you have created.</p>
-        </details>
-        <details class="border border-gray-200 rounded-lg p-4">
-          <summary class="pl-2 font-semibold cursor-pointer">Do I need to give feedback every time?</summary>
-          <p class="mt-2 text-gray-600">No. If you don’t give feedback, we send you the same coffee as before.</p>
-        </details>
-        <details class="border border-gray-200 rounded-lg p-4">
-          <summary class="pl-2 font-semibold cursor-pointer">How do I pause my subscription?</summary>
-          <p class="mt-2 text-gray-600">Just turn on “vacation mode” in your settings.</p>
-        </details>
-        <details class="border border-gray-200 rounded-lg p-4">
-          <summary class="pl-2 font-semibold cursor-pointer">How often will I get a new bag of coffee?</summary>
-          <p class="mt-2 text-gray-600">After you open a new bag of coffee and leave feedback, we start creating the next version of your coffee and send it to you when done. We package it to remain fresh until you need it. If you don’t provide any feedback, we estimate when you will be running low on coffee and try to time it so we send you a new bag before you run out.</p>
-        </details>
-        <details class="border border-gray-200 rounded-lg p-4">
-          <summary class="pl-2 font-semibold cursor-pointer">How much does the coffee cost?</summary>
-          <p class="mt-2 text-gray-600">You get to choose how much you pay. Paying more impacts how much we are able to optimize the quality of your coffee.</p>
-        </details>
-        <details class="border border-gray-200 rounded-lg p-4">
-          <summary class="pl-2 font-semibold cursor-pointer">What sizes of coffee can I buy?</summary>
-          <p class="mt-2 text-gray-600">Currently we only sell 12oz bags of coffee. Please let us know if you would like to buy in bulk: support@roastportal.com.</p>
-        </details>
+    </form>
+
+    <!-- ▶ FORM 2 : CONTACT ◀ (hidden until quiz completes) -->
+    <form id="contactForm" class="space-y-4 max-w-lg mx-auto mt-10 hidden">
+      <input type="hidden" name="formType" value="contact">
+      <input type="hidden" name="userId" id="contactUserId">
+      <div>
+        <label class="block font-medium mb-1" for="contactName">Name</label>
+        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" type="text" id="contactName" name="contactName" required>
       </div>
-    </section>
-  </main>
-  <footer class="bg-gray-800 text-gray-200 py-8">
-    <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
-      <a href="#hero" class="md:order-1" aria-label="Back to top">
-        <img src="images/favicon.png" alt="RoastPortal logo" class="h-8" loading="lazy" />
-      </a>
-      <p class="md:order-2">© 2025 RoastPortal. All rights reserved.</p>
-      <div class="flex space-x-4 md:order-3">
-        <a href="terms.html" class="hover:underline">Terms</a>
-        <a href="mailto:hello@roastportal.com" class="hover:underline">Contact</a>
+      <div>
+        <label class="block font-medium mb-1" for="contactEmail">Email</label>
+        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" type="email" id="contactEmail" name="contactEmail" required>
       </div>
+      <div>
+        <label class="block font-medium mb-1" for="contactPhone">Phone</label>
+        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" type="tel" id="contactPhone" name="contactPhone" required>
+      </div>
+      <button class="w-full bg-[#22c55e] text-white font-semibold py-2 rounded hover:bg-[#16a34a] transition" type="submit">Buy Now</button>
+      <p id="contactSuccess" class="hidden text-center text-[#16a34a] font-semibold mt-4">✅ Thank you! We have your details.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ╔═════════════ FAQ (UNCHANGED) ═════════════╗ -->
+<section class="container mx-auto px-6 max-w-3xl mt-12 mb-16" aria-label="Frequently Asked Questions">
+  <h2 class="text-3xl font-bold text-center mb-8">FAQ</h2>
+  <div class="space-y-4">
+    <details class="border border-gray-200 rounded-lg p-4">
+      <summary class="pl-2 font-semibold cursor-pointer">How does it work?</summary>
+      <p class="mt-2 text-gray-600">
+        You answer a questionnaire. We send you your first personalized bag of coffee. You try it and give us feedback about that specific bag. We take your feedback and use AI to further improve how we roast coffee for you. Your next bag of coffee is upgraded with the new changes. After you try it, you can give us feedback again and we will continue to improve your coffee until it is perfect for you.
+      </p>
+    </details>
+    <details class="border border-gray-200 rounded-lg p-4">
+      <summary class="pl-2 font-semibold cursor-pointer">What makes you different from other coffee subscription services?</summary>
+      <p class="mt-2 text-gray-600">
+        Other services have a fixed number of coffee blends to choose from and they try to help you find which blend you would like best. We start with what you tell us you are looking for and then create a blend just for you. When you give us feedback on your blend, we tweak your blend just for you. Our goal is to work with you to create the perfect blend for you.
+      </p>
+    </details>
+    <details class="border border-gray-200 rounded-lg p-4">
+      <summary class="pl-2 font-semibold cursor-pointer">What is a blend?</summary>
+      <p class="mt-2 text-gray-600">
+        Other roasters mix one or more types of coffee together that are roasted in a specific way to create a blend that the roaster likes and then sells to a mass market. We believe blends should be personal to each individual. We use the same levers to create a blend, but by using AI, we are able to create a blend that isn’t trying to align with what our personal taste preferences are, but align with your taste preferences.
+      </p>
+    </details>
+    <details class="border border-gray-200 rounded-lg p-4">
+      <summary class="pl-2 font-semibold cursor-pointer">What if I want to have more than one blend?</summary>
+      <p class="mt-2 text-gray-600">
+        That’s easy. Just go into your settings and create a new blend. Any new blend you create will be optimized separately. You can specify how often you want us to send you each blend you have created.
+      </p>
+    </details>
+    <details class="border border-gray-200 rounded-lg p-4">
+      <summary class="pl-2 font-semibold cursor-pointer">Do I need to give feedback every time?</summary>
+      <p class="mt-2 text-gray-600">
+        No. If you don’t give feedback, we send you the same coffee as before.
+      </p>
+    </details>
+    <details class="border border-gray-200 rounded-lg p-4">
+      <summary class="pl-2 font-semibold cursor-pointer">How do I pause my subscription?</summary>
+      <p class="mt-2 text-gray-600">
+        Just turn on “vacation mode” in your settings.
+      </p>
+    </details>
+    <details class="border border-gray-200 rounded-lg p-4">
+      <summary class="pl-2 font-semibold cursor-pointer">How often will I get a new bag of coffee?</summary>
+      <p class="mt-2 text-gray-600">
+        After you open a new bag of coffee and leave feedback, we start creating the next version of your coffee and send it to you when done. We package it to remain fresh until you need it. If you don’t provide any feedback, we estimate when you will be running low on coffee and try to time it so we send you a new bag before you run out.
+      </p>
+    </details>
+    <details class="border border-gray-200 rounded-lg p-4">
+      <summary class="pl-2 font-semibold cursor-pointer">How much does the coffee cost?</summary>
+      <p class="mt-2 text-gray-600">
+        You get to choose how much you pay. Paying more impacts how much we are able to optimize the quality of your coffee.
+      </p>
+    </details>
+    <details class="border border-gray-200 rounded-lg p-4">
+      <summary class="pl-2 font-semibold cursor-pointer">What sizes of coffee can I buy?</summary>
+      <p class="mt-2 text-gray-600">
+        Currently we only sell 12 oz bags of coffee. Please let us know if you would like to buy in bulk: <a class="underline" href="mailto:support@roastportal.com">support@roastportal.com</a>.
+      </p>
+    </details>
+  </div>
+</section>
+
+<!-- ╔═════════════ FOOTER ═════════════╗ -->
+<footer class="bg-gray-800 text-gray-200 py-8">
+  <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
+    <a href="#hero" aria-label="Back to top"><img src="images/favicon.png" alt="RoastPortal logo" class="h-8" loading="lazy"></a>
+    <p>© 2025 RoastPortal. All rights reserved.</p>
+    <div class="flex space-x-4">
+      <a href="terms.html" class="hover:underline">Terms</a>
+      <a href="mailto:hello@roastportal.com" class="hover:underline">Contact</a>
     </div>
-  </footer>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbycyuhiCcG-zW3S0jLNFvxxx-TKPUghXoXXlJSJPDrZxX0CMkXABY0L7Lb9nxtUAG1Mdg/exec?tab=Quiz';
-      // --- Modern Quiz UI/UX with Progress Bar ---
-      const quizData = [
-        {
-          label: 'What roast level do you enjoy most?',
-          type: 'radio',
-          name: 'roastLevel',
-          options: ['Light', 'Light-Medium', 'Medium', 'Medium-Dark', 'Dark'],
-          help: 'Select the roast you prefer most.',
-          required: false
-        },
-        {
-          label: 'Which flavor notes do you love?',
-          type: 'multi-range',
-          names: ['flavorNutty','flavorFruity','flavorFloral','flavorSmoky'],
-          min: 0, max: 100, step: 1,
-          help: 'Move each slider to show how much you enjoy the flavor.',
-          required: false,
-          flavors: ['Nutty','Fruity','Floral','Smoky']
-        },
-        {
-          label: 'How do you usually brew your coffee?',
-          type: 'radio',
-          name: 'brewMethod',
-          options: ['Drip','Pour-over','French Press','Espresso','Single-Serve Pod','Cold Brew','Other'],
-          help: 'Select the method you reach for most often.',
-          required: false
-        },
-        {
-          label: 'What brewing equipment do you have?',
-          type: 'text',
-          name: 'equipmentDetails',
-          help: 'Let us know about your setup.',
-          required: false
-        },
-        {
-          label: 'Would you like us to grind the beans for you?',
-          type: 'radio',
-          name: 'grindService',
-          options: ['Yes','No'],
-          help: 'Choose yes if you want ready-to-brew ground coffee.',
-          required: false
-        },
-        {
-          label: 'How do you usually take your coffee?',
-          type: 'checkbox',
-          names: ['addMilk','addDairyFree','addSugar'],
-          options: ['Milk / Cream','Dairy-free Milk','Sugar / Syrup'],
-          help: 'Select all the extras you enjoy.',
-          required: false
-        },
-        {
-          label: "What's your coffee budget?",
-          type: 'range',
-          name: 'priceRange',
-          min: 12, max: 100, step: 1,
-          help: "Drag the slider to choose how much you're comfortable paying.",
-          required: false,
-          left: '$12', right: '$100'
-        },
-        {
-          label: 'How adventurous is your coffee personality?',
-          type: 'range',
-          name: 'personality',
-          min: 0, max: 100, step: 1,
-          help: 'Slide from comforting to bold.',
-          required: false,
-          left: 'Comforting & Familiar', right: 'Adventurous & Complex'
-        },
-        {
-          label: 'Where do you like your flavor balance?',
-          type: 'multi-range',
-          names: ['tasteSweetBitter','tasteSmoothTart'],
-          min: 0, max: 100, step: 1,
-          help: 'Adjust the sliders to show your taste.',
-          required: false,
-          flavors: ['Sweet ←→ Bitter','Smooth ←→ Tart']
-        },
-        {
-          label: 'About how many cups do you drink on a normal day?',
-          type: 'radio',
-          name: 'cupsPerDay',
-          options: ['1-2','3-5','6+'],
-          help: 'Pick the range that fits your routine.',
-          required: false
-        },
-        {
-          label: 'What kind of water do you brew with?',
-          type: 'radio',
-          name: 'waterType',
-          options: ['Unfiltered tap','Filtered tap','Recipe','Distilled'],
-          help: 'Choose the type you use most often.',
-          required: false
-        },
-        {
-          label: 'Is there anything else we should know?',
-          type: 'text',
-          name: 'additionalNotes',
-          help: 'Share any notes that could help us match you better.',
-          required: false
-        },
-      ];
+  </div>
+</footer>
 
-      let current = 0;
-      let answers = {};
-      let autoAdvancing = false;
+<!-- ╔═════════════ MAIN SCRIPT ═════════════╗ -->
+<script>
+/*------------------------------------------------------------------
+  CONFIG
+------------------------------------------------------------------*/
+const GAS_URL     = 'https://script.google.com/macros/s/AKfycbxREPLACE_WITH_YOUR_DEPLOY_ID/exec'; // ← replace with your deployed Web‑App URL
+const TAB_FORM    = 'FormResponses';
+const TAB_CONTACT = 'ContactCapture';
 
-      const quizCard = document.getElementById('quizCard');
-      const progressBar = document.getElementById('progressBar');
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      const submitBtn = document.getElementById('submitBtn');
-      const errorMessage = document.getElementById('errorMessage');
-      const summary = document.getElementById('summary');
-      const loadingSpinner = document.getElementById('loadingSpinner');
-      const submitMessage = document.getElementById('submitMessage');
+/*------------------------------------------------------------------
+  STATE & HELPERS
+------------------------------------------------------------------*/
+const quizData = [
+  {label:'What roast level do you enjoy most?', type:'radio', name:'roastLevel', options:['Light','Light-Medium','Medium','Medium-Dark','Dark']},
+  {label:'Which flavor notes do you love?', type:'multi-range', names:['flavorNutty','flavorFruity','flavorFloral','flavorSmoky'], min:0,max:100,step:1,flavors:['Nutty','Fruity','Floral','Smoky']},
+  {label:'How do you usually brew your coffee?', type:'radio', name:'brewMethod', options:['Drip','Pour-over','French Press','Espresso','Single-Serve Pod','Cold Brew','Other']},
+  {label:'What brewing equipment do you have?', type:'text', name:'equipmentDetails'},
+  {label:'Would you like us to grind the beans?', type:'radio', name:'grindService', options:['Yes','No']},
+  {label:'How do you usually take your coffee?', type:'checkbox', names:['addMilk','addDairyFree','addSugar'], options:['Milk / Cream','Dairy‑free Milk','Sugar / Syrup']},
+  {label:'What’s your coffee budget?', type:'range', name:'priceRange', min:12, max:100, step:1, left:'$12', right:'$100'},
+  {label:'How adventurous is your coffee personality?', type:'range', name:'personality', min:0, max:100, step:1, left:'Comforting', right:'Complex'},
+  {label:'Where do you like your flavour balance?', type:'multi-range', names:['tasteSweetBitter','tasteSmoothTart'], min:0,max:100,step:1,flavors:['Sweet ←→ Bitter','Smooth ←→ Tart']},
+  {label:'About how many cups do you drink per day?', type:'radio', name:'cupsPerDay', options:['1-2','3-5','6+']},
+  {label:'What kind of water do you brew with?', type:'radio', name:'waterType', options:['Unfiltered tap','Filtered tap','Recipe','Distilled']},
+  {label:'Anything else we should know?', type:'text', name:'additionalNotes'}
+];
+const defaults = {roastLevel:'Medium',brewMethod:'Drip',grindService:'No',priceRange:35,personality:50,
+  flavorNutty:50,flavorFruity:50,flavorFloral:50,flavorSmoky:50,
+  tasteSweetBitter:50,tasteSmoothTart:50,cupsPerDay:'1-2',waterType:'Unfiltered tap'
+};
 
-      // Add this helper function to map slider values to descriptive labels
-      function getSliderLabel(name, value) {
-        value = Number(value);
-        if (name === 'roastLevel') {
-          if (value <= 20) return 'Very Light';
-          if (value <= 40) return 'Light';
-          if (value <= 60) return 'Medium';
-          if (value <= 80) return 'Dark';
-          return 'Very Dark';
-        }
-        if (name === 'flavorNutty' || name === 'flavorFruity' || name === 'flavorFloral' || name === 'flavorSmoky') {
-          if (value == 0) return 'Not at all';
-          if (value > 0 && value < 25) return 'A little';
-          if (value >= 25 && value < 50) return 'Somewhat';
-          if (value >= 50 && value < 75) return 'A lot';
-          if (value >= 75 && value < 100) return 'Really like it';
-          if (value == 100) return 'Love it!';
-        }
-        if (name === 'personality') {
-          if (value <= 20) return 'Comforting';
-          if (value <= 40) return 'Familiar';
-          if (value <= 60) return 'Balanced';
-          if (value <= 80) return 'Adventurous';
-          return 'Complex';
-        }
+let current = 0;
+let answers = {...defaults};
+const userId = sessionStorage.getItem('userId') || (crypto.randomUUID?.() || Math.random().toString(36).slice(2));
+sessionStorage.setItem('userId', userId);
 
-        if (name === 'tasteSweetBitter') {
-          if (value <= 20) return 'Very Sweet';
-          if (value <= 40) return 'Sweet';
-          if (value <= 60) return 'Balanced';
-          if (value <= 80) return 'Bitter';
-          return 'Very Bitter';
-        }
-        if (name === 'tasteSmoothTart') {
-          if (value <= 20) return 'Very Smooth';
-          if (value <= 40) return 'Smooth';
-          if (value <= 60) return 'Balanced';
-          if (value <= 80) return 'Tart';
-          return 'Very Tart';
-        }
-        if (name === 'priceRange') {
-          if (value <= 20) return 'Budget';
-          if (value <= 40) return 'Value';
-          if (value <= 60) return 'Standard';
-          if (value <= 80) return 'Premium';
-          return 'Luxury';
-        }
-        return '';
+/*------------------------------------------------------------------
+  DOM SHORTCUTS
+------------------------------------------------------------------*/
+const quizForm      = document.getElementById('quizForm');
+const contactForm   = document.getElementById('contactForm');
+const quizCard      = document.getElementById('quizCard');
+const progressBar   = document.getElementById('progressBar');
+const prevBtn       = document.getElementById('prevBtn');
+const nextBtn       = document.getElementById('nextBtn');
+const submitBtn     = document.getElementById('submitBtn');
+const errorMessage  = document.getElementById('errorMessage');
+document.getElementById('quizUserId').value    = userId;
+document.getElementById('contactUserId').value = userId;
+
+/*------------------------------------------------------------------
+  RENDERING
+------------------------------------------------------------------*/
+function renderQuestion(idx){
+  const q = quizData[idx];
+  quizCard.innerHTML='';
+  if(!q) return;
+
+  /* RADIO */
+  if(q.type==='radio'){
+    quizCard.innerHTML=`
+      <fieldset class="w-full">
+        <legend class="block text-xl font-semibold mb-2">${q.label}</legend>
+        <div class="flex flex-wrap gap-3 mb-2 pill-input">
+          ${q.options.map(opt=>`
+            <label><input type="radio" name="${q.name}" value="${opt}" ${answers[q.name]===opt?'checked':''} class="sr-only">
+              <span class="${answers[q.name]===opt?'bg-[#22c55e] text-white border-[#22c55e] shadow-md':'bg-white text-gray-800 border-gray-300 hover:bg-gray-100'}">${opt}</span>
+            </label>`).join('')}
+        </div>
+      </fieldset>`;
+  }
+
+  /* RANGE */
+  else if(q.type==='range'){
+    const v = answers[q.name]??q.min;
+    quizCard.innerHTML=`
+      <label class="block font-semibold text-lg mb-2">${q.label}</label>
+      <input type="range" id="${q.name}" name="${q.name}" min="${q.min}" max="${q.max}" step="${q.step}" value="${v}" class="w-full accent-[#22c55e] mb-2">
+      <div class="flex justify-between text-sm text-gray-500 mb-2"><span>${q.left||''}</span><span>${q.right||''}</span></div>
+      <p class="text-center font-semibold" id="${q.name}Val">${q.name==='priceRange'?'$'+v:v}</p>`;
+  }
+
+  /* MULTI‑RANGE */
+  else if(q.type==='multi-range'){
+    quizCard.innerHTML=`
+      <label class="block font-semibold text-lg mb-4">${q.label}</label>
+      <div class="space-y-6">${q.names.map((n,i)=>`
+        <div>
+          <p class="mb-1 text-sm">${q.flavors[i]}</p>
+          <input type="range" id="${n}" name="${n}" min="${q.min}" max="${q.max}" step="${q.step}" value="${answers[n]??50}" class="w-full accent-[#22c55e]">
+        </div>`).join('')}</div>`;
+  }
+
+  /* CHECKBOX */
+  else if(q.type==='checkbox'){
+    quizCard.innerHTML=`
+      <label class="block font-semibold text-lg mb-2">${q.label}</label>
+      <div class="flex flex-wrap gap-3 pill-input">
+        ${q.options.map((opt,i)=>`
+          <label><input type="checkbox" name="${q.names[i]}" ${answers[q.names[i]]?'checked':''}>
+            <span>${opt}</span></label>`).join('')}
+      </div>`;
+  }
+
+  /* TEXT */
+  else if(q.type==='text'){
+    quizCard.innerHTML=`
+      <label class="block font-semibold text-lg mb-2">${q.label}</label>
+      <textarea id="${q.name}" name="${q.name}" class="w-full mt-2">${answers[q.name]||''}</textarea>`;
+  }
+
+  /* Listeners for newly added controls */
+  quizCard.querySelectorAll('input,textarea').forEach(el=>{
+    el.addEventListener('input', e=>{
+      if(el.type==='checkbox'){answers[el.name]=el.checked}
+      else{answers[el.name]=el.value}
+      if(el.type==='radio'){autoNext()}
+      if(q.type==='range'){
+        document.getElementById(el.id+'Val').innerText=q.name==='priceRange'?'$'+el.value:el.value;
       }
-
-      // Helper to generate a UUID (RFC4122 version 4)
-      function generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
-      }
-
-      // Store userId for mapping form1 and form2
-      let userId = sessionStorage.getItem('userId') || generateUUID();
-      sessionStorage.setItem('userId', userId);
-
-      // Default values for each quiz field
-      const quizDefaults = {
-        roastLevel: 'Medium',
-        flavorNutty: 50,
-        flavorFruity: 50,
-        flavorFloral: 50,
-        flavorSmoky: 50,
-        brewMethod: 'Drip',
-        equipmentDetails: 'None',
-        grindService: 'No',
-        addMilk: false,
-        addDairyFree: false,
-        addSugar: false,
-        priceRange: 35,
-        additionalNotes: '',
-        personality: 50,
-        tasteSweetBitter: 50,
-        tasteSmoothTart: 50,
-        cupsPerDay: '1-2',
-        waterType: 'Unfiltered tap'
-      };
-
-      function renderQuestion(idx) {
-        if (idx < 0 || idx >= quizData.length) {
-          console.error('renderQuestion: idx out of bounds', idx);
-          quizCard.innerHTML = '<div class="text-red-500">Error: Question not found.</div>';
-          return;
-        }
-        const q = quizData[idx];
-        if (!q) {
-          console.error('renderQuestion: question is undefined at idx', idx);
-          quizCard.innerHTML = '<div class="text-red-500">Error: Question not found.</div>';
-          return;
-        }
-        quizCard.innerHTML = '';
-        if (q.type === 'radio') {
-          // Use pill-styled box selection for roastLevel
-          if (q.name === 'roastLevel') {
-            quizCard.innerHTML = `
-              <fieldset class="w-full">
-                <legend class="block text-xl font-semibold mb-2">${q.label}</legend>
-                <div class="text-gray-500 text-sm mb-2">${q.help || ''}</div>
-                <div class="flex flex-wrap gap-3 mb-2 pill-input">
-                  ${q.options.map(opt => `
-                    <label class="cursor-pointer select-none">
-                      <input type="radio" name="${q.name}" value="${opt}" ${answers[q.name] === opt ? 'checked' : ''} class="sr-only" />
-                      <span class="inline-block px-6 py-3 rounded-full border font-medium transition-all duration-150 ${answers[q.name] === opt ? 'bg-[#22c55e] text-white border-[#22c55e] shadow-md' : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-100'}">${opt}</span>
-                    </label>
-                  `).join('')}
-                </div>
-              </fieldset>
-            `;
-            const radios = quizCard.querySelectorAll(`input[type=radio][name='${q.name}']`);
-            radios.forEach(radio => {
-              radio.addEventListener('change', e => {
-                if (autoAdvancing) return;
-                answers[q.name] = e.target.value;
-                autoAdvancing = true;
-                setTimeout(() => {
-                  if (current < quizData.length - 1) {
-                    current++;
-                    render();
-                  }
-                  autoAdvancing = false;
-                }, 200);
-              });
-            });
-            return;
-          } else {
-            // Default radio rendering for other radio questions
-            quizCard.innerHTML = `
-              <fieldset class="w-full">
-                <legend class="block text-xl font-semibold mb-2">${q.label}</legend>
-                <div class="text-gray-500 text-sm mb-2">${q.help || ''}</div>
-                <div class="flex flex-wrap gap-3 mb-2 pill-input">
-                  ${q.options.map(opt => `
-                    <label class="cursor-pointer select-none">
-                      <input type="radio" name="${q.name}" value="${opt}" ${answers[q.name] === opt ? 'checked' : ''} class="sr-only" />
-                      <span class="inline-block px-6 py-3 rounded-full border font-medium transition-all duration-150 ${answers[q.name] === opt ? 'bg-[#22c55e] text-white border-[#22c55e] shadow-md' : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-100'}">${opt}</span>
-                    </label>
-                  `).join('')}
-                </div>
-              </fieldset>
-            `;
-            const radios = quizCard.querySelectorAll(`input[type=radio][name='${q.name}']`);
-            radios.forEach(radio => {
-              radio.addEventListener('change', e => {
-                if (autoAdvancing) return;
-                answers[q.name] = e.target.value;
-                autoAdvancing = true;
-                setTimeout(() => {
-                  if (current < quizData.length - 1) {
-                    current++;
-                    render();
-                  }
-                  autoAdvancing = false;
-                }, 200);
-              });
-            });
-            return;
-          }
-        } else if (q.type === 'range') {
-          const val = answers[q.name] ?? (q.name === 'priceRange' ? 35 : 50);
-          if (q.name === 'priceRange') {
-            quizCard.innerHTML = `
-              <div class='w-full relative'>
-                <label class='block font-semibold text-lg mb-2'>${q.label}</label>
-                <div class='text-gray-500 text-sm mb-2'>${q.help || ''}</div>
-                <div class='relative w-full flex items-center'>
-                  <input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${q.name}' value='${val}' class='w-full accent-[#22c55e] mb-2' id='${q.name}' />
-                  <span id='${q.name}Value' class='absolute pointer-events-none px-2 py-1 rounded bg-white border border-gray-300 text-[#22c55e] font-bold text-base shadow' style='top:-2.2rem; left:0;'>$${val}</span>
-                </div>
-                <div class='flex justify-between text-sm text-gray-500 mb-1'>
-                  <span>${q.left || ''}</span>
-                  <span>${q.right || ''}</span>
-                </div>
-              </div>
-            `;
-            const input = document.getElementById(q.name);
-            const valueSpan = document.getElementById(q.name + 'Value');
-            // Function to update value and position
-            function updateSliderValue() {
-              const min = Number(input.min);
-              const max = Number(input.max);
-              const val = Number(input.value);
-              valueSpan.textContent = `$${val}`;
-              // Calculate percent position
-              const percent = (val - min) / (max - min);
-              // Get slider width
-              const sliderWidth = input.offsetWidth;
-              // Thumb size and offset fudge factor
-              const thumbSize = 32;
-              const offset = thumbSize / 2;
-              // Position value span
-              valueSpan.style.left = `calc(${percent * 100}% - ${offset - percent * thumbSize}px)`;
-            }
-            input.addEventListener('input', e => {
-              answers[q.name] = e.target.value;
-              updateSliderValue();
-            });
-            // Initial position
-            setTimeout(updateSliderValue, 10);
-          } else {
-            quizCard.innerHTML = `
-              <div class='w-full'>
-                <label class='block font-semibold text-lg mb-2'>${q.label}</label>
-                <div class='text-gray-500 text-sm mb-2'>${q.help || ''}</div>
-                <input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${q.name}' value='${val}' class='w-full accent-[#22c55e] mb-2' id='${q.name}' />
-                <div class='flex justify-between text-sm text-gray-500 mb-1'>
-                  <span>${q.left || ''}</span>
-                  <span>${q.right || ''}</span>
-                </div>
-                <div class='text-center'>
-                  <span id='${q.name}Value' class='text-lg font-semibold'>${val}</span>
-                </div>
-              </div>
-            `;
-            const input = document.getElementById(q.name);
-            const valueSpan = document.getElementById(q.name + 'Value');
-            const labelSpan = document.getElementById(q.name + 'Label');
-            input.addEventListener('input', e => { 
-              valueSpan.textContent = e.target.value; 
-              labelSpan.textContent = getSliderLabel(q.name, e.target.value);
-              answers[q.name] = e.target.value;
-            });
-          }
-        } else if (q.type === 'multi-range') {
-          if (q.names[0] === 'flavorNutty') {
-            quizCard.innerHTML = `
-              <div class='w-full'>
-                <label class='block font-semibold text-lg mb-2'>${q.label}${q.required ? ' <span class="text-red-500">*</span>' : ''}</label>
-                <div class='text-gray-500 text-sm mb-2'>${q.help || ''}</div>
-                <div class='grid grid-cols-1 md:grid-cols-2 gap-6 mt-2'>`;
-            q.names.forEach((name, i) => {
-              const val = (answers[name] ?? 50);
-              quizCard.innerHTML += `<div><span class='text-sm'>${q.flavors[i]}</span><input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${name}' value='${val}' class='w-full accent-[#22c55e]' id='${name}' /><div class='text-center text-base mt-1'><span class='block text-xs text-gray-500 mt-1' id='${name}Label'>${getSliderLabel(name, val)}</span></div></div>`;
-            });
-            quizCard.innerHTML += `</div>`;
-          } else if (q.names[0] === 'tasteSweetBitter') {
-            quizCard.innerHTML = `
-              <div class='w-full'>
-                <label class='block font-semibold text-lg mb-2'>${q.label}${q.required ? ' <span class="text-red-500">*</span>' : ''}</label>
-                <div class='text-gray-500 text-sm mb-2'>${q.help || ''}</div>
-                <div class='mt-4 space-y-4'>`;
-            // Sweet ←→ Bitter
-            const val1 = (answers['tasteSweetBitter'] ?? 50);
-            quizCard.innerHTML += `<div class='flex items-center gap-2'>
-              <span class='text-sm w-16 text-left'>Sweet</span>
-              <input type='range' min='0' max='100' step='1' name='tasteSweetBitter' value='${val1}' class='w-full accent-[#22c55e]' id='tasteSweetBitter' />
-              <span class='text-sm w-16 text-right'>Bitter</span>
-            </div><div class='text-center text-base mt-1'><span class='block text-xs text-gray-500 mt-1' id='tasteSweetBitterLabel'>${getSliderLabel('tasteSweetBitter', val1)}</span></div>`;
-            // Smooth ←→ Tart
-            const val2 = (answers['tasteSmoothTart'] ?? 50);
-            quizCard.innerHTML += `<div class='flex items-center gap-2'>
-              <span class='text-sm w-16 text-left'>Smooth</span>
-              <input type='range' min='0' max='100' step='1' name='tasteSmoothTart' value='${val2}' class='w-full accent-[#22c55e]' id='tasteSmoothTart' />
-              <span class='text-sm w-16 text-right'>Tart</span>
-            </div><div class='text-center text-base mt-1'><span class='block text-xs text-gray-500 mt-1' id='tasteSmoothTartLabel'>${getSliderLabel('tasteSmoothTart', val2)}</span></div>`;
-            quizCard.innerHTML += `</div>`;
-          } else {
-            quizCard.innerHTML = `
-              <div class='w-full'>
-                <label class='block font-semibold text-lg mb-2'>${q.label}${q.required ? ' <span class="text-red-500">*</span>' : ''}</label>
-                <div class='text-gray-500 text-sm mb-2'>${q.help || ''}</div>
-                <div class='grid grid-cols-1 md:grid-cols-2 gap-6 mt-2'>`;
-            q.names.forEach((name, i) => {
-              const val = (answers[name] ?? 50);
-              quizCard.innerHTML += `<div><span class='text-sm'>${q.flavors[i]}</span><input type='range' min='${q.min}' max='${q.max}' step='${q.step}' name='${name}' value='${val}' class='w-full accent-[#22c55e]' id='${name}' /><div class='text-center text-base mt-1'><span class='block text-xs text-gray-500 mt-1' id='${name}Label'>${getSliderLabel(name, val)}</span></div></div>`;
-            });
-            quizCard.innerHTML += `</div>`;
-          }
-        } else if (q.type === 'checkbox') {
-          quizCard.innerHTML = `
-            <div class='w-full'>
-              <label class='block font-semibold text-lg mb-2'>${q.label}${q.required ? ' <span class="text-red-500">*</span>' : ''}</label>
-              <div class='text-gray-500 text-sm mb-2'>${q.help || ''}</div>
-              <div class='flex flex-wrap gap-3 mt-2 pill-input'>
-                ${q.options.map((opt, i) => {
-                  const checked = answers[q.names[i]] ? 'checked' : '';
-                  return `<label class='cursor-pointer'>
-                    <input type='checkbox' name='${q.names[i]}' value='1' ${checked} class='hidden' />
-                    <span>${opt}</span>
-                  </label>`;
-                }).join('')}
-              </div>
-            </div>
-          `;
-        } else if (q.type === 'text') {
-          const val = answers[q.name] ?? '';
-          quizCard.innerHTML = `
-            <div class='w-full'>
-              <label class='block font-semibold text-lg mb-2'>${q.label}${q.required ? ' <span class="text-red-500">*</span>' : ''}</label>
-              <div class='text-gray-500 text-sm mb-2'>${q.help || ''}</div>
-              <textarea name='${q.name}' class='w-full mt-2 border-gray-300 rounded p-2 resize-y min-h-[3.5rem]' placeholder=''></textarea>
-            </div>
-          `;
-          const textarea = quizCard.querySelector('textarea');
-          textarea.value = val;
-          textarea.addEventListener('focus', e => {
-            // Center cursor in textarea on focus
-            const len = e.target.value.length;
-            // If empty, just focus; if not, set selection to middle
-            if (len > 0) {
-              const mid = Math.floor(len / 2);
-              e.target.setSelectionRange(mid, mid);
-            }
-          });
-          textarea.addEventListener('keydown', e => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-            }
-          });
-          textarea.addEventListener('input', e => {
-            answers[q.name] = e.target.value;
-          });
-        }
-        // Add listeners for dynamic value display
-        if (q.type === 'range') {
-          const input = document.getElementById(q.name);
-          const valueSpan = document.getElementById(q.name + 'Value');
-          const labelSpan = document.getElementById(q.name + 'Label');
-          input.addEventListener('input', e => { 
-            valueSpan.textContent = q.name === 'priceRange' ? '$' + e.target.value : e.target.value; 
-          });
-          input.addEventListener('change', e => { 
-            valueSpan.textContent = q.name === 'priceRange' ? '$' + e.target.value : e.target.value; 
-          });
-        } else if (q.type === 'multi-range') {
-          if (q.names[0] === 'flavorNutty') {
-            const input1 = document.getElementById('flavorNutty');
-            const valueSpan1 = document.getElementById('flavorNuttyValue');
-            const labelSpan1 = document.getElementById('flavorNuttyLabel');
-            input1.addEventListener('input', e => { labelSpan1.textContent = getSliderLabel('flavorNutty', e.target.value); });
-            input1.addEventListener('change', e => { labelSpan1.textContent = getSliderLabel('flavorNutty', e.target.value); });
-            const input2 = document.getElementById('flavorFruity');
-            const valueSpan2 = document.getElementById('flavorFruityValue');
-            const labelSpan2 = document.getElementById('flavorFruityLabel');
-            input2.addEventListener('input', e => { labelSpan2.textContent = getSliderLabel('flavorFruity', e.target.value); });
-            input2.addEventListener('change', e => { labelSpan2.textContent = getSliderLabel('flavorFruity', e.target.value); });
-            const input3 = document.getElementById('flavorFloral');
-            const valueSpan3 = document.getElementById('flavorFloralValue');
-            const labelSpan3 = document.getElementById('flavorFloralLabel');
-            input3.addEventListener('input', e => { labelSpan3.textContent = getSliderLabel('flavorFloral', e.target.value); });
-            input3.addEventListener('change', e => { labelSpan3.textContent = getSliderLabel('flavorFloral', e.target.value); });
-            const input4 = document.getElementById('flavorSmoky');
-            const valueSpan4 = document.getElementById('flavorSmokyValue');
-            const labelSpan4 = document.getElementById('flavorSmokyLabel');
-            input4.addEventListener('input', e => { labelSpan4.textContent = getSliderLabel('flavorSmoky', e.target.value); });
-            input4.addEventListener('change', e => { labelSpan4.textContent = getSliderLabel('flavorSmoky', e.target.value); });
-          } else if (q.names[0] === 'tasteSweetBitter') {
-            const input1 = document.getElementById('tasteSweetBitter');
-            const valueSpan1 = document.getElementById('tasteSweetBitterValue');
-            const labelSpan1 = document.getElementById('tasteSweetBitterLabel');
-            input1.addEventListener('input', e => { labelSpan1.textContent = getSliderLabel('tasteSweetBitter', e.target.value); });
-            input1.addEventListener('change', e => { labelSpan1.textContent = getSliderLabel('tasteSweetBitter', e.target.value); });
-            const input2 = document.getElementById('tasteSmoothTart');
-            const valueSpan2 = document.getElementById('tasteSmoothTartValue');
-            const labelSpan2 = document.getElementById('tasteSmoothTartLabel');
-            input2.addEventListener('input', e => { labelSpan2.textContent = getSliderLabel('tasteSmoothTart', e.target.value); });
-            input2.addEventListener('change', e => { labelSpan2.textContent = getSliderLabel('tasteSmoothTart', e.target.value); });
-          } else {
-            q.names.forEach(name => {
-              const input = document.getElementById(name);
-              const valueSpan = document.getElementById(name + 'Value');
-              const labelSpan = document.getElementById(name + 'Label');
-              input.addEventListener('input', e => { labelSpan.textContent = getSliderLabel(name, e.target.value); });
-              input.addEventListener('change', e => { labelSpan.textContent = getSliderLabel(name, e.target.value); });
-            });
-          }
-        }
-      }
-
-      function updateProgress() {
-        progressBar.style.width = `${((current + 1) / quizData.length) * 100}%`;
-      }
-
-      function showError(msg) {
-        errorMessage.textContent = msg;
-        errorMessage.classList.remove('hidden');
-      }
-      function hideError() {
-        errorMessage.classList.add('hidden');
-      }
-
-      function render() {
-        current = Math.max(0, Math.min(current, quizData.length - 1));
-        renderQuestion(current);
-        updateProgress();
-        prevBtn.disabled = current === 0;
-        nextBtn.disabled = false;
-        submitBtn.classList.toggle('hidden', current !== quizData.length - 1);
-        nextBtn.classList.toggle('hidden', current === quizData.length - 1);
-        hideError();
-      }
-
-      // Restore Next/Previous button handlers
-      nextBtn.addEventListener('click', () => {
-        if (current < quizData.length - 1) {
-          current++;
-          render();
-        }
-      });
-
-      prevBtn.addEventListener('click', () => {
-        if (current > 0) {
-          current--;
-          render();
-        }
-      });
-
-      // Handle input changes
-      quizCard.addEventListener('input', e => {
-        const q = quizData[current];
-        if (q.type === 'range') {
-          answers[q.name] = e.target.value;
-          // Do NOT call render() here
-        } else if (q.type === 'multi-range') {
-          if (q.names.includes(e.target.name)) {
-            answers[e.target.name] = e.target.value;
-            // Do NOT call render() here
-          }
-        } else if (q.type === 'radio') {
-          answers[q.name] = e.target.value;
-          render();
-        } else if (q.type === 'checkbox') {
-          if (q.names.includes(e.target.name)) {
-            answers[e.target.name] = e.target.checked;
-            // Do NOT call render() here
-          }
-        } else if (q.type === 'text') {
-          answers[q.name] = e.target.value;
-          // Do NOT call render() here to avoid losing focus
-        }
-      });
-
-      // Initial render
-      render();
-
-      // Required indicator for labels
-      quizData.forEach(q => {
-        const label = document.querySelector(`#quizCard label[for="${q.name}"]`);
-        if (label && !label.innerHTML.includes('*')) {
-          label.innerHTML += ' <span class="text-red-500">*</span>';
-        }
-      });
-
-      // After quiz reset, reset Next button
-      const quizForm = document.getElementById('quizForm');
-      document.getElementById('quizUserId').value = userId;
-      quizForm.addEventListener('reset', function() {
-        current = 0;
-        answers = {};
-        render();
-      });
-
-      // Add contact form HTML (initially hidden)
-      const contactFormHTML = `
-        <form id="contactForm" method="POST" class="space-y-4" style="display:none;">
-          <input type="hidden" name="formType" value="contact">
-          <input type="hidden" name="userId" id="contactUserId" value="${userId}">
-          <div>
-            <label for="contactEmail" class="block text-left font-medium mb-1">Email</label>
-            <input type="email" id="contactEmail" name="contactEmail" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
-          </div>
-          <div>
-            <label for="contactPhone" class="block text-left font-medium mb-1">Phone</label>
-            <input type="tel" id="contactPhone" name="contactPhone" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
-          </div>
-          <button type="submit" class="w-full bg-[#22c55e] text-white font-semibold py-2 rounded hover:bg-[#16a34a] transition">Buy Now</button>
-        </form>
-      `;
-      // In DOMContentLoaded, after quizForm is rendered:
-      quizForm.insertAdjacentHTML('afterend', contactFormHTML);
-      const contactForm = document.getElementById('contactForm');
-      contactForm.style.display = 'none';
-      document.getElementById('contactUserId').value = userId;
-
-      const ENDPOINT = 'https://script.google.com/macros/s/AKfycbybfq6Z7l93gnXL_bkgqxAozDF_6PHC72wzCzkTAsYrtFrOnIYfoQiqC4yWb8xCHFVxPw/exec';
-      function post(form, tab) {
-        const url = ENDPOINT + '?tab=' + encodeURIComponent(tab);
-        return fetch(url, { method:'POST', body: new FormData(form) })
-               .then(r=>r.json());
-      }
-
-      quizForm.addEventListener('submit', async e => {
-        e.preventDefault();
-        document.getElementById('quizUserId').value    = userId;
-        document.getElementById('contactUserId').value = userId;
-        sessionStorage.setItem('userId', userId);
-        const resp = await post(quizForm, 'Quiz');
-        if (resp.status==='OK') {
-          quizForm.style.display    = 'none';
-          contactForm.style.display = 'block';
-        } else {
-          alert('Quiz submission failed.');
-        }
-      });
-
-      contactForm.addEventListener('submit', async e => {
-        e.preventDefault();
-        document.getElementById('contactUserId').value = userId;
-        const resp = await post(contactForm, 'ContactCapture');
-        if (resp.status==='OK') {
-          contactForm.innerHTML = '<p>✅ Thank you! We got your answers.</p>';
-          sessionStorage.removeItem('userId');
-        } else {
-          alert('Contact submission failed.');
-        }
-      });
-
-      // --- Personalized Result Card and Form 2 ---
-      function showResultCard() {
-        if (!userId) {
-          const stored = sessionStorage.getItem('userId');
-          if (stored) userId = stored;
-        }
-        // Hide quiz navigation and error elements
-        errorMessage.classList.add('hidden');
-        errorMessage.textContent = '';
-        submitBtn.classList.add('hidden');
-        nextBtn.classList.add('hidden');
-        prevBtn.classList.add('hidden');
-        // Generate a fun, personalized message based on answers
-        let funFact = '';
-        if (answers.flavorFruity > 75) {
-          funFact = "You have a vibrant, adventurous palate—fruity coffees are your jam!";
-        } else if (answers.flavorNutty > 75) {
-          funFact = "You love cozy, nutty flavors—your perfect cup is warm and comforting!";
-        } else if (answers.flavorSmoky > 75) {
-          funFact = "You’re bold! Smoky, intense roasts are your style.";
-        } else if (answers.flavorFloral > 75) {
-          funFact = "You appreciate delicate, floral notes—your taste is refined!";
-        } else if (answers.personality > 75) {
-          funFact = "You’re a coffee explorer—always up for something new and complex!";
-        } else {
-          funFact = "Our AI is crafting your perfect blend based on what you like.";
-        }
-
-        // Helper to animate radar chart with enhanced visuals
-        function animateRadarChart(values, labels, containerId) {
-          const numAxes = values.length;
-          const radius = 55;
-          const center = 70;
-          const angleStep = (2 * Math.PI) / numAxes;
-          let progress = 0;
-          const steps = 36;
-          const chart = document.getElementById(containerId);
-          function getPoints(scale) {
-            return values.map((v, i) => {
-              const angle = i * angleStep - Math.PI / 2;
-              const r = radius * (0.3 + 0.7 * (v / 100) * scale);
-              return [
-                center + r * Math.cos(angle),
-                center + r * Math.sin(angle)
-              ];
-            });
-          }
-          function draw(scale) {
-            const pts = getPoints(scale);
-            const d = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p[0].toFixed(2) + ',' + p[1].toFixed(2)).join(' ') + ' Z';
-            const radar = chart.querySelector('path.radar');
-            radar.setAttribute('d', d);
-            // Animate dots
-            pts.forEach((p, i) => {
-              const dot = chart.querySelector(`#radar-dot-${i}`);
-              dot.setAttribute('cx', p[0]);
-              dot.setAttribute('cy', p[1]);
-            });
-          }
-          function animate() {
-            progress++;
-            const scale = Math.min(1, progress / steps);
-            draw(scale);
-            if (scale < 1) {
-              requestAnimationFrame(animate);
-            }
-          }
-          animate();
-        }
-        // Animated radar chart for flavor profile
-        const flavorVals = [
-          Number(answers.flavorNutty ?? 50),
-          Number(answers.flavorFruity ?? 50),
-          Number(answers.flavorFloral ?? 50),
-          Number(answers.flavorSmoky ?? 50)
-        ];
-        const flavorLabels = ['Nutty', 'Fruity', 'Floral', 'Smoky'];
-        const funGraphic = `
-          <div class="flex justify-center my-4">
-            <svg id="radarChartSVG" width="180" height="180" viewBox="0 0 140 140" style="background:#fff; border-radius:16px; box-shadow:0 4px 24px 0 #0002;">
-              <defs>
-                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <circle cx="70" cy="70" r="55" stroke="#22c55e" stroke-width="3" fill="#fff" />
-              <!-- Axes -->
-              <g stroke="#d1d5db" stroke-width="1.5">
-                <line x1="70" y1="70" x2="70" y2="20" />
-                <line x1="70" y1="70" x2="120" y2="70" />
-                <line x1="70" y1="70" x2="70" y2="120" />
-                <line x1="70" y1="70" x2="20" y2="70" />
-              </g>
-              <!-- Radar shape -->
-              <path class="radar" d="" fill="#22c55e55" stroke="#22c55e" stroke-width="3" filter="url(#glow)" />
-              <!-- Dots -->
-              <circle id="radar-dot-0" r="5" fill="#22c55e" stroke="#fff" stroke-width="2" />
-              <circle id="radar-dot-1" r="5" fill="#22c55e" stroke="#fff" stroke-width="2" />
-              <circle id="radar-dot-2" r="5" fill="#22c55e" stroke="#fff" stroke-width="2" />
-              <circle id="radar-dot-3" r="5" fill="#22c55e" stroke="#fff" stroke-width="2" />
-              <!-- Labels: only one set -->
-              <text x="70" y="32" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b1608" dominant-baseline="middle">Nutty</text>
-              <text x="120" y="75" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b1608" dominant-baseline="middle">Fruity</text>
-              <text x="70" y="128" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b1608" dominant-baseline="middle">Floral</text>
-              <text x="20" y="75" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b1608" dominant-baseline="middle">Smoky</text>
-            </svg>
-          </div>
-        `;
-
-        // Replace quiz card with result and form 2
-        quizCard.innerHTML = `
-          <div class="bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-md text-center">
-            <h2 class="text-2xl font-bold mb-3">Your custom blend is ready!</h2>
-            <p class="text-base text-gray-600 mb-6">Enter your info below to get your personalized coffee.</p>
-            <div class="text-sm text-gray-500 mb-4">${funFact}</div>
-            ${funGraphic}
-            <form id="userInfoForm" class="space-y-4">
-              <input type="hidden" name="formType" value="contact" />
-              <input type="hidden" name="userId" value="${userId}" />
-              <div>
-                <label for="userName" class="block text-left font-medium mb-1">Name</label>
-                <input type="text" id="userName" name="userName" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
-              </div>
-              <div>
-                <label for="userEmail" class="block text-left font-medium mb-1">Email</label>
-                <input type="email" id="userEmail" name="userEmail" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
-              </div>
-              <div>
-                <label for="userPhone" class="block text-left font-medium mb-1">Phone</label>
-                <input type="tel" id="userPhone" name="userPhone" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
-              </div>
-              <button type="submit" class="w-full bg-[#22c55e] text-white font-semibold py-2 rounded hover:bg-[#16a34a] transition">Buy Now</button>
-            </form>
-            <div id="userInfoSuccess" class="hidden text-green-600 font-semibold mt-4">Thank you! We'll be in touch soon.</div>
-          </div>
-        `;
-
-        // Ensure result card is visible
-        quizCard.scrollIntoView({ behavior: 'smooth' });
-
-        // Animate the radar chart after rendering
-        setTimeout(() => {
-          animateRadarChart(flavorVals, flavorLabels, 'radarChartSVG');
-        }, 100);
-
-        // Add handler for form 2 submission
-        const userInfoForm = document.getElementById('userInfoForm');
-        userInfoForm.addEventListener('submit', async function(e) {
-          e.preventDefault();
-          const formData = new FormData(userInfoForm);
-          // Post to a new Google Sheet tab (change endpoint as needed)
-          const FORM2_ENDPOINT = 'https://script.google.com/macros/s/AKfycbycyuhiCcG-zW3S0jLNFvxxx-TKPUghXoXXlJSJPDrZxX0CMkXABY0L7Lb9nxtUAG1Mdg/exec?tab=UserInfo';
-          try {
-            const response = await fetch(FORM2_ENDPOINT, {
-              method: 'POST',
-              body: formData
-            });
-            if (!response.ok) throw new Error('Failed to submit');
-            userInfoForm.classList.add('hidden');
-            document.getElementById('userInfoSuccess').classList.remove('hidden');
-          } catch (err) {
-            alert('There was an error submitting your info. Please try again.');
-          }
-        });
-      }
-
-      // For all other questions, set required: false
-      // In renderQuestion, after rendering the roastLevel pills:
-      // if (q.type === 'radio' && q.name === 'roastLevel') {
-      //   const radios = quizCard.querySelectorAll('input[type="radio"][name="roastLevel"]');
-      //   radios.forEach(radio => {
-      //     radio.addEventListener('change', e => {
-      //       answers['roastLevel'] = e.target.value;
-      //       setTimeout(() => {
-      //         if (current < quizData.length - 1) {
-      //           current++;
-      //           render();
-      //         }
-      //       }, 200); // gentle delay for transition
-      //     });
-      //   });
-      // }
     });
-  </script>
+  });
+}
+
+/*------------------------------------------------------------------
+  NAVIGATION
+------------------------------------------------------------------*/
+function autoNext(){
+  if(current<quizData.length-1){current++;updateUI()}
+}
+function updateUI(){
+  renderQuestion(current);
+  progressBar.style.width=((current+1)/quizData.length)*100+'%';
+  prevBtn.disabled=current===0;
+  submitBtn.classList.toggle('hidden',current!==quizData.length-1);
+  nextBtn.classList.toggle('hidden',current===quizData.length-1);
+}
+prevBtn.addEventListener('click',()=>{if(current>0){current--;updateUI()}});
+nextBtn.addEventListener('click',()=>{if(current<quizData.length-1){current++;updateUI()}});
+updateUI(); // initial render
+
+/*------------------------------------------------------------------
+  BACK‑END COMM
+------------------------------------------------------------------*/
+function submitToSheet(tab, formData){
+  return fetch(`${GAS_URL}?tab=${encodeURIComponent(tab)}`,{
+    method:'POST',
+    mode:'cors',
+    headers:{'Accept':'application/json'},
+    body:formData
+  })
+  .then(r=>r.json())
+  .catch(()=>({status:'ERR'}));
+}
+
+/* QUIZ SUBMIT -----------------------------------------------------*/
+quizForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  /* inject every answer as hidden input so formData carries them */
+  Object.entries(answers).forEach(([k,v])=>{
+    const hidden=document.createElement('input');
+    hidden.type='hidden';hidden.name=k;hidden.value=(typeof v==='boolean'?v?1:'':v);
+    quizForm.appendChild(hidden);
+  });
+  const fd=new FormData(quizForm); fd.set('userId',userId);
+  const res=await submitToSheet(TAB_FORM,fd);
+  if(res.status==='OK'){
+    quizForm.classList.add('hidden');
+    contactForm.classList.remove('hidden');
+    window.scrollTo({top:contactForm.offsetTop,behavior:'smooth'});
+  }else{
+    errorMessage.textContent='Submission failed. Please retry.'; errorMessage.classList.remove('hidden');
+  }
+});
+
+/* CONTACT SUBMIT --------------------------------------------------*/
+contactForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const fd=new FormData(contactForm); fd.set('userId',userId);
+  const res=await submitToSheet(TAB_CONTACT,fd);
+  if(res.status==='OK'){
+    contactForm.querySelector('button').disabled=true;
+    document.getElementById('contactSuccess').classList.remove('hidden');
+    sessionStorage.removeItem('userId');
+  }else{
+    alert('Contact submission failed. Try again.');
+  }
+});
+</script>
 </body>
 </html>
