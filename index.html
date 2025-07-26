@@ -423,5 +423,21 @@ contactForm.addEventListener('submit',async e=>{
   }
 });
 </script>
+<script>
+/* --- SAFETY GUARD: prevent premature submit -------------------------------- */
+(function () {
+  /* 1. Ensure navigation buttons are not accidental submits */
+  ['nextBtn', 'prevBtn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn && btn.type !== 'button') btn.type = 'button';
+  });
+
+  /* 2. Block the ENTER key from submitting while quiz is in progress */
+  const qForm = document.getElementById('quizForm');
+  if (qForm) qForm.addEventListener('keydown', e => {
+    if (e.key === 'Enter') e.preventDefault();
+  });
+})();
+</script>
 </body>
 </html>
