@@ -34,10 +34,10 @@
     .pill-input label span{transition:.2s;padding:.5rem 1.25rem;border-radius:9999px;border:1px solid #d1d5db;cursor:pointer;display:inline-block}
     .question{display:none;min-height:200px}.question.active{display:block}
     .wordmark{font-family:'Kanit','Poppins','Nunito',sans-serif;font-size:2rem;letter-spacing:.04em;text-transform:uppercase;line-height:1.1}
-    .wordmark .roast,.wordmark .portal{color:#2b1608;margin:0;padding:0;display:block}
+    .wordmark .roast,.wordmark .portal{color:#1a0f05;margin:0;padding:0;display:inline}
     html{scroll-padding-top:80px}html,body{font-family:'Kanit','Poppins','Nunito','Playfair Display',sans-serif}
-    textarea{font-size:1.15rem;padding:1rem;border:2px solid #d1d5db;border-radius:.75rem;background:#f8fafc;color:#2b1608;transition:border .2s,box-shadow .2s;min-height:4.5rem}
-    textarea:focus{border-color:#22c55e;box-shadow:0 0 0 2px #bbf7d0;background:#fff;text-align:center}
+    textarea{font-size:1.15rem;padding:1rem;border:2px solid #d1d5db;border-radius:.75rem;background:#f8fafc;color:#2b1608;transition:border .2s,box-shadow .2s;min-height:4.5rem;text-align:left}
+    textarea:focus{border-color:#22c55e;box-shadow:0 0 0 2px #bbf7d0;background:#fff;text-align:left}
     #quizCard{min-height:420px;padding-top:2.5rem;padding-bottom:2.5rem}
     @keyframes fadeInLoadingMsg{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
     .sequential-fade-in{opacity:0;animation:fadeInLoadingMsg .7s ease forwards}
@@ -50,6 +50,135 @@
       100%{background:radial-gradient(circle at 30% 40%,rgba(34,197,94,.10)0%,rgba(43,22,8,.08)100%)}
     }
     .animate-heroGradient{animation:heroGradient 30s ease-in-out infinite;opacity:1}
+    
+    /* Full-screen quiz styles */
+    .quiz-fullscreen {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding-block: 1rem; /* minimal padding */
+      box-sizing: border-box;
+    }
+    
+    .quiz-fullscreen .container {
+      width: 100%;
+      max-width: 24rem; /* much smaller width */
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+ 
+    .quiz-fullscreen #quizForm {
+      width: 100%;
+      max-width: 24rem; /* match container */
+      height: calc(100vh - 2rem); /* minimal height */
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0.5rem; /* minimal padding */
+      box-sizing: border-box;
+    }
+ 
+    .quiz-fullscreen #quizCard {
+      flex: 1 1 auto;
+      max-height: calc(100% - 3rem); /* more space for buttons */
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .quiz-fullscreen .flex.justify-between {
+      flex-shrink: 0;
+      height: 3rem; /* more height for buttons */
+      align-items: center;
+      margin-top: 0.5rem; /* more margin */
+    }
+
+    .quiz-fullscreen .flex.justify-between .sm\\:ml-auto {
+      order: 2;
+    }
+
+    .quiz-fullscreen .flex.justify-between #nextBtn {
+      order: 2;
+    }
+
+    .quiz-fullscreen .flex.justify-between #prevBtn {
+      order: 1;
+    }
+ 
+    .quiz-fullscreen #quizCard > * {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+ 
+    .quiz-fullscreen #quizCard .question-body {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      overflow: hidden; /* prevent scrolling */
+    }
+    
+    .quiz-fullscreen .pill-input {
+      max-height: 40vh; /* much smaller max height */
+      overflow: hidden; /* prevent scrolling */
+    }
+    
+    .quiz-fullscreen .space-y-6 {
+      max-height: 40vh; /* much smaller max height */
+      overflow: hidden; /* prevent scrolling */
+    }
+    
+    .quiz-fullscreen #contactForm {
+      max-width: 24rem;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .quiz-escape {
+      position: fixed;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(229, 231, 235, 0.5);
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1rem;
+      color: #9ca3af;
+      z-index: 10000;
+    }
+    
+    .quiz-escape:hover {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: rgba(209, 213, 219, 0.8);
+      color: #6b7280;
+    }
   </style>
 </head>
 
@@ -57,12 +186,12 @@
 
 <!-- ╔═════════════ HEADER ═════════════╗ -->
 <header class="bg-white shadow sticky top-0 z-50">
-  <nav class="container mx-auto flex justify-between items-center py-2 px-6 md:py-2 md:px-8" aria-label="Main navigation">
-    <a href="#hero" class="flex items-center gap-x-4" aria-label="RoastPortal Home">
+  <nav class="container mx-auto flex justify-between items-center py-3 px-6 md:py-3 md:px-8" aria-label="Main navigation">
+    <a href="#hero" class="flex items-center gap-4" aria-label="RoastPortal Home">
       <img src="images/favicon.png" alt="RoastPortal logo" class="h-10" loading="lazy">
-      <span class="wordmark"><span class="roast">Roast</span><span class="portal">Portal</span></span>
+      <span class="wordmark"><span class="roast">Roast</span> <span class="portal">Portal</span></span>
     </a>
-    <a class="text-[#2b1608] font-semibold hover:underline px-4 py-2 rounded transition-colors" href="/login">Login</a>
+    <a class="text-[#1a0f05] font-semibold hover:underline px-4 py-2 rounded transition-colors" href="/login">Login</a>
   </nav>
 </header>
 
@@ -79,7 +208,7 @@
     <p class="text-lg md:text-2xl text-white mb-6 drop-shadow">
       Answer a few questions, sip, rate, repeat — our AI adapts every bag until it’s perfect for you.
     </p>
-    <a class="bg-[#16a34a] text-white px-6 py-3 rounded-full font-medium text-lg hover:bg-[#22c55e] transition-colors" href="#quiz">Start your custom roast</a>
+    <a class="bg-[#16a34a] text-white px-6 py-3 rounded-full font-medium text-lg hover:bg-[#22c55e] transition-colors" href="#quiz">Start your custom blend</a>
   </div>
 </section>
 
@@ -113,7 +242,8 @@
     <h2 id="quizTitle" class="text-3xl font-bold text-center mb-8">Train your coffee AI</h2>
 
     <!-- ▶ FORM 1 : QUIZ ◀ -->
-    <form id="quizForm" class="max-w-3xl mx-auto bg-white/90 shadow-xl rounded-2xl p-6 md:p-10" aria-label="Coffee Preference Quiz">
+    <form id="quizForm" class="max-w-3xl mx-auto bg-white/90 shadow-xl rounded-2xl p-6 md:p-10 relative" aria-label="Coffee Preference Quiz">
+      <button type="button" id="quizEscape" class="quiz-escape hidden" aria-label="Exit quiz">×</button>
       <input type="hidden" name="formType" value="quiz">
       <input type="hidden" name="userId" id="quizUserId">
 
@@ -173,7 +303,7 @@
   </div>
 </section>
 
-<!-- ╔═════════════ FAQ (UNCHANGED) ═════════════╗ -->
+<!-- ╔═════════════ FAQ ═════════════╗ -->
 <section class="container mx-auto px-6 max-w-3xl mt-12 mb-16" aria-label="Frequently Asked Questions">
   <h2 class="text-3xl font-bold text-center mb-8">FAQ</h2>
   <div class="space-y-4">
@@ -235,7 +365,7 @@
 </section>
 
 <!-- ╔═════════════ FOOTER ═════════════╗ -->
-<footer class="bg-gray-800 text-gray-200 py-8">
+<footer class="bg-gray-800 text-gray-200 py-4">
   <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
     <a href="#hero" aria-label="Back to top"><img src="images/favicon.png" alt="RoastPortal logo" class="h-8" loading="lazy"></a>
     <p>© 2025 RoastPortal. All rights reserved.</p>
@@ -299,7 +429,7 @@ document.getElementById('contactUserId').value = userId;
   RENDERING
 ------------------------------------------------------------------*/
 function createRadarChart(flavors) {
-    const size = 300;
+    const size = 120; // Even smaller size for better fit
     const center = size / 2;
     const radius = size * 0.3; // Reduced radius to create more padding
     const numAxes = flavors.length;
@@ -333,14 +463,14 @@ function createRadarChart(flavors) {
 
     // 4. Labels
     const labels = flavors.map((flavor, i) => {
-        const p = getPoint(120, i); // Increased distance for labels
+        const p = getPoint(110, i); // Reduced distance for labels
         const x = parseFloat(p.split(',')[0]);
         const y = parseFloat(p.split(',')[1]);
         let textAnchor = "middle";
         if (x < center - 10) textAnchor = "end";
         if (x > center + 10) textAnchor = "start";
         
-        return `<text x="${x}" y="${y}" dy="0.3em" text-anchor="${textAnchor}" font-size="12" fill="#4b5563">${flavor.name}</text>`;
+        return `<text x="${x}" y="${y}" dy="0.3em" text-anchor="${textAnchor}" font-size="10" fill="#4b5563">${flavor.name}</text>`;
     }).join('');
 
     return `
@@ -382,33 +512,39 @@ function renderQuestion(idx){
   /* RADIO */
   if(q.type==='radio'){
     quizCard.innerHTML=`
-      <fieldset class="w-full">
-        <legend class="block text-xl font-semibold mb-2 text-center">${q.label}</legend>
-        <div class="flex flex-wrap justify-center gap-3 mb-2 pill-input">
-          ${q.options.map(opt=>`
-            <label><input type="radio" name="${q.name}" value="${opt}" ${answers[q.name]===opt?'checked':''} class="sr-only">
-              <span class="${answers[q.name]===opt?'bg-[#22c55e] text-white border-[#22c55e] shadow-md':'bg-white text-gray-800 border-gray-300 hover:bg-gray-100'}">${opt}</span>
-            </label>`).join('')}
+      <div class="w-full max-w-md mx-auto">
+        <h3 class="text-lg font-semibold mb-3 text-center">${q.label}</h3>
+        <div class="question-body">
+          <div class="flex flex-wrap justify-center gap-2 pill-input">
+            ${q.options.map(opt=>`
+              <label><input type="radio" name="${q.name}" value="${opt}" class="sr-only">
+                <span class="bg-white text-gray-800 border-gray-300 hover:bg-gray-100 text-sm px-3 py-1">${opt}</span>
+              </label>`).join('')}
+          </div>
         </div>
-      </fieldset>`;
+      </div>`;
   }
 
   /* RANGE */
   else if(q.type==='range'){
     const v = answers[q.name]??q.min;
     quizCard.innerHTML=`
-      <label class="block font-semibold text-lg mb-4 text-center">${q.label}</label>
-      <div class="flex items-center gap-x-4 w-full px-2">
-        <span class="text-sm text-gray-500">${q.left||''}</span>
-        <div class="relative flex-grow h-8">
-          <input type="range" id="${q.name}" name="${q.name}" min="${q.min}" max="${q.max}" step="${q.step}" value="${v}" class="w-full accent-[#22c55e] absolute top-1/2 -translate-y-1/2" style="margin: 0; padding: 0;">
-          <output for="${q.name}" id="${q.name}Val"
-                  class="output-bubble absolute pointer-events-none bg-gray-700 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-lg -top-2"
-                  style="transform: translateX(-50%);">
-              ${q.name === 'priceRange' ? '$' + v : v}
-          </output>
+      <div class="w-full max-w-md mx-auto">
+        <h3 class="text-lg font-semibold mb-3 text-center">${q.label}</h3>
+        <div class="question-body">
+          <div class="flex items-center gap-x-3 w-full px-2">
+            <span class="text-xs text-gray-500">${q.left||''}</span>
+            <div class="relative flex-grow h-6">
+            <input type="range" id="${q.name}" name="${q.name}" min="${q.min}" max="${q.max}" step="${q.step}" value="${v}" class="w-full accent-[#22c55e] absolute top-1/2 -translate-y-1/2" style="margin: 0; padding: 0;">
+            <output for="${q.name}" id="${q.name}Val"
+                    class="output-bubble absolute pointer-events-none bg-gray-700 text-white text-xs font-semibold px-1 py-0.5 rounded shadow-lg -top-1"
+                    style="transform: translateX(-50%);">
+                ${q.name === 'priceRange' ? '$' + v : v}
+            </output>
+            </div>
+            <span class="text-xs text-gray-500">${q.right||''}</span>
+          </div>
         </div>
-        <span class="text-sm text-gray-500">${q.right||''}</span>
       </div>`;
     const sliderEl = document.getElementById(q.name);
     setTimeout(() => positionThumbLabel(sliderEl), 0);
@@ -417,34 +553,46 @@ function renderQuestion(idx){
   /* MULTI‑RANGE */
   else if(q.type==='multi-range'){
     quizCard.innerHTML=`
-      <label class="block font-semibold text-lg mb-4 text-center">${q.label}</label>
-      <div class="space-y-6 w-full">${q.names.map((n,i)=>`
-        <div>
-          <p class="mb-1 text-sm text-center">${q.flavors[i]}</p>
-          <div class="flex items-center gap-x-2">
-            <span class="text-sm text-gray-500 w-20 text-left flex-shrink-0">Dislike</span>
-            <input type="range" id="${n}" name="${n}" min="${q.min}" max="${q.max}" step="${q.step}" value="${answers[n]??50}" class="w-full accent-[#22c55e]">
-            <span class="text-sm text-gray-500 w-20 text-right flex-shrink-0">Love it</span>
-          </div>
-        </div>`).join('')}</div>`;
+      <div class="w-full max-w-md mx-auto">
+        <h3 class="text-lg font-semibold mb-3 text-center">${q.label}</h3>
+        <div class="question-body">
+          <div class="space-y-3 w-full">${q.names.map((n,i)=>`
+            <div>
+              <p class="mb-1 text-xs text-center">${q.flavors[i]}</p>
+              <div class="flex items-center gap-x-2">
+                <span class="text-xs text-gray-500 w-16 text-left flex-shrink-0">Dislike</span>
+                <input type="range" id="${n}" name="${n}" min="${q.min}" max="${q.max}" step="${q.step}" value="${answers[n]??50}" class="w-full accent-[#22c55e]">
+                <span class="text-xs text-gray-500 w-16 text-right flex-shrink-0">Love it</span>
+              </div>
+            </div>`).join('')}</div>
+        </div>
+      </div>`;
   }
 
   /* CHECKBOX */
   else if(q.type==='checkbox'){
     quizCard.innerHTML=`
-      <label class="block font-semibold text-lg mb-2 text-center">${q.label}</label>
-      <div class="flex flex-wrap justify-center gap-3 pill-input">
-        ${q.options.map((opt,i)=>`
-          <label><input type="checkbox" name="${q.names[i]}" ${answers[q.names[i]]?'checked':''}>
-            <span>${opt}</span></label>`).join('')}
+      <div class="w-full max-w-md mx-auto">
+        <h3 class="text-lg font-semibold mb-3 text-center">${q.label}</h3>
+        <div class="question-body">
+          <div class="flex flex-wrap justify-center gap-2 pill-input">
+            ${q.options.map((opt,i)=>`
+              <label><input type="checkbox" name="${q.names[i]}" ${answers[q.names[i]]?'checked':''}>
+                <span class="text-sm px-3 py-1">${opt}</span></label>`).join('')}
+          </div>
+        </div>
       </div>`;
   }
 
   /* TEXT */
   else if(q.type==='text'){
     quizCard.innerHTML=`
-      <label class="block font-semibold text-lg mb-2 text-center">${q.label}</label>
-      <textarea id="${q.name}" name="${q.name}" class="w-full mt-2">${answers[q.name]||''}</textarea>`;
+      <div class="w-full max-w-md mx-auto">
+        <h3 class="text-lg font-semibold mb-3 text-center">${q.label}</h3>
+        <div class="question-body">
+          <textarea id="${q.name}" name="${q.name}" class="w-full text-sm" rows="3">${answers[q.name]||''}</textarea>
+        </div>
+      </div>`;
   }
 
   /* Listeners for newly added controls */
@@ -452,11 +600,29 @@ function renderQuestion(idx){
     el.addEventListener('input', e=>{
       if(el.type==='checkbox'){answers[el.name]=el.checked}
       else{answers[el.name]=el.value}
-      if(el.type==='radio'){autoNext()}
       if(el.type === 'range') {
         positionThumbLabel(el);
       }
     });
+    
+    // Add click event for radio buttons to handle all selections including defaults
+    if(el.type==='radio'){
+      el.addEventListener('click', e=>{
+        answers[el.name]=el.value;
+        autoNext();
+      });
+    }
+    
+    // Add keyboard events for textarea
+    if(el.type==='textarea' || el.tagName.toLowerCase() === 'textarea'){
+      el.addEventListener('keydown', e=>{
+        if(e.key === 'Enter' && !e.shiftKey){
+          e.preventDefault();
+          autoNext();
+        }
+        // Shift+Enter allows new line (default behavior)
+      });
+    }
   });
 }
 
@@ -464,7 +630,16 @@ function renderQuestion(idx){
   NAVIGATION
 ------------------------------------------------------------------*/
 function autoNext(){
-  if(current<quizData.length){current++;updateUI()}
+  if(current<quizData.length){
+    // If this is the first selection (moving from question 0 to 1), activate full-screen mode
+    if(current === 0) {
+      document.body.classList.add('quiz-fullscreen');
+      document.getElementById('quiz').classList.add('quiz-fullscreen');
+      document.getElementById('quizEscape').classList.remove('hidden');
+    }
+    current++;
+    updateUI();
+  }
 }
 function updateUI(){
   if (current >= quizData.length) {
@@ -472,14 +647,28 @@ function updateUI(){
     return;
   }
   renderQuestion(current);
-  const progress = (current + 1) / quizData.length;
+  const progress = current / quizData.length;
   progressBar.style.width = (progress * 100) + '%';
-  prevBtn.disabled=current===0;
-  submitBtn.classList.add('hidden');
-  nextBtn.classList.remove('hidden');
+  
+  // Hide navigation buttons on first question, show Previous from question 2
+  if (current === 0) {
+    prevBtn.classList.add('hidden');
+    nextBtn.classList.add('hidden');
+    submitBtn.classList.add('hidden');
+  } else if (current === 1) {
+    prevBtn.classList.remove('hidden');
+    prevBtn.disabled = false;
+    submitBtn.classList.add('hidden');
+    nextBtn.classList.remove('hidden');
+  } else {
+    prevBtn.classList.remove('hidden');
+    prevBtn.disabled = false;
+    submitBtn.classList.add('hidden');
+    nextBtn.classList.remove('hidden');
+  }
 
   if (current === quizData.length - 1) {
-    nextBtn.textContent = 'Create My Blend';
+    nextBtn.textContent = 'Next';
   } else {
     nextBtn.textContent = 'Next';
   }
@@ -489,13 +678,17 @@ nextBtn.addEventListener('click', () => {
   if (current === quizData.length - 1) {
     // Last question, show "analyzing" message
     quizCard.innerHTML = `
-      <div class="text-center py-8">
+      <div class="w-full max-w-md mx-auto">
+        <div class="question-body">
+          <div class="text-center py-8">
         <svg class="animate-spin h-10 w-10 text-green-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
         <p class="text-xl font-semibold text-gray-800">Creating your custom blend...</p>
         <p class="text-gray-600 mt-2">Our AI is analyzing your preferences to craft the perfect roast.</p>
+          </div>
+        </div>
       </div>`;
     
     prevBtn.classList.add('hidden');
@@ -512,19 +705,45 @@ nextBtn.addEventListener('click', () => {
 });
 updateUI(); // initial render
 
+// Escape functionality
+document.getElementById('quizEscape').addEventListener('click', function() {
+  // Reset to initial state
+  current = 0;
+  answers = {...defaults};
+  
+  // Remove full-screen mode
+  document.body.classList.remove('quiz-fullscreen');
+  document.getElementById('quiz').classList.remove('quiz-fullscreen');
+  document.getElementById('quizEscape').classList.add('hidden');
+  
+  // Reset progress bar
+  document.getElementById('progressBar').style.width = '0%';
+  
+  // Update UI
+  updateUI();
+  
+  // Scroll back to quiz section
+  document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+});
+
 /*------------------------------------------------------------------
   REVIEW & SUBMIT
 ------------------------------------------------------------------*/
 function showReview() {
-  quizCard.classList.add('hidden');
-  document.getElementById('reviewSection').classList.remove('hidden');
+  // Activate full-screen mode if not already active
+  if(!document.body.classList.contains('quiz-fullscreen')) {
+    document.body.classList.add('quiz-fullscreen');
+    document.getElementById('quiz').classList.add('quiz-fullscreen');
+    document.getElementById('quizEscape').classList.remove('hidden');
+  }
+  
+  // Show quiz card and replace content with review
+  quizCard.classList.remove('hidden');
+  document.getElementById('reviewSection').classList.add('hidden');
   prevBtn.classList.remove('hidden');
   nextBtn.classList.add('hidden');
   submitBtn.classList.remove('hidden');
-  submitBtn.textContent = 'Get My Custom Roast';
-
-  const reviewContent = document.getElementById('reviewContent');
-  reviewContent.innerHTML = ''; // Clear previous content
+  submitBtn.textContent = 'Checkout';
 
   // 1. Generate a blend name suggestion
   let blendTitle = 'Your Custom Blend';
@@ -562,26 +781,36 @@ function showReview() {
           break;
   }
   const primaryNotes = flavors.sort((a, b) => b.value - a.value).slice(0, 2).map(f => f.name).join(' & ');
-  const creatorsNote = `We've tailored this ${answers.roastLevel.toLowerCase()} roast to highlight the ${primaryNotes.toLowerCase()} notes you love. The result is a cup that's ${noteAdjective}, perfectly suited for your ${answers.brewMethod}. We think you'll love it.`;
+  const creatorsNote = `A ${answers.roastLevel.toLowerCase()} roast highlighting ${primaryNotes.toLowerCase()} notes. ${noteAdjective} and perfect for your ${answers.brewMethod}.`;
   
   const radarChartHTML = createRadarChart(flavors);
 
-  // Build the new HTML
-  reviewContent.innerHTML = `
-    <div class="text-center">
-        <h4 class="text-2xl font-bold text-gray-800">${blendTitle}</h4>
-        <p class="text-gray-600 italic mt-1">Your AI-Generated Flavor Profile</p>
-    </div>
+  // Replace quiz card content with review in the same container
+  quizCard.innerHTML = `
+    <div class="w-full max-w-md mx-auto">
+      <h3 class="text-sm font-semibold mb-1 text-center">Your Custom Roast Profile</h3>
+      <div class="question-body">
+        <div class="space-y-1">
+          <div class="text-center">
+            <h4 class="text-sm font-bold text-gray-800">${blendTitle}</h4>
+            <p class="text-gray-600 italic text-xs">Your AI-Generated Flavor Profile</p>
+          </div>
 
-    <div class="flex justify-center my-4">${radarChartHTML}</div>
-    
-    <div>
-        <p class="font-semibold text-gray-700">Creator's Note:</p>
-        <p class="text-gray-600">${creatorsNote}</p>
+          <div class="flex justify-center">${radarChartHTML}</div>
+          
+          <div>
+            <p class="font-semibold text-gray-700 text-xs">Creator's Note:</p>
+            <p class="text-gray-600 text-xs leading-tight">${creatorsNote}</p>
+          </div>
+          
+          <div class="mt-1">
+            <label for="blendName" class="block font-medium mb-1 text-xs">Name your blend</label>
+            <input type="text" id="blendName" name="blendName" maxlength="15" class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-200 text-xs">
+          </div>
+        </div>
+      </div>
     </div>
   `;
-  
-  document.getElementById('blendName').setAttribute('maxlength', '15');
 }
 
 
@@ -629,9 +858,101 @@ quizForm.addEventListener('submit',async e=>{
 
   const res=await submitToSheet(TAB_FORM,fd);
   if(res.status==='OK'){
-    quizForm.classList.add('hidden');
-    contactForm.classList.remove('hidden');
-    window.scrollTo({top:contactForm.offsetTop,behavior:'smooth'});
+    // Hide review section and navigation buttons
+    document.getElementById('reviewSection').classList.add('hidden');
+    document.getElementById('prevBtn').classList.add('hidden');
+    document.getElementById('submitBtn').classList.add('hidden');
+    
+    // Show quiz card again and replace content with contact form
+    quizCard.classList.remove('hidden');
+    
+    // Replace quiz card content with contact form
+    quizCard.innerHTML = `
+      <div class="w-full max-w-md mx-auto">
+        <h3 class="text-lg font-semibold mb-2 text-center">Almost done! We need your details</h3>
+        <div class="question-body">
+          <div class="space-y-2">
+            <div>
+              <label class="block font-medium mb-1 text-xs" for="contactName">Name</label>
+              <input class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-200 text-xs" type="text" id="contactName" name="contactName" required>
+            </div>
+            <div>
+              <label class="block font-medium mb-1 text-xs" for="contactEmail">Email</label>
+              <input class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-200 text-xs" type="email" id="contactEmail" name="contactEmail" required>
+            </div>
+            <div>
+              <label class="block font-medium mb-1 text-xs" for="contactPhone">Phone</label>
+              <input class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-200 text-xs" type="tel" id="contactPhone" name="contactPhone" required>
+            </div>
+            <button id="contactSubmitBtn" class="w-full bg-[#22c55e] text-white font-semibold py-1 rounded hover:bg-[#16a34a] transition text-xs" type="button">Get my custom roast</button>
+            <p id="contactError" class="hidden text-center text-red-500 font-semibold mt-1 text-xs"></p>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Add event listener to the new contact submit button
+    document.getElementById('contactSubmitBtn').addEventListener('click', async function() {
+      const contactSubmitBtn = this;
+      const originalContactHTML = contactSubmitBtn.innerHTML;
+      
+      // Validate required fields
+      const nameField = document.getElementById('contactName');
+      const emailField = document.getElementById('contactEmail');
+      const phoneField = document.getElementById('contactPhone');
+      const contactErrorEl = document.getElementById('contactError');
+      
+      if (!nameField.value || !emailField.value || !phoneField.value) {
+        contactErrorEl.textContent = 'Please fill in all fields.';
+        contactErrorEl.classList.remove('hidden');
+        return;
+      }
+      
+      contactErrorEl.classList.add('hidden');
+      contactSubmitBtn.disabled = true;
+      contactSubmitBtn.innerHTML = `
+        <span class="inline-flex items-center justify-center">
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Submitting...
+        </span>`;
+      
+      // Create form data for contact submission
+      const contactFD = new FormData();
+      contactFD.set('formType', 'contact');
+      contactFD.set('userId', userId);
+      contactFD.set('contactName', nameField.value);
+      contactFD.set('contactEmail', emailField.value);
+      contactFD.set('contactPhone', phoneField.value);
+      contactFD.set('blendName', blendName);
+      
+      const contactRes = await submitToSheet(TAB_CONTACT, contactFD);
+      if(contactRes.status === 'OK') {
+        // Show success message
+        quizCard.innerHTML = `
+          <div class="w-full max-w-md mx-auto">
+            <div class="question-body">
+              <div class="text-center py-10">
+                <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h3 class="text-2xl font-bold text-gray-800">Thank you!</h3>
+                <p class="text-gray-600 mt-2">Your custom roast is on its way. We'll be in touch shortly with order details.</p>
+              </div>
+            </div>
+          </div>
+        `;
+        sessionStorage.removeItem('userId');
+      } else {
+        contactErrorEl.textContent = 'Submission failed. Please try again.';
+        contactErrorEl.classList.remove('hidden');
+        contactSubmitBtn.disabled = false;
+        contactSubmitBtn.innerHTML = originalContactHTML;
+      }
+    });
+    
   }else{
     errorMessage.textContent='Submission failed. Please retry.';
     errorMessage.classList.remove('hidden');
@@ -640,45 +961,7 @@ quizForm.addEventListener('submit',async e=>{
   }
 });
 
-/* CONTACT SUBMIT --------------------------------------------------*/
-contactForm.addEventListener('submit',async e=>{
-  e.preventDefault();
-
-  const submitButton = contactForm.querySelector('button[type="submit"]');
-  const originalButtonHTML = submitButton.innerHTML;
-  submitButton.disabled = true;
-  submitButton.innerHTML = `
-    <span class="inline-flex items-center justify-center">
-      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      Submitting...
-    </span>`;
-  document.getElementById('contactError').classList.add('hidden');
-
-  const fd=new FormData(contactForm);
-  fd.set('userId', userId);
-  fd.set('blendName', document.getElementById('blendName').value);
-  const res=await submitToSheet(TAB_CONTACT,fd);
-  if(res.status==='OK'){
-    document.getElementById('quizTitle').classList.add('hidden');
-    contactForm.innerHTML = `
-      <div class="text-center py-10">
-        <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <h3 class="text-2xl font-bold text-gray-800">Thank You!</h3>
-        <p class="text-gray-600 mt-2">Your custom roast is on its way. We'll be in touch shortly with order details.</p>
-      </div>
-    `;
-    sessionStorage.removeItem('userId');
-  }else{
-    const contactError = document.getElementById('contactError');
-    contactError.textContent = 'Submission failed. Please try again.';
-    contactError.classList.remove('hidden');
-    submitButton.disabled = false;
-    submitButton.innerHTML = originalButtonHTML;
-  }
-});
+/* CONTACT SUBMIT - Now handled inline within quiz submission flow */
 </script>
 <script>
 /* --- SAFETY GUARD: prevent premature submit -------------------------------- */
