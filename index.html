@@ -418,13 +418,17 @@
     .quiz-fullscreen{
       position: fixed;                      /* keep it above the page           */
       inset: 0;
-      height: calc(var(--vh) * 100);        /* 100 dvh on browsers that support it,
-                                               graceful fallback everywhere   */
+      height: 100lvh;                       /* always the largest available viewport */
       display: flex;
       flex-direction: column;
       overflow-y: auto;                     /* allow the page to scroll         */
       scroll-behavior: smooth;              /* nicer scrolling                  */
       padding-bottom: calc(var(--safe-bottom) + 5rem); /* space for buttons   */
+    }
+
+    /* still allow old browsers to fall back */
+    @supports not (height:100lvh){
+      .quiz-fullscreen{height:100vh;}
     }
 
     /* Form grows / scrolls instead of being clipped */
@@ -463,6 +467,16 @@
     /* give range & text inputs a touch‑friendly size on small devices */
     input[type="range"]{touch-action:none;}
     input[type="text"], textarea{font-size:1rem;}
+
+    /* leave a "landing pad" under each input for scroll‑into‑view */
+    input, textarea{
+      scroll-margin-block-end: 8rem;     /* space for nav + keyboard       */
+    }
+
+    /* Gentle visual cues while typing */
+    body.keyboard-open #buttonContainer{
+      box-shadow:0 -2px 16px rgba(0,0,0,.15);
+    }
 
     /* Misc mobile polish */
     body{overscroll-behavior:contain;}  /* prevents iOS "bounce" trapping    */
@@ -704,7 +718,7 @@
     <p class="text-lg md:text-2xl text-white mb-10 drop-shadow">
       Answer a few questions, sip, rate, repeat — our AI optimizes your coffee until it’s perfect for you.
     </p>
-    <a class="bg-[#16a34a] text-white px-6 py-3 rounded-full font-medium text-lg hover:bg-[#22c55e] transition-colors" href="#quiz">Create your custom blend</a>
+    <button id="heroButton" class="bg-[#16a34a] text-white px-6 py-3 rounded-full font-medium text-lg hover:bg-[#22c55e] transition-colors cursor-pointer">Create your custom blend</button>
   </div>
 </section>
 
@@ -896,7 +910,7 @@ const TAB_CONTACT = 'ContactCapture';
 ------------------------------------------------------------------*/
 const quizData = [
   {label:'What roast level do you enjoy most?', type:'radio', name:'roastLevel', options:['Light','Light-Medium','Medium','Medium-Dark','Dark']},
-  {label:'Which flavor notes do you love?', type:'multi-range', names:['flavorNutty','flavorFruity','flavorFloral','flavorSmoky'], min:0,max:100,step:1,flavors:['Nutty','Fruity','Floral','Smoky']},
+  {label:'Tell us about your flavor preferences', type:'multi-range', names:['flavorNutty','flavorFruity','flavorFloral','flavorSmoky'], min:0,max:100,step:1,flavors:['Nutty','Fruity','Floral','Smoky']},
   {label:'How do you usually brew your coffee?', type:'radio', name:'brewMethod', options:['Drip','Pour-over','French Press','Espresso','Single-Serve Pod','Cold Brew','Other']},
   {label:'What brewing equipment do you have?', type:'text', name:'equipmentDetails'},
   {label:'How do you take your coffee? (select all that apply)', type:'checkbox', names:['addMilk','addDairyFree','addSugar'], options:['Milk / Cream','Dairy‑free Milk','Sugar / Syrup']},
@@ -1337,7 +1351,7 @@ function renderQuestion(idx){
             
             <div class="text-center">
               <label for="${q.name}" class="block font-medium mb-1 text-sm">${q.label}</label>
-              <input type="text" id="${q.name}" name="${q.name}" maxlength="25" class="w-full max-w-xs border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" value="${answers[q.name]||''}" placeholder="e.g., Perfect Balance">
+              <input type="text" id="${q.name}" name="${q.name}" maxlength="25" autocapitalize="words" class="w-full max-w-xs border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" value="${answers[q.name]||''}" placeholder="e.g., Perfect Balance">
               <div id="blendSuggestions" class="mt-2 flex flex-wrap justify-center gap-1"></div>
             </div>
 
@@ -1486,6 +1500,15 @@ prevBtn.addEventListener('click', () => {
 
 updateUI(); // initial render
 
+// Hero button gentle scroll
+document.getElementById('heroButton').addEventListener('click', function() {
+  const quizSection = document.getElementById('quiz');
+  quizSection.scrollIntoView({ 
+    behavior: 'smooth',
+    block: 'start'
+  });
+});
+
 // Escape functionality
 document.getElementById('quizEscape').addEventListener('click', function() {
   // Reset to initial state
@@ -1612,15 +1635,15 @@ async function handleCheckout() {
         <h4 class="font-semibold text-xs mb-2 text-gray-800">Shipping Information</h4>
         <div>
           <label class="block font-medium mb-1 text-xs" for="contactName">Full Name</label>
-          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" type="text" id="contactName" name="contactName" required>
+          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" type="text" id="contactName" name="contactName" autocomplete="name" required>
         </div>
         <div>
           <label class="block font-medium mb-1 text-xs" for="contactEmail">Email Address</label>
-          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" type="email" id="contactEmail" name="contactEmail" required>
+          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" type="email" id="contactEmail" name="contactEmail" autocomplete="email" required>
         </div>
         <div>
           <label class="block font-medium mb-1 text-xs" for="contactPhone">Phone Number</label>
-          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" type="tel" id="contactPhone" name="contactPhone" required>
+          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" type="tel" id="contactPhone" name="contactPhone" inputmode="tel" autocomplete="tel" required>
         </div>
         <p id="contactError" class="hidden text-center text-red-500 font-semibold mt-1 text-xs"></p>
       </div>
@@ -1866,16 +1889,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 /* ——— Mobile-first refactor JavaScript ——— */
-/* Dynamic vh unit (solves soft‑keyboard shrink on iOS & Android) */
+/* Dynamic vh unit - only update on orientation change, not keyboard events */
+let lastVH = window.innerHeight;
+function setVhOncePerOrientation () {
+  const now = window.innerHeight;
+  /* ignore keyboard deltas (< 160 px), react only to rotation */
+  if (Math.abs(now - lastVH) > 200){
+    document.documentElement.style.setProperty('--vh', `${now * .01}px`);
+    lastVH = now;
+  }
+}
+window.addEventListener('resize', setVhOncePerOrientation, {passive:true});
+
+/* Keep navigation bar above keyboard */
 (function () {
-  const setVh = () => {
-    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-    document.documentElement.style.setProperty('--vh', `${vh * 0.01}px`);
+  const nav = document.getElementById('buttonContainer');
+  if (!window.visualViewport || !nav) return;
+
+  const stickAboveKeyboard = () => {
+    /* distance between layout viewport and visual viewport bottoms */
+    const kbHeight = window.innerHeight - window.visualViewport.height - 
+                     window.visualViewport.offsetTop;
+    /* 0 when keyboard hidden, >0 when visible                       */
+    nav.style.transform = `translate(-50%, -${kbHeight}px)`;
   };
-  setVh();
-  /* resize fires when the keyboard opens/closes */
-  (window.visualViewport || window).addEventListener('resize', setVh);
+
+  window.visualViewport.addEventListener('resize', stickAboveKeyboard);
+  stickAboveKeyboard();                  // run once on load
 })();
+
+/* Toggle keyboard-open class for visual cues */
+(function(){
+  const toggle = () => {
+    const open = window.visualViewport &&
+                 window.innerHeight > window.visualViewport.height + 80;
+    document.body.classList.toggle('keyboard-open', open);
+  };
+  window.visualViewport?.addEventListener('resize', toggle);
+})();
+
+/* Focus handler: centre the element inside the scrolling card */
+document.addEventListener('focusin', e => {
+  if (e.target.matches('input, textarea')){
+    e.target.scrollIntoView({block:'center', behavior:'smooth'});
+  }
+});
 
 /* ——— make sure the newly rendered question is scrolled into view ——— */
 function renderQuestionMobileScrollGuard () {
