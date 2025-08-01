@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>RoastPortal – Personalized Coffee Quiz | Find Your Perfect Roast</title>
 
   <!-- ╔═════════════ SEO & Social ═════════════╗ -->
@@ -41,7 +41,7 @@
     .pill-input input:checked + span{background:#22c55e;color:#fff;border-color:#22c55e}
     .pill-input label span{transition:.2s;padding:.5rem 1.25rem;border-radius:9999px;border:1px solid #d1d5db;cursor:pointer;display:inline-block}
     .question{display:none;min-height:200px}.question.active{display:block}
-    .wordmark{font-family:'Kanit','Poppins','Nunito',sans-serif;font-size:2rem;letter-spacing:.04em;text-transform:uppercase;line-height:1.1}
+    .wordmark{font-family:'Kanit','Poppins','Nunito',sans-serif;font-size:clamp(1.25rem, 4vw, 2rem);letter-spacing:.04em;text-transform:uppercase;line-height:1.1;white-space:nowrap}
     .wordmark .roast,.wordmark .portal{color:#1a0f05;margin:0;padding:0;display:inline}
     html{scroll-padding-top:80px}html,body{font-family:'Kanit','Poppins','Nunito','Playfair Display',sans-serif}
     textarea{font-size:1.15rem;padding:0.75rem 1rem !important;border:2px solid #d1d5db;border-radius:.75rem;background:#f8fafc;color:#2b1608;transition:border .2s,box-shadow .2s;min-height:4.5rem;text-align:left;box-sizing:border-box}
@@ -124,12 +124,12 @@
 
     .quiz-fullscreen .flex.justify-between {
       flex-shrink: 0;
-      height: 4rem; /* more height for buttons */
+      height: auto;
       align-items: center;
-      margin-top: 0.5rem; /* more margin */
+      margin-top: 0;
       display: flex !important;
-      justify-content: space-between;
-      width: 100%;
+      justify-content: center;
+      width: auto;
       gap: 1rem;
     }
 
@@ -405,6 +405,217 @@
       border: 2px solid #000 !important;
       box-shadow: 0 0 5px rgba(0,0,0,0.1) !important;
       transition: box-shadow .2s !important;
+    }
+
+    /* ───────── Mobile-first refactor ───────── */
+    /* Dynamic viewport units (handles the mobile keyboard nicely) */
+    :root{
+      --vh: 1vh;                            /* JS keeps this in sync            */
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Full‑screen quiz container */
+    .quiz-fullscreen{
+      position: fixed;                      /* keep it above the page           */
+      inset: 0;
+      height: calc(var(--vh) * 100);        /* 100 dvh on browsers that support it,
+                                               graceful fallback everywhere   */
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;                     /* allow the page to scroll         */
+      scroll-behavior: smooth;              /* nicer scrolling                  */
+      padding-bottom: calc(var(--safe-bottom) + 5rem); /* space for buttons   */
+    }
+
+    /* Form grows / scrolls instead of being clipped */
+    #quizForm{flex:1 1 auto; display:flex; flex-direction:column;}
+    #quizCard{
+      flex:1 1 auto;
+      overflow-y:auto;              /* lets content scroll inside          */
+      padding:1rem 0 6rem;          /* extra bottom room for fixed buttons */
+    }
+
+    /* remove the rigid desktop height so small screens are never clipped */
+    #quizCard{height:auto !important;}
+
+    /* Navigation buttons always in view */
+    #buttonContainer{
+      position: fixed;                         /* always in same spot            */
+      bottom: calc(var(--safe-bottom) + 1rem);
+      left: 50%;
+      transform: translateX(-50%);             /* center horizontally            */
+      z-index: 20;
+      background:#fff;                         /* readable over quiz content     */
+      padding:.75rem 1rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 90vw;
+      width: auto;
+      min-width: 280px;
+    }
+
+    /* make the two buttons sit next to each other nicely on narrow screens */
+    #buttonContainer button{flex:1 1 45%;}
+
+    /* Question body tweaks */
+    .question-body{padding-inline: .5rem;}
+
+    /* give range & text inputs a touch‑friendly size on small devices */
+    input[type="range"]{touch-action:none;}
+    input[type="text"], textarea{font-size:1rem;}
+
+    /* Misc mobile polish */
+    body{overscroll-behavior:contain;}  /* prevents iOS "bounce" trapping    */
+
+    /* Name your blend page optimizations */
+    .custom-roast-content .space-y-2 > * + * {
+      margin-top: 0.5rem;
+    }
+
+    /* ╔═════════════  Small phones (≤ 360 px)  ═════════════╗ */
+    @media (max-width: 360px){
+
+      /* Shrink the global type scale a notch so long labels wrap less */
+      html{font-size:15px;}
+
+      /* ─── 1. SINGLE RANGE questions  ─── */
+      /* Original markup:
+         <span>min</span> <div class="relative">slider</div> <span>max</span>
+         lives inside .flex.items-end                                         */
+      .question-body .flex.items-end{
+          /* turn row into 2‑row grid: slider on top, labels below */
+          display:grid;
+          grid-template-areas:
+            "slider"
+            "labels";
+          row-gap:.25rem;
+      }
+      .question-body .flex.items-end .relative{grid-area:slider;}
+
+      /* both <span> elements share the "labels" row; we push them to the edges */
+      .question-body .flex.items-end > span{grid-area:labels;}
+      .question-body .flex.items-end > span:first-child{justify-self:start;}
+      .question-body .flex.items-end > span:last-child {justify-self:end;}
+
+      /* make sure the slider track is full‑width and touch‑friendly */
+      .question-body .flex.items-end .relative input[type="range"]{
+          width:100%;
+      }
+
+      /* ─── 2. MULTI‑RANGE flavour sliders  ─── */
+      /* Dislike | slider | Love‑it   →   slider
+                                          Dislike       Love‑it             */
+      .question-body .flex.items-center{
+          display:grid;
+          grid-template-areas:
+            "slider"
+            "labels";
+          row-gap:.25rem;
+      }
+      .question-body .flex.items-center input[type="range"]{grid-area:slider;}
+      .question-body .flex.items-center span{grid-area:labels;}
+      .question-body .flex.items-center span:first-child{justify-self:start;}
+      .question-body .flex.items-center span:last-child {justify-self:end;}
+
+      /* ─── 3. Navigation buttons need a tad more room ─── */
+      #buttonContainer button{padding-inline:.75rem;}
+
+      /* ─── 4. Name your blend page ultra-compact ─── */
+      .custom-roast-content .space-y-2 > * + * {
+        margin-top: 0.25rem;
+      }
+      
+      .custom-roast-content h3 {
+        font-size: 0.875rem !important;
+        margin-bottom: 0.125rem !important;
+      }
+      
+      .custom-roast-content h4 {
+        font-size: 0.75rem !important;
+      }
+      
+      .custom-roast-content p {
+        font-size: 0.625rem !important;
+        line-height: 1.3 !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+      }
+
+    }
+
+    /* ╔═════════════  Consistent desktop card (≥ 640 px)  ═════════════╗ */
+    @media (min-width: 640px){
+
+      /* Card itself (on desktop the height stops changing) */
+      #quizCard{
+        max-width: 28rem;            /* 448 px – looks tidy next to 16 px base type  */
+        height: 540px;               /* one neat "playing card"                       */
+        padding: 2rem 2.25rem 2rem;  /* consistent padding, buttons are fixed below   */
+        margin-inline:auto;
+        margin-bottom: 6rem;         /* space for fixed buttons                       */
+        overflow:hidden;             /* keep radar‑chart & bubbles inside             */
+        background:#fff;
+        border-radius:1.25rem;
+        box-shadow:0 6px 24px rgba(0,0,0,.08);
+      }
+
+      /* Give the top stack (title + help note) a fixed slot               */
+      #quizCard h3{
+        font-size:1.25rem;
+        line-height:1.4;
+        font-weight:600;
+        text-align:center;
+        margin:0 0 .5rem;
+        min-height:3.5rem;           /* ══  Title area never shrinks / grows  ══      */
+        display:flex;align-items:center;justify-content:center;
+      }
+
+      /* Any sub‑note <p> we inject right after the <h3> lives here         */
+      #quizCard h3 + p{
+        font-size:.875rem;
+        text-align:center;
+        color:#6b7280;
+        min-height:2rem;             /* fixed, so other questions without a note
+                                        leave the same gap                               */
+        display:flex;align-items:center;justify-content:center;
+        margin-bottom:1rem;
+      }
+
+      /* The interactive block expands/contracts but keeps min height       */
+      .question-body{
+        flex:1 1 auto;
+        min-height:0;                /* allow internal scroll on overflow             */
+        display:flex;align-items:center;justify-content:center;
+        width:100%;
+      }
+
+      /* Radio / pill wrappers never spill vertically                       */
+      .pill-input{max-height:100%; overflow:auto; padding:.25rem;}
+
+      /* Single & multi‑range sliders stay centered                         */
+      .question-body .flex.items-end,
+      .question-body .flex.items-center{width:100%;}
+
+      /* Navigation bar is fixed and consistent on wide screens             */
+      #buttonContainer{
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 28rem;
+        width: auto;
+        min-width: 320px;
+        margin-inline: 0;
+      }
+      #buttonContainer button{
+        height: 3rem;
+        min-width: 120px;
+      }
+
+      /* Body text inputs: make them a touch taller so the card still looks balanced */
+      input[type="text"], textarea{padding-block:.75rem;}
+
+      /* Review & checkout screens inherit the same frame automatically     */
     }
   </style>
 </head>
@@ -994,23 +1205,23 @@ function renderQuestion(idx){
 
       quizCard.innerHTML=`
         <div class="w-full max-w-md mx-auto custom-roast-content">
-          <div class="space-y-3 pb-3">
+          <div class="space-y-2 pb-2">
             <div class="text-center">
-              <h3 class="text-lg font-semibold text-gray-800 mb-1">Your custom roast profile</h3>
+              <h3 class="text-base font-semibold text-gray-800 mb-0.5">Your custom roast profile</h3>
               <h4 class="text-sm font-bold text-gray-700">${blendTitle}</h4>
             </div>
             
             <div class="flex justify-center">
-              <div style="width: min(260px, 90vw); height: min(260px, 90vw);">${radarChartHTML}</div>
+              <div style="width: min(200px, 75vw); height: min(200px, 75vw);">${radarChartHTML}</div>
             </div>
             
             <div class="text-center">
               <label for="${q.name}" class="block font-medium mb-1 text-sm">${q.label}</label>
-              <input type="text" id="${q.name}" name="${q.name}" maxlength="25" class="w-full max-w-xs border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" value="${answers[q.name]||''}">
+              <input type="text" id="${q.name}" name="${q.name}" maxlength="25" class="w-full max-w-xs border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" value="${answers[q.name]||''}">
             </div>
 
             <div class="text-center">
-              <p class="text-gray-600 text-sm leading-tight">${creatorsNote}</p>
+              <p class="text-gray-600 text-xs leading-tight px-2">${creatorsNote}</p>
             </div>
           </div>
         </div>`;
@@ -1525,6 +1736,49 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+</script>
+
+<script>
+/* ——— Mobile-first refactor JavaScript ——— */
+/* Dynamic vh unit (solves soft‑keyboard shrink on iOS & Android) */
+(function () {
+  const setVh = () => {
+    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    document.documentElement.style.setProperty('--vh', `${vh * 0.01}px`);
+  };
+  setVh();
+  /* resize fires when the keyboard opens/closes */
+  (window.visualViewport || window).addEventListener('resize', setVh);
+})();
+
+/* ——— make sure the newly rendered question is scrolled into view ——— */
+function renderQuestionMobileScrollGuard () {
+  const card = document.getElementById('quizCard');
+  if(card) card.scrollTop = 0;      /* jump to top                       */
+  /* optionally focus the first interactive element (already in your code) */
+}
+
+/* hook it into your existing updateUI() / renderQuestion() cycle */
+const _renderQuestion = renderQuestion;      // keep the original
+renderQuestion = (idx) => {                  // override
+  _renderQuestion(idx);
+  renderQuestionMobileScrollGuard();
+};
+</script>
+
+<script>
+/* augment the existing scroll‑guard */
+function renderQuestionDesktopScrollGuard(){
+  if (window.innerWidth >= 640){
+    const card = document.getElementById('quizCard');
+    if(card) card.scrollTop = 0;
+  }
+}
+const _renderQuestionStable = renderQuestion;          // keep last override
+renderQuestion = (idx)=>{
+  _renderQuestionStable(idx);                           // draw question
+  renderQuestionDesktopScrollGuard();                   // then align frame
+};
 </script>
 </body>
 </html>
