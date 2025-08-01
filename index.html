@@ -949,7 +949,7 @@ function generateBlendNameSuggestions(answers, flavors, primaryNotes) {
   // Get roast level suggestions
   const roastNames = {
     'Light': ['Bright Morning', 'Sunrise Blend', 'Golden Hour'],
-    'Light-Medium': ['Dawn Roast', 'Morning Glory', 'First Light'],
+    'Light-Medium': ['Dawn Roast', 'Aurora Blend', 'First Light'],
     'Medium': ['Midday Magic', 'Perfect Balance', 'Golden Mean'],
     'Medium-Dark': ['Evening Blend', 'Twilight Roast', 'Dusk Special'],
     'Dark': ['Midnight Roast', 'Dark Knight', 'Bold Evening']
@@ -1337,7 +1337,7 @@ function renderQuestion(idx){
             
             <div class="text-center">
               <label for="${q.name}" class="block font-medium mb-1 text-sm">${q.label}</label>
-              <input type="text" id="${q.name}" name="${q.name}" maxlength="25" class="w-full max-w-xs border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" value="${answers[q.name]||''}" placeholder="e.g., Morning Glory">
+              <input type="text" id="${q.name}" name="${q.name}" maxlength="25" class="w-full max-w-xs border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" value="${answers[q.name]||''}" placeholder="e.g., Perfect Balance">
               <div id="blendSuggestions" class="mt-2 flex flex-wrap justify-center gap-1"></div>
             </div>
 
