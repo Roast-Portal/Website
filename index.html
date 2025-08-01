@@ -472,6 +472,23 @@
       margin-top: 0.5rem;
     }
 
+    /* Blend name suggestion chips */
+    .suggestion-chip {
+      font-size: 0.75rem;
+      white-space: nowrap;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .suggestion-chip:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .suggestion-chip:active {
+      transform: translateY(0);
+    }
+
     /* ╔═════════════  Small phones (≤ 360 px)  ═════════════╗ */
     @media (max-width: 360px){
 
@@ -918,6 +935,106 @@ document.getElementById('contactUserId').value = userId;
 /*------------------------------------------------------------------
   RENDERING
 ------------------------------------------------------------------*/
+
+function generateBlendNameSuggestions(answers, flavors, primaryNotes) {
+  const suggestions = [];
+  
+  // Get personality-based suggestions
+  const personalityNames = {
+    'Bring on the funk!': ['Funk Master', 'Wild Explorer', 'Flavor Adventure', 'Bold Journey'],
+    'Enjoy some variety': ['Artisan Blend', 'Crafted Choice', 'Balanced Discovery', 'Perfect Harmony'],
+    'Stick to classics': ['Classic Comfort', 'Traditional Roast', 'Timeless Blend', 'Heritage Cup']
+  };
+  
+  // Get roast level suggestions
+  const roastNames = {
+    'Light': ['Bright Morning', 'Sunrise Blend', 'Golden Hour'],
+    'Light-Medium': ['Dawn Roast', 'Morning Glory', 'First Light'],
+    'Medium': ['Midday Magic', 'Perfect Balance', 'Golden Mean'],
+    'Medium-Dark': ['Evening Blend', 'Twilight Roast', 'Dusk Special'],
+    'Dark': ['Midnight Roast', 'Dark Knight', 'Bold Evening']
+  };
+  
+  // Get flavor-based suggestions
+  const topFlavor = flavors.sort((a, b) => b.value - a.value)[0];
+  const flavorNames = {
+    'Nutty': ['Hazelnut Dream', 'Almond Joy', 'Nutty Delight'],
+    'Fruity': ['Berry Burst', 'Citrus Sunrise', 'Fruit Garden'],
+    'Floral': ['Garden Bloom', 'Floral Fantasy', 'Spring Breeze'],
+    'Smoky': ['Campfire Blend', 'Smoky Mountain', 'Fire Roast']
+  };
+  
+  // Get brew method suggestions
+  const brewNames = {
+    'Drip': ['Daily Drip', 'Morning Ritual', 'Perfect Pour'],
+    'Pour-over': ['Artisan Pour', 'Craft Coffee', 'Pour Perfection'],
+    'French Press': ['Press Perfect', 'French Roast', 'Bold Press'],
+    'Espresso': ['Shot Perfect', 'Espresso Elite', 'Café Supreme'],
+    'Single-Serve Pod': ['Pod Perfect', 'Quick Brew', 'Instant Joy'],
+    'Cold Brew': ['Chill Blend', 'Cold Comfort', 'Smooth Chill']
+  };
+  
+  // Add personality suggestions
+  if (answers.personality && personalityNames[answers.personality]) {
+    suggestions.push(...personalityNames[answers.personality].slice(0, 2));
+  }
+  
+  // Add roast level suggestions
+  if (answers.roastLevel && roastNames[answers.roastLevel]) {
+    suggestions.push(...roastNames[answers.roastLevel].slice(0, 2));
+  }
+  
+  // Add flavor suggestions
+  if (topFlavor && flavorNames[topFlavor.name]) {
+    suggestions.push(...flavorNames[topFlavor.name].slice(0, 2));
+  }
+  
+  // Add brew method suggestions
+  if (answers.brewMethod && brewNames[answers.brewMethod]) {
+    suggestions.push(...brewNames[answers.brewMethod].slice(0, 1));
+  }
+  
+  // Add some creative combinations
+  const creativeNames = [
+    'My Perfect Cup',
+    'Custom Creation',
+    'Personal Blend',
+    'Signature Roast',
+    'Daily Special'
+  ];
+  suggestions.push(...creativeNames.slice(0, 2));
+  
+  // Remove duplicates and limit to 6 suggestions
+  return [...new Set(suggestions)].slice(0, 6);
+}
+
+function renderBlendSuggestions(suggestions) {
+  const container = document.getElementById('blendSuggestions');
+  const input = document.getElementById('blendName');
+  
+  if (!container || !input) return;
+  
+  container.innerHTML = suggestions.map(suggestion => 
+    `<button type="button" class="suggestion-chip px-2 py-1 text-xs bg-gray-100 hover:bg-[#22c55e] hover:text-white border border-gray-300 rounded-full transition-colors cursor-pointer">${suggestion}</button>`
+  ).join('');
+  
+  // Add click handlers
+  container.querySelectorAll('.suggestion-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      input.value = chip.textContent;
+      answers.blendName = chip.textContent;
+      
+      // Visual feedback
+      chip.style.background = '#22c55e';
+      chip.style.color = 'white';
+      setTimeout(() => {
+        chip.style.background = '';
+        chip.style.color = '';
+      }, 200);
+    });
+  });
+}
+
 function createRadarChart(flavors) {
     const size = 260; // Increased size to accommodate labels
     const center = size / 2;
@@ -1202,6 +1319,9 @@ function renderQuestion(idx){
       const creatorsNote = `A ${answers.roastLevel.toLowerCase()} roast highlighting ${primaryNotes.toLowerCase()} notes. ${noteAdjective} and perfect for your ${answers.brewMethod.toLowerCase()} coffee.`;
       
       const radarChartHTML = createRadarChart(flavors);
+      
+      // Generate smart blend name suggestions
+      const suggestions = generateBlendNameSuggestions(answers, flavors, primaryNotes);
 
       quizCard.innerHTML=`
         <div class="w-full max-w-md mx-auto custom-roast-content">
@@ -1217,7 +1337,8 @@ function renderQuestion(idx){
             
             <div class="text-center">
               <label for="${q.name}" class="block font-medium mb-1 text-sm">${q.label}</label>
-              <input type="text" id="${q.name}" name="${q.name}" maxlength="25" class="w-full max-w-xs border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" value="${answers[q.name]||''}">
+              <input type="text" id="${q.name}" name="${q.name}" maxlength="25" class="w-full max-w-xs border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" value="${answers[q.name]||''}" placeholder="e.g., Morning Glory">
+              <div id="blendSuggestions" class="mt-2 flex flex-wrap justify-center gap-1"></div>
             </div>
 
             <div class="text-center">
@@ -1225,6 +1346,11 @@ function renderQuestion(idx){
             </div>
           </div>
         </div>`;
+        
+        // Render suggestion chips after DOM is created
+        setTimeout(() => {
+          renderBlendSuggestions(suggestions);
+        }, 50);
     } else {
       // Regular text question
     quizCard.innerHTML=`
