@@ -1419,10 +1419,17 @@ function renderQuestion(idx){
           // Blur the textarea to close mobile keyboard
           el.blur();
           
-          // Small delay to allow keyboard to close gracefully, then proceed
+          // Add visual feedback - briefly highlight the input
+          const originalBorder = el.style.border;
+          el.style.border = '2px solid #22c55e';
+          el.style.transition = 'border-color 0.3s ease';
+          
+          // Longer delay to allow keyboard to close and user to understand what happened
           setTimeout(() => {
+            // Reset border style
+            el.style.border = originalBorder;
             autoNext();
-          }, 250); // 250ms delay for smooth keyboard close
+          }, 800); // 800ms delay for graceful keyboard close and user comprehension
         }
         // Shift+Enter allows new line (default behavior)
       });
@@ -1437,10 +1444,17 @@ function renderQuestion(idx){
           // Blur the input to close mobile keyboard
           el.blur();
           
-          // Small delay to allow keyboard to close gracefully, then proceed
+          // Add visual feedback - briefly highlight the input
+          const originalBorder = el.style.border;
+          el.style.border = '2px solid #22c55e';
+          el.style.transition = 'border-color 0.3s ease';
+          
+          // Longer delay to allow keyboard to close and user to understand what happened
           setTimeout(() => {
+            // Reset border style
+            el.style.border = originalBorder;
             autoNext();
-          }, 250); // 250ms delay for smooth keyboard close
+          }, 800); // 800ms delay for graceful keyboard close and user comprehension
         }
       });
     }
@@ -2057,6 +2071,16 @@ function handleContactSubmission() {
   document.addEventListener('touchstart', e => {
     if (!isQuizActive()) return;
     
+    // Ignore touches that start on sliders or input elements
+    const target = e.target;
+    if (target && (
+      target.type === 'range' || 
+      target.tagName.toLowerCase() === 'input' ||
+      target.closest('input[type="range"]')
+    )) {
+      return; // Don't track swipes that start on interactive elements
+    }
+    
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
   }, { passive: true });
@@ -2064,10 +2088,19 @@ function handleContactSubmission() {
   document.addEventListener('touchend', e => {
     if (!isQuizActive()) return;
     
+    // Only process swipe if we have valid start coordinates (not starting on interactive elements)
+    if (touchStartX === 0 && touchStartY === 0) {
+      return; // No valid start coordinates means touch started on excluded element
+    }
+    
     touchEndX = e.changedTouches[0].screenX;
     touchEndY = e.changedTouches[0].screenY;
     
     handleSwipe();
+    
+    // Reset coordinates after handling
+    touchStartX = 0;
+    touchStartY = 0;
   }, { passive: true });
   
   function handleSwipe() {
