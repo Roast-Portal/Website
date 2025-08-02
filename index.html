@@ -1378,46 +1378,69 @@ function renderQuestion(idx){
   else if(q.type==='text'){
     // Check if this is the blend name question
     if(q.name === 'blendName') {
-      // Generate roast profile content
-      let blendTitle = 'Your custom blend';
-      switch (answers.personality) {
-        case 'Bring on the funk!':
-          blendTitle = 'The Explorer';
-          break;
-        case 'Enjoy some variety':
-          blendTitle = 'The Artisan';
-          break;
-        case 'Stick to classics':
-          blendTitle = 'The Connoisseur';
-          break;
-      }
+      try {
+        // Generate roast profile content with error handling
+        let blendTitle = 'Your custom blend';
+        if (answers.personality) {
+          switch (answers.personality) {
+            case 'Bring on the funk!':
+              blendTitle = 'The Explorer';
+              break;
+            case 'Enjoy some variety':
+              blendTitle = 'The Artisan';
+              break;
+            case 'Stick to classics':
+              blendTitle = 'The Connoisseur';
+              break;
+          }
+        }
 
-      const flavors = [
-        { name: 'Nutty', value: parseInt(answers.flavorNutty, 10) },
-        { name: 'Fruity', value: parseInt(answers.flavorFruity, 10) },
-        { name: 'Floral', value: parseInt(answers.flavorFloral, 10) },
-        { name: 'Smoky', value: parseInt(answers.flavorSmoky, 10) }
-      ];
+        // Safe parseInt with fallbacks for mobile
+        const flavors = [
+          { name: 'Nutty', value: parseInt(answers.flavorNutty || '50', 10) || 50 },
+          { name: 'Fruity', value: parseInt(answers.flavorFruity || '50', 10) || 50 },
+          { name: 'Floral', value: parseInt(answers.flavorFloral || '50', 10) || 50 },
+          { name: 'Smoky', value: parseInt(answers.flavorSmoky || '50', 10) || 50 }
+        ];
 
-      let noteAdjective = '';
-      switch(answers.tasteBalance) {
-          case 'Sweet & Smooth':
-              noteAdjective = "Approachable and satisfying";
-              break;
-          case 'Tart & Complex':
-              noteAdjective = "Bright and wonderfully complex";
-              break;
-          case 'Rich & Bitter':
-              noteAdjective = "Deeply satisfying and bold";
-              break;
-      }
-      const primaryNotes = flavors.sort((a, b) => b.value - a.value).slice(0, 2).map(f => f.name).join(' & ');
-      const creatorsNote = `A ${answers.roastLevel.toLowerCase()} roast highlighting ${primaryNotes.toLowerCase()} notes. ${noteAdjective} and perfect for your ${answers.brewMethod.toLowerCase()} coffee.`;
-      
-      const radarChartHTML = createRadarChart(flavors);
-      
-      // Generate smart blend name suggestions
-      const suggestions = generateBlendNameSuggestions(answers, flavors, primaryNotes);
+        let noteAdjective = 'Well-balanced and delicious';
+        if (answers.tasteBalance) {
+          switch(answers.tasteBalance) {
+              case 'Sweet & Smooth':
+                  noteAdjective = "Approachable and satisfying";
+                  break;
+              case 'Tart & Complex':
+                  noteAdjective = "Bright and wonderfully complex";
+                  break;
+              case 'Rich & Bitter':
+                  noteAdjective = "Deeply satisfying and bold";
+                  break;
+          }
+        }
+        
+        const primaryNotes = flavors.sort((a, b) => b.value - a.value).slice(0, 2).map(f => f.name).join(' & ');
+        const roastLevel = (answers.roastLevel || 'medium').toLowerCase();
+        const brewMethod = (answers.brewMethod || 'drip').toLowerCase();
+        const creatorsNote = `A ${roastLevel} roast highlighting ${primaryNotes.toLowerCase()} notes. ${noteAdjective} and perfect for your ${brewMethod} coffee.`;
+        
+        // Try to create radar chart with fallback
+        let radarChartHTML = '';
+        try {
+          radarChartHTML = createRadarChart(flavors);
+        } catch (chartError) {
+          console.warn('Radar chart failed on mobile, using fallback:', chartError);
+          radarChartHTML = '<div class="text-center text-gray-500 text-sm p-4">Flavor Profile:<br>' + 
+                          flavors.map(f => `${f.name}: ${f.value}%`).join('<br>') + '</div>';
+        }
+        
+        // Generate smart blend name suggestions with fallback
+        let suggestions = [];
+        try {
+          suggestions = generateBlendNameSuggestions(answers, flavors, primaryNotes);
+        } catch (suggestionError) {
+          console.warn('Blend suggestions failed on mobile, using fallback:', suggestionError);
+          suggestions = ['Custom Blend', 'Perfect Balance', 'Personal Pick'];
+        }
 
       quizCard.innerHTML=`
         <div class="w-full max-w-md mx-auto custom-roast-content">
@@ -1443,10 +1466,27 @@ function renderQuestion(idx){
           </div>
         </div>`;
         
-        // Render suggestion chips after DOM is created
+        // Render suggestion chips after DOM is created with error handling
         setTimeout(() => {
-          renderBlendSuggestions(suggestions);
+          try {
+            renderBlendSuggestions(suggestions);
+          } catch (renderError) {
+            console.warn('Blend suggestions rendering failed on mobile:', renderError);
+          }
         }, 50);
+        
+      } catch (mainError) {
+        console.error('Blend name page failed to load on mobile:', mainError);
+        // Fallback to simple text input
+        quizCard.innerHTML = `
+          <div class="w-full max-w-md mx-auto">
+            <h3 class="text-lg font-semibold mb-3 text-center">${q.label}</h3>
+            <div class="question-body">
+              <input type="text" id="${q.name}" name="${q.name}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" value="${answers[q.name]||''}" placeholder="My Custom Blend">
+              <p class="text-sm text-gray-500 mt-2 text-center">Name your personalized coffee blend</p>
+            </div>
+          </div>`;
+      }
     } else {
       // Regular text question
     quizCard.innerHTML=`
