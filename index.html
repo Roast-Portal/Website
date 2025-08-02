@@ -489,6 +489,16 @@
 
     /* Question body tweaks */
     .question-body{padding-inline: .5rem;}
+    
+    /* Extra bottom padding for multi-range sliders to prevent button overlap */
+    .multi-range-container {
+      padding-bottom: 3rem !important; /* Extra space for iPhone */
+    }
+    
+    /* Additional margin for the last slider to ensure it's visible */
+    .slider-with-end-labels:last-child {
+      margin-bottom: 1rem;
+    }
 
     /* give range & text inputs a touch‑friendly size on small devices */
     input[type="range"]{
@@ -1358,7 +1368,7 @@ function renderQuestion(idx){
     quizCard.innerHTML=`
       <div class="w-full max-w-md mx-auto">
         <h3 class="text-lg font-semibold mb-3 text-center">${q.label}</h3>
-        <div class="question-body">
+        <div class="question-body multi-range-container">
           <div class="space-y-3 w-full">${q.names.map((n,i)=>`
             <div>
               <p class="mb-1 text-xs text-center">${q.flavors[i]}</p>
