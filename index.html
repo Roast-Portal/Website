@@ -76,7 +76,33 @@
       0%{transform:translateX(0)}
       100%{transform:translateX(200vw)}
     }
-    .wave-line{position:absolute;height:2px;background:rgba(34,197,94,.3);width:100vw;top:0;left:-100vw}
+    
+    /* Dot animations - positioned at front of lines */
+    @keyframes dot1{
+      0%{transform:translateX(0vw)}
+      100%{transform:translateX(200vw)}
+    }
+    @keyframes dot2{
+      0%{transform:translateX(0vw)}
+      100%{transform:translateX(200vw)}
+    }
+    @keyframes dot3{
+      0%{transform:translateX(0vw)}
+      100%{transform:translateX(200vw)}
+    }
+    @keyframes dot4{
+      0%{transform:translateX(0vw)}
+      100%{transform:translateX(200vw)}
+    }
+    @keyframes dot5{
+      0%{transform:translateX(0vw)}
+      100%{transform:translateX(200vw)}
+    }
+    @keyframes dot6{
+      0%{transform:translateX(0vw)}
+      100%{transform:translateX(200vw)}
+    }
+    .wave-line{position:absolute;height:2px;background:linear-gradient(to right, transparent 0%, rgba(34,197,94,0.05) 10%, rgba(34,197,94,0.1) 30%, rgba(34,197,94,0.2) 60%, rgba(34,197,94,0.3) 90%, rgba(34,197,94,0.3) 99.8%, rgba(255,255,255,1) 100%);width:100vw;top:0;left:-100vw;z-index:1}
     .wave-line:nth-child(1){animation:wave1 8s linear infinite;top:10%}
     .wave-line:nth-child(2){animation:wave2 12s linear infinite 1.5s;top:20%}
     .wave-line:nth-child(3){animation:wave3 10s linear infinite 3s;top:28%}
@@ -465,8 +491,24 @@
     .question-body{padding-inline: .5rem;}
 
     /* give range & text inputs a touch‑friendly size on small devices */
-    input[type="range"]{touch-action:none;}
+    input[type="range"]{
+      touch-action:none;
+      height: 2rem; /* Larger touch target */
+      -webkit-appearance: none;
+      appearance: none;
+    }
     input[type="text"], textarea{font-size:1rem;}
+    
+    /* Improved slider styling for better mobile interaction */
+    .slider-container {
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    
+    .slider-with-labels input[type="range"] {
+      height: 2.5rem; /* Even larger touch target for sliders */
+      padding: 0.5rem 0;
+    }
 
     /* leave a "landing pad" under each input for scroll‑into‑view */
     input, textarea{
@@ -495,8 +537,16 @@
     
     /* Disable pull-to-refresh during fullscreen mode */
     body.quiz-fullscreen {
-      overscroll-behavior-y: none; /* Disable pull-to-refresh */
+      overscroll-behavior-y: none !important; /* Disable pull-to-refresh */
+      overscroll-behavior: none !important; /* Disable all overscroll */
       -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    }
+    
+    /* Additional iOS Safari specific prevention */
+    body.quiz-fullscreen #quizForm,
+    body.quiz-fullscreen #quizCard {
+      overscroll-behavior-y: none !important;
+      overscroll-behavior: none !important;
     }
 
     /* Name your blend page optimizations */
@@ -1296,13 +1346,15 @@ function renderQuestion(idx){
       <div class="w-full max-w-md mx-auto">
         <h3 class="text-lg font-semibold mb-3 text-center">${q.label}</h3>
         <div class="question-body">
-          <div class="space-y-3 w-full">${q.names.map((n,i)=>`
-            <div>
-              <p class="mb-1 text-xs text-center">${q.flavors[i]}</p>
-              <div class="flex items-center gap-x-2">
-                <span class="text-xs text-gray-500 w-16 text-left flex-shrink-0">Dislike</span>
-                <input type="range" id="${n}" name="${n}" min="${q.min}" max="${q.max}" step="${q.step}" value="${answers[n]??50}" class="w-full accent-[#22c55e]">
-                <span class="text-xs text-gray-500 w-16 text-right flex-shrink-0">Love it</span>
+          <div class="space-y-4 w-full">${q.names.map((n,i)=>`
+            <div class="slider-container">
+              <p class="mb-2 text-xs text-center font-medium">${q.flavors[i]}</p>
+              <div class="slider-with-labels">
+                <input type="range" id="${n}" name="${n}" min="${q.min}" max="${q.max}" step="${q.step}" value="${answers[n]??50}" class="w-full accent-[#22c55e] mb-1">
+                <div class="flex justify-between px-1">
+                  <span class="text-xs text-gray-500">Dislike</span>
+                  <span class="text-xs text-gray-500">Love it</span>
+                </div>
               </div>
             </div>`).join('')}</div>
         </div>
@@ -1994,19 +2046,25 @@ function handleContactSubmission() {
     }
   });
   
-  // Prevent mobile pull-to-refresh gesture
+  // Prevent mobile pull-to-refresh gesture (improved to not interfere with sliders)
   let touchStartY = 0;
+  let isTrackingRefresh = false;
   
   document.addEventListener('touchstart', e => {
     const isFullscreenMode = document.body.classList.contains('quiz-fullscreen');
     if (isFullscreenMode) {
-      touchStartY = e.touches[0].clientY;
+      // Only track for refresh prevention if not touching interactive elements
+      const target = e.target;
+      if (target && !target.closest('input[type="range"], button, .suggestion-chip')) {
+        touchStartY = e.touches[0].clientY;
+        isTrackingRefresh = true;
+      }
     }
-  }, { passive: false });
+  }, { passive: true });
   
   document.addEventListener('touchmove', e => {
     const isFullscreenMode = document.body.classList.contains('quiz-fullscreen');
-    if (isFullscreenMode) {
+    if (isFullscreenMode && isTrackingRefresh) {
       const touchY = e.touches[0].clientY;
       const touchDiff = touchY - touchStartY;
       
@@ -2016,6 +2074,10 @@ function handleContactSubmission() {
       }
     }
   }, { passive: false });
+  
+  document.addEventListener('touchend', () => {
+    isTrackingRefresh = false;
+  }, { passive: true });
 })();
 
 /* --- BACK BUTTON NAVIGATION: use back button for previous question --------- */
