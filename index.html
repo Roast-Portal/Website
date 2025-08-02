@@ -492,6 +492,12 @@
 
     /* Misc mobile polish */
     body{overscroll-behavior:contain;}  /* prevents iOS "bounce" trapping    */
+    
+    /* Disable pull-to-refresh during fullscreen mode */
+    body.quiz-fullscreen {
+      overscroll-behavior-y: none; /* Disable pull-to-refresh */
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    }
 
     /* Name your blend page optimizations */
     .custom-roast-content .space-y-2 > * + * {
@@ -504,7 +510,7 @@
     }
     
     .custom-roast-content {
-      padding-bottom: 1rem !important; /* Moderate additional bottom space */
+      padding-bottom: 3rem !important; /* More aggressive bottom space for mobile */
     }
     
     /* Tighter spacing between elements on blend page */
@@ -606,9 +612,9 @@
         margin-top: 0.25rem !important;
       }
       
-      /* Moderate bottom padding for small phones */
+      /* Generous bottom padding for small phones */
       .custom-roast-content {
-        padding-bottom: 1.5rem !important; /* Reasonable bottom space */
+        padding-bottom: 4rem !important; /* Extra space for iPhone and small screens */
       }
 
     }
@@ -1987,6 +1993,29 @@ function handleContactSubmission() {
       return e.returnValue;
     }
   });
+  
+  // Prevent mobile pull-to-refresh gesture
+  let touchStartY = 0;
+  
+  document.addEventListener('touchstart', e => {
+    const isFullscreenMode = document.body.classList.contains('quiz-fullscreen');
+    if (isFullscreenMode) {
+      touchStartY = e.touches[0].clientY;
+    }
+  }, { passive: false });
+  
+  document.addEventListener('touchmove', e => {
+    const isFullscreenMode = document.body.classList.contains('quiz-fullscreen');
+    if (isFullscreenMode) {
+      const touchY = e.touches[0].clientY;
+      const touchDiff = touchY - touchStartY;
+      
+      // Prevent pull-to-refresh if scrolling down from the top
+      if (touchDiff > 0 && window.scrollY === 0) {
+        e.preventDefault();
+      }
+    }
+  }, { passive: false });
 })();
 
 /* --- BACK BUTTON NAVIGATION: use back button for previous question --------- */
