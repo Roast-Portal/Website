@@ -495,6 +495,33 @@
       touch-action:none;
     }
     input[type="text"], textarea{font-size:1rem;}
+    
+    /* Prevent iOS zoom on contact form inputs */
+    .contact-input {
+      font-size: 16px !important; /* Must be 16px+ to prevent iOS zoom */
+      height: 2.5rem !important; /* Consistent height for all inputs */
+      line-height: 1.25 !important; /* Consistent line height */
+      -webkit-appearance: none;
+      appearance: none;
+      -webkit-tap-highlight-color: transparent; /* Remove iOS tap highlight */
+      transform: translate3d(0, 0, 0); /* Force hardware acceleration for smooth animation */
+      transition: all 0.2s ease; /* Smooth focus transitions */
+      box-sizing: border-box; /* Include padding and border in height */
+    }
+    
+    /* Ensure consistent focus behavior on mobile */
+    .contact-input:focus {
+      transform: translate3d(0, 0, 0); /* Maintain position during focus */
+      outline: none;
+      border-color: #d1d5db !important;
+      box-shadow: 0 0 0 2px #bbf7d0 !important;
+    }
+    
+    /* Error state styling */
+    .contact-input.error {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+    }
 
     /* leave a "landing pad" under each input for scroll‑into‑view */
     input, textarea{
@@ -1817,18 +1844,18 @@ async function handleCheckout() {
 
       <!-- Contact Form -->
       <div class="space-y-2">
-        <h4 class="font-semibold text-xs mb-2 text-gray-800">Shipping Information</h4>
+        <h4 class="font-semibold text-xs mb-2 text-gray-800">Contact Information</h4>
         <div>
           <label class="block font-medium mb-1 text-xs" for="contactName">Full Name</label>
-          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" type="text" id="contactName" name="contactName" autocomplete="name" required>
+          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 contact-input" type="text" id="contactName" name="contactName" autocomplete="name" required>
         </div>
         <div>
           <label class="block font-medium mb-1 text-xs" for="contactEmail">Email Address</label>
-          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" type="email" id="contactEmail" name="contactEmail" autocomplete="email" required>
+          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 contact-input" type="email" id="contactEmail" name="contactEmail" autocomplete="email" required>
         </div>
         <div>
           <label class="block font-medium mb-1 text-xs" for="contactPhone">Phone Number</label>
-          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" type="tel" id="contactPhone" name="contactPhone" inputmode="tel" autocomplete="tel" required>
+          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 contact-input" type="tel" id="contactPhone" name="contactPhone" inputmode="tel" autocomplete="tel" required>
         </div>
         <p id="contactError" class="hidden text-center text-red-500 font-semibold mt-1 text-xs"></p>
       </div>
@@ -1848,6 +1875,22 @@ async function handleCheckout() {
   setupAndRestore(nameField, 'contactName');
   setupAndRestore(emailField, 'contactEmail');
   setupAndRestore(phoneField, 'contactPhone');
+  
+  // Add real-time email validation
+  emailField.addEventListener('input', () => {
+    const contactErrorEl = document.getElementById('contactError');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (emailField.value && !emailRegex.test(emailField.value)) {
+      emailField.classList.add('error');
+    } else {
+      emailField.classList.remove('error');
+      emailField.style.borderColor = ''; // Reset inline styles
+      if (contactErrorEl && contactErrorEl.textContent.includes('valid email address')) {
+        contactErrorEl.classList.add('hidden');
+      }
+    }
+  });
 
   // Add keyboard navigation for contact form fields
   nameField.addEventListener('keydown', (e) => {
@@ -1955,7 +1998,20 @@ function handleContactSubmission() {
         return;
       }
       
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailField.value)) {
+        contactErrorEl.textContent = 'Please enter a valid email address (e.g., name@example.com).';
+        contactErrorEl.classList.remove('hidden');
+        emailField.classList.add('error');
+        emailField.focus();
+        return;
+      }
+      
+      // Clear any error states if validation passes
       contactErrorEl.classList.add('hidden');
+      emailField.classList.remove('error');
+      emailField.style.borderColor = ''; // Reset any inline styles
 
   // --- Background Submission ---
       const contactFD = new FormData();
@@ -2000,7 +2056,19 @@ function handleContactSubmission() {
   sessionStorage.removeItem('contactEmail');
   sessionStorage.removeItem('contactPhone');
 
-  // Note: Removed auto-closing behavior to let users control when they exit
+  // Gracefully close the form after 4 seconds
+  setTimeout(() => {
+    const quizSection = document.getElementById('quiz');
+    quizSection.classList.add('fullscreen-fade-out');
+    
+    setTimeout(() => {
+      document.body.classList.remove('quiz-fullscreen');
+      quizSection.classList.remove('quiz-fullscreen');
+      document.getElementById('quizEscape').classList.add('hidden');
+      quizSection.classList.remove('fullscreen-fade-out');
+      document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+    }, 800); // Fade out animation duration
+  }, 4000); // 4 second delay
 }
 
 // Form submit event listener removed - now using button click handler instead
