@@ -493,22 +493,8 @@
     /* give range & text inputs a touch‑friendly size on small devices */
     input[type="range"]{
       touch-action:none;
-      height: 2rem; /* Larger touch target */
-      -webkit-appearance: none;
-      appearance: none;
     }
     input[type="text"], textarea{font-size:1rem;}
-    
-    /* Improved slider styling for better mobile interaction */
-    .slider-container {
-      padding: 0.5rem;
-      margin: 0.5rem 0;
-    }
-    
-    .slider-with-labels input[type="range"] {
-      height: 2.5rem; /* Even larger touch target for sliders */
-      padding: 0.5rem 0;
-    }
 
     /* leave a "landing pad" under each input for scroll‑into‑view */
     input, textarea{
@@ -1346,14 +1332,14 @@ function renderQuestion(idx){
       <div class="w-full max-w-md mx-auto">
         <h3 class="text-lg font-semibold mb-3 text-center">${q.label}</h3>
         <div class="question-body">
-          <div class="space-y-4 w-full">${q.names.map((n,i)=>`
-            <div class="slider-container">
-              <p class="mb-2 text-xs text-center font-medium">${q.flavors[i]}</p>
-              <div class="slider-with-labels">
-                <input type="range" id="${n}" name="${n}" min="${q.min}" max="${q.max}" step="${q.step}" value="${answers[n]??50}" class="w-full accent-[#22c55e] mb-1">
-                <div class="flex justify-between px-1">
-                  <span class="text-xs text-gray-500">Dislike</span>
-                  <span class="text-xs text-gray-500">Love it</span>
+          <div class="space-y-3 w-full">${q.names.map((n,i)=>`
+            <div>
+              <p class="mb-1 text-xs text-center">${q.flavors[i]}</p>
+              <div class="slider-with-end-labels">
+                <input type="range" id="${n}" name="${n}" min="${q.min}" max="${q.max}" step="${q.step}" value="${answers[n]??50}" class="w-full accent-[#22c55e]">
+                <div class="relative">
+                  <span class="absolute left-0 text-xs text-gray-500 mt-1">Dislike</span>
+                  <span class="absolute right-0 text-xs text-gray-500 mt-1">Love it</span>
                 </div>
               </div>
             </div>`).join('')}</div>
