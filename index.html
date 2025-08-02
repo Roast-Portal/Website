@@ -497,6 +497,11 @@
     .custom-roast-content .space-y-2 > * + * {
       margin-top: 0.5rem;
     }
+    
+    /* Extra bottom padding for blend naming page to prevent button overlap */
+    .custom-roast-content {
+      padding-bottom: 2rem !important; /* Additional space beyond the default 6rem */
+    }
 
     /* Blend name suggestion chips */
     .suggestion-chip {
@@ -582,6 +587,11 @@
         line-height: 1.3 !important;
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
+      }
+      
+      /* Extra bottom padding for small phones */
+      .custom-roast-content {
+        padding-bottom: 2.5rem !important; /* Even more space on small screens */
       }
 
     }
@@ -1362,7 +1372,7 @@ function renderQuestion(idx){
             <div class="text-center">
               <label for="${q.name}" class="block font-medium mb-1 text-sm">${q.label}</label>
               <input type="text" id="${q.name}" name="${q.name}" maxlength="25" autocapitalize="words" class="w-full max-w-xs border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" value="${answers[q.name]||''}" placeholder="e.g., Perfect Balance">
-              <p class="text-xs text-gray-500 mt-1 text-center">Or try one of these suggestions:</p>
+              <p class="text-xs text-gray-500 mt-1 text-center">Or use one of these suggestions:</p>
               <div id="blendSuggestions" class="mt-1 flex flex-wrap justify-center gap-1"></div>
             </div>
 
@@ -1531,9 +1541,8 @@ function updateUI(){
     buttonContainer.style.display = 'flex'; // Show the container
     
     // Disable submit button initially to prevent accidental early submission
+    // (visually appears normal, but clicks are ignored)
     submitBtn.disabled = true;
-    submitBtn.style.opacity = '0.5';
-    submitBtn.style.cursor = 'not-allowed';
     
     // Clear any existing timeout to prevent overlapping delays
     if (window.submitBtnTimeout) {
@@ -1543,8 +1552,6 @@ function updateUI(){
     // Enable submit button after 1.5 seconds
     window.submitBtnTimeout = setTimeout(() => {
       submitBtn.disabled = false;
-      submitBtn.style.opacity = '1';
-      submitBtn.style.cursor = 'pointer';
       window.submitBtnTimeout = null; // Clear reference
     }, 1500);
   }
