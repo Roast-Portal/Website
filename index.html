@@ -579,16 +579,28 @@
     
     /* Optimize spacing for blend naming page */
     #quizCard:has(.custom-roast-content) {
-      padding-top: 0.25rem !important; /* Reduce top padding from 1rem to 0.25rem */
+      padding-top: 0.125rem !important; /* Minimal top padding for maximum space */
+      padding-bottom: 8rem !important; /* Generous bottom padding to prevent any overlap */
     }
     
     .custom-roast-content {
-      padding-bottom: 3rem !important; /* More aggressive bottom space for mobile */
+      padding-bottom: 4rem !important; /* Extra aggressive bottom space for mobile */
+      margin-bottom: 2rem !important; /* Additional bottom margin for safety */
     }
     
-    /* Tighter spacing between elements on blend page */
+    /* Optimized spacing between elements on blend page */
     .custom-roast-content .space-y-2 > * + * {
-      margin-top: 0.375rem !important; /* Slightly tighter than default 0.5rem */
+      margin-top: 0.35rem !important; /* Tight but readable spacing */
+    }
+    
+    /* Ensure blend title has proper spacing */
+    .custom-roast-content h4 {
+      margin-bottom: 0.5rem !important;
+    }
+    
+    /* Creator's note at bottom needs extra margin for safety */
+    .custom-roast-content .text-center:last-child {
+      margin-bottom: 3rem !important;
     }
 
     /* Blend name suggestion chips */
@@ -685,9 +697,25 @@
         margin-top: 0.25rem !important;
       }
       
-      /* Generous bottom padding for small phones */
+      /* Ultra-generous spacing for small phones */
+      #quizCard:has(.custom-roast-content) {
+        padding-bottom: 10rem !important; /* Maximum bottom clearance for tiny screens */
+      }
+      
       .custom-roast-content {
-        padding-bottom: 4rem !important; /* Extra space for iPhone and small screens */
+        padding-bottom: 5rem !important; /* Maximum bottom space for small iPhones */
+        margin-bottom: 3rem !important; /* Extra safety margin */
+      }
+      
+      /* Even tighter spacing for ultra-compact layout */
+      .custom-roast-content .space-y-2 > * + * {
+        margin-top: 0.25rem !important; /* Minimal spacing to fit everything */
+      }
+      
+      /* Ensure creator's note has maximum clearance on small screens */
+      .custom-roast-content .text-center:last-child {
+        margin-bottom: 4rem !important;
+        padding-bottom: 2rem !important;
       }
 
     }
