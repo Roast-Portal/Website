@@ -45,7 +45,7 @@
     .wordmark .roast,.wordmark .portal{color:#1a0f05;margin:0;padding:0;display:inline}
     html{scroll-padding-top:80px}html,body{font-family:'Kanit','Poppins','Nunito','Playfair Display',sans-serif}
     textarea{font-size:1.15rem;padding:0.75rem 1rem !important;border:2px solid #d1d5db;border-radius:.75rem;background:#f8fafc;color:#2b1608;transition:border .2s,box-shadow .2s;min-height:4.5rem;text-align:left;box-sizing:border-box}
-    textarea:focus{border-color:#22c55e;box-shadow:0 0 0 2px #bbf7d0;background:#fff;text-align:left}
+    textarea:focus{outline:none;border-color:#d1d5db;box-shadow:0 0 0 2px #bbf7d0;background:#fff;text-align:left}
     #quizCard{height:480px;padding:1.5rem;overflow:hidden;display:flex;flex-direction:column}
     #quizCard > div{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:100%}
     #quizCard .custom-roast-content{justify-content:center;min-height:auto}
@@ -478,6 +478,18 @@
       box-shadow:0 -2px 16px rgba(0,0,0,.15);
     }
 
+    /* Unified focus styling for all text inputs */
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    input[type="password"]:focus,
+    textarea:focus {
+      outline: none !important;
+      border-color: #d1d5db !important;
+      box-shadow: 0 0 0 2px #bbf7d0 !important;
+      ring: none !important;
+    }
+
     /* Misc mobile polish */
     body{overscroll-behavior:contain;}  /* prevents iOS "bounce" trapping    */
 
@@ -769,7 +781,6 @@
 
       <!-- Review Section (hidden by default) -->
       <div id="reviewSection" class="hidden">
-        <h3 class="text-2xl font-bold text-center mb-4">Your custom roast profile</h3>
         <div id="reviewContent" class="space-y-3 bg-gray-50 p-6 rounded-lg shadow-inner"></div>
         <div class="mt-6">
             <label for="blendName" class="block font-medium mb-1">Name your blend</label>
@@ -969,10 +980,10 @@ function generateBlendNameSuggestions(answers, flavors, primaryNotes) {
     'Dark': ['Midnight Roast', 'Dark Knight', 'Bold Evening']
   };
   
-  // Get flavor-based suggestions
+  // Get flavor-based suggestions (avoiding trademark names)
   const topFlavor = flavors.sort((a, b) => b.value - a.value)[0];
   const flavorNames = {
-    'Nutty': ['Hazelnut Dream', 'Almond Joy', 'Nutty Delight'],
+    'Nutty': ['Hazelnut Dream', 'Nutty Delight', 'Pecan Perfect'],
     'Fruity': ['Berry Burst', 'Citrus Sunrise', 'Fruit Garden'],
     'Floral': ['Garden Bloom', 'Floral Fantasy', 'Spring Breeze'],
     'Smoky': ['Campfire Blend', 'Smoky Mountain', 'Fire Roast']
@@ -1018,8 +1029,8 @@ function generateBlendNameSuggestions(answers, flavors, primaryNotes) {
   ];
   suggestions.push(...creativeNames.slice(0, 2));
   
-  // Remove duplicates and limit to 6 suggestions
-  return [...new Set(suggestions)].slice(0, 6);
+  // Remove duplicates and limit to 3 suggestions
+  return [...new Set(suggestions)].slice(0, 3);
 }
 
 function renderBlendSuggestions(suggestions) {
@@ -1341,7 +1352,6 @@ function renderQuestion(idx){
         <div class="w-full max-w-md mx-auto custom-roast-content">
           <div class="space-y-2 pb-2">
             <div class="text-center">
-              <h3 class="text-base font-semibold text-gray-800 mb-0.5">Your custom roast profile</h3>
               <h4 class="text-sm font-bold text-gray-700">${blendTitle}</h4>
             </div>
             
@@ -1352,7 +1362,8 @@ function renderQuestion(idx){
             <div class="text-center">
               <label for="${q.name}" class="block font-medium mb-1 text-sm">${q.label}</label>
               <input type="text" id="${q.name}" name="${q.name}" maxlength="25" autocapitalize="words" class="w-full max-w-xs border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 text-sm" value="${answers[q.name]||''}" placeholder="e.g., Perfect Balance">
-              <div id="blendSuggestions" class="mt-2 flex flex-wrap justify-center gap-1"></div>
+              <p class="text-xs text-gray-500 mt-1 text-center">Or try one of these suggestions:</p>
+              <div id="blendSuggestions" class="mt-1 flex flex-wrap justify-center gap-1"></div>
             </div>
 
             <div class="text-center">
@@ -1371,7 +1382,7 @@ function renderQuestion(idx){
       <div class="w-full max-w-md mx-auto">
         <h3 class="text-lg font-semibold mb-3 text-center">${q.label}</h3>
         <div class="question-body">
-          <textarea id="${q.name}" name="${q.name}" class="w-full text-sm" rows="3">${answers[q.name]||''}</textarea>
+          <input type="text" id="${q.name}" name="${q.name}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" value="${answers[q.name]||''}">
         </div>
       </div>`;
     }
@@ -1399,14 +1410,38 @@ function renderQuestion(idx){
       });
     }
     
-    // Add keyboard events for textarea
+    // Add keyboard events for text inputs and textareas
     if(el.type==='textarea' || el.tagName.toLowerCase() === 'textarea'){
       el.addEventListener('keydown', e=>{
         if(e.key === 'Enter' && !e.shiftKey){
           e.preventDefault();
-          autoNext();
+          
+          // Blur the textarea to close mobile keyboard
+          el.blur();
+          
+          // Small delay to allow keyboard to close gracefully, then proceed
+          setTimeout(() => {
+            autoNext();
+          }, 250); // 250ms delay for smooth keyboard close
         }
         // Shift+Enter allows new line (default behavior)
+      });
+    }
+    
+    // Add keyboard events for text inputs (Enter to continue)
+    if(el.type==='text'){
+      el.addEventListener('keydown', e=>{
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          
+          // Blur the input to close mobile keyboard
+          el.blur();
+          
+          // Small delay to allow keyboard to close gracefully, then proceed
+          setTimeout(() => {
+            autoNext();
+          }, 250); // 250ms delay for smooth keyboard close
+        }
       });
     }
   });
@@ -1465,17 +1500,39 @@ function updateUI(){
   }
 
   // Update navigation button visibility
+  const buttonContainer = document.getElementById('buttonContainer');
+  
   if (current === 0) {
     prevBtn.classList.add('hidden');
     prevBtn.style.display = 'none';
     submitBtn.classList.add('hidden');
     submitBtn.style.display = 'none';
+    buttonContainer.style.display = 'none'; // Hide the entire container
   } else {
     prevBtn.classList.remove('hidden');
     prevBtn.style.display = 'inline-block';
     prevBtn.disabled = false;
     submitBtn.classList.remove('hidden');
     submitBtn.style.display = 'inline-block';
+    buttonContainer.style.display = 'flex'; // Show the container
+    
+    // Disable submit button initially to prevent accidental early submission
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.5';
+    submitBtn.style.cursor = 'not-allowed';
+    
+    // Clear any existing timeout to prevent overlapping delays
+    if (window.submitBtnTimeout) {
+      clearTimeout(window.submitBtnTimeout);
+    }
+    
+    // Enable submit button after 1.5 seconds
+    window.submitBtnTimeout = setTimeout(() => {
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      submitBtn.style.cursor = 'pointer';
+      window.submitBtnTimeout = null; // Clear reference
+    }, 1500);
   }
 
   if (current === quizData.length - 1) {
@@ -1514,6 +1571,12 @@ document.getElementById('quizEscape').addEventListener('click', function() {
   // Reset to initial state
   current = 0;
   answers = {...defaults};
+  
+  // Clear any pending submit button timeout
+  if (window.submitBtnTimeout) {
+    clearTimeout(window.submitBtnTimeout);
+    window.submitBtnTimeout = null;
+  }
   
   // Remove full-screen mode
   document.body.classList.remove('quiz-fullscreen');
@@ -1668,23 +1731,44 @@ async function handleCheckout() {
   nameField.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      emailField.focus();
-      emailField.setSelectionRange(emailField.value.length, emailField.value.length);
+      
+      // Blur current field to close mobile keyboard
+      nameField.blur();
+      
+      // Small delay for smooth keyboard transition, then focus next field
+      setTimeout(() => {
+        emailField.focus();
+        emailField.setSelectionRange(emailField.value.length, emailField.value.length);
+      }, 150); // Shorter delay for field-to-field navigation
     }
   });
 
   emailField.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-  e.preventDefault();
-      phoneField.focus();
-      phoneField.setSelectionRange(phoneField.value.length, phoneField.value.length);
+      e.preventDefault();
+      
+      // Blur current field to close mobile keyboard
+      emailField.blur();
+      
+      // Small delay for smooth keyboard transition, then focus next field
+      setTimeout(() => {
+        phoneField.focus();
+        phoneField.setSelectionRange(phoneField.value.length, phoneField.value.length);
+      }, 150); // Shorter delay for field-to-field navigation
     }
   });
 
   phoneField.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      handleContactSubmission();
+      
+      // Blur current field to close mobile keyboard
+      phoneField.blur();
+      
+      // Small delay for smooth keyboard close, then submit
+      setTimeout(() => {
+        handleContactSubmission();
+      }, 250); // Longer delay for final submission
     }
   });
 
@@ -1794,19 +1878,7 @@ function handleContactSubmission() {
   sessionStorage.removeItem('contactEmail');
   sessionStorage.removeItem('contactPhone');
 
-  // After a brief moment, fade out of fullscreen
-  setTimeout(() => {
-    const quizSection = document.getElementById('quiz');
-    quizSection.classList.add('fullscreen-fade-out');
-    
-    setTimeout(() => {
-      document.body.classList.remove('quiz-fullscreen');
-      quizSection.classList.remove('quiz-fullscreen');
-      document.getElementById('quizEscape').classList.add('hidden');
-      quizSection.classList.remove('fullscreen-fade-out');
-      document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
-    }, 800);
-  }, 4000);
+  // Note: Removed auto-closing behavior to let users control when they exit
 }
 
 // Form submit event listener removed - now using button click handler instead
@@ -1827,6 +1899,205 @@ function handleContactSubmission() {
   if (qForm) qForm.addEventListener('keydown', e => {
     if (e.key === 'Enter') e.preventDefault();
   });
+})();
+
+/* --- PREVENT REFRESH: disable page refresh during quiz fullscreen mode ----- */
+(function () {
+  document.addEventListener('keydown', e => {
+    // Check if quiz is in fullscreen mode
+    const isQuizFullscreen = document.body.classList.contains('quiz-fullscreen');
+    
+    if (isQuizFullscreen) {
+      // Prevent F5
+      if (e.key === 'F5') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+      
+      // Prevent Ctrl+R / Cmd+R (refresh)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+      
+      // Prevent Ctrl+F5 / Cmd+F5 (hard refresh)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'F5') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+      
+      // Prevent Ctrl+Shift+R / Cmd+Shift+R (hard refresh)
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    }
+  });
+  
+  // Also prevent beforeunload event during quiz
+  window.addEventListener('beforeunload', e => {
+    const isQuizFullscreen = document.body.classList.contains('quiz-fullscreen');
+    
+    if (isQuizFullscreen) {
+      // Show confirmation dialog for accidental navigation
+      e.preventDefault();
+      e.returnValue = 'Are you sure you want to leave? Your quiz progress will be lost.';
+      return e.returnValue;
+    }
+  });
+})();
+
+/* --- BACK BUTTON NAVIGATION: use back button for previous question --------- */
+(function () {
+  let quizHistoryState = null;
+  
+  // Initialize history state when quiz starts
+  function initQuizHistory() {
+    const isQuizFullscreen = document.body.classList.contains('quiz-fullscreen');
+    
+    if (isQuizFullscreen && !quizHistoryState) {
+      // Push a state for the quiz
+      quizHistoryState = { quizActive: true, question: current };
+      history.pushState(quizHistoryState, '', window.location.href);
+    }
+  }
+  
+  // Update history when question changes
+  function updateQuizHistory(questionIndex) {
+    const isQuizFullscreen = document.body.classList.contains('quiz-fullscreen');
+    
+    if (isQuizFullscreen) {
+      quizHistoryState = { quizActive: true, question: questionIndex };
+      history.replaceState(quizHistoryState, '', window.location.href);
+    }
+  }
+  
+  // Handle back button presses
+  window.addEventListener('popstate', e => {
+    const isQuizFullscreen = document.body.classList.contains('quiz-fullscreen');
+    
+    if (isQuizFullscreen) {
+      // Prevent default back navigation
+      e.preventDefault();
+      
+      // Navigate to previous question instead
+      if (current > 0) {
+        // Remove fade out animation if going back from last question
+        if (current === quizData.length - 1) {
+          const progressBar = document.getElementById('progressBar');
+          const progressContainer = progressBar.parentElement;
+          progressContainer.classList.remove('progress-fade-out');
+        }
+        current--;
+        updateUI();
+        updateQuizHistory(current);
+      } else {
+        // If at first question, ask if they want to exit
+        if (confirm('Are you sure you want to exit the quiz? Your progress will be lost.')) {
+          // Reset quiz and exit fullscreen
+          current = 0;
+          answers = {...defaults};
+          document.body.classList.remove('quiz-fullscreen');
+          document.getElementById('quiz').classList.remove('quiz-fullscreen');
+          document.getElementById('quizEscape').classList.add('hidden');
+          updateUI();
+          quizHistoryState = null;
+        } else {
+          // Stay in quiz, push state back
+          history.pushState(quizHistoryState, '', window.location.href);
+        }
+      }
+    }
+  });
+  
+  // Hook into autoNext to initialize history when quiz starts
+  const originalAutoNext = window.autoNext;
+  window.autoNext = function() {
+    const wasAtStart = (current === 0);
+    originalAutoNext();
+    
+    // Initialize history when quiz first goes fullscreen
+    if (wasAtStart && current === 1) {
+      setTimeout(initQuizHistory, 50); // Small delay to ensure fullscreen class is set
+    }
+  };
+  
+  // Hook into updateUI to update history
+  const originalUpdateUI = window.updateUI;
+  window.updateUI = function() {
+    originalUpdateUI();
+    updateQuizHistory(current);
+  };
+  
+  // Reset history state when quiz exits
+  const originalQuizEscape = document.getElementById('quizEscape');
+  if (originalQuizEscape) {
+    originalQuizEscape.addEventListener('click', () => {
+      quizHistoryState = null;
+    });
+  }
+})();
+
+/* --- SWIPE GESTURES: add mobile swipe support for navigation --------------- */
+(function () {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+  
+  // Only enable swipes when quiz is active
+  function isQuizActive() {
+    return document.body.classList.contains('quiz-fullscreen');
+  }
+  
+  document.addEventListener('touchstart', e => {
+    if (!isQuizActive()) return;
+    
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+  
+  document.addEventListener('touchend', e => {
+    if (!isQuizActive()) return;
+    
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    
+    handleSwipe();
+  }, { passive: true });
+  
+  function handleSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    const minSwipeDistance = 50;
+    
+    // Only process horizontal swipes that are longer than vertical swipes
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+      if (deltaX > 0) {
+        // Swipe right - go to previous question
+        if (current > 0) {
+          // Remove fade out animation if going back from last question
+          if (current === quizData.length - 1) {
+            const progressBar = document.getElementById('progressBar');
+            const progressContainer = progressBar.parentElement;
+            progressContainer.classList.remove('progress-fade-out');
+          }
+          current--;
+          updateUI();
+        }
+      } else {
+        // Swipe left - go to next question (only if current question is answered)
+        const currentQuestion = quizData[current];
+        if (currentQuestion && answers[currentQuestion.name] !== undefined && answers[currentQuestion.name] !== '') {
+          autoNext();
+        }
+      }
+    }
+  }
 })();
 
 // Login Modal Functionality
