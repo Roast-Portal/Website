@@ -30,6 +30,24 @@
   <link rel="canonical" href="https://roastportal.com/">
   <link rel="icon" type="image/png" href="images/favicon.png">
 
+  <!-- ╔═════════════ Google Analytics 4 ═════════════╗ -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-5LTTX2TGVQ', {
+      send_page_view: false,    // we'll fire manually if you like
+      anonymize_ip: true
+    });
+  </script>
+  <script>
+    function trackGA4(eventName, params = {}) {
+      gtag('event', eventName, params);
+      // optional: console.log('[GA4]', eventName, params);
+    }
+  </script>
+
   <!-- ╔═════════════ Fonts & Tailwind ═════════════╗ -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap"  rel="stylesheet">
@@ -2247,6 +2265,17 @@ function renderQuestion(idx){
         positionThumbLabel(el);
         updateTrackFill(el);
       }
+      
+      // Track question answered
+      const questionData = quizData[current];
+      if (questionData) {
+        trackGA4('question_answered', { 
+          question: questionData.name || questionData.names?.join('_'), 
+          answer: el.type === 'checkbox' ? el.checked : el.value,
+          questionType: questionData.type,
+          questionIndex: current
+        });
+      }
     });
     
     // Enhanced interaction for all range sliders - no visual changes
@@ -2267,6 +2296,18 @@ function renderQuestion(idx){
     if(el.type==='radio'){
       el.addEventListener('click', e=>{
         answers[el.name]=el.value;
+        
+        // Track radio button selection
+        const questionData = quizData[current];
+        if (questionData) {
+          trackGA4('question_answered', { 
+            question: questionData.name, 
+            answer: el.value,
+            questionType: questionData.type,
+            questionIndex: current
+          });
+        }
+        
         // Add delay to show the animation before advancing
         setTimeout(() => {
         autoNext();
@@ -2343,6 +2384,13 @@ function autoNext(){
   if(current<quizData.length){
     // If this is the first selection (moving from question 0 to 1), activate full-screen mode
     if(current === 0) {
+        // Track quiz start
+  trackGA4('quiz_start', { 
+    userId: userId, 
+    device: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop',
+    question_count: quizData.length
+  });
+      
       document.body.classList.add('quiz-fullscreen');
       document.body.classList.add('quiz-active'); // Immediately apply pull-to-refresh protection
       document.getElementById('quiz').classList.add('quiz-fullscreen');
@@ -2564,6 +2612,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Hero button gentle scroll
 document.getElementById('heroButton').addEventListener('click', function() {
+  // Track quiz initiation
+  trackGA4('quiz_initiated', { 
+    userId: userId,
+    device: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop',
+    source: 'hero_button'
+  });
+  
   const quizSection = document.getElementById('quiz');
   quizSection.scrollIntoView({ 
     behavior: 'smooth',
@@ -2573,6 +2628,13 @@ document.getElementById('heroButton').addEventListener('click', function() {
 
 // Escape functionality - Exit fullscreen but maintain quiz progress
 document.getElementById('quizEscape').addEventListener('click', function() {
+  // Track quiz exit
+  trackGA4('quiz_exit', { 
+    lastStep: current,
+    totalQuestions: quizData.length,
+    progress: Math.round((current / quizData.length) * 100)
+  });
+  
   // Clear any pending submit button timeout
   if (window.submitBtnTimeout) {
     clearTimeout(window.submitBtnTimeout);
@@ -2936,6 +2998,15 @@ window.debugCheckoutButton = function() {
 async function handleCheckout() {
   const submitButton = document.getElementById('submitBtn');
   
+  // Track checkout view
+  trackGA4('checkout_view', { 
+    budget: answers.priceRange,
+    cupsPerDay: answers.cupsPerDay,
+    roastLevel: answers.roastLevel,
+    brewMethod: answers.brewMethod,
+    blendName: answers.blendName || 'Custom Blend'
+  });
+  
   // --- UI Transition (Immediate) ---
   submitButton.disabled = true; // Prevent double-clicks
   errorMessage.classList.add('hidden');
@@ -3167,6 +3238,15 @@ async function handleQuizSubmission() {
 function handleContactSubmission() {
   console.log('handleContactSubmission called');
   
+  // Track checkout submit
+  trackGA4('checkout_submit', { 
+    blendName: answers.blendName || 'Custom Blend',
+    budget: answers.priceRange,
+    cupsPerDay: answers.cupsPerDay,
+    roastLevel: answers.roastLevel,
+    brewMethod: answers.brewMethod
+  });
+  
   // Check if button is properly set up
   const submitBtn = document.getElementById('submitBtn');
   console.log('Submit button state - Text:', submitBtn?.textContent, 'Disabled:', submitBtn?.disabled, 'Display:', submitBtn?.style.display);
@@ -3216,12 +3296,30 @@ function handleContactSubmission() {
     .then(res => {
       if (res.status !== 'OK') {
         console.error('Contact submission failed in background:', res);
+        // Track submission failure
+        trackGA4('submission_fail', { 
+          step: 'contact', 
+          error: res.status || 'unknown_error',
+          blendName: answers.blendName || 'Custom Blend'
+        });
       } else {
         console.log('Contact info submitted successfully in background.');
+        // Track successful submission
+        trackGA4('submission_ok', { 
+          blendName: answers.blendName || 'Custom Blend',
+          budget: answers.priceRange,
+          cupsPerDay: answers.cupsPerDay
+        });
       }
     })
     .catch(error => {
         console.error('Contact submission network error in background:', error);
+        // Track submission failure
+        trackGA4('submission_fail', { 
+          step: 'contact', 
+          error: error.message || 'network_error',
+          blendName: answers.blendName || 'Custom Blend'
+        });
     });
 
   // --- Immediate UI Transition ---
@@ -4089,6 +4187,13 @@ renderQuestion = (idx)=>{
   });
   ob.observe(BODY,{attributes:true,attributeFilter:['class']});
 })();
+
+// Track page view
+trackGA4('page_view', {
+  page_title: document.title,
+  page_location: window.location.href,
+  user_agent: navigator.userAgent
+});
 </script>
 </body>
 </html>
