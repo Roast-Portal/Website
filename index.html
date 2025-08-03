@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes" />
+      
+      <!-- Universal Mobile Web App Configuration -->
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="format-detection" content="telephone=no" />
+      <meta name="theme-color" content="#ffffff" />
       
       <!-- Prevent WebFont flashes from blanking the card -->
       <style>
@@ -52,7 +57,7 @@
     html{scroll-padding-top:80px}html,body{font-family:'Kanit','Poppins','Nunito','Playfair Display',sans-serif}
     textarea{font-size:1.15rem;padding:0.75rem 1rem !important;border:2px solid #d1d5db;border-radius:.75rem;background:#f8fafc;color:#2b1608;transition:border .2s,box-shadow .2s;min-height:4.5rem;text-align:left;box-sizing:border-box}
     textarea:focus{outline:none;border-color:#d1d5db;box-shadow:0 0 0 2px #bbf7d0;background:#fff;text-align:left}
-    #quizCard{height:480px;padding:1.5rem;overflow:hidden;display:flex;flex-direction:column}
+    #quizCard{height:480px;padding:1.5rem;overflow-y:auto;display:flex;flex-direction:column}
     #quizCard > div{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:100%}
     #quizCard .custom-roast-content{justify-content:center;min-height:auto}
     @keyframes fadeInLoadingMsg{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -126,9 +131,9 @@
       z-index: 9999;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      overflow: hidden;
+      overflow-y: auto;
       padding-block: 1rem; /* minimal padding */
       box-sizing: border-box;
     }
@@ -145,13 +150,14 @@
  
     .quiz-fullscreen #quizCard {
       flex: 1 1 auto;
-      max-height: calc(100% - 4rem); /* more space for buttons */
+      min-height: auto;
       width: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      overflow: hidden;
+      overflow-y: auto;
+      padding-top: 1rem;
     }
 
     .quiz-fullscreen .flex.justify-between {
@@ -185,7 +191,7 @@
  
     .quiz-fullscreen #quizCard > * {
       width: 100%;
-      height: 100%;
+      min-height: auto;
       display: flex;
       flex-direction: column;
     }
@@ -193,20 +199,21 @@
     .quiz-fullscreen #quizCard .question-body {
       flex: 1;
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       width: 100%;
       overflow: visible; /* Allow bubble to show */
+      min-height: auto;
     }
     
     .quiz-fullscreen .pill-input {
       max-height: 40vh; /* much smaller max height */
-      overflow: hidden; /* prevent scrolling */
+      overflow-y: auto; /* allow scrolling when needed */
     }
     
     .quiz-fullscreen .space-y-6 {
       max-height: 40vh; /* much smaller max height */
-      overflow: hidden; /* prevent scrolling */
+      overflow-y: auto; /* allow scrolling when needed */
     }
     
     .quiz-fullscreen #contactForm {
@@ -330,40 +337,41 @@
       width: 100%;
       cursor: pointer;
       outline: none;
-      border-radius: 15px;
-      height: 6px;
-      background: #e2e8f0;
+      border-radius: 3px;
+      height: 6px; /* Standard 6px track height */
+      background: #d1d5db;
     }
 
     /* Thumb for Webkit browsers */
     .standard-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      height: 20px;
+      height: 20px; /* Standard 20px thumb */
       width: 20px;
-      background-color: #fff;
+      background-color: #22c55e;
       border-radius: 50%;
-      border: 2px solid #22c55e;
+      border: none;
       margin-top: -7px; /* Centers thumb on the track */
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-       transition: box-shadow .2s;
+      box-shadow: 0 0 2px rgba(0,0,0,0.1);
+      transition: all .2s ease;
     }
     .standard-slider:hover::-webkit-slider-thumb {
-       box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+       box-shadow: 0 0 4px rgba(34, 197, 94, 0.3);
+       transform: scale(1.2);
     }
 
     /* Thumb for Firefox */
     .standard-slider::-moz-range-thumb {
-      height: 20px;
+      height: 20px; /* Standard 20px thumb */
       width: 20px;
-      background-color: #fff;
+      background-color: #22c55e;
       border-radius: 50%;
-      border: 2px solid #22c55e;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-      transition: box-shadow .2s;
+      border: none;
+      box-shadow: 0 0 2px rgba(0,0,0,0.1);
+      transition: all .2s ease;
     }
     .standard-slider:hover::-moz-range-thumb {
-       box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+       box-shadow: 0 0 4px rgba(34, 197, 94, 0.3);
     }
 
     /* Flavor slider styling */
@@ -373,9 +381,9 @@
       width: 100% !important;
       cursor: pointer !important;
       outline: none !important;
-      border-radius: 15px !important;
-      height: 6px !important;
-      background: #e2e8f0 !important;
+      border-radius: 0.5px !important;
+      height: 6px !important; /* Ultra thin track */
+      background: #d1d5db !important;
       border: none !important;
     }
 
@@ -383,25 +391,25 @@
     input[type="range"].accent-\[#22c55e\]::-webkit-slider-thumb {
       -webkit-appearance: none !important;
       appearance: none !important;
-      height: 20px !important;
+      height: 20px !important; /* Standard 20px thumb */
       width: 20px !important;
-      background-color: #fff !important;
+      background-color: #22c55e !important;
       border-radius: 50% !important;
-      border: 2px solid #000 !important;
+      border: none !important;
       margin-top: -7px !important;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1) !important;
-      transition: box-shadow .2s !important;
+      box-shadow: 0 0 2px rgba(0,0,0,0.1) !important;
+      transition: all .2s ease !important;
     }
 
     /* Thumb for Firefox */
     input[type="range"].accent-\[#22c55e\]::-moz-range-thumb {
-      height: 20px !important;
+      height: 20px !important; /* Standard 20px thumb */
       width: 20px !important;
-      background-color: #fff !important;
+      background-color: #22c55e !important;
       border-radius: 50% !important;
-      border: 2px solid #000 !important;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1) !important;
-      transition: box-shadow .2s !important;
+      border: none !important;
+      box-shadow: 0 0 2px rgba(0,0,0,0.1) !important;
+      transition: all .2s ease !important;
     }
 
     /* Alternative selector for flavor sliders */
@@ -424,7 +432,7 @@
       background-color: #fff !important;
       border-radius: 50% !important;
       border: 2px solid #000 !important;
-      margin-top: -3px !important;
+      margin-top: -7px !important;
       box-shadow: 0 0 5px rgba(0,0,0,0.1) !important;
       transition: box-shadow .2s !important;
     }
@@ -456,6 +464,7 @@
       overflow-y: auto;                     /* allow the page to scroll         */
       scroll-behavior: smooth;              /* nicer scrolling                  */
       padding-bottom: calc(var(--safe-bottom) + 5rem); /* space for buttons   */
+      -webkit-overflow-scrolling: touch;   /* smooth scrolling on iOS          */
     }
 
     /* still allow old browsers to fall back */
@@ -469,12 +478,13 @@
       flex:1 1 auto;
       overflow-y:auto;              /* lets content scroll inside          */
       padding:1rem 0 6rem;          /* extra bottom room for fixed buttons */
+      -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
     }
 
     /* remove the rigid desktop height so small screens are never clipped */
-    #quizCard{height:auto !important;}
+    #quizCard{height:auto !important; overflow-y:auto !important;}
 
-    /* Navigation buttons always in view */
+    /* Navigation buttons always in view - STABLE POSITIONING */
     #buttonContainer{
       position: fixed;                         /* always in same spot            */
       bottom: calc(var(--safe-bottom) + 1rem);
@@ -488,10 +498,44 @@
       max-width: 90vw;
       width: auto;
       min-width: 280px;
+      
+      /* Stable positioning - no transitions during quiz */
+      transition: none !important;            /* disable transitions to prevent jumping */
+      will-change: auto;                      /* don't optimize for animations */
+      
+      /* Prevent button from moving unexpectedly */
+      transform-origin: center bottom;         /* anchor to bottom   */
+      backface-visibility: hidden;            /* prevent flickering             */
+      -webkit-backface-visibility: hidden;    /* Safari support                 */
+    }
+    
+    /* Stable positioning during quiz modes */
+    body.quiz-active #buttonContainer,
+    body.quiz-fullscreen #buttonContainer {
+      position: fixed !important;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem) !important;
+      transform: translateX(-50%) !important;
+      transition: none !important;             /* no movement during quiz */
+    }
+    
+    /* Ensure smooth transitions during keyboard events */
+    body.keyboard-open #buttonContainer {
+      transition: bottom 0.2s ease-out;       /* Faster transition when opening */
+    }
+    
+    /* More stable positioning when keyboard closes */
+    body:not(.keyboard-open) #buttonContainer {
+      transition: bottom 0.4s ease-in-out;    /* Slower, smoother close transition */
     }
 
     /* make the two buttons sit next to each other nicely on narrow screens */
-    #buttonContainer button{flex:1 1 45%;}
+    #buttonContainer button{
+      flex:1 1 45%;
+      pointer-events: auto !important;
+      cursor: pointer !important;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     /* Question body tweaks */
     .question-body{padding-inline: .5rem;}
@@ -506,15 +550,69 @@
       margin-bottom: 1rem;
     }
 
-    /* give range & text inputs a touch‑friendly size on small devices */
+    /* Sliders - matches progress bar height (h-3 = 12px) */
     input[type="range"]{
-      touch-action:none;
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      height: 12px; /* Match progress bar height (h-3 = 12px) */
+      width: 100%;
+      cursor: pointer;
+      outline: none;
     }
+
+    /* Ensure the visible track stays standard size but with larger touch area */
+    input[type="range"]::-webkit-slider-track {
+      height: 12px; /* Match progress bar height (h-3 = 12px) */
+      background: #e5e7eb;
+      border-radius: 6px;
+      border: none;
+      /* Larger invisible touch area for mobile */
+      padding: 8px 0; /* Invisible vertical padding for easier touch */
+      margin: -8px 0; /* Compensate for padding to keep visual position */
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 12px; /* Match progress bar height (h-3 = 12px) */
+      background: #e5e7eb;
+      border-radius: 6px;
+      border: none;
+      /* Larger invisible touch area for mobile */
+      padding: 8px 0; /* Invisible vertical padding for easier touch */
+      margin: -8px 0; /* Compensate for padding to keep visual position */
+    }
+
+    /* Standard 20px thumb */
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #22c55e;
+      border: 1px solid white;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+      cursor: pointer;
+      margin-top: -4px; /* Center on 12px track */
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #22c55e;
+      border: 1px solid white;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+      cursor: pointer;
+      border: none; /* Override default border for Firefox */
+    }
+
+
     input[type="text"], textarea{font-size:1rem;}
     
     /* Prevent iOS zoom on contact form inputs */
     .contact-input {
-      font-size: 16px !important; /* Must be 16px+ to prevent iOS zoom */
+      font-size: 2x !important; /* Must be 16px+ to prevent iOS zoom */
       height: 2.5rem !important; /* Consistent height for all inputs */
       line-height: 1.25 !important; /* Consistent line height */
       -webkit-appearance: none;
@@ -564,18 +662,53 @@
     /* Misc mobile polish */
     body{overscroll-behavior:contain;}  /* prevents iOS "bounce" trapping    */
     
-    /* Disable pull-to-refresh during fullscreen mode */
+    /* UNIVERSAL Pull-to-Refresh Prevention - Page Level Only */
+    body.quiz-active,
     body.quiz-fullscreen {
-      overscroll-behavior-y: none !important; /* Disable pull-to-refresh */
-      overscroll-behavior: none !important; /* Disable all overscroll */
-      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      /* Standard CSS overscroll prevention */
+      overscroll-behavior-y: none !important; 
+      overscroll-behavior: none !important; 
+      
+      /* Prevent bounce/elastic scrolling */
+      -webkit-overscroll-behavior: none !important;
+      -webkit-overscroll-behavior-y: none !important;
+      
+      /* Chrome-specific pull-to-refresh prevention */
+      overscroll-behavior-block: none !important;
+      overscroll-behavior-inline: none !important;
     }
     
-    /* Additional iOS Safari specific prevention */
-    body.quiz-fullscreen #quizForm,
-    body.quiz-fullscreen #quizCard {
+    /* Apply to document root for universal coverage */
+    body.quiz-active html,
+    body.quiz-fullscreen html {
       overscroll-behavior-y: none !important;
       overscroll-behavior: none !important;
+      -webkit-overscroll-behavior: none !important;
+      -webkit-overscroll-behavior-y: none !important;
+    }
+    
+    /* ALLOW normal scrolling within quiz content */
+    body.quiz-active #quizCard,
+    body.quiz-fullscreen #quizCard,
+    body.quiz-active #quizForm,
+    body.quiz-fullscreen #quizForm {
+      /* Reset to allow normal scrolling */
+      overscroll-behavior: auto !important;
+      overscroll-behavior-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      touch-action: auto !important;
+      overflow-y: auto !important;
+      scroll-behavior: smooth !important;
+    }
+    
+    /* Special allowance for blend content */
+    body.quiz-active .custom-roast-content,
+    body.quiz-fullscreen .custom-roast-content,
+    body.quiz-active .custom-roast-content *,
+    body.quiz-fullscreen .custom-roast-content * {
+      touch-action: auto !important;
+      overscroll-behavior: auto !important;
+      -webkit-overflow-scrolling: touch !important;
     }
 
     /* Name your blend page optimizations */
@@ -585,13 +718,24 @@
     
     /* Optimize spacing for blend naming page */
     #quizCard:has(.custom-roast-content) {
-      padding-top: 0.125rem !important; /* Minimal top padding for maximum space */
-      padding-bottom: 8rem !important; /* Generous bottom padding to prevent any overlap */
+      padding-top: 0.5rem !important; /* Minimal top padding for maximum space */
+      padding-bottom: 8rem !important; /* More space for buttons */
+      height: auto !important; /* Let content determine height */
+      max-height: none !important; /* Remove height restrictions */
+      overflow-y: auto !important; /* Ensure scrolling works */
+      overflow-x: hidden !important; /* Prevent horizontal scroll */
+      -webkit-overflow-scrolling: touch !important; /* Smooth iOS scrolling */
+      overscroll-behavior: auto !important; /* Allow internal scrolling */
+      touch-action: auto !important; /* Allow all touch gestures within */
     }
     
     .custom-roast-content {
-      padding-bottom: 4rem !important; /* Extra aggressive bottom space for mobile */
-      margin-bottom: 2rem !important; /* Additional bottom margin for safety */
+      padding-bottom: 2rem !important; /* Reduced bottom space for mobile */
+      margin-bottom: 2rem !important; /* More bottom margin for safety */
+      min-height: auto !important; /* Let content flow naturally */
+      overflow-y: visible !important; /* Ensure content is visible */
+      touch-action: auto !important; /* Allow normal touch behavior */
+      -webkit-overflow-scrolling: touch !important; /* Smooth scrolling */
     }
     
     /* Optimized spacing between elements on blend page */
@@ -606,7 +750,7 @@
     
     /* Creator's note at bottom needs extra margin for safety */
     .custom-roast-content .text-center:last-child {
-      margin-bottom: 3rem !important;
+      margin-bottom: 2rem !important; /* Reduced margin for more space */
     }
 
     /* Blend name suggestion chips - Enhanced for mobile */
@@ -644,6 +788,52 @@
     /* Ensure minimum height for content areas to prevent blank rendering */
     .custom-roast-content {
       min-height: 300px;
+    }
+    
+    /* Enhanced styling for blend name input to ensure visibility */
+    .custom-roast-content input[name="blendName"] {
+      font-size: 1rem !important;
+      min-height: 2.5rem !important;
+      padding: 0.75rem 1rem !important;
+      border-width: 2px !important;
+      background-color: #fff !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .custom-roast-content input[name="blendName"]:focus {
+      border-color: #22c55e !important;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1) !important;
+      background-color: #fff !important;
+    }
+    
+    /* Checkout form specific styling for better mobile experience */
+    #quizCard:has(.contact-input) {
+      padding-bottom: 10rem !important; /* Extra space for checkout form to prevent bouncing */
+    }
+    
+    /* Ensure checkout form inputs are properly sized */
+    .contact-input {
+      font-size: 1rem !important;
+      min-height: 2.5rem !important;
+      padding: 0.75rem 1rem !important;
+      border-width: 2px !important;
+      background-color: #fff !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .contact-input:focus {
+      border-color: #22c55e !important;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1) !important;
+      background-color: #fff !important;
+    }
+    
+    /* Reduce spacing between personality title and radar chart on mobile */
+    .custom-roast-content h4 {
+      margin-bottom: 0.25rem !important; /* Reduced from 0.5rem (mb-2) */
+    }
+    
+    .custom-roast-content .flex.justify-center {
+      margin-bottom: 0.5rem !important; /* Reduced from 0.75rem (mb-3) */
     }
 
     /* Loading animation for better UX */
@@ -712,7 +902,8 @@
       
       /* Reduce top padding even more on small screens */
       #quizCard:has(.custom-roast-content) {
-        padding-top: 0.125rem !important; /* Minimal top padding */
+        padding-top: 0.5rem !important; /* Reasonable top padding */
+        padding-bottom: 9rem !important; /* Extra space for buttons on mobile */
       }
       
       .custom-roast-content h3 {
@@ -733,14 +924,14 @@
         margin-top: 0.25rem !important;
       }
       
-      /* Ultra-generous spacing for small phones */
+      /* Reduced spacing for small phones */
       #quizCard:has(.custom-roast-content) {
-        padding-bottom: 10rem !important; /* Maximum bottom clearance for tiny screens */
+        padding-bottom: 8rem !important; /* Adequate bottom clearance for tiny screens */
       }
       
       .custom-roast-content {
-        padding-bottom: 5rem !important; /* Maximum bottom space for small iPhones */
-        margin-bottom: 3rem !important; /* Extra safety margin */
+        padding-bottom: 2rem !important; /* Adequate bottom space for small iPhones */
+        margin-bottom: 2rem !important; /* Adequate safety margin */
       }
       
       /* Even tighter spacing for ultra-compact layout */
@@ -748,25 +939,71 @@
         margin-top: 0.25rem !important; /* Minimal spacing to fit everything */
       }
       
-      /* Ensure creator's note has maximum clearance on small screens */
+      /* Ensure creator's note has adequate clearance on small screens */
       .custom-roast-content .text-center:last-child {
-        margin-bottom: 4rem !important;
-        padding-bottom: 2rem !important;
+        margin-bottom: 3rem !important; /* Adequate margin for more space */
+        padding-bottom: 1.5rem !important; /* Adequate padding */
+      }
+      
+      /* Enhanced blend name input for small screens */
+      .custom-roast-content input[name="blendName"] {
+        font-size: 0.875rem !important;
+        min-height: 2.25rem !important;
+        padding: 0.5rem 0.75rem !important;
+      }
+      
+      /* Ultra-tight spacing for small screens */
+      .custom-roast-content h4 {
+        margin-bottom: 0.125rem !important; /* Minimal spacing */
+      }
+      
+      .custom-roast-content .flex.justify-center {
+        margin-bottom: 0.25rem !important; /* Minimal spacing */
+      }
+      
+      /* Checkout form spacing for small screens */
+      #quizCard:has(.contact-input) {
+        padding-bottom: 12rem !important; /* Extra space for small screens to prevent bouncing */
+      }
+      
+      .contact-input {
+        font-size: 0.875rem !important;
+        min-height: 2.25rem !important;
+        padding: 0.5rem 0.75rem !important;
       }
 
     }
 
     /* ╔═════════════  Consistent desktop card (≥ 640 px)  ═════════════╗ */
     @media (min-width: 640px){
+    
+      /* COMPACT LAYOUT: Center everything with minimal waste */
+      #quiz {
+        min-height: 100vh;           /* Full viewport height for centering */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;     /* Center the content vertically */
+        padding: 2rem 0;             /* Minimal top/bottom padding */
+      }
+      
+      #quizForm {
+        margin: 0 auto;              /* Center the form */
+      }
+      
+      /* Compact quiz title */
+      #quizTitle {
+        margin-bottom: 2rem !important;  /* Reduced gap to quiz card */
+        font-size: 2rem !important;      /* Slightly smaller title */
+      }
 
       /* Card itself (on desktop the height stops changing) */
       #quizCard{
         max-width: 28rem;            /* 448 px – looks tidy next to 16 px base type  */
         height: 540px;               /* one neat "playing card"                       */
-        padding: 2rem 2.25rem 2rem;  /* consistent padding, buttons are fixed below   */
+        padding: 2rem 2.25rem 2rem;  /* consistent padding                            */
         margin-inline:auto;
-        margin-bottom: 6rem;         /* space for fixed buttons                       */
-        overflow:hidden;             /* keep radar‑chart & bubbles inside             */
+        margin-bottom: 4rem;         /* REDUCED: compact spacing for buttons         */
+        overflow-y:auto;             /* allow scrolling when needed                   */
         background:#fff;
         border-radius:1.25rem;
         box-shadow:0 6px 24px rgba(0,0,0,.08);
@@ -809,16 +1046,21 @@
       .question-body .flex.items-end,
       .question-body .flex.items-center{width:100%;}
 
-      /* Navigation bar is fixed and consistent on wide screens             */
+      /* IMPROVED: Navigation bar with consistent positioning for muscle memory */
       #buttonContainer{
-        position: fixed;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
+        position: fixed;               /* Fixed position for consistent location */
+        bottom: 2rem;                  /* REDUCED: Much closer to quiz card */
+        left: 50%;                     /* Center horizontally */
+        transform: translateX(-50%);   /* Perfect centering */
         max-width: 28rem;
         width: auto;
         min-width: 320px;
-        margin-inline: 0;
+        margin: 0;                     /* Remove margin - using fixed positioning */
+        background:#fff;
+        padding:.75rem 1rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 20;
       }
       #buttonContainer button{
         height: 3rem;
@@ -929,9 +1171,9 @@
 </section>
 
 <!-- ╔═════════════ QUIZ ═════════════╗ -->
-<section id="quiz" class="py-16 bg-white">
+<section id="quiz" class="py-8 bg-white">
   <div class="container mx-auto px-6">
-    <h2 id="quizTitle" class="text-3xl font-bold text-center mb-8">Train your coffee AI</h2>
+    <h2 id="quizTitle" class="text-3xl font-bold text-center mb-6">Train your coffee AI</h2>
 
     <!-- ▶ FORM 1 : QUIZ ◀ -->
     <form id="quizForm" class="class="w-full max-w-[1440px] mx-auto bg-white/90 shadow-xl rounded-2xl p-6 md:p-10 relative" aria-label="Coffee Preference Quiz">
@@ -1120,9 +1362,9 @@ const quizForm      = document.getElementById('quizForm');
 const contactForm   = document.getElementById('contactForm');
 const quizCard      = document.getElementById('quizCard');
 const progressBar   = document.getElementById('progressBar');
-const prevBtn       = document.getElementById('prevBtn');
+let prevBtn       = document.getElementById('prevBtn');
 const nextBtn       = document.getElementById('nextBtn');
-const submitBtn     = document.getElementById('submitBtn');
+let submitBtn     = document.getElementById('submitBtn');
 const errorMessage  = document.getElementById('errorMessage');
 document.getElementById('quizUserId').value    = userId;
 document.getElementById('contactUserId').value = userId;
@@ -1557,6 +1799,95 @@ function animateSlider(slider, toValue, duration = 400) {
     requestAnimationFrame(frame);
 }
 
+// Helper functions for enhanced slider touch handling
+function updateSliderFromTouch(slider, touch) {
+  const rect = slider.getBoundingClientRect();
+  const x = touch.clientX - rect.left;
+  const width = rect.width;
+  
+  // Calculate percentage (0-1)
+  let percentage = Math.max(0, Math.min(1, x / width));
+  
+  // Convert to slider value
+  const min = parseFloat(slider.min);
+  const max = parseFloat(slider.max);
+  const value = min + (max - min) * percentage;
+  
+  // Update slider
+  slider.value = value;
+  updateTrackFill(slider);
+  positionThumbLabel(slider); // Update the tooltip label
+  answers[slider.name] = value;
+}
+
+function updateSliderFromMouse(slider, event) {
+  const rect = slider.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const width = rect.width;
+  
+  // Calculate percentage (0-1)
+  let percentage = Math.max(0, Math.min(1, x / width));
+  
+  // Convert to slider value
+  const min = parseFloat(slider.min);
+  const max = parseFloat(slider.max);
+  const value = min + (max - min) * percentage;
+  
+  // Update slider
+  slider.value = value;
+  updateTrackFill(slider);
+  positionThumbLabel(slider); // Update the tooltip label
+  answers[slider.name] = value;
+}
+
+// Function to find the closest slider to a touch/mouse position
+function findClosestSlider(x, y) {
+  const sliders = document.querySelectorAll('input[type="range"]');
+  let closestSlider = null;
+  let closestDistance = Infinity;
+  
+  sliders.forEach(slider => {
+    const rect = slider.getBoundingClientRect();
+    
+    // Check if the point is within the slider's vertical bounds (with some tolerance)
+    const verticalTolerance = 50; // 50px tolerance above and below slider
+    if (y >= rect.top - verticalTolerance && y <= rect.bottom + verticalTolerance) {
+      // Calculate horizontal distance to slider center
+      const sliderCenterX = rect.left + rect.width / 2;
+      const distance = Math.abs(x - sliderCenterX);
+      
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestSlider = slider;
+      }
+    }
+  });
+  
+  return closestSlider;
+}
+
+// Function to check if touch is on navigation buttons
+function isOnNavigationButton(x, y) {
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  
+  if (prevBtn) {
+    const prevRect = prevBtn.getBoundingClientRect();
+    if (x >= prevRect.left && x <= prevRect.right && y >= prevRect.top && y <= prevRect.bottom) {
+      return true;
+    }
+  }
+  
+  if (nextBtn) {
+    const nextRect = nextBtn.getBoundingClientRect();
+    if (x >= nextRect.left && x <= nextRect.right && y >= nextRect.top && y <= nextRect.bottom) {
+      return true;
+    }
+  }
+  
+  return false;
+}
+
 function renderQuestion(idx){
   const q = quizData[idx];
   quizCard.innerHTML='';
@@ -1625,6 +1956,47 @@ function renderQuestion(idx){
     setTimeout(() => {
         animateSlider(sliderEl, defaultValue);
     }, 150); // A short delay to allow for rendering
+    
+    // Enhanced touch handling for regular range sliders
+    let isDragging = false;
+    
+    sliderEl.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      isDragging = true;
+      const touch = e.touches[0];
+      updateSliderFromTouch(this, touch);
+    });
+    
+    sliderEl.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+      if (isDragging) {
+        const touch = e.touches[0];
+        updateSliderFromTouch(this, touch);
+      }
+    });
+    
+    sliderEl.addEventListener('touchend', function(e) {
+      isDragging = false;
+    });
+    
+    // Also handle mouse events for desktop
+    sliderEl.addEventListener('mousedown', function(e) {
+      isDragging = true;
+      updateSliderFromMouse(this, e);
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+      if (isDragging) {
+        const activeSlider = document.querySelector('input[type="range"]:focus');
+        if (activeSlider) {
+          updateSliderFromMouse(activeSlider, e);
+        }
+      }
+    });
+    
+    document.addEventListener('mouseup', function() {
+      isDragging = false;
+    });
   }
 
   /* MULTI‑RANGE */
@@ -1647,14 +2019,93 @@ function renderQuestion(idx){
         </div>
       </div>`;
     
+    // Single slider at a time functionality
+    let activeSlider = null;
+    let allSliders = [];
+    
     // Set up track fill for all flavor sliders
     q.names.forEach(name => {
       const slider = document.getElementById(name);
       if (slider) {
+        allSliders.push(slider);
         updateTrackFill(slider);
-        // Add event listener specifically for flavor sliders
+        
+        // Enhanced event listeners for smooth slider interaction
         slider.addEventListener('input', function() {
           updateTrackFill(this);
+        });
+        
+        // Function to disable all sliders except the active one
+        function disableOtherSliders(activeSlider) {
+          allSliders.forEach(s => {
+            if (s !== activeSlider) {
+              s.style.pointerEvents = 'none';
+              s.style.opacity = '0.5';
+            }
+          });
+        }
+        
+        // Function to enable all sliders
+        function enableAllSliders() {
+          allSliders.forEach(s => {
+            s.style.pointerEvents = 'auto';
+            s.style.opacity = '1';
+          });
+        }
+        
+        // Enhanced touch handling for mobile
+        let isDragging = false;
+        
+        slider.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          if (activeSlider && activeSlider !== this) {
+            return; // Only allow interaction with the active slider
+          }
+          
+          isDragging = true;
+          activeSlider = this;
+          disableOtherSliders(this);
+          
+          const touch = e.touches[0];
+          updateSliderFromTouch(this, touch);
+        });
+        
+        slider.addEventListener('touchmove', function(e) {
+          e.preventDefault();
+          if (isDragging && activeSlider === this) {
+            const touch = e.touches[0];
+            updateSliderFromTouch(this, touch);
+          }
+        });
+        
+        slider.addEventListener('touchend', function(e) {
+          isDragging = false;
+          activeSlider = null;
+          enableAllSliders();
+        });
+        
+        // Also handle mouse events for desktop
+        slider.addEventListener('mousedown', function(e) {
+          if (activeSlider && activeSlider !== this) {
+            return; // Only allow interaction with the active slider
+          }
+          
+          isDragging = true;
+          activeSlider = this;
+          disableOtherSliders(this);
+          updateSliderFromMouse(this, e);
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+          if (isDragging && activeSlider) {
+            updateSliderFromMouse(activeSlider, e);
+          }
+        });
+        
+        document.addEventListener('mouseup', function() {
+          isDragging = false;
+          activeSlider = null;
+          enableAllSliders();
         });
       }
     });
@@ -1679,6 +2130,11 @@ function renderQuestion(idx){
   else if(q.type==='text'){
     // Check if this is the blend name question
     if(q.name === 'blendName') {
+      // Hide the "Train your coffee AI" heading on the blend naming page
+      const quizTitle = document.getElementById('quizTitle');
+      if (quizTitle) {
+        quizTitle.classList.add('hidden');
+      }
       /* ----------  A. establish an immediate skeleton  ---------- */
       quizCard.innerHTML = `
         <div class="w-full max-w-md mx-auto custom-roast-content animate-pulse">
@@ -1793,6 +2249,20 @@ function renderQuestion(idx){
       }
     });
     
+    // Enhanced interaction for all range sliders - no visual changes
+    if(el.type === 'range') {
+      // Prevent page scroll during slider interaction on touch devices
+      el.addEventListener('touchstart', function(e) {
+        // Allow the slider to work but prevent page scroll
+        e.stopPropagation();
+      }, { passive: true });
+      
+      el.addEventListener('touchmove', function(e) {
+        // Prevent page scroll during drag
+        e.stopPropagation();
+      }, { passive: true });
+    }
+    
     // Add click event for radio buttons to handle all selections including defaults
     if(el.type==='radio'){
       el.addEventListener('click', e=>{
@@ -1874,17 +2344,37 @@ function autoNext(){
     // If this is the first selection (moving from question 0 to 1), activate full-screen mode
     if(current === 0) {
       document.body.classList.add('quiz-fullscreen');
+      document.body.classList.add('quiz-active'); // Immediately apply pull-to-refresh protection
       document.getElementById('quiz').classList.add('quiz-fullscreen');
       document.getElementById('quizEscape').classList.remove('hidden');
+      
+      // Force a layout recalculation to ensure iOS respects the new CSS immediately
+      document.body.offsetHeight;
     }
     current++;
     updateUI();
   }
 }
 function updateUI(){
+  // Refresh button references to avoid stale nodes after replacement
+  prevBtn = document.getElementById('prevBtn');
+  submitBtn = document.getElementById('submitBtn');
   if (current >= quizData.length && !isLoading) {
     return;
   }
+  
+  // Show/hide the quiz title based on current question
+  const quizTitle = document.getElementById('quizTitle');
+  if (quizTitle) {
+    if (current === quizData.length - 1 && quizData[current] && quizData[current].name === 'blendName') {
+      // Hide title on blend naming page
+      quizTitle.classList.add('hidden');
+    } else {
+      // Show title for all other questions
+      quizTitle.classList.remove('hidden');
+    }
+  }
+  
   renderQuestion(current);
 
   // Calculate progress
@@ -1933,34 +2423,144 @@ function updateUI(){
       clearTimeout(window.submitBtnTimeout);
     }
     
-    // Enable submit button after 1.5 seconds
+    // Enable submit button after 1.5 seconds (or immediately for checkout)
+    const delay = (current === quizData.length - 1) ? 0 : 1500;
     window.submitBtnTimeout = setTimeout(() => {
       submitBtn.disabled = false;
       window.submitBtnTimeout = null; // Clear reference
-    }, 1500);
+    }, delay);
   }
 
   if (current === quizData.length - 1) {
     submitBtn.textContent = 'Checkout';
+    submitBtn.disabled = false;
+    submitBtn.removeAttribute('disabled');
+    submitBtn.style.pointerEvents = 'auto';
+    submitBtn.style.cursor = 'pointer';
+    
+    // Clear any pending timeout
+    if (window.submitBtnTimeout) {
+      clearTimeout(window.submitBtnTimeout);
+      window.submitBtnTimeout = null;
+    }
+    
+    // BRUTE FORCE APPROACH - Add multiple handlers to make sure SOMETHING works
+    
+    // Method 1: Direct onclick (immediate)
+    submitBtn.onclick = function() {
+      console.log('CHECKOUT ONCLICK FIRED - METHOD 1');
+      handleCheckout();
+    };
+    
+    // Method 2: addEventListener (immediate)
+    submitBtn.addEventListener('click', function(e) {
+      console.log('CHECKOUT CLICK EVENT FIRED - METHOD 2');
+      e.preventDefault();
+      e.stopPropagation();
+      handleCheckout();
+    }, { passive: false });
+    
+    // Method 3: Touch events for mobile (immediate)
+    submitBtn.addEventListener('touchend', function(e) {
+      console.log('CHECKOUT TOUCH EVENT FIRED - METHOD 3');
+      e.preventDefault();
+      e.stopPropagation();
+      handleCheckout();
+    }, { passive: false });
+    
+    // Method 4: Replace button after a delay (backup)
+    setTimeout(() => {
+      const oldBtn = document.getElementById('submitBtn');
+      if (oldBtn && oldBtn.textContent === 'Checkout') {
+        console.log('REPLACING CHECKOUT BUTTON - METHOD 4');
+        const newBtn = document.createElement('button');
+        newBtn.id = 'submitBtn';
+        newBtn.className = oldBtn.className;
+        newBtn.textContent = 'Checkout';
+        newBtn.type = 'button';
+        newBtn.disabled = false;
+        newBtn.style.pointerEvents = 'auto';
+        newBtn.style.cursor = 'pointer';
+        newBtn.onclick = function() {
+          console.log('REPLACED BUTTON CLICKED - METHOD 4');
+          // Force enable button before calling handleCheckout
+          newBtn.disabled = false;
+          newBtn.removeAttribute('disabled');
+          handleCheckout();
+        };
+        oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+      }
+    }, 100);
+    
+    console.log('Checkout button armed with 4 different methods');
   } else {
     submitBtn.textContent = 'Next';
   }
 }
 
-prevBtn.addEventListener('click', () => {
-  if (current > 0) {
-    // Remove fade out animation if going back from last question
-    if (current === quizData.length - 1) {
-      const progressBar = document.getElementById('progressBar');
-      const progressContainer = progressBar.parentElement;
-      progressContainer.classList.remove('progress-fade-out');
+/* CONSOLIDATED "PREVIOUS" BUTTON LOGIC */
+document.addEventListener('click', function(e) {
+  const prevBtn = e.target.closest('#prevBtn');
+  if (prevBtn) {
+    const submitBtn = document.getElementById('submitBtn');
+    const isCheckoutPage = submitBtn && submitBtn.textContent === 'Buy Now';
+
+    if (isCheckoutPage) {
+      // Go back to the last question of the quiz
+      current = quizData.length - 1;
+      // Reset submit button to remove stale listeners
+      (function(){
+        const staleBtn=document.getElementById('submitBtn');
+        if(staleBtn){
+          const cleanBtn=staleBtn.cloneNode(false);
+          cleanBtn.id='submitBtn';
+          staleBtn.parentNode.replaceChild(cleanBtn, staleBtn);
+        }
+      })();
+      updateUI();
+    } else if (current > 0) {
+      // Regular quiz navigation
+      if (current === quizData.length - 1) {
+        const progressBar = document.getElementById('progressBar');
+        const progressContainer = progressBar.parentElement;
+        progressContainer.classList.remove('progress-fade-out');
+      }
+      current--;
+      updateUI();
     }
-    current--;
-    updateUI();
   }
 });
 
 updateUI(); // initial render
+
+// Test button functionality on page load
+console.log('Page loaded - Testing button functionality');
+console.log('Submit button:', document.getElementById('submitBtn'));
+console.log('Previous button:', document.getElementById('prevBtn'));
+
+// Add a simple test to verify click events work
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded - Testing click events');
+  
+  // Test if basic click events work
+  document.addEventListener('click', function(e) {
+    console.log('Document clicked:', e.target.tagName, e.target.id);
+  });
+  
+  // Mobile-specific button monitoring
+  setInterval(function() {
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn && /Checkout|Buy Now/.test(submitBtn.textContent.trim())) {
+      if (submitBtn.disabled) {
+        console.log('Mobile monitor - Re-enabling disabled button:', submitBtn.textContent.trim());
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute('disabled');
+        submitBtn.style.pointerEvents = 'auto';
+        submitBtn.style.cursor = 'pointer';
+      }
+    }
+  }, 1000); // Check every second
+});
 
 // Hero button gentle scroll
 document.getElementById('heroButton').addEventListener('click', function() {
@@ -1971,30 +2571,48 @@ document.getElementById('heroButton').addEventListener('click', function() {
   });
 });
 
-// Escape functionality
+// Escape functionality - Exit fullscreen but maintain quiz progress
 document.getElementById('quizEscape').addEventListener('click', function() {
-  // Reset to initial state
-  current = 0;
-  answers = {...defaults};
-  
   // Clear any pending submit button timeout
   if (window.submitBtnTimeout) {
     clearTimeout(window.submitBtnTimeout);
     window.submitBtnTimeout = null;
   }
   
-  // Remove full-screen mode
+  // Remove full-screen mode (but keep quiz progress)
   document.body.classList.remove('quiz-fullscreen');
   document.getElementById('quiz').classList.remove('quiz-fullscreen');
   document.getElementById('quizEscape').classList.add('hidden');
   
-  // Reset progress bar and remove animations
+  // Remove progress bar fade-out animation but maintain progress
   const progressBar = document.getElementById('progressBar');
   const progressContainer = progressBar.parentElement;
-  progressBar.style.width = '0%';
   progressContainer.classList.remove('progress-fade-out');
   
-  // Update UI
+  // Show the quiz title again when escaping
+  const quizTitle = document.getElementById('quizTitle');
+  if (quizTitle) {
+    quizTitle.classList.remove('hidden');
+  }
+  
+  // Hide buttons if we're back to the first question (early exit)
+  if (current === 0) {
+    const buttonContainer = document.getElementById('buttonContainer');
+    const prevBtn = document.getElementById('prevBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (buttonContainer) buttonContainer.style.display = 'none';
+    if (prevBtn) {
+      prevBtn.classList.add('hidden');
+      prevBtn.style.display = 'none';
+    }
+    if (submitBtn) {
+      submitBtn.classList.add('hidden'); 
+      submitBtn.style.display = 'none';
+    }
+  }
+  
+  // Update UI to show current question with correct progress and button text
   updateUI();
   
   // Scroll back to quiz section
@@ -2032,25 +2650,288 @@ function submitToSheet(tab, formData){
 }
 
 /* QUIZ SUBMIT -----------------------------------------------------*/
-// Add click event listener for the submit button
+// Add click event listener for the submit button (for Next navigation only)
+// NOTE: Checkout button gets its own direct onclick handler in updateUI()
 submitBtn.addEventListener('click', function() {
   console.log('Submit button clicked, text:', submitBtn.textContent); // Debug log
-  // Check if we're on the contact form (Buy Now mode)
-  if (submitBtn.textContent.trim() === 'Buy Now') {
-    console.log('Buy Now detected, calling handleContactSubmission'); // Debug log
-    // Handle contact submission
-    handleContactSubmission();
-  }
-  // Check if we're on the last question (Checkout mode)
-  else if (submitBtn.textContent === 'Checkout' && current === quizData.length - 1) {
-    // Handle checkout submission directly from the blend naming question
-    handleCheckout();
-  } else {
-    // Handle regular navigation (Next for questions)
+  console.log('Current question:', current, 'Total questions:', quizData.length); // Debug log
+  
+  // Only handle Next navigation here
+  if (submitBtn.textContent.trim() === 'Next') {
+    console.log('Regular navigation - moving to next question'); // Debug log
     current++;
     updateUI();
   }
+  // Buy Now is handled by direct binding in handleCheckout()
+  else if (submitBtn.textContent.trim() === 'Buy Now') {
+    console.log('Buy Now detected, calling handleContactSubmission'); // Debug log
+    handleContactSubmission();
+  }
+  // Checkout gets its own direct handler - this shouldn't fire
+  else if (submitBtn.textContent === 'Checkout') {
+    console.log('OLD HANDLER - Checkout button clicked - this should not happen');
+  }
 });
+
+// Add a more robust button click handler using event delegation
+document.addEventListener('click', function(e) {
+  // Check if the clicked element is the submit button using closest()
+  const btn = e.target.closest('#submitBtn');
+  if (btn) {
+    console.log('Event delegation - Submit button clicked, text:', btn.textContent);
+    console.log('Button disabled state:', btn.disabled);
+    
+    // If button is disabled, don't process the click
+    if (btn.disabled) {
+      console.log('Button is disabled, ignoring click');
+      return;
+    }
+    
+    // Check if we're on the contact form (Buy Now mode)
+    if (btn.textContent.trim() === 'Buy Now') {
+      console.log('Event delegation - Buy Now detected, calling handleContactSubmission');
+      e.preventDefault();
+      e.stopPropagation();
+      handleContactSubmission();
+    }
+    // Check if we're on the last question (Checkout mode) - handled by direct onclick
+    else if (btn.textContent === 'Checkout') {
+      console.log('Event delegation - Checkout detected, but handled by direct onclick - ignoring');
+      e.preventDefault();
+      e.stopPropagation();
+      return; // Don't interfere with direct handler
+    } else {
+      console.log('Event delegation - Regular navigation - moving to next question');
+      e.preventDefault();
+      e.stopPropagation();
+      current++;
+      updateUI();
+    }
+  }
+  
+
+});
+
+// Mobile touch handler removed - using direct binding approach instead
+
+// Sanity test function for debugging button issues
+window.testBuyNowButton = function() {
+  const btn = document.getElementById('submitBtn');
+  if (btn) {
+    console.log('Button test - Text:', btn.textContent, 'Disabled:', btn.disabled, 'Display:', btn.style.display);
+    btn.onclick = () => alert('Button click test - fires!');
+    return 'Test function added. Tap the button to see if it responds.';
+  } else {
+    return 'Button not found!';
+  }
+};
+
+// One-line sanity test for Checkout button
+window.testCheckoutButton = function() {
+  const btn = document.getElementById('submitBtn');
+  if (btn) {
+    console.log('=== CHECKOUT BUTTON TEST ===');
+    console.log('Text:', btn.textContent);
+    console.log('Disabled:', btn.disabled);
+    console.log('Has onclick:', !!btn.onclick);
+    btn.onclick = () => alert('TEST: Checkout button fires!');
+    return 'Test added. Tap button to see if it responds.';
+  }
+  return 'Button not found!';
+}; 
+
+// EMERGENCY FIX - Run this in console if button still doesn't work
+window.forceFixCheckoutButton = function() {
+  const btn = document.getElementById('submitBtn');
+  if (btn && btn.textContent === 'Checkout') {
+    console.log('FORCE FIXING CHECKOUT BUTTON');
+    
+    // Remove all existing handlers
+    btn.onclick = null;
+    btn.replaceWith(btn.cloneNode(true));
+    
+    // Get the fresh button
+    const freshBtn = document.getElementById('submitBtn');
+    freshBtn.disabled = false;
+    freshBtn.removeAttribute('disabled');
+    freshBtn.style.pointerEvents = 'auto';
+    freshBtn.style.cursor = 'pointer';
+    
+    freshBtn.onclick = function() {
+      console.log('FORCE FIXED BUTTON CLICKED');
+      // Ensure button stays enabled
+      freshBtn.disabled = false;
+      freshBtn.removeAttribute('disabled');
+      handleCheckout();
+    };
+    
+    freshBtn.addEventListener('click', function(e) {
+      console.log('FORCE FIXED CLICK LISTENER');
+      // Ensure button stays enabled
+      freshBtn.disabled = false;
+      freshBtn.removeAttribute('disabled');
+      e.preventDefault();
+      e.stopPropagation();
+      handleCheckout();
+    }, { passive: false });
+    
+    return 'Button force fixed. Try tapping now.';
+  }
+  return 'No checkout button found or wrong text';
+};
+
+// DEBUG: Mobile keyboard and button positioning
+window.debugKeyboardPosition = function() {
+  const nav = document.getElementById('buttonContainer');
+  const submitBtn = document.getElementById('submitBtn');
+  
+  console.log('=== KEYBOARD & BUTTON DEBUG ===');
+  console.log('Screen width:', window.innerWidth, 'px');
+  console.log('Device type:', window.innerWidth >= 640 ? 'DESKTOP' : 'MOBILE');
+  console.log('Button container:', nav ? 'FOUND' : 'NOT FOUND');
+  console.log('Submit button:', submitBtn ? submitBtn.textContent : 'NOT FOUND');
+  
+  if (nav) {
+    console.log('Button position style:', nav.style.position || 'CSS-DEFAULT');
+    console.log('Button bottom:', nav.style.bottom || 'CSS-DEFAULT');
+    console.log('Button transform:', nav.style.transform || 'CSS-DEFAULT');
+    console.log('Button margin:', nav.style.margin || 'CSS-DEFAULT');
+    
+    // Get actual computed position
+    const rect = nav.getBoundingClientRect();
+    console.log('Actual button position:', {
+      left: Math.round(rect.left),
+      top: Math.round(rect.top),
+      bottom: Math.round(window.innerHeight - rect.bottom),
+      width: Math.round(rect.width)
+    });
+  }
+  
+  if (window.visualViewport && window.innerWidth < 640) {
+    const vh = window.visualViewport.height;
+    const vt = window.visualViewport.offsetTop;
+    const wh = window.innerHeight;
+    const keyboardHeight = Math.max(0, wh - vh - vt);
+    
+    console.log('Visual viewport height:', vh);
+    console.log('Visual viewport top:', vt);
+    console.log('Window height:', wh);
+    console.log('Calculated keyboard height:', keyboardHeight);
+    console.log('Keyboard state:', document.body.classList.contains('keyboard-open') ? 'OPEN' : 'CLOSED');
+  } else if (window.innerWidth >= 640) {
+    console.log('Desktop mode - consistent fixed positioning active');
+  } else {
+    console.log('Visual Viewport API: NOT AVAILABLE');
+  }
+  
+  return 'Debug info logged above';
+};
+
+// TEST: Check button position consistency across questions
+window.testButtonConsistency = function() {
+  const nav = document.getElementById('buttonContainer');
+  if (!nav) return 'Button container not found';
+  
+  let positions = [];
+  let questionCount = 0;
+  
+  const checkPosition = () => {
+    const rect = nav.getBoundingClientRect();
+    const pos = {
+      question: questionCount + 1,
+      left: Math.round(rect.left),
+      top: Math.round(rect.top),
+      bottom: Math.round(window.innerHeight - rect.bottom)
+    };
+    positions.push(pos);
+    console.log(`Question ${pos.question} - Button position:`, pos);
+    
+    if (questionCount > 0) {
+      const prev = positions[questionCount - 1];
+      const current = positions[questionCount];
+      const moved = prev.left !== current.left || prev.top !== current.top || prev.bottom !== current.bottom;
+      console.log(`Position changed from previous: ${moved ? 'YES ❌' : 'NO ✅'}`);
+    }
+    
+    questionCount++;
+  };
+  
+  // Check current position
+  checkPosition();
+  
+  // Set up observer for future checks
+  if (!window.buttonConsistencyObserver) {
+    const observer = new MutationObserver(() => {
+      setTimeout(checkPosition, 100); // Small delay for DOM updates
+    });
+    
+    const quizCard = document.getElementById('quizCard');
+    if (quizCard) {
+      observer.observe(quizCard, { childList: true, subtree: true });
+      window.buttonConsistencyObserver = observer;
+    }
+  }
+  
+  return 'Button position tracking started. Check console for updates.';
+};
+
+// TEST: Measure gap between quiz card and buttons
+window.measureQuizLayout = function() {
+  const quizCard = document.getElementById('quizCard');
+  const buttonContainer = document.getElementById('buttonContainer');
+  
+  if (!quizCard || !buttonContainer) {
+    return 'Quiz card or button container not found';
+  }
+  
+  const cardRect = quizCard.getBoundingClientRect();
+  const buttonRect = buttonContainer.getBoundingClientRect();
+  
+  const gap = buttonRect.top - cardRect.bottom;
+  const screenHeight = window.innerHeight;
+  const totalUsedHeight = cardRect.height + buttonRect.height + gap;
+  const wastedSpace = screenHeight - totalUsedHeight;
+  
+  console.log('=== QUIZ LAYOUT MEASUREMENT ===');
+  console.log('Screen height:', screenHeight, 'px');
+  console.log('Quiz card height:', Math.round(cardRect.height), 'px');
+  console.log('Button height:', Math.round(buttonRect.height), 'px');
+  console.log('Gap between card and buttons:', Math.round(gap), 'px');
+  console.log('Total used height:', Math.round(totalUsedHeight), 'px');
+  console.log('Wasted space:', Math.round(wastedSpace), 'px');
+  console.log('Space efficiency:', Math.round((totalUsedHeight / screenHeight) * 100) + '%');
+  
+  if (gap > 100) {
+    console.log('⚠️  Gap is quite large - consider reducing for better UX');
+  } else if (gap < 30) {
+    console.log('⚠️  Gap might be too small - ensure no overlap');
+  } else {
+    console.log('✅ Gap looks good for user experience');
+  }
+  
+  return {
+    gap: Math.round(gap),
+    efficiency: Math.round((totalUsedHeight / screenHeight) * 100)
+  };
+};
+
+// Debug function to check button state
+window.debugCheckoutButton = function() {
+  const btn = document.getElementById('submitBtn');
+  if (btn) {
+    console.log('=== Checkout Button Debug ===');
+    console.log('Text:', btn.textContent);
+    console.log('Disabled:', btn.disabled);
+    console.log('Display:', btn.style.display);
+    console.log('Pointer Events:', btn.style.pointerEvents);
+    console.log('Type:', btn.type);
+    console.log('Event Listeners:', btn.onclick, btn.onpointerup);
+    console.log('Current question:', current, 'Total questions:', quizData.length);
+    return 'Debug info logged to console';
+  } else {
+    return 'Button not found!';
+  }
+};
 
 async function handleCheckout() {
   const submitButton = document.getElementById('submitBtn');
@@ -2103,15 +2984,15 @@ async function handleCheckout() {
         <h4 class="font-semibold text-xs mb-2 text-gray-800">Contact Information</h4>
         <div>
           <label class="block font-medium mb-1 text-xs" for="contactName">Full Name</label>
-          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 contact-input" type="text" id="contactName" name="contactName" autocomplete="name" required>
+          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 contact-input" type="text" id="contactName" name="contactName" autocomplete="name" placeholder="Enter your full name" required>
         </div>
         <div>
           <label class="block font-medium mb-1 text-xs" for="contactEmail">Email Address</label>
-          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 contact-input" type="email" id="contactEmail" name="contactEmail" autocomplete="email" required>
+          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 contact-input" type="email" id="contactEmail" name="contactEmail" autocomplete="email" placeholder="Enter your email address" required>
         </div>
         <div>
           <label class="block font-medium mb-1 text-xs" for="contactPhone">Phone Number</label>
-          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 contact-input" type="tel" id="contactPhone" name="contactPhone" inputmode="tel" autocomplete="tel" required>
+          <input class="w-full border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-200 contact-input" type="tel" id="contactPhone" name="contactPhone" inputmode="tel" autocomplete="tel" placeholder="Enter your phone number" required>
         </div>
         <p id="contactError" class="hidden text-center text-red-500 font-semibold mt-1 text-xs"></p>
       </div>
@@ -2148,19 +3029,34 @@ async function handleCheckout() {
     }
   });
 
-  // Add keyboard navigation for contact form fields
+  // Add visual feedback for keyboard navigation
+  const addFieldFeedback = (field, isLast = false) => {
+    field.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        // Add brief visual feedback
+        const originalBorder = field.style.border;
+        field.style.border = '2px solid #22c55e';
+        field.style.transition = 'border-color 0.2s ease';
+        
+        setTimeout(() => {
+          field.style.border = originalBorder;
+        }, 200);
+      }
+    });
+  };
+
+  addFieldFeedback(nameField);
+  addFieldFeedback(emailField);
+  addFieldFeedback(phoneField, true); // Last field
+
+  // Add keyboard navigation for contact form fields - Keep keyboard open
   nameField.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       
-      // Blur current field to close mobile keyboard
-      nameField.blur();
-      
-      // Small delay for smooth keyboard transition, then focus next field
-      setTimeout(() => {
-        emailField.focus();
-        emailField.setSelectionRange(emailField.value.length, emailField.value.length);
-      }, 150); // Shorter delay for field-to-field navigation
+      // Move to next field without closing keyboard
+      emailField.focus();
+      emailField.setSelectionRange(emailField.value.length, emailField.value.length);
     }
   });
 
@@ -2168,14 +3064,9 @@ async function handleCheckout() {
     if (e.key === 'Enter') {
       e.preventDefault();
       
-      // Blur current field to close mobile keyboard
-      emailField.blur();
-      
-      // Small delay for smooth keyboard transition, then focus next field
-      setTimeout(() => {
-        phoneField.focus();
-        phoneField.setSelectionRange(phoneField.value.length, phoneField.value.length);
-      }, 150); // Shorter delay for field-to-field navigation
+      // Move to next field without closing keyboard
+      phoneField.focus();
+      phoneField.setSelectionRange(phoneField.value.length, phoneField.value.length);
     }
   });
 
@@ -2183,13 +3074,8 @@ async function handleCheckout() {
     if (e.key === 'Enter') {
       e.preventDefault();
       
-      // Blur current field to close mobile keyboard
-      phoneField.blur();
-      
-      // Small delay for smooth keyboard close, then submit
-      setTimeout(() => {
-        handleContactSubmission();
-      }, 250); // Longer delay for final submission
+      // On the last field, submit the form
+      handleContactSubmission();
     }
   });
 
@@ -2197,13 +3083,56 @@ async function handleCheckout() {
   setTimeout(() => {
     nameField.focus();
   }, 100);
+  
+  // Add a subtle indicator that refresh is disabled
+  if (quizCard) {
+    const refreshIndicator = document.createElement('div');
+    refreshIndicator.className = 'fixed top-2 left-1/2 transform -translate-x-1/2 bg-yellow-100 border border-yellow-300 text-yellow-800 text-xs px-2 py-1 rounded-full z-50 opacity-75';
+    refreshIndicator.textContent = '🔄 Refresh disabled during quiz';
+    document.body.appendChild(refreshIndicator);
+    
+    // Remove indicator after 3 seconds
+    setTimeout(() => {
+      refreshIndicator.style.opacity = '0';
+      setTimeout(() => {
+        if (refreshIndicator.parentNode) {
+          refreshIndicator.parentNode.removeChild(refreshIndicator);
+        }
+      }, 500);
+    }, 3000);
+  }
 
-  // Immediately set the button to its final state
-  document.getElementById('buttonContainer').style.display = 'flex';
-  prevBtn.classList.add('hidden');
-  submitBtn.classList.remove('hidden');
-  submitButton.textContent = 'Buy Now';
-  submitButton.disabled = false;
+  // Immediately set the button to its final state for checkout
+const buttonContainer = document.getElementById('buttonContainer');
+buttonContainer.style.display = 'flex';
+buttonContainer.classList.remove('hidden');
+
+prevBtn.classList.remove('hidden'); // Show previous button
+submitBtn.classList.remove('hidden');
+submitButton.textContent = 'Buy Now';
+submitButton.disabled = false;
+submitButton.style.display = 'inline-block';
+  
+  // Remove old delegated handlers and bind directly to the button
+  submitBtn.replaceWith(submitBtn.cloneNode(true));
+  const buyNowBtn = document.getElementById('submitBtn');
+  buyNowBtn.type = 'button';
+  buyNowBtn.disabled = false;
+  buyNowBtn.addEventListener('click', handleContactSubmission, {passive: false});
+  buyNowBtn.addEventListener('pointerup', handleContactSubmission, {passive: false});
+  
+  // Add debugging to ensure button is properly set up
+  console.log('Button setup - Text:', buyNowBtn.textContent, 'Disabled:', buyNowBtn.disabled, 'Display:', buyNowBtn.style.display);
+  console.log('Button container display:', buttonContainer.style.display);
+  
+  // Update button position for checkout mode
+  if (window.updateButtonPosition) {
+    setTimeout(() => {
+      window.updateButtonPosition();
+    }, 100); // Small delay to ensure DOM is updated
+  }
+  
+  // Button is now directly bound with event listeners - no additional setup needed
   
   // --- Background Submission ---
   Object.entries(answers).forEach(([k,v])=>{
@@ -2238,10 +3167,16 @@ async function handleQuizSubmission() {
 function handleContactSubmission() {
   console.log('handleContactSubmission called');
   
-      const nameField = document.getElementById('contactName');
-      const emailField = document.getElementById('contactEmail');
-      const phoneField = document.getElementById('contactPhone');
-      const contactErrorEl = document.getElementById('contactError');
+  // Check if button is properly set up
+  const submitBtn = document.getElementById('submitBtn');
+  console.log('Submit button state - Text:', submitBtn?.textContent, 'Disabled:', submitBtn?.disabled, 'Display:', submitBtn?.style.display);
+  
+  const nameField = document.getElementById('contactName');
+  const emailField = document.getElementById('contactEmail');
+  const phoneField = document.getElementById('contactPhone');
+  const contactErrorEl = document.getElementById('contactError');
+  
+  console.log('Form fields found:', { nameField: !!nameField, emailField: !!emailField, phoneField: !!phoneField });
   
   if (!nameField || !emailField || !phoneField) {
     console.error('Contact form fields not found');
@@ -2249,7 +3184,6 @@ function handleContactSubmission() {
   }
       
       if (!nameField.value || !emailField.value || !phoneField.value) {
-        contactErrorEl.textContent = 'Please fill in all fields.';
         contactErrorEl.classList.remove('hidden');
         return;
       }
@@ -2418,8 +3352,9 @@ function handleContactSubmission() {
       const touchY = e.touches[0].clientY;
       const touchDiff = touchY - touchStartY;
       
-      // Prevent pull-to-refresh if scrolling down from the top
-      if (touchDiff > 0 && window.scrollY === 0) {
+      // Only prevent pull-to-refresh if scrolling down from the very top
+      // Allow normal scrolling in all other cases
+      if (touchDiff > 50 && window.scrollY === 0) {
         e.preventDefault();
       }
     }
@@ -2521,82 +3456,7 @@ function handleContactSubmission() {
   }
 })();
 
-/* --- SWIPE GESTURES: add mobile swipe support for navigation --------------- */
-(function () {
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let touchEndX = 0;
-  let touchEndY = 0;
-  
-  // Only enable swipes when quiz is active
-  function isQuizActive() {
-    return document.body.classList.contains('quiz-fullscreen');
-  }
-  
-  document.addEventListener('touchstart', e => {
-    if (!isQuizActive()) return;
-    
-    // Ignore touches that start on sliders or input elements
-    const target = e.target;
-    if (target && (
-      target.type === 'range' || 
-      target.tagName.toLowerCase() === 'input' ||
-      target.closest('input[type="range"]')
-    )) {
-      return; // Don't track swipes that start on interactive elements
-    }
-    
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-  }, { passive: true });
-  
-  document.addEventListener('touchend', e => {
-    if (!isQuizActive()) return;
-    
-    // Only process swipe if we have valid start coordinates (not starting on interactive elements)
-    if (touchStartX === 0 && touchStartY === 0) {
-      return; // No valid start coordinates means touch started on excluded element
-    }
-    
-    touchEndX = e.changedTouches[0].screenX;
-    touchEndY = e.changedTouches[0].screenY;
-    
-    handleSwipe();
-    
-    // Reset coordinates after handling
-    touchStartX = 0;
-    touchStartY = 0;
-  }, { passive: true });
-  
-  function handleSwipe() {
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
-    const minSwipeDistance = 50;
-    
-    // Only process horizontal swipes that are longer than vertical swipes
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
-      if (deltaX > 0) {
-        // Swipe right - go to previous question
-        if (current > 0) {
-          // Remove fade out animation if going back from last question
-          if (current === quizData.length - 1) {
-            const progressBar = document.getElementById('progressBar');
-            const progressContainer = progressBar.parentElement;
-            progressContainer.classList.remove('progress-fade-out');
-          }
-          current--;
-          updateUI();
-        }
-      } else {
-        // Swipe left - go to next question (only if current question is answered)
-        const currentQuestion = quizData[current];
-        if (currentQuestion && answers[currentQuestion.name] !== undefined && answers[currentQuestion.name] !== '') {
-          autoNext();
-        }
-      }
-    }
-  }
-})();
+
 
 // Login Modal Functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -2679,31 +3539,215 @@ function setVhOncePerOrientation () {
 }
 window.addEventListener('resize', setVhOncePerOrientation, {passive:true});
 
-/* Keep navigation bar above keyboard */
+/* IMPROVED: Keep navigation bar stable during keyboard events */
 (function () {
   const nav = document.getElementById('buttonContainer');
-  if (!window.visualViewport || !nav) return;
+  if (!nav) return;
 
-  const stickAboveKeyboard = () => {
-    /* distance between layout viewport and visual viewport bottoms */
-    const kbHeight = window.innerHeight - window.visualViewport.height - 
-                     window.visualViewport.offsetTop;
-    /* 0 when keyboard hidden, >0 when visible                       */
-    nav.style.transform = `translate(-50%, -${kbHeight}px)`;
+  let keyboardState = 'closed'; // 'closed', 'opening', 'open', 'closing'
+  let lastKeyboardHeight = 0;
+  let stableKeyboardHeight = 0;
+  let keyboardStateTimeout;
+  let isUpdating = false;
+  
+  // Add smooth transition for button movement
+  nav.style.transition = 'bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+  const updateButtonPosition = (forced = false) => {
+    if (isUpdating && !forced) return;
+    
+    // QUIZ MODE: Don't move buttons during quiz - keep them stable
+    const isQuizMode = document.body.classList.contains('quiz-active') || 
+                      document.body.classList.contains('quiz-fullscreen');
+    
+    if (isQuizMode) {
+      nav.style.position = 'fixed';
+      nav.style.left = '50%';
+      nav.style.transform = 'translateX(-50%)';
+      nav.style.bottom = 'calc(env(safe-area-inset-bottom, 0px) + 1rem)';
+      nav.style.transition = 'none'; // No movement during quiz
+      console.log('Quiz mode: Buttons locked in stable position');
+      return;
+    }
+    
+    // Desktop mode (≥640px) - use consistent fixed positioning
+    if (window.innerWidth >= 640) {
+      nav.style.position = 'fixed';
+      nav.style.bottom = '2rem';  // UPDATED: matches CSS for compact layout
+      nav.style.left = '50%';
+      nav.style.transform = 'translateX(-50%)';
+      console.log('Desktop mode - using compact fixed positioning');
+      return;
+    }
+    
+    if (window.visualViewport) {
+      const visualViewportHeight = window.visualViewport.height;
+      const visualViewportTop = window.visualViewport.offsetTop;
+      const keyboardHeight = Math.max(0, window.innerHeight - visualViewportHeight - visualViewportTop);
+      
+      // Check if we're in checkout mode
+      const submitBtn = document.getElementById('submitBtn');
+      const isCheckoutMode = submitBtn && submitBtn.textContent.trim() === 'Buy Now';
+      
+      // More sophisticated keyboard state detection
+      const heightDelta = Math.abs(keyboardHeight - lastKeyboardHeight);
+      
+      // Only react to significant changes (> 30px) to prevent micro-adjustments
+      if (heightDelta < 30 && !forced) {
+        return;
+      }
+      
+      // Determine keyboard state with hysteresis
+      let newState = keyboardState;
+      if (keyboardHeight > 200) {
+        newState = 'open';
+        stableKeyboardHeight = keyboardHeight;
+      } else if (keyboardHeight < 100) {
+        newState = 'closed';
+        stableKeyboardHeight = 0;
+      }
+      
+      // Only update position if state changed or forced
+      if (newState !== keyboardState || forced) {
+        isUpdating = true;
+        keyboardState = newState;
+        lastKeyboardHeight = keyboardHeight;
+        
+        // Clear any pending state changes
+        clearTimeout(keyboardStateTimeout);
+        
+        // Reset to mobile fixed positioning
+        nav.style.position = 'fixed';
+        nav.style.left = '50%';
+        nav.style.transform = 'translateX(-50%)';
+        
+        if (keyboardState === 'open') {
+          // Position button above keyboard with buffer
+          const buttonOffset = isCheckoutMode ? 2 : 1.5;
+          nav.style.bottom = `${stableKeyboardHeight + buttonOffset}rem`;
+          console.log(`Mobile keyboard open - Button positioned above keyboard: ${stableKeyboardHeight + buttonOffset}rem`);
+        } else {
+          // Return to normal position
+          const normalOffset = isCheckoutMode ? 1.5 : 1;
+          nav.style.bottom = `calc(var(--safe-bottom) + ${normalOffset}rem)`;
+          console.log(`Mobile keyboard closed - Button returned to normal position: ${normalOffset}rem`);
+        }
+        
+        // Reset updating flag after transition
+        setTimeout(() => {
+          isUpdating = false;
+        }, 300);
+      }
+    } else {
+      // Fallback for mobile browsers without visualViewport
+      const submitBtn = document.getElementById('submitBtn');
+      const isCheckoutMode = submitBtn && submitBtn.textContent.trim() === 'Buy Now';
+      const normalOffset = isCheckoutMode ? 1.5 : 1;
+      
+      nav.style.position = 'fixed';
+      nav.style.left = '50%';
+      nav.style.transform = 'translateX(-50%)';
+      nav.style.bottom = `calc(var(--safe-bottom) + ${normalOffset}rem)`;
+    }
   };
 
-  window.visualViewport.addEventListener('resize', stickAboveKeyboard);
-  stickAboveKeyboard();                  // run once on load
+  // Debounced update with longer delay to prevent rapid changes
+  let updateTimeout;
+  const debouncedUpdate = () => {
+    clearTimeout(updateTimeout);
+    updateTimeout = setTimeout(() => updateButtonPosition(), 150);
+  };
+
+  // Listen for viewport changes with more conservative throttling
+  if (window.visualViewport) {
+    let lastUpdateTime = 0;
+    const throttledUpdate = () => {
+      const now = Date.now();
+      if (now - lastUpdateTime > 150) { // Longer throttle period
+        lastUpdateTime = now;
+        debouncedUpdate();
+      }
+    };
+    
+    window.visualViewport.addEventListener('resize', throttledUpdate);
+    window.visualViewport.addEventListener('scroll', throttledUpdate);
+  }
+  
+  // Initial position
+  updateButtonPosition(true);
+  
+  // Export function for manual updates
+  window.updateButtonPosition = () => updateButtonPosition(true);
+  
+  // Handle desktop/mobile transitions on window resize
+  window.addEventListener('resize', () => {
+    clearTimeout(updateTimeout);
+    updateTimeout = setTimeout(() => updateButtonPosition(true), 150);
+  });
+  
+  // Force update when text inputs get focus/blur
+  document.addEventListener('focusin', (e) => {
+    if (e.target.matches('input[type="text"], input[type="email"], input[type="tel"], textarea')) {
+      setTimeout(() => updateButtonPosition(true), 300);
+    }
+  });
+  
+  document.addEventListener('focusout', (e) => {
+    if (e.target.matches('input[type="text"], input[type="email"], input[type="tel"], textarea')) {
+      setTimeout(() => updateButtonPosition(true), 300);
+    }
+  });
 })();
 
-/* Toggle keyboard-open class for visual cues */
+/* IMPROVED: Toggle keyboard-open class with better stability */
 (function(){
+  let lastKeyboardState = false;
+  let toggleTimeout;
+  let stateChangeCount = 0;
+  
   const toggle = () => {
-    const open = window.visualViewport &&
-                 window.innerHeight > window.visualViewport.height + 80;
-    document.body.classList.toggle('keyboard-open', open);
+    if (window.visualViewport) {
+      const visualViewportHeight = window.visualViewport.height;
+      const visualViewportTop = window.visualViewport.offsetTop;
+      const keyboardHeight = Math.max(0, window.innerHeight - visualViewportHeight - visualViewportTop);
+      
+      // Higher threshold and more stable detection
+      const open = keyboardHeight > 200; // Increased threshold to 200px
+      
+      // Only toggle if state actually changed
+      if (open !== lastKeyboardState) {
+        stateChangeCount++;
+        
+        // Clear any pending toggle
+        clearTimeout(toggleTimeout);
+        
+        // Longer delay for stability, but immediate visual feedback
+        toggleTimeout = setTimeout(() => {
+          lastKeyboardState = open;
+          document.body.classList.toggle('keyboard-open', open);
+          console.log(`Keyboard state changed: ${open ? 'OPEN' : 'CLOSED'} (height: ${keyboardHeight}px)`);
+        }, 400); // Longer delay for more stability
+      }
+    }
   };
-  window.visualViewport?.addEventListener('resize', toggle);
+  
+  if (window.visualViewport) {
+    // Use more conservative throttling
+    let lastToggleTime = 0;
+    const throttledToggle = () => {
+      const now = Date.now();
+      if (now - lastToggleTime > 200) {
+        lastToggleTime = now;
+        toggle();
+      }
+    };
+    
+    window.visualViewport.addEventListener('resize', throttledToggle);
+    window.visualViewport.addEventListener('scroll', throttledToggle);
+  }
+  
+  // Initial state
+  toggle();
 })();
 
 /* Focus handler: centre the element inside the scrolling card */
@@ -2712,6 +3756,251 @@ document.addEventListener('focusin', e => {
     e.target.scrollIntoView({block:'center', behavior:'smooth'});
   }
 });
+
+/* Prevent accidental refresh during quiz */
+(function() {
+  let isQuizActive = false;
+  
+  // Apply initial protection when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    // If quiz is visible on page load, apply protection immediately
+    const quizSection = document.getElementById('quiz');
+    if (quizSection && window.getComputedStyle(quizSection).display !== 'none') {
+      document.body.classList.add('quiz-active');
+      isQuizActive = true;
+    }
+  });
+  
+  // Track quiz state
+  const originalUpdateUI = updateUI;
+  updateUI = function() {
+    originalUpdateUI.apply(this, arguments);
+    
+    // Check if quiz is active (starts immediately when quiz is visible)
+    isQuizActive = current >= 0; // Changed from > 0 to >= 0 to include first question
+    
+    // Update body class for CSS targeting - always add when quiz is shown
+    if (isQuizActive && current >= 0) {
+      document.body.classList.add('quiz-active');
+    } else {
+      document.body.classList.remove('quiz-active');
+    }
+  };
+  
+  // Prevent beforeunload (refresh/close) during active quiz
+  window.addEventListener('beforeunload', (e) => {
+    if (isQuizActive) {
+      e.preventDefault();
+      e.returnValue = 'You have unsaved quiz progress. Are you sure you want to leave?';
+      return e.returnValue;
+    }
+  });
+  
+  // UNIVERSAL pull-to-refresh prevention for all mobile browsers
+  let touchStartY = 0;
+  let touchStartX = 0;
+  let isAtPageTop = false;
+  let preventRefresh = false;
+  
+  // Detect browser type for specific handling
+  const isChrome = /Chrome/i.test(navigator.userAgent);
+  const isFirefox = /Firefox/i.test(navigator.userAgent);
+  const isSamsung = /SamsungBrowser/i.test(navigator.userAgent);
+  const isEdge = /Edge/i.test(navigator.userAgent);
+  
+  document.addEventListener('touchstart', (e) => {
+    if (document.body.classList.contains('quiz-active') || document.body.classList.contains('quiz-fullscreen')) {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+      isAtPageTop = window.scrollY <= 10; // More generous top detection
+      preventRefresh = false;
+    }
+  }, { passive: true });
+  
+  document.addEventListener('touchmove', (e) => {
+    if (document.body.classList.contains('quiz-active') || document.body.classList.contains('quiz-fullscreen')) {
+      const currentY = e.touches[0].clientY;
+      const currentX = e.touches[0].clientX;
+      const deltaY = currentY - touchStartY;
+      const deltaX = currentX - touchStartX;
+      
+      // Check if touch is happening within quiz content that should scroll normally
+      const quizCard = document.getElementById('quizCard');
+      const quizForm = document.getElementById('quizForm');
+      const target = e.target;
+      
+      const isInQuizContent = (quizCard && quizCard.contains(target)) || 
+                              (quizForm && quizForm.contains(target)) ||
+                              target.closest('.custom-roast-content') ||
+                              target.closest('#quizCard') ||
+                              target.closest('#quizForm');
+      
+      // Check if this is a vertical downward gesture
+      const isVerticalPull = Math.abs(deltaY) > Math.abs(deltaX);
+      const isPullingDown = deltaY > 0;
+      
+      // Only prevent if NOT scrolling within quiz content
+      if (!isInQuizContent && isAtPageTop && isPullingDown && isVerticalPull) {
+        // Very aggressive thresholds for all browsers
+        let threshold = 1; // Default threshold - very sensitive
+        if (isChrome) threshold = 1; // Chrome - immediate prevention
+        if (isFirefox) threshold = 2; // Firefox 
+        if (isSamsung) threshold = 1; // Samsung browser
+        if (isEdge) threshold = 1; // Edge browser
+        
+        if (deltaY > threshold && window.scrollY <= 10) {
+          preventRefresh = true;
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          return false;
+        }
+      }
+      
+      // Continue preventing if we've started (but only for non-quiz content)
+      if (preventRefresh && !isInQuizContent) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    }
+  }, { passive: false });
+  
+  document.addEventListener('touchend', (e) => {
+    if (document.body.classList.contains('quiz-active') || document.body.classList.contains('quiz-fullscreen')) {
+      // Reset prevention state
+      preventRefresh = false;
+      touchStartY = 0;
+      touchStartX = 0;
+      isAtPageTop = false;
+    }
+  }, { passive: true });
+  
+  // Universal overscroll prevention
+  if ('overscroll' in window) {
+    document.addEventListener('overscroll', (e) => {
+      if (document.body.classList.contains('quiz-active') || document.body.classList.contains('quiz-fullscreen')) {
+        e.preventDefault();
+        return false;
+      }
+    }, { passive: false });
+  }
+  
+  // Prevent negative scroll positions (universal)
+  let lastScrollY = 0;
+  window.addEventListener('scroll', (e) => {
+    if (document.body.classList.contains('quiz-active') || document.body.classList.contains('quiz-fullscreen')) {
+      const currentScrollY = window.scrollY;
+      
+      // Prevent negative scroll
+      if (currentScrollY < 0) {
+        window.scrollTo(0, 0);
+        e.preventDefault();
+        return false;
+      }
+      
+      // Prevent bounce-back to refresh on some Android browsers
+      if (currentScrollY < lastScrollY && currentScrollY <= 5) {
+        if (Math.abs(currentScrollY - lastScrollY) > 50) {
+          window.scrollTo(0, Math.max(0, lastScrollY));
+          e.preventDefault();
+          return false;
+        }
+      }
+      
+      lastScrollY = currentScrollY;
+    }
+  }, { passive: false });
+  
+  // Additional prevention for Chrome's pull-to-refresh
+  if (isChrome) {
+    document.addEventListener('scroll', (e) => {
+      if (document.body.classList.contains('quiz-active') || document.body.classList.contains('quiz-fullscreen')) {
+        if (window.scrollY === 0) {
+          // Force a tiny scroll to prevent Chrome's pull-to-refresh
+          setTimeout(() => {
+            if (window.scrollY === 0) {
+              window.scrollTo(0, 1);
+              setTimeout(() => window.scrollTo(0, 0), 1);
+            }
+          }, 1);
+        }
+      }
+    }, { passive: true });
+  }
+  
+  // EXTRA AGGRESSIVE: Prevent any touch that starts at the very top edge
+  document.addEventListener('touchstart', (e) => {
+    if (document.body.classList.contains('quiz-active') || document.body.classList.contains('quiz-fullscreen')) {
+      const touch = e.touches[0];
+      const isAtTopEdge = touch.clientY < 50; // Top 50px of screen
+      const isAtPageTop = window.scrollY <= 5;
+      
+      // Check if touch is NOT in quiz content
+      const target = e.target;
+      const isInQuizContent = target.closest('#quizCard') || 
+                              target.closest('#quizForm') || 
+                              target.closest('.custom-roast-content');
+      
+      if (isAtTopEdge && isAtPageTop && !isInQuizContent) {
+        // Immediately prevent any potential refresh gesture
+        setTimeout(() => {
+          if (window.scrollY <= 1) {
+            preventRefresh = true;
+          }
+        }, 1);
+      }
+    }
+  }, { passive: true });
+})();
+
+/* IMPROVED: Fallback keyboard detection for browsers without visualViewport */
+(function() {
+  if (window.visualViewport) return; // Skip if visualViewport is available
+  
+  let lastWindowHeight = window.innerHeight;
+  let keyboardTimeout;
+  let isKeyboardOpen = false;
+  
+  const handleResize = () => {
+    const currentHeight = window.innerHeight;
+    const heightDiff = lastWindowHeight - currentHeight;
+    
+    // Clear any pending timeout
+    clearTimeout(keyboardTimeout);
+    
+    // Debounce the keyboard state change
+    keyboardTimeout = setTimeout(() => {
+      let shouldBeOpen = false;
+      
+      // If height decreased significantly, keyboard is likely open
+      if (heightDiff > 200) { // Higher threshold for more reliability
+        shouldBeOpen = true;
+      } else if (heightDiff < -100) { // Keyboard closed
+        shouldBeOpen = false;
+      } else {
+        // No significant change, keep current state
+        return;
+      }
+      
+      // Only update if state actually changed
+      if (shouldBeOpen !== isKeyboardOpen) {
+        isKeyboardOpen = shouldBeOpen;
+        document.body.classList.toggle('keyboard-open', isKeyboardOpen);
+        console.log(`Fallback keyboard detection: ${isKeyboardOpen ? 'OPEN' : 'CLOSED'} (height change: ${heightDiff}px)`);
+        
+        // Update button position
+        if (window.updateButtonPosition) {
+          window.updateButtonPosition();
+        }
+      }
+      
+      lastWindowHeight = currentHeight;
+    }, 300); // Debounce for stability
+  };
+  
+  window.addEventListener('resize', handleResize);
+})();
 
 /* ——— make sure the newly rendered question is scrolled into view ——— */
 function renderQuestionMobileScrollGuard () {
@@ -2741,6 +4030,65 @@ renderQuestion = (idx)=>{
   _renderQuestionStable(idx);                           // draw question
   renderQuestionDesktopScrollGuard();                   // then align frame
 };
+</script>
+<script>
+/* ------------------------------------------------------------------
+   UNIVERSAL “NO-REFRESH-WHILE-QUIZ” GUARD
+   Activates whenever <body> has class "quiz-fullscreen"
+------------------------------------------------------------------ */
+(function () {
+  const BODY   = document.body;
+  let quizActive = false;
+  let isP2RBlocked = false;
+
+  // 1. Desktop keyboard shortcuts (F5 / Ctrl/⌘+R)
+  document.addEventListener('keydown', e => {
+    if (!quizActive) return;
+    const k = e.key.toLowerCase();
+    const meta = e.metaKey || e.ctrlKey;
+    const hard = (meta && e.shiftKey && k === 'r') || (meta && k === 'f5');
+    if (k === 'f5' || (meta && k === 'r') || hard) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+
+  // 2. beforeunload confirmation (all platforms)
+  window.addEventListener('beforeunload', e => {
+    if (!quizActive) return;
+    e.preventDefault();
+    e.returnValue = '';
+    return '';
+  });
+
+  // 3. Mobile pull-to-refresh / bounce blocker
+  let startY = 0;
+  document.addEventListener('touchstart', e => {
+    if (!quizActive) return;
+    startY = e.touches[0].clientY;
+    isP2RBlocked = (window.scrollY <= 0 && startY < 60);
+  }, {passive:true});
+
+  document.addEventListener('touchmove', e => {
+    if (!quizActive || !isP2RBlocked) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy > 0) {      // downward gesture
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, {passive:false});
+  document.addEventListener('touchend',()=>{isP2RBlocked=false},{passive:true});
+
+  // 4. Watch for class toggle
+  const ob = new MutationObserver(()=>{
+    const active = BODY.classList.contains('quiz-fullscreen');
+    if(active!==quizActive){
+      quizActive=active;
+      BODY.style.overscrollBehaviorY = quizActive? 'none':'';
+    }
+  });
+  ob.observe(BODY,{attributes:true,attributeFilter:['class']});
+})();
 </script>
 </body>
 </html>
