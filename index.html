@@ -11,6 +11,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes" />
       
+      <!-- Content Security Policy -->
+      <meta http-equiv="Content-Security-Policy"
+            content="
+              default-src 'self';
+              connect-src 'self' https://www.googletagmanager.com https://js.stripe.com;
+              script-src  'self' 'unsafe-inline'
+                          https://www.googletagmanager.com
+                          https://cdn.tailwindcss.com
+                          https://js.stripe.com;
+              style-src   'self' 'unsafe-inline' https://fonts.googleapis.com;
+              img-src     'self' data: https://*.stripe.com;
+              font-src    'self' https://fonts.gstatic.com data:;">
+      
       <!-- Universal Mobile Web App Configuration -->
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="format-detection" content="telephone=no" />
@@ -2504,55 +2517,11 @@ function updateUI(){
       window.submitBtnTimeout = null;
     }
     
-    // BRUTE FORCE APPROACH - Add multiple handlers to make sure SOMETHING works
-    
-    // Method 1: Direct onclick (immediate)
+    // Single event handler for checkout
     submitBtn.onclick = function() {
-      console.log('CHECKOUT ONCLICK FIRED - METHOD 1');
+      console.log('CHECKOUT BUTTON CLICKED');
       handleCheckout();
     };
-    
-    // Method 2: addEventListener (immediate)
-    submitBtn.addEventListener('click', function(e) {
-      console.log('CHECKOUT CLICK EVENT FIRED - METHOD 2');
-      e.preventDefault();
-      e.stopPropagation();
-      handleCheckout();
-    }, { passive: false });
-    
-    // Method 3: Touch events for mobile (immediate)
-    submitBtn.addEventListener('touchend', function(e) {
-      console.log('CHECKOUT TOUCH EVENT FIRED - METHOD 3');
-      e.preventDefault();
-      e.stopPropagation();
-      handleCheckout();
-    }, { passive: false });
-    
-    // Method 4: Replace button after a delay (backup)
-    setTimeout(() => {
-      const oldBtn = document.getElementById('submitBtn');
-      if (oldBtn && oldBtn.textContent === 'Checkout') {
-        console.log('REPLACING CHECKOUT BUTTON - METHOD 4');
-        const newBtn = document.createElement('button');
-        newBtn.id = 'submitBtn';
-        newBtn.className = oldBtn.className;
-        newBtn.textContent = 'Checkout';
-        newBtn.type = 'button';
-        newBtn.disabled = false;
-        newBtn.style.pointerEvents = 'auto';
-        newBtn.style.cursor = 'pointer';
-        newBtn.onclick = function() {
-          console.log('REPLACED BUTTON CLICKED - METHOD 4');
-          // Force enable button before calling handleCheckout
-          newBtn.disabled = false;
-          newBtn.removeAttribute('disabled');
-          handleCheckout();
-        };
-        oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-      }
-    }, 100);
-    
-    console.log('Checkout button armed with 4 different methods');
   } else {
     submitBtn.textContent = 'Next';
   }
@@ -2568,6 +2537,8 @@ document.addEventListener('click', function(e) {
     if (isCheckoutPage) {
       // Go back to the last question of the quiz
       current = quizData.length - 1;
+      // Reset checkout guard so user can access checkout again
+      isCheckoutLoaded = false;
       // Reset submit button to remove stale listeners
       (function(){
         const staleBtn=document.getElementById('submitBtn');
@@ -3007,7 +2978,16 @@ window.debugCheckoutButton = function() {
   }
 };
 
+let isCheckoutLoaded = false; // Guard to prevent multiple loads
+
 async function handleCheckout() {
+  // Prevent multiple loads
+  if (isCheckoutLoaded) {
+    console.log('Checkout already loaded, preventing duplicate load');
+    return;
+  }
+  isCheckoutLoaded = true;
+  
   const submitButton = document.getElementById('submitBtn');
   
   // Track checkout view
@@ -3263,10 +3243,15 @@ function handleContactSubmission() {
   const submitBtn = document.getElementById('submitBtn');
   console.log('Submit button state - Text:', submitBtn?.textContent, 'Disabled:', submitBtn?.disabled, 'Display:', submitBtn?.style.display);
   
-  const nameField = document.getElementById('contactName');
-  const emailField = document.getElementById('contactEmail');
-  const phoneField = document.getElementById('contactPhone');
-  const contactErrorEl = document.getElementById('contactError');
+  // Helper: work only inside the currently‑displayed quiz card --------
+  const card = document.getElementById('quizCard');
+
+  // Scope all look‑ups to that card instead of document‑wide ----------
+  // (querySelector is fine because the IDs are unique *within* card)
+  const nameField = card.querySelector('#contactName');
+  const emailField = card.querySelector('#contactEmail');
+  const phoneField = card.querySelector('#contactPhone');
+  const contactErrorEl = card.querySelector('#contactError');
   
   console.log('Form fields found:', { nameField: !!nameField, emailField: !!emailField, phoneField: !!phoneField });
   
