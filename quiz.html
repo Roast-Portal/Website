@@ -137,18 +137,22 @@
     .range-output { font-size: 14px; color: var(--text-secondary); min-width: 42px; text-align: right; }
     .range-bubble { position: absolute; top: 0; left: 0; transform: translate(-50%, -100%); background: #101010; color: #fff; font-size: 12px; padding: 4px 8px; border-radius: 999px; box-shadow: 0 2px 8px rgba(0,0,0,0.18); pointer-events: none; white-space: nowrap; opacity: 0; transition: opacity .2s ease; }
     .range-bubble::after { content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid #101010; }
-    .multi-range-container { display: flex; flex-direction: column; gap: 12px; }
-    .range-group { display: grid; gap: 6px; }
-    .range-slider { position: relative; width: 100%; min-width: 0; padding-top: 28px; padding-bottom: 6px; }
-    .range-label { font-size: 13px; }
-    input[type="range"] { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 30px; padding: 0; margin: 0; outline: none; cursor: pointer; touch-action: manipulation; background: linear-gradient(#E5E7EB,#E5E7EB) center/100% 3px no-repeat; border-radius: 999px; }
-    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #0071E3; box-shadow: 0 2px 6px rgba(0,113,227,0.35); cursor: pointer; position: relative; z-index: 2; }
-    input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #0071E3; border: none; box-shadow: 0 2px 6px rgba(0,113,227,0.35); cursor: pointer; position: relative; z-index: 2; }
+    .multi-range-container { display: flex; flex-direction: column; gap: 16px; }
+    .range-group { display: grid; gap: 8px; }
+    .range-slider { position: relative; width: 100%; min-width: 0; padding-top: 32px; padding-bottom: 8px; }
+    .range-label { font-size: 14px; font-weight: 500; }
+    input[type="range"] { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 44px; padding: 0; margin: 0; outline: none; cursor: pointer; touch-action: manipulation; background: transparent; border-radius: 999px; }
+    input[type="range"]::-webkit-slider-track { width: 100%; height: 4px; background: #E5E7EB; border-radius: 999px; }
+    input[type="range"]::-moz-range-track { width: 100%; height: 4px; background: #E5E7EB; border-radius: 999px; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #0071E3; box-shadow: 0 2px 8px rgba(0,113,227,0.35); cursor: pointer; position: relative; z-index: 2; margin-top: -10px; transition: transform .15s ease, box-shadow .15s ease; }
+    input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #0071E3; border: none; box-shadow: 0 2px 8px rgba(0,113,227,0.35); cursor: pointer; position: relative; z-index: 2; transition: transform .15s ease, box-shadow .15s ease; }
+    input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.1); box-shadow: 0 2px 12px rgba(0,113,227,0.5); }
+    input[type="range"]:active::-moz-range-thumb { transform: scale(1.1); box-shadow: 0 2px 12px rgba(0,113,227,0.5); }
     .range-legend { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
     .range-ticks { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; margin-top: 8px; }
     .tick { height: 6px; border-radius: 999px; background: rgba(0,0,0,0.14); }
     .tick.active { background: #0071E3; }
-    .range-labels { display: flex; justify-content: space-between; width: 100%; gap: 8px; padding-top: 2px; font-size: 11px; color: var(--text-secondary); }
+    .range-labels { display: flex; justify-content: space-between; width: 100%; gap: 8px; padding-top: 4px; font-size: 12px; color: var(--text-secondary); font-weight: 500; }
 
     /* Segmented control */
     .segmented { display: inline-flex; flex-wrap: wrap; gap: 8px; }
@@ -240,23 +244,38 @@
 
     /* Mobile fine-tuning */
     @media (max-width: 600px) {
-      .quiz-card { min-height: 380px; padding: 16px; }
+      .quiz-card { min-height: 380px; padding: 20px 16px; }
       .quiz-header h3 { font-size: 28px; }
-      input[type="range"]::-webkit-slider-thumb { width: 16px; height: 16px; }
-      input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; }
+      input[type="range"]::-webkit-slider-thumb { width: 32px; height: 32px; margin-top: -14px; }
+      input[type="range"]::-moz-range-thumb { width: 32px; height: 32px; }
+      input[type="range"]::-webkit-slider-track { height: 6px; }
+      input[type="range"]::-moz-range-track { height: 6px; }
+      input[type="range"] { height: 48px; }
       .stage { align-items: start; }
       .quiz-wrap { padding-bottom: 64px; }
+      .multi-range-container { gap: 20px; }
+      .range-group { gap: 10px; }
+      .range-slider { padding-top: 36px; padding-bottom: 12px; }
+      .range-labels { font-size: 13px; font-weight: 600; }
+      .range-label { font-size: 15px; }
     }
 
     /* Compact layout for short screens to keep sliders visible */
     @media (max-height: 740px) {
       .quiz-header { margin-bottom: 12px; }
       .quiz-header p { display: none; }
-      .multi-range-container { gap: 10px; }
-      .range-group { gap: 4px; }
-      .range-label { font-size: 12px; }
-      .range-labels { font-size: 10px; }
+      .multi-range-container { gap: 16px; }
+      .range-group { gap: 6px; }
+      .range-label { font-size: 13px; }
+      .range-labels { font-size: 11px; }
       .surface { padding: 16px; }
+      .range-slider { padding-top: 28px; padding-bottom: 8px; }
+    }
+
+    /* Special mobile optimization for question 2 (flavor sliders) */
+    @media (max-width: 600px) and (max-height: 800px) {
+      .quiz-card[data-step="1"] { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+      .quiz-card[data-step="1"] .multi-range-container { padding-bottom: 20px; }
     }
   </style>
 </head>
@@ -614,7 +633,7 @@
             priceBubble.textContent = '$' + price.toFixed(2);
             
             // Calculate thumb position accounting for CSS centering transform
-            const thumbSize = window.matchMedia('(max-width: 600px)').matches ? 16 : 18;
+            const thumbSize = window.matchMedia('(max-width: 600px)').matches ? 32 : 24;
             const halfThumb = thumbSize / 2;
             
             // The bubble uses transform: translateX(-50%) so we position its center

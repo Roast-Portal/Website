@@ -342,34 +342,40 @@
       const d = loadData();
       const p = compute(d);
       
-      postToSheets(payload).finally(()=>{
-        try{ localStorage.setItem('rp_last_order_ts', String(Date.now())); }catch{}
-        // Use gtagSendEvent if gtag is available, otherwise navigate directly
-        if (typeof gtag !== 'undefined') {
-          console.log('🎯 Buy button clicked - GA is available');
-          console.log('💰 Order data:', {
-            total: p.total,
-            pricePerCup: p.pricePerCup,
-            servings: p.billedServings,
-            blendName: d.blendName || 'Your Daily Roast'
-          });
-          gtagSendEvent('thanks.html', {
-            'value': p.total,
-            'currency': 'USD',
-            'transaction_id': Date.now().toString(),
-            'items': [{
-              'item_id': 'subscription',
-              'item_name': d.blendName || 'Your Daily Roast',
-              'item_category': 'coffee_subscription',
-              'price': p.pricePerCup,
-              'quantity': p.billedServings
-            }]
-          });
-        } else {
-          console.warn('⚠️ Google Analytics (gtag) not found - navigating directly');
-          window.location.href = 'thanks.html';
-        }
+      // Save timestamp immediately
+      try{ localStorage.setItem('rp_last_order_ts', String(Date.now())); }catch{}
+      
+      // Start Google Sheets submission in background (non-blocking)
+      postToSheets(payload).catch(err => {
+        console.error('⚠️ Background submission failed:', err);
+        // Submission failure doesn't block user experience
       });
+      
+      // Navigate immediately without waiting for submission
+      if (typeof gtag !== 'undefined') {
+        console.log('🎯 Buy button clicked - GA is available');
+        console.log('💰 Order data:', {
+          total: p.total,
+          pricePerCup: p.pricePerCup,
+          servings: p.billedServings,
+          blendName: d.blendName || 'Your Daily Roast'
+        });
+        gtagSendEvent('thanks.html', {
+          'value': p.total,
+          'currency': 'USD',
+          'transaction_id': Date.now().toString(),
+          'items': [{
+            'item_id': 'subscription',
+            'item_name': d.blendName || 'Your Daily Roast',
+            'item_category': 'coffee_subscription',
+            'price': p.pricePerCup,
+            'quantity': p.billedServings
+          }]
+        });
+      } else {
+        console.warn('⚠️ Google Analytics (gtag) not found - navigating directly');
+        window.location.href = 'thanks.html';
+      }
     });
 
     // If we came from thank you (review mode), hide the Buy now button
