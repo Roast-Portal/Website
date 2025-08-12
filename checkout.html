@@ -120,10 +120,12 @@
     // Call it in response to an action that should navigate to a URL.
     function gtagSendEvent(url, eventData) {
       var callback = function () {
+        console.log('✅ GA callback executed, navigating to:', url);
         if (typeof url === 'string') {
           window.location = url;
         }
       };
+      console.log('📊 Sending GA event "submission_ok" with data:', eventData);
       gtag('event', 'submission_ok', Object.assign({
         'event_callback': callback,
         'event_timeout': 2000,
@@ -334,6 +336,13 @@
         try{ localStorage.setItem('rp_last_order_ts', String(Date.now())); }catch{}
         // Use gtagSendEvent if gtag is available, otherwise navigate directly
         if (typeof gtag !== 'undefined') {
+          console.log('🎯 Buy button clicked - GA is available');
+          console.log('💰 Order data:', {
+            total: p.total,
+            pricePerCup: p.pricePerCup,
+            servings: p.billedServings,
+            blendName: d.blendName || 'Your Daily Roast'
+          });
           gtagSendEvent('thanks.html', {
             'value': p.total,
             'currency': 'USD',
@@ -347,6 +356,7 @@
             }]
           });
         } else {
+          console.warn('⚠️ Google Analytics (gtag) not found - navigating directly');
           window.location.href = 'thanks.html';
         }
       });

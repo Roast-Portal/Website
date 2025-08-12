@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Google Analytics</title>
+  <script>
+    // Mock gtag for testing if you don't have GA installed yet
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){
+      console.log('🎯 gtag called with:', arguments);
+      dataLayer.push(arguments);
+    }
+    
+    // Your gtagSendEvent function
+    function gtagSendEvent(url, eventData) {
+      var callback = function () {
+        console.log('✅ Callback executed! Would navigate to:', url);
+        // Comment out actual navigation for testing
+        // window.location = url;
+      };
+      console.log('📊 Sending event with data:', eventData);
+      gtag('event', 'submission_ok', Object.assign({
+        'event_callback': callback,
+        'event_timeout': 2000,
+      }, eventData || {}));
+      return false;
+    }
+  </script>
+</head>
+<body>
+  <h1>Google Analytics Event Test</h1>
+  <button onclick="testEvent()">Test Buy Now Event</button>
+  
+  <script>
+    function testEvent() {
+      // Simulate the data from your checkout
+      gtagSendEvent('thanks.html', {
+        'value': 42.95,
+        'currency': 'USD',
+        'transaction_id': Date.now().toString(),
+        'items': [{
+          'item_id': 'subscription',
+          'item_name': 'Morning Magic Blend',
+          'item_category': 'coffee_subscription',
+          'price': 2.50,
+          'quantity': 14
+        }]
+      });
+    }
+  </script>
+  
+  <pre id="output"></pre>
+</body>
+</html>
