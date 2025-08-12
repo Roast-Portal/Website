@@ -2,12 +2,23 @@
 <html>
 <head>
   <title>Test Google Analytics</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
   <script>
-    // Mock gtag for testing if you don't have GA installed yet
     window.dataLayer = window.dataLayer || [];
-    function gtag(){
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-5LTTX2TGVQ');
+  </script>
+  
+  <script>
+    // Additional logging for testing
+    window.dataLayer = window.dataLayer || [];
+    const originalGtag = window.gtag;
+    window.gtag = function() {
       console.log('🎯 gtag called with:', arguments);
-      dataLayer.push(arguments);
+      originalGtag.apply(this, arguments);
     }
     
     // Your gtagSendEvent function
