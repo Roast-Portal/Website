@@ -1,6 +1,6 @@
-# RoastPortal Landing Page
+# Roast Portal Landing Page
 
-This simple static site showcases the RoastPortal quiz. The quiz will cycle through questions one by one, then post the results to a Google Sheet via an Apps Script endpoint.
+This simple static site showcases the Roast Portal quiz. The quiz will cycle through questions one by one, then post the results to a Google Sheet via an Apps Script endpoint.
 
 ## Connect to Google Sheets
 
