@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bean • Taste Preference Quiz</title>
+  <style>
+    :root {
+      --bg-primary: #FBFBFD;
+      --bg-secondary: #F5F5F7;
+      --text-primary: #1D1D1F;
+      --text-secondary: #6E6E73;
+      --accent-blue: #0071E3;
+      --radius-xl: 24px;
+      --header-h: 72px;
+      --card-max: 720px;
+    }
+    *{ box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      opacity: 0; /* fade-in */
+      transition: opacity .18s ease;
+      min-height: 100dvh; /* ensure full viewport height including mobile UI */
+    }
+    /* Route reverse reveal */
+    .route-overlay{
+      position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+      background: var(--bg-primary, #FBFBFD);
+      clip-path: circle(var(--R, 0) at var(--x, 50%) var(--y, 50%));
+      transition: clip-path .6s cubic-bezier(0.4, 0, 0.2, 1), opacity .3s ease;
+    }
+    .route-overlay.collapse{
+      clip-path: circle(0 at var(--x, 50%) var(--y, 50%));
+    }
+    /* Full-viewport stage with premium background */
+    .stage {
+      min-height: calc(var(--vh, 1vh) * 100);
+      display: grid;
+      align-items: center;
+      background:
+        radial-gradient(1000px 500px at 90% 10%, rgba(0,113,227,0.06), transparent 60%),
+        radial-gradient(900px 480px at 10% 90%, rgba(0,113,227,0.05), transparent 60%),
+        linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+    }
+    .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
+    header { position: sticky; top: 0; z-index: 50; background: rgba(251,251,253,.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,.06); }
+    header .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; }
+    .brand { font-weight: 800; letter-spacing: -0.02em; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 9999px; background: #fff; border: 1px solid rgba(0,0,0,.12); color: #1d1d1f; text-decoration: none; font-size: 14px; cursor: pointer; }
+    .pill.primary { background: var(--accent-blue); color: #fff; border-color: transparent; box-shadow: 0 8px 20px rgba(0,113,227,.28); }
+    .pill:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+
+    .surface {
+      background: #fff;
+      border-radius: 28px;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+      padding: clamp(20px, 3vw, 32px);
+      height: clamp(560px, calc(var(--vh, 1vh) * 100 - var(--header-h) - 24px), 880px);
+      width: min(calc(var(--card-max) + 64px), calc(100vw - 40px));
+      max-width: calc(var(--card-max) + 64px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: 1fr; /* form fills card */
+      min-height: 0;
+      overflow: hidden;
+      scrollbar-gutter: stable both-edges;
+    }
+
+    /* Quiz section */
+    .quiz-wrap { padding: 24px 0 80px; min-height: calc(var(--vh, 1vh) * 100 - var(--header-h, 72px)); }
+    .quiz-header { text-align: center; margin-bottom: 24px; }
+    .quiz-header h3 { font-size: 36px; letter-spacing: -0.01em; margin-bottom: 8px; }
+    .quiz-header p { font-size: 18px; color: var(--text-secondary); }
+
+    /* Form/layout sizing to keep a consistent card area */
+    #quizForm { display: contents; }
+    .quiz-body {
+      width: 100%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: 1fr auto; /* card area, controls */
+      gap: 16px;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      scrollbar-gutter: stable both-edges;
+    }
+    .quiz-card {
+      display: none;
+      position: relative;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius-xl);
+      padding: clamp(20px, 3vw, 32px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      transform: translateY(2px);
+      transition: box-shadow .25s ease, transform .25s ease;
+      min-height: 0;
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+    }
+    .quiz-card.active { display: block; animation: cardIn .35s ease both; }
+    .quiz-card:focus-within { box-shadow: 0 10px 28px rgba(0,0,0,0.09); transform: translateY(0); }
+    .quiz-card h4 { font-size: 24px; margin-bottom: 10px; letter-spacing: -0.01em; }
+    .quiz-card p.sub { font-size: 15px; color: var(--text-secondary); margin-bottom: 6px; }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+
+    .chip-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+    .chip { appearance: none; border: 1px solid rgba(0,0,0,0.10); background: #fff; color: #1d1d1f; padding: 10px 14px; border-radius: 999px; font-size: 14px; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease; }
+    .chip:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.08); transform: translateY(-1px); }
+    .chip:active { transform: translateY(0); box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+    .chip.active { background: #eef6ff; border-color: rgba(0,113,227,0.35); box-shadow: 0 0 0 2px rgba(0,113,227,0.15) inset; }
+    .chip:focus-visible { outline: 2px solid #0071E3; outline-offset: 2px; }
+
+    /* Range (slider) */
+    .field { display: grid; gap: 10px; }
+    .range-wrap { position: relative; padding-top: 24px; }
+    .range-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+    .range-output { font-size: 14px; color: var(--text-secondary); min-width: 42px; text-align: right; }
+    .range-bubble { position: absolute; top: 0; left: 0; transform: translate(-50%, -100%); background: #101010; color: #fff; font-size: 12px; padding: 4px 8px; border-radius: 999px; box-shadow: 0 2px 8px rgba(0,0,0,0.18); pointer-events: none; white-space: nowrap; opacity: 0; transition: opacity .2s ease; }
+    .range-bubble::after { content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid #101010; }
+    .multi-range-container { display: flex; flex-direction: column; gap: 12px; }
+    .range-group { display: grid; gap: 6px; }
+    .range-slider { position: relative; width: 100%; min-width: 0; padding-top: 28px; padding-bottom: 6px; }
+    .range-label { font-size: 13px; }
+    input[type="range"] { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 30px; padding: 0; margin: 0; outline: none; cursor: pointer; touch-action: manipulation; background: linear-gradient(#E5E7EB,#E5E7EB) center/100% 3px no-repeat; border-radius: 999px; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #0071E3; box-shadow: 0 2px 6px rgba(0,113,227,0.35); cursor: pointer; position: relative; z-index: 2; }
+    input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #0071E3; border: none; box-shadow: 0 2px 6px rgba(0,113,227,0.35); cursor: pointer; position: relative; z-index: 2; }
+    .range-legend { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
+    .range-ticks { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; margin-top: 8px; }
+    .tick { height: 6px; border-radius: 999px; background: rgba(0,0,0,0.14); }
+    .tick.active { background: #0071E3; }
+    .range-labels { display: flex; justify-content: space-between; width: 100%; gap: 8px; padding-top: 2px; font-size: 11px; color: var(--text-secondary); }
+
+    /* Segmented control */
+    .segmented { display: inline-flex; flex-wrap: wrap; gap: 8px; }
+    .seg { padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); background: #fff; cursor: pointer; font-size: 14px; }
+    .seg.active { background: #101010; color: #fff; border-color: #101010; }
+
+    /* Stepper */
+    .stepper { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 6px 10px; }
+    .stepper button { appearance: none; border: none; background: #f5f5f7; width: 28px; height: 28px; border-radius: 8px; cursor: pointer; }
+    .stepper input { width: 52px; text-align: center; border: none; font-size: 14px; background: transparent; }
+
+    textarea.notes { width: 100%; min-height: 96px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); padding: 12px; font-size: 14px; resize: vertical; }
+
+    /* Quiz controls */
+    .quiz-controls {
+      position: static; /* placed by grid at bottom of quiz-body */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 0;
+      padding: 6px 0 0;
+      background: transparent;
+    }
+    .btn { appearance: none; border: 1px solid rgba(0,0,0,0.1); background: #fff; color: #1d1d1f; padding: 10px 16px; border-radius: 999px; cursor: pointer; font-size: 14px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); transition: transform .15s ease, box-shadow .2s ease; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+    .btn:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .btn.primary { background: #0071E3; color: #fff; border-color: transparent; box-shadow: 0 8px 20px rgba(0,113,227,0.28); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* Quiz meta: progress */
+    .quiz-meta { display: grid; gap: 8px; align-items: center; margin-top: 8px; }
+    .quiz-step { font-size: 13px; color: var(--text-secondary); display: none; }
+    .quiz-progressbar { height: 6px; background: rgba(0,0,0,0.08); border-radius: 999px; overflow: hidden; }
+    .quiz-progressbar-fill { height: 100%; width: 0%; background: #0071E3; transition: width .25s ease; }
+    .quiz-progress { display: inline-flex; gap: 6px; align-items: center; }
+    .quiz-dot { width: 6px; height: 6px; border-radius: 999px; background: rgba(0,0,0,0.2); }
+    .quiz-dot.active { background: rgba(0,0,0,0.7); }
+
+    @media (prefers-color-scheme: dark) {
+      .quiz-card, .btn { background: #fff; color: #1d1d1f; }
+    }
+
+    /* Inputs grid for contact step */
+    .field-row { display: grid; gap: 12px; }
+    @media (min-width: 600px) { .field-row.two { grid-template-columns: 1fr 1fr; } }
+
+    /* Premium input styles */
+    .input,
+    .quiz-card input[type="text"],
+    .quiz-card input[type="email"],
+    .quiz-card input[type="number"],
+    .quiz-card textarea {
+      width: 100%;
+      appearance: none;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: var(--text-primary);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04) inset, 0 1px 3px rgba(0,0,0,0.04);
+      transition: border-color .2s ease, box-shadow .2s ease, transform .05s ease;
+    }
+    .input:hover,
+    .quiz-card input[type="text"]:hover,
+    .quiz-card input[type="email"]:hover,
+    .quiz-card input[type="number"]:hover,
+    .quiz-card textarea:hover {
+      border-color: rgba(0,0,0,0.20);
+    }
+    .input:focus, .input:focus-visible,
+    .quiz-card input[type="text"]:focus, .quiz-card input[type="text"]:focus-visible,
+    .quiz-card input[type="email"]:focus, .quiz-card input[type="email"]:focus-visible,
+    .quiz-card input[type="number"]:focus, .quiz-card input[type="number"]:focus-visible,
+    .quiz-card textarea:focus, .quiz-card textarea:focus-visible {
+      outline: none;
+      border-color: transparent;
+      box-shadow: 0 0 0 2px rgba(0,113,227,0.18), 0 0 0 1px rgba(0,113,227,0.40) inset, 0 8px 22px rgba(0,113,227,0.08);
+    }
+    .quiz-card ::placeholder { color: color-mix(in srgb, var(--text-secondary) 85%, white); }
+    .quiz-card input:disabled, .quiz-card textarea:disabled { opacity: .6; cursor: not-allowed; }
+    .quiz-card input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+      -webkit-text-fill-color: var(--text-primary) !important;
+      caret-color: var(--text-primary) !important;
+      transition: background-color 9999s ease-out 0s;
+    }
+
+    /* Mobile fine-tuning */
+    @media (max-width: 600px) {
+      .quiz-card { min-height: 380px; padding: 16px; }
+      .quiz-header h3 { font-size: 28px; }
+      input[type="range"]::-webkit-slider-thumb { width: 16px; height: 16px; }
+      input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; }
+      .stage { align-items: start; }
+      .quiz-wrap { padding-bottom: 64px; }
+    }
+
+    /* Compact layout for short screens to keep sliders visible */
+    @media (max-height: 740px) {
+      .quiz-header { margin-bottom: 12px; }
+      .quiz-header p { display: none; }
+      .multi-range-container { gap: 10px; }
+      .range-group { gap: 4px; }
+      .range-label { font-size: 12px; }
+      .range-labels { font-size: 10px; }
+      .surface { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar container">
+      <div class="brand">Bean</div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <a href="product-section.html" class="pill" id="backToLanding">← Back to landing</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="stage">
+  <main class="container quiz-wrap">
+    <div class="surface">
+      <!-- Header removed to maximize vertical space for the quiz content -->
+      <form id="quizForm" action="#" method="post">
+        <input type="hidden" name="roastLevel" id="f_roastLevel" />
+        <input type="hidden" name="brewMethod" id="f_brewMethod" />
+        <input type="hidden" name="additions" id="f_additions" />
+        <input type="hidden" name="cupsPerDay" id="f_cupsPerDay" />
+        <input type="hidden" name="personality" id="f_personality" />
+        <input type="hidden" name="tasteBalance" id="f_tasteBalance" />
+        <div class="quiz-body" id="quiz">
+          <div class="quiz-card" data-step="0">
+            <h4>What roast level do you enjoy most?</h4>
+            <p class="sub">From light and bright to deep and bold</p>
+            <div class="chip-group" data-name="roastLevel" data-single="true" role="radiogroup" aria-label="Roast level">
+              <button class="chip" type="button">Light</button>
+              <button class="chip" type="button">Light-Medium</button>
+              <button class="chip" type="button">Medium</button>
+              <button class="chip" type="button">Medium-Dark</button>
+              <button class="chip" type="button">Dark</button>
+            </div>
+          </div>
+          <div class="quiz-card" data-step="1">
+            <h4>Tell us about your flavor preferences</h4>
+            <p class="sub">Move the sliders to match your taste preference</p>
+            <div class="multi-range-container">
+              <div class="range-group">
+                <p class="range-label">Nutty</p>
+                <div class="range-slider">
+                  <input type="range" id="flavorNutty" name="flavorNutty" min="0" max="100" step="1" value="50" class="slider">
+                  <div class="range-labels">
+                    <span>Dislike</span>
+                    <span>Love it</span>
+                  </div>
+                </div>
+              </div>
+              <div class="range-group">
+                <p class="range-label">Fruity</p>
+                <div class="range-slider">
+                  <input type="range" id="flavorFruity" name="flavorFruity" min="0" max="100" step="1" value="50" class="slider">
+                  <div class="range-labels">
+                    <span>Dislike</span>
+                    <span>Love it</span>
+                  </div>
+                </div>
+              </div>
+              <div class="range-group">
+                <p class="range-label">Floral</p>
+                <div class="range-slider">
+                  <input type="range" id="flavorFloral" name="flavorFloral" min="0" max="100" step="1" value="50" class="slider">
+                  <div class="range-labels">
+                    <span>Dislike</span>
+                    <span>Love it</span>
+                  </div>
+                </div>
+              </div>
+              <div class="range-group">
+                <p class="range-label">Smoky</p>
+                <div class="range-slider">
+                  <input type="range" id="flavorSmoky" name="flavorSmoky" min="0" max="100" step="1" value="50" class="slider">
+                  <div class="range-labels">
+                    <span>Dislike</span>
+                    <span>Love it</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="quiz-card" data-step="2">
+            <h4>How do you usually brew your coffee?</h4>
+            <p class="sub">We'll grind to match your method</p>
+            <div class="chip-group" data-name="brewMethod" data-single="true" role="radiogroup" aria-label="Brew method">
+              <button class="chip" type="button">Drip</button>
+              <button class="chip" type="button">Pour-over</button>
+              <button class="chip" type="button">French Press</button>
+              <button class="chip" type="button">Espresso</button>
+              <button class="chip" type="button">Single-Serve Pod</button>
+              <button class="chip" type="button">Cold Brew</button>
+              <button class="chip" type="button">Other</button>
+            </div>
+          </div>
+          <div class="quiz-card" data-step="3">
+            <h4>What brewing equipment do you have?</h4>
+            <p class="sub">Tell us about your setup</p>
+            <input type="text" class="input" name="equipmentDetails" id="equipmentDetails" placeholder="e.g., Chemex, V60, Moka pot, Nespresso">
+          </div>
+          <div class="quiz-card" data-step="4">
+            <h4>How do you take your coffee?</h4>
+            <p class="sub">Select all that apply</p>
+            <div class="chip-group" data-name="additions" data-multi="true" role="group" aria-label="Additions">
+              <button class="chip" type="button">Black</button>
+              <button class="chip" type="button">Milk / Cream</button>
+              <button class="chip" type="button">Dairy-free Milk</button>
+              <button class="chip" type="button">Sugar / Syrup</button>
+            </div>
+          </div>
+          <div class="quiz-card" data-step="5">
+            <h4>Tell our AI how much you want to spend per cup of coffee</h4>
+            <p class="sub">We'll match your budget</p>
+            <div class="range-group">
+              <div class="range-slider">
+                <input type="range" id="priceRange" name="priceRange" min="8" max="36" step="1" value="20" class="slider">
+                <div class="range-labels">
+                  <span>$2.00</span>
+                  <span>$9.00</span>
+                </div>
+                <div class="range-bubble" id="priceBubble"></div>
+              </div>
+            </div>
+          </div>
+          <div class="quiz-card" data-step="6">
+            <h4>How many cups of coffee do you drink per day?</h4>
+            <p class="sub">Choose one</p>
+            <div class="chip-group" data-name="cupsPerDay" data-single="true" role="radiogroup" aria-label="Cups per day">
+              <button class="chip" type="button">1 cup per day</button>
+              <button class="chip" type="button">More than one cup per day</button>
+            </div>
+          </div>
+          <div class="quiz-card" data-step="7">
+            <h4>How adventurous are you with coffee?</h4>
+            <p class="sub">We'll match your personality</p>
+            <div class="chip-group" data-name="personality" data-single="true" role="radiogroup" aria-label="Personality">
+              <button class="chip" type="button">Stick to classics</button>
+              <button class="chip" type="button">Enjoy some variety</button>
+              <button class="chip" type="button">Bring on the funk!</button>
+            </div>
+          </div>
+          <div class="quiz-card" data-step="8">
+            <h4>Which tastes do you prefer?</h4>
+            <p class="sub">Choose your ideal profile</p>
+            <div class="chip-group" data-name="tasteBalance" data-single="true" role="radiogroup" aria-label="Taste balance">
+              <button class="chip" type="button">Sweet & Smooth</button>
+              <button class="chip" type="button">Tart & Complex</button>
+              <button class="chip" type="button">Rich & Bitter</button>
+            </div>
+          </div>
+          <div class="quiz-card" data-step="9">
+            <h4>Anything else we should know?</h4>
+            <p class="sub">Optional - any notes or allergies</p>
+            <textarea class="notes" name="additionalNotes" id="additionalNotes" placeholder="e.g., love caramel, avoid blueberry; prefer low acidity"></textarea>
+          </div>
+          <div class="quiz-card" data-step="10">
+            <h4>Name your blend</h4>
+            <p class="sub">Give your custom roast a memorable name</p>
+            <input type="text" class="input" name="blendName" id="blendName" placeholder="e.g., Morning Magic, Daily Grind">
+          </div>
+          <div class="quiz-card" data-step="11">
+            <h4>Where should we send your match?</h4>
+            <p class="sub">We'll email your custom profile and first pack details</p>
+            <div class="field-row two">
+              <input class="input" type="text" name="firstName" placeholder="First name" autocomplete="given-name" required>
+              <input class="input" type="text" name="lastName" placeholder="Last name" autocomplete="family-name" required>
+            </div>
+            <div class="field-row">
+              <input class="input" type="email" name="email" placeholder="Email address" autocomplete="email" required>
+            </div>
+          </div>
+          <div class="quiz-controls">
+            <button class="btn" id="quizPrev" type="button" disabled>Back</button>
+            <div class="quiz-progress" aria-label="Quiz progress"></div>
+            <button class="btn primary" id="quizNext" type="button">Next</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+  </div>
+
+  <script>
+    // Page fade-in on load + reverse route reveal + header height var + mobile 100vh fix
+    window.addEventListener('DOMContentLoaded', ()=>{
+      // reverse reveal if coming from route transition
+      try{
+        const raw = sessionStorage.getItem('route_from');
+        if(raw){
+          const {x,y} = JSON.parse(raw);
+          const overlay = document.createElement('div');
+          overlay.className = 'route-overlay';
+          overlay.style.setProperty('--x', (x||window.innerWidth/2) + 'px');
+          overlay.style.setProperty('--y', (y||window.innerHeight/2) + 'px');
+          const R = Math.hypot(Math.max(x, innerWidth-x), Math.max(y, innerHeight-y)) + 20;
+          overlay.style.setProperty('--R', R + 'px');
+          document.body.appendChild(overlay);
+          requestAnimationFrame(()=>{ overlay.classList.add('collapse'); });
+          setTimeout(()=>{ overlay.remove(); }, 650);
+          sessionStorage.removeItem('route_from');
+        }
+      }catch{}
+      requestAnimationFrame(()=>{ document.body.style.opacity = '1'; });
+    });
+
+    (function setHeaderHeight(){
+      function update(){
+        const header = document.querySelector('header');
+        const h = header ? header.offsetHeight : 0;
+        document.documentElement.style.setProperty('--header-h', h + 'px');
+      }
+      update();
+      window.addEventListener('load', update);
+      window.addEventListener('resize', update);
+    })();
+
+    (function setViewportUnit(){
+      function updateVH(){
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', vh + 'px');
+      }
+      updateVH();
+      window.addEventListener('resize', updateVH);
+      window.addEventListener('orientationchange', updateVH);
+    })();
+
+    // Back to landing with fade
+    (function(){
+      const btn = document.getElementById('backToLanding');
+      if(!btn) return;
+      btn.addEventListener('click', (e)=>{
+        e.preventDefault();
+        document.body.style.opacity = '0';
+        setTimeout(()=>{
+          if (document.referrer && new URL(document.referrer).origin === window.location.origin) {
+            history.back();
+          } else {
+            window.location.href = 'product-section.html';
+          }
+        }, 150);
+      });
+    })();
+
+    // Quiz logic
+    (function initQuiz(){
+      const quiz = document.getElementById('quiz');
+      const form = document.getElementById('quizForm');
+      if (!quiz || !form) return;
+
+      // Prevent real submission (no backend yet); save progress
+      form?.addEventListener('submit', (e)=>{ e.preventDefault(); saveProgress(); });
+      // Treat Enter as Next (except in textarea)
+      form?.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter' && e.target && e.target.tagName !== 'TEXTAREA'){
+          e.preventDefault();
+          next.click();
+        }
+        if(e.key === 'ArrowLeft' || e.key === 'ArrowRight'){
+          e.preventDefault();
+          if(e.key === 'ArrowLeft') prev.click();
+          if(e.key === 'ArrowRight') next.click();
+        }
+      });
+
+      const steps = Array.from(quiz.querySelectorAll('.quiz-card'));
+      const prev = document.getElementById('quizPrev');
+      const next = document.getElementById('quizNext');
+      const progress = quiz.querySelector('.quiz-progress');
+      let idx = 0;
+
+      function renderDots(){
+        // With header removed, show minimal progress dots only if needed
+        if(!progress) return;
+        progress.innerHTML = steps.map((_,i)=>`<span class="quiz-dot ${i===idx?'active':''}"></span>`).join('');
+      }
+
+      function show(i){
+        idx = Math.max(0, Math.min(i, steps.length-1));
+        steps.forEach((s,j)=>{ s.classList.toggle('active', j===idx); });
+        prev.disabled = idx===0; next.textContent = idx===steps.length-1? 'Checkout':'Next';
+        renderDots();
+        saveProgress();
+      }
+
+      // Persist answers/step
+      function saveProgress(){
+        try{
+          const data = {
+            step: idx,
+            roastLevel: (document.getElementById('f_roastLevel')||{}).value || '',
+            brewMethod: (document.getElementById('f_brewMethod')||{}).value || '',
+            additions: (document.getElementById('f_additions')||{}).value || '',
+            cupsPerDay: (document.getElementById('f_cupsPerDay')||{}).value || '',
+            personality: (document.getElementById('f_personality')||{}).value || '',
+            tasteBalance: (document.getElementById('f_tasteBalance')||{}).value || '',
+            flavorNutty: (document.getElementById('flavorNutty')||{}).value || '',
+            flavorFruity: (document.getElementById('flavorFruity')||{}).value || '',
+            flavorFloral: (document.getElementById('flavorFloral')||{}).value || '',
+            flavorSmoky: (document.getElementById('flavorSmoky')||{}).value || '',
+            priceRange: (document.getElementById('priceRange')||{}).value || '',
+            equipmentDetails: (document.getElementById('equipmentDetails')||{}).value || '',
+            additionalNotes: (document.getElementById('additionalNotes')||{}).value || '',
+            blendName: (document.getElementById('blendName')||{}).value || '',
+            firstName: (document.querySelector('input[name="firstName"]')||{}).value || '',
+            lastName: (document.querySelector('input[name="lastName"]')||{}).value || '',
+            email: (document.querySelector('input[name="email"]')||{}).value || ''
+          };
+          localStorage.setItem('rp_quiz', JSON.stringify(data));
+        }catch{}
+      }
+
+      function restoreProgress(){
+        try{
+          const raw = localStorage.getItem('rp_quiz'); if(!raw) return;
+          const data = JSON.parse(raw);
+          const setHidden = (id,val)=>{ const el=document.getElementById(id); if(el && val){ el.value=val; }};
+          setHidden('f_roastLevel',data.roastLevel);
+          setHidden('f_brewMethod',data.brewMethod);
+          setHidden('f_additions',data.additions);
+          setHidden('f_cupsPerDay',data.cupsPerDay);
+          setHidden('f_personality',data.personality);
+          setHidden('f_tasteBalance',data.tasteBalance);
+          ['flavorNutty','flavorFruity','flavorFloral','flavorSmoky','priceRange','equipmentDetails','additionalNotes','blendName']
+            .forEach(id=>{ const el=document.getElementById(id); if(el && data[id]) el.value=data[id]; });
+          const setVal = (sel,val)=>{ const el=document.querySelector(sel); if(el && val){ el.value = val; } };
+          setVal('input[name="firstName"]', data.firstName);
+          setVal('input[name="lastName"]', data.lastName);
+          setVal('input[name="email"]', data.email);
+          quiz.querySelectorAll('.chip-group').forEach(group=>{
+            const name = group.dataset.name; if(!name) return;
+            const saved = data[name]; if(!saved) return;
+            const vals = (group.dataset.multi==='true') ? saved.split(',').map(v=>v.trim()) : [saved];
+            group.querySelectorAll('.chip').forEach(c=>{
+              if(vals.includes(c.textContent.trim())) c.classList.add('active');
+            });
+          });
+          const s = Number.isInteger(data.step) ? data.step : 0;
+          show(s);
+        }catch{ show(0); }
+      }
+
+      // Range sliders
+      function setupRangeSliders(){
+        const priceRange = document.getElementById('priceRange');
+        const priceBubble = document.getElementById('priceBubble');
+        if(priceRange && priceBubble){
+          priceRange.setAttribute('aria-label','Price per cup');
+          priceRange.setAttribute('role','slider');
+          function updatePrice(){
+            const val = parseInt(priceRange.value);
+            const min = parseInt(priceRange.min);
+            const max = parseInt(priceRange.max);
+            const pct = (val - min) / (max - min);
+            const price = 2 + (7 * pct);
+            priceBubble.textContent = '$' + price.toFixed(2);
+            
+            // Calculate thumb position accounting for CSS centering transform
+            const thumbSize = window.matchMedia('(max-width: 600px)').matches ? 16 : 18;
+            const halfThumb = thumbSize / 2;
+            
+            // The bubble uses transform: translateX(-50%) so we position its center
+            // The track starts at halfThumb and ends at (100% - halfThumb)
+            const effectiveWidth = 100 - thumbSize; // as percentage
+            const leftPercent = halfThumb + (pct * effectiveWidth);
+            
+            priceBubble.style.left = leftPercent + '%';
+            priceBubble.style.opacity = '1';
+          }
+          priceRange.addEventListener('input', updatePrice);
+          priceRange.addEventListener('focus', ()=>{ priceBubble.style.opacity = '1'; });
+          priceRange.addEventListener('blur', ()=>{ priceBubble.style.opacity = '0'; });
+          updatePrice();
+        }
+        ['flavorNutty','flavorFruity','flavorFloral','flavorSmoky'].forEach(id => {
+          const slider = document.getElementById(id);
+          if(slider){
+            slider.setAttribute('role','slider');
+            slider.setAttribute('aria-label', id.replace('flavor','') + ' preference');
+          }
+        });
+      }
+
+      // Chip toggles
+      quiz.querySelectorAll('.chip-group').forEach(group=>{
+        group.addEventListener('click', (e)=>{
+          const btn = e.target.closest('.chip'); if(!btn) return;
+          if(group.dataset.name==='method' || group.dataset.single==='true'){
+            group.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+            btn.classList.add('active');
+          } else {
+            btn.classList.toggle('active');
+          }
+          const name = group.dataset.name;
+          if(name){
+            const hiddenField = document.getElementById('f_' + name);
+            if(hiddenField){
+              if(group.dataset.multi === 'true'){
+                hiddenField.value = Array.from(group.querySelectorAll('.chip.active')).map(c=>c.textContent.trim()).join(',');
+              } else {
+                hiddenField.value = btn.textContent.trim();
+              }
+            }
+          }
+        });
+        group.querySelectorAll('.chip').forEach(chip=>{
+          chip.setAttribute('tabindex', '0');
+          chip.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); chip.click(); }});
+          chip.setAttribute('role', group.dataset.multi==='true' ? 'checkbox' : 'radio');
+          chip.setAttribute('aria-checked', 'false');
+          const obs = new MutationObserver(()=>{ chip.setAttribute('aria-checked', chip.classList.contains('active') ? 'true' : 'false'); });
+          obs.observe(chip, { attributes: true, attributeFilter: ['class'] });
+        });
+      });
+
+      prev.addEventListener('click', ()=> show(idx-1));
+      next.addEventListener('click', ()=>{
+        if(idx===steps.length-1){
+          saveProgress();
+          // forward transition to checkout
+          const x = innerWidth/2, y = innerHeight - 40;
+          const overlay = document.createElement('div');
+          overlay.className = 'route-overlay';
+          overlay.style.setProperty('--x', x + 'px');
+          overlay.style.setProperty('--y', y + 'px');
+          overlay.style.setProperty('--R', (Math.hypot(Math.max(x, innerWidth-x), Math.max(y, innerHeight-y)) + 20) + 'px');
+          document.body.appendChild(overlay);
+          requestAnimationFrame(()=>{ overlay.style.clipPath = `circle(var(--R) at var(--x) var(--y))`; });
+          setTimeout(()=>{ window.location.href = 'checkout.html'; }, 420);
+          return;
+        }
+        const activeStep = steps[idx];
+        const requiredSingle = activeStep.querySelector('[data-single="true"]');
+        if(requiredSingle){
+          const anyActive = requiredSingle.querySelector('.chip.active');
+          if(!anyActive){ return; }
+        }
+        const requiredInputs = activeStep.querySelectorAll('input[required], textarea[required]');
+        for(const el of requiredInputs){ if(!(el).value){ (el).focus(); return; } }
+        show(idx+1);
+      });
+
+      setupRangeSliders();
+      restoreProgress();
+      show(0);
+    })();
+  </script>
+</body>
+</html>
+
+

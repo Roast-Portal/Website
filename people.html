@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Your Blend, Your Routine — Reviews</title>
+<style>
+  :root{
+    --bg-primary:#FBFBFD;
+    --text-primary:#1D1D1F;
+    --text-secondary:#6E6E73;
+    --accent:#0071E3;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, system-ui, sans-serif;
+    --card-shadow:0 4px 24px rgba(0,0,0,.08),0 12px 32px rgba(0,0,0,.06);
+    --radius-xl:28px;
+    --radius-lg:20px;
+    --ease-apple:cubic-bezier(.4,0,.2,1);
+
+    /* pouch sizing */
+    --pouch-width:clamp(220px, 32vw, 300px);
+    --pouch-height:calc(var(--pouch-width) * 1.335);
+    --pouch-thickness:26px;
+    --outline-inner:rgba(255,255,255,.5);
+    --outline-outer:rgba(0,0,0,.2);
+    --outline-inner-w:.5px;
+    --outline-outer-w:1px;
+
+    /* overlap amount (tweak me) */
+    --overlap:clamp(40px, 6vw, 80px);
+  }
+  
+  /* New pouch-extreme styles */
+  .pouch-extreme{
+    --pouch-w: var(--pouch-width); 
+    --pouch-h: var(--pouch-height);
+    --pouch-min: min(var(--pouch-w), var(--pouch-h));
+    --bag-bg: #0a0a0a;
+    --bag-radius-frac: 0.0375;
+    --pouch-border-frac: 0.003;
+    --pouch-border-color: #0aff27;
+    --label-bg: #f70808;
+    --label-radius-frac: 0.05;
+    --label-top-frac: 0.89;
+    --label-pad-frac: 0.035;
+    --label-gradient: linear-gradient(to right, rgba(205, 224, 242, 0.38) 8%, rgba(216, 241, 231, 0.35) 48%, rgba(242, 247, 255, 0.32) 88%);
+    --label-gradient-opacity: 1;
+    --ink1: hsla(210, 52%, 82%, 0.35);
+    --ink2: hsla(200, 50%, 84%, 0.32);
+    --ink3: hsla(180, 48%, 86%, 0.30);
+    --notch-amp: 1;
+    --text-size-frac-default: .05;
+  }
+  .pouch-extreme.pouch-container{ position:relative; inline-size:var(--pouch-w); block-size:var(--pouch-h); container-type:inline-size }
+  .pouch-extreme .pouch{ position:absolute; inset:0; background:var(--bag-bg);
+    border-radius: calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min));
+    overflow:hidden; isolation:isolate; box-shadow: 0 12px 28px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10); }
+  .pouch-extreme .pouch::after{ content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius: inherit; clip-path: inherit; box-shadow: inset 0 0 0 calc(var(--pouch-border-frac) * var(--pouch-min)) var(--pouch-border-color); }
+  .pouch-extreme .pouch::before{ content:""; position:absolute; inset:0; opacity:.10; border-radius: inherit; clip-path: inherit; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E"); }
+  .pouch-extreme .pouch{
+    --rT: calc(var(--bag-radius-frac) * 100cqw);
+    --rB: calc(var(--bag-radius-frac) * 80cqw);
+    --t1: var(--rT); --t2: calc(var(--rT)*.6); --t3: calc(var(--rT)*.4); --t4: calc(var(--rT)*.2);
+    --b1: var(--rB); --b2: calc(var(--rB)*.6); --b3: calc(var(--rB)*.4); --b4: calc(var(--rB)*.2);
+    --nx: var(--notch-amp); --nox: calc(4cqw * var(--nx));
+    clip-path: polygon(0 var(--t1), var(--t4) var(--t2), var(--t3) var(--t3), var(--t2) var(--t4), var(--t1) 0,
+                       calc(100% - var(--t1)) 0, calc(100% - var(--t2)) var(--t4), calc(100% - var(--t3)) var(--t3), calc(100% - var(--t4)) var(--t2), 100% var(--t1),
+                       100% calc(var(--t1) + 4cqw), calc(100% - var(--nox)) calc(var(--t1) + 6cqw), 100% calc(var(--t1) + 8cqw),
+                       100% calc(100% - var(--b1)), calc(100% - var(--b4)) calc(100% - var(--b2)), calc(100% - var(--b3)) calc(100% - var(--b3)), calc(100% - var(--b2)) calc(100% - var(--b4)), calc(100% - var(--b1)) 100%,
+                       var(--b1) 100%, var(--b2) calc(100% - var(--b4)), var(--b3) calc(100% - var(--b3)), var(--b4) calc(100% - var(--b2)), 0 calc(100% - var(--b1)),
+                       0 calc(var(--t1) + 8cqw), var(--nox) calc(var(--t1) + 6cqw), 0 calc(var(--t1) + 4cqw),
+                       0 var(--t1)); }
+  .pouch-extreme .top-seal{ position:absolute; inset-inline:0; inset-block-start:0; height:10cqw; background-color:var(--bag-bg); border-bottom:1px solid rgba(220,225,230,0.32);
+    background-image: repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0 1px, rgba(0,0,0,0.08) 1px 2px, transparent 2px 3px),
+                      linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%),
+                      radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); clip-path: inherit; }
+  .pouch-extreme .pouch-label{ --pad: calc(var(--label-pad-frac) * var(--pouch-min)); position:absolute; left:var(--pad); right:var(--pad); bottom:var(--pad); top: calc(100% - (var(--label-top-frac) * 100%));
+    background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:24px 20px; overflow:hidden; }
+  .pouch-extreme .pouch-label::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:
+    var(--label-gradient),
+    radial-gradient(120% 80% at 18% 20%, var(--ink1) 0 40%, transparent 70%),
+    radial-gradient(130% 78% at 80% 24%, var(--ink2) 0 38%, transparent 72%),
+    radial-gradient(110% 88% at 64% 84%, var(--ink3) 0 42%, transparent 74%); opacity: var(--label-gradient-opacity); }
+  .pouch-extreme .shape-layer, .pouch-extreme .text-layer{ position:absolute; inset:0 }
+  .pouch-extreme .shape-layer{ width:100%; height:100%; }
+  .pouch-extreme .text-block{ position:absolute; font-size: calc(var(--text-size-frac, .05) * var(--pouch-min)); }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family: var(--font-sans);
+    background:transparent; color:var(--text-primary); line-height:1.6;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+
+  .container{max-width:1080px;margin:0 auto;padding:40px 40px 80px;}
+  .section-header{ text-align:center; margin-bottom:36px; letter-spacing:-.02em; }
+  .section-header .line-1{ font-size:clamp(28px,5vw,56px); font-style:italic; text-transform:uppercase; font-weight:700; }
+  .section-header .line-2{ font-size:clamp(28px,6vw,64px); font-weight:900; line-height:1.05; }
+  .lede{ max-width:820px; margin:0 auto 48px; text-align:center; color:var(--text-secondary); font-size:clamp(16px,2.3vw,21px); }
+
+
+  /* vertical list of pairs; clip horizontal overflow so overlap never scrolls */
+  .rotations{ display:grid; grid-template-columns:1fr; gap:32px; overflow-x:clip; }
+
+  /* each pair = media + card, side-by-side with a subtle overlap */
+  .pair{
+    display:grid; grid-template-columns: 1.1fr 0.9fr;
+    align-items:center; gap: clamp(20px, 2.8vw, 28px);
+    position:relative; overflow:visible;
+    isolation: isolate;
+  }
+  /* default: media left, card right, card overlaps media slightly */
+  .pair .media{ order:1; }
+  .pair .card { order:2; margin-left: calc(var(--overlap) * -1); }
+
+  /* reversed rows (stagger): flip order + overlap direction */
+  .rotation.reverse .media{ order:2; }
+  .rotation.reverse .card { order:1; margin-left:0; margin-right: calc(var(--overlap) * -1); }
+
+  /* gentle vertical offset for extra stagger vibe */
+  .rotation.reverse{ margin-top: clamp(2px, 0.6vw, 10px); }
+
+  /* MEDIA block (gradient plate + pouch) */
+  .media{
+    position:relative; overflow:visible;
+    border-radius:var(--radius-lg);
+    background: linear-gradient(140deg, #fff 0%, #f7f8fb 60%, #eef2ff 100%);
+    box-shadow: 0 1px 0 rgba(0,0,0,.02), 0 8px 20px rgba(37,63,116,.06);
+    padding:clamp(24px, 3.5vw, 32px);
+    display:flex; justify-content:center; align-items:center;
+    z-index: 1;
+  }
+
+  /* CARD */
+  .card{
+    background:#fff; border-radius:var(--radius-xl); box-shadow:var(--card-shadow);
+    border:1px solid rgba(0,0,0,.06);
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
+  }
+  .card:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.12), 0 16px 40px rgba(0,0,0,.08);
+  }
+  .card-body{ padding:clamp(16px,3vw,24px); }
+  .row-small{ display:grid; grid-template-columns:5fr 7fr; gap:16px; align-items:start; }
+  .d-flex{ display:flex; } .align-items-center{ align-items:center; }
+  .mr-2{ margin-right:10px; } .mr-lg-3{ margin-right:12px; }
+  .rounded-circle{ border-radius:50%; }
+  .text-primary{ color:var(--accent); } .font-weight-extra-bold{ font-weight:800; }
+  .avatar{ width:72px; height:72px; object-fit:cover; }
+  .rotation-name{ font-weight:800; color:var(--accent); line-height:1.2; }
+  .rotation-location{ color:var(--text-secondary); font-size:14px; }
+  .blend-pill{
+    display:inline-block; margin-top:6px; font-size:12px; font-weight:700; letter-spacing:.02em;
+    background:#EEF6FF; color:#084E96; border:1px solid rgba(8,78,150,.18);
+    padding:4px 8px; border-radius:999px;
+    max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .quote{ color:#1d1d1f; font-size:16px; line-height:1.55; }
+
+  /* Flavor matrix visualization */
+  .flavor-matrix {
+    margin-top: 14px;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  
+  .matrix-header {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .flavor-icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.6;
+  }
+  
+  .flavor-grid {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 6px 10px;
+    align-items: center;
+  }
+  
+  .flavor-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: right;
+  }
+  
+  .flavor-bar {
+    height: 4px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .flavor-fill {
+    height: 100%;
+    background: var(--accent);
+    opacity: 0.3;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+  
+  .flavor-fill.high { opacity: 0.6; }
+  .flavor-fill.medium { opacity: 0.4; }
+  .flavor-fill.low { opacity: 0.25; }
+  
+  .tasting-notes {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+  }
+  
+  .notes-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  
+  .notes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .note-tag {
+    font-size: 11px;
+    padding: 3px 8px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-weight: 500;
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+  
+  .brew-method {
+    margin-top: 14px;
+    padding: 12px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .brew-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .brew-icon svg {
+    width: 28px;
+    height: 28px;
+    opacity: 0.8;
+  }
+  
+  .brew-details {
+    flex: 1;
+  }
+  
+  .brew-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+  
+  .brew-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  
+
+
+  /* CTA button */
+  .cta-actions{ margin-top:14px; }
+  .cta-btn{
+    display:inline-block;
+    padding:16px 32px; border-radius:980px; font-weight:500;
+    color:#fff; text-decoration:none;
+    background: #0071E3;
+    font-size: 17px;
+    transition: all 0.2s ease;
+  }
+  .cta-btn:hover{ 
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 24px rgba(0,113,227,0.3); 
+  }
+  .cta-icon{ 
+    display: inline-block;
+    margin-left: 8px;
+    transition: transform .18s ease; 
+  }
+  .cta-btn:hover .cta-icon{ 
+    transform: translateX(3px); 
+  }
+
+  /* Reveal animation */
+  .rotation{ opacity:0; transform:translateY(12px); transition:all .5s var(--ease-apple); transition-delay:calc(var(--stagger,0)*100ms); }
+  .rotation.on-screen{ opacity:1; transform:none; }
+
+  /* Responsive: stack on narrow, remove overlap */
+  @media (max-width: 920px) {
+    .container { padding: 28px 28px 48px; }
+  }
+  
+  @media (max-width: 880px){
+    :root {
+      --pouch-width: min(70vw, 260px);
+      --overlap: clamp(20px, 4vw, 40px);
+    }
+    .pair{ grid-template-columns:1fr; }
+    .pair .media{ order:1 !important; z-index: 1; }
+    .pair .card{ order:2 !important; margin:0; margin-top: calc(var(--overlap) * -1); z-index: 2; position: relative; }
+    .rotation.reverse .card{ margin:0; margin-top: calc(var(--overlap) * -1); }
+    .row-small{ grid-template-columns:1fr; }
+    .avatar{ width:64px; height:64px; }
+    .media { padding: clamp(20px, 3vw, 28px); }
+  }
+  
+  @media (max-width: 640px) {
+    .container { padding: 20px 20px 32px; }
+    :root {
+      --pouch-width: min(65vw, 220px);
+      --overlap: 16px;
+    }
+    .rotations { gap: 24px; }
+    .flavor-matrix { padding: 10px; }
+    .flavor-grid { grid-template-columns: 65px 1fr; gap: 4px 8px; }
+    .flavor-label { font-size: 10px; }
+    .tasting-notes { margin-top: 8px; padding-top: 8px; }
+    .notes-label { font-size: 9px; }
+    .note-tag { font-size: 10px; padding: 2px 6px; }
+    .brew-method { margin-top: 10px; padding: 10px; gap: 12px; }
+    .brew-icon { width: 40px; height: 40px; }
+    .brew-icon svg { width: 24px; height: 24px; }
+    .brew-name { font-size: 13px; }
+    
+  }
+
+  /* ===== Pouch visuals (unchanged core) ===== */
+  .pouch-container{ width:var(--pouch-width); height:var(--pouch-height); position:relative; transform-style:preserve-3d; }
+  .pouch{
+    position:absolute; inset:0; backface-visibility:hidden; background:#0a0a0a;
+    border-radius:20px 20px 16px 16px; overflow:hidden;
+    box-shadow:0 12px 28px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.1);
+    clip-path:polygon(0 20px,4px 12px,8px 8px,12px 4px,20px 0,calc(100% - 20px) 0,calc(100% - 12px) 4px,calc(100% - 8px) 8px,calc(100% - 4px) 12px,100% 20px,100% 32px,calc(100% - 12px) 40px,100% 48px,100% calc(100% - 16px),calc(100% - 4px) calc(100% - 8px),calc(100% - 8px) calc(100% - 4px),calc(100% - 16px) 100%,16px 100%,8px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 16px),0 48px,12px 40px,0 32px,0 20px);
+  }
+  .pouch::before{
+    content:""; position:absolute; inset:0; opacity:.10;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E");
+    border-radius:20px 20px 16px 16px; clip-path:inherit;
+  }
+  .top-seal{
+    position:absolute; top:0; left:0; right:0; height:26px; background:#0a0a0a; border-bottom:1px solid rgba(220,225,230,.32);
+    background-image:repeating-linear-gradient(180deg, rgba(255,255,255,.06) 0 1px, rgba(0,0,0,.08) 1px 2px, transparent 2px 3px),
+                     linear-gradient(0deg, rgba(0,0,0,.28) 0, transparent 50%),
+                     radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,.06) 0, transparent 70%);
+    box-shadow:inset 0 -1px 0 rgba(0,0,0,.38), inset 0 1px 0 rgba(220,225,230,.22);
+    z-index:5;
+  }
+  .pouch-edge.top{ height:var(--pouch-thickness); width:100%; top:0; position:absolute; background:#0a0a0a; transform:rotateX(-90deg) translateZ(calc(var(--pouch-thickness) / 2)); transform-origin:center; }
+  .pouch-edge.bottom{ height:var(--pouch-thickness); width:100%; bottom:0; position:absolute; background:#0a0a0a; transform:rotateX(90deg) translateZ(calc(var(--pouch-thickness) / 2)); transform-origin:center; }
+  .pouch-edge.left{ width:var(--pouch-thickness); height:100%; left:0; position:absolute; background:#0a0a0a; transform:rotateY(90deg) translateZ(calc(var(--pouch-thickness) / 2)); transform-origin:center; }
+  .pouch-edge.right{ width:var(--pouch-thickness); height:100%; right:0; position:absolute; background:#0a0a0a; transform:rotateY(-90deg) translateZ(calc(var(--pouch-thickness) / 2)); transform-origin:center; }
+  .pouch-label{
+    position:absolute; inset:auto 16px 16px 16px; height:72%;
+    background:#fff; border-radius:16px; padding:16px; text-align:center; color:#1d1d1f;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.18), 0 6px 14px rgba(0,0,0,.10), 0 1px 3px rgba(0,0,0,.06);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; isolation:isolate;
+    cursor: pointer;
+  }
+  .pouch-label::before{
+    content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:0;
+    background: radial-gradient(120% 80% at 18% 20%, var(--ink1, hsla(210,52%,82%,.35)) 0 40%, transparent 70%),
+                radial-gradient(130% 78% at 80% 24%, var(--ink2, hsla(200,50%,84%,.32)) 0 38%, transparent 72%),
+                radial-gradient(110% 88% at 64% 84%, var(--ink3, hsla(180,48%,86%,.30)) 0 42%, transparent 74%);
+  }
+  .feature-badge{ position:relative; z-index:1; padding:6px 10px; border-radius:16px; color:#fff; font-size:12px; font-weight:700; background:hsl(205 76% 45%); box-shadow:0 0 0 1px hsl(205 76% 35% / .28); }
+  .mini-tagline{ position:relative; z-index:1; font-size:15px; font-weight:700; color:#0a0a0a; }
+  .pouch-label .label-cta{ position:absolute; inset:0; z-index:2; border-radius:inherit; text-indent:-9999px; overflow:hidden; }
+
+  /* vector outlines */
+  .pouch-outline{ position:absolute; inset:0; pointer-events:none; z-index:8; }
+  .pouch-outline path{ fill:none; vector-effect:non-scaling-stroke; stroke-linejoin:miter; shape-rendering:geometricPrecision; }
+  .pouch-outline .outer{ stroke:var(--outline-outer); stroke-width:var(--outline-outer-w); }
+  .pouch-outline .inner{ stroke:var(--outline-inner); stroke-width:var(--outline-inner-w); }
+
+  @media (prefers-reduced-motion:reduce){
+    .rotation{ transition:none; transform:none; }
+    .card { transition: none; }
+    .card:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+  <main class="container">
+    <h2 class="section-header">
+      <div class="line-2">Everyone Gets Their Perfect Blend</div>
+    </h2>
+    <p class="lede">From bright morning pour-overs to rich afternoon espressos. See how subscribers found their ideal cup.</p>
+
+    <section class="rotations" id="rotations"></section>
+  </main>
+
+<script>
+  // Reviews (kept simple: avatar, name/city, blend, quote)
+  const reviews = [
+    { name:'Alex', city:'Portland, OR', blendName:'Pith Perfect',
+      avatar:'https://i.pravatar.cc/150?img=12',
+      quote:'One simple signup and my personalized coffee arrives like clockwork. Bright, citrusy cups without grocery runs or guesswork.',
+      flavorProfile: {
+        acidity: 85,
+        body: 30,
+        sweetness: 70,
+        roast: 25
+      },
+      tastingNotes: ['lemon zest', 'white grape', 'honey', 'jasmine'],
+      brewMethod: 'Hario V60',
+      grindSize: 'Medium-Fine'
+    },
+    { name:'Jordan', city:'Brooklyn, NY', blendName:'Daily Grindless',
+      avatar:'https://i.pravatar.cc/150?img=32',
+      quote:'Mornings are calmer. I follow the same simple steps and get a steady, cozy cup every time. No grinder or scale needed.',
+      flavorProfile: {
+        acidity: 35,
+        body: 65,
+        sweetness: 60,
+        roast: 50
+      },
+      tastingNotes: ['milk chocolate', 'caramel', 'toasted almond', 'brown sugar'],
+      brewMethod: 'Kalita Wave',
+      grindSize: 'Medium'
+    },
+    { name:'Taylor', city:'Denver, CO', blendName:'Even Keel',
+      avatar:'https://i.pravatar.cc/150?img=45',
+      quote:'Afternoon pour overs taste consistent now. The blend fits my palate and the routine is easy, so I get a clean, balanced cup day after day.',
+      flavorProfile: {
+        acidity: 50,
+        body: 50,
+        sweetness: 55,
+        roast: 45
+      },
+      tastingNotes: ['apple', 'toffee', 'vanilla', 'hazelnut'],
+      brewMethod: 'Chemex',
+      grindSize: 'Medium-Coarse'
+    },
+    { name:'Casey', city:'San Jose, CA', blendName:'Clean Slate',
+      avatar:'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=200&h=200&crop=faces',
+      quote:'I wanted cafe quality at home without trips across town. The subscription matches my preferences and keeps me stocked with coffee I actually enjoy.',
+      flavorProfile: {
+        acidity: 25,
+        body: 85,
+        sweetness: 45,
+        roast: 75
+      },
+      tastingNotes: ['dark chocolate', 'molasses', 'walnut', 'tobacco'],
+      brewMethod: 'French Press',
+      grindSize: 'Coarse'
+    },
+    { name:'Morgan', city:'Chicago, IL', blendName:'Cocoa Motion',
+      avatar:'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?auto=format&fit=crop&w=200&h=200&crop=faces',
+      quote:'The routine is simple. Open, pour, brew. Freshness holds through the week and the cup tastes the way I like it every time.',
+      flavorProfile: {
+        acidity: 20,
+        body: 80,
+        sweetness: 75,
+        roast: 85
+      },
+      tastingNotes: ['cocoa powder', 'brown butter', 'maple syrup', 'cinnamon'],
+      brewMethod: 'Aeropress',
+      grindSize: 'Medium-Fine'
+    },
+    { name:'Riley', city:'Austin, TX', blendName:'First Pourcast',
+      avatar:'https://i.pravatar.cc/150?img=28',
+      quote:'Deliveries land right when I need them. My First Pourcast blend is bright and sweet, and the house smells amazing while I brew.',
+      flavorProfile: {
+        acidity: 75,
+        body: 40,
+        sweetness: 80,
+        roast: 35
+      },
+      tastingNotes: ['orange blossom', 'peach', 'sugar cane', 'bergamot'],
+      brewMethod: 'Origami Dripper',
+      grindSize: 'Medium'
+    }
+  ];
+
+  // Stable 3-per-session
+  function sampleThreePerSession(){
+    const key='review_indices_side_by_side_v1';
+    try{
+      const cached = sessionStorage.getItem(key);
+      if(cached){
+        const arr = JSON.parse(cached);
+        if(Array.isArray(arr) && arr.length===3) return arr;
+      }
+    }catch{}
+    const idx = reviews.map((_,i)=>i);
+    for(let i=idx.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [idx[i],idx[j]]=[idx[j],idx[i]];
+    }
+    const chosen = idx.slice(0,3);
+    try{ sessionStorage.setItem(key, JSON.stringify(chosen)); }catch{}
+    return chosen;
+  }
+
+  // Inks
+  const INK_PALETTES = [
+    ["hsla(205,70%,78%,0.35)", "hsla(192,60%,80%,0.32)", "hsla(220,62%,84%,0.30)"],
+    ["hsla(132,60%,78%,0.35)", "hsla(150,55%,80%,0.32)", "hsla(170,52%,84%,0.30)"],
+    ["hsla(34,78%,76%,0.35)",  "hsla(20,65%,78%,0.32)",  "hsla(46,70%,82%,0.30)"],
+    ["hsla(280,46%,80%,0.35)", "hsla(260,40%,82%,0.30)", "hsla(300,42%,84%,0.30)"],
+  ];
+
+  function createMiniPouch({badge, tagline, inks}){
+    const [ink1,ink2,ink3] = inks;
+    return `
+      <div class="pouch-extreme pouch-container" style="--ink1:${ink1}; --ink2:${ink2}; --ink3:${ink3};">
+        <div class="pouch">
+          <div class="top-seal"></div>
+                     <div class="pouch-label">
+             <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Shape layer"><rect x="397.807373046875" y="263.5442199707031" width="200" height="200" rx="3.200347071234561" ry="12" data-corner="12" fill="#ffffff80" data-shape="square" data-rot="0" data-scalex="3.7495933200054137" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(3.74959, 1);"></rect><circle cx="977.3275756835938" cy="24.153820037841797" r="110" fill="rgba(16, 234, 81, 1)" data-shape="circle" data-rot="0" data-scalex="1.278094641436079" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(1.27809, 1);"></circle><polygon points="504.1848449707031,645.3689880371094 614.1848449707031,875.3689880371094 394.1848449707031,875.3689880371094" fill="rgba(0, 0, 0, 1)" data-shape="triangle" data-rot="0" data-scalex="5" data-scaley="2.165829465350702" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(5, 2.16583);"></polygon></svg>
+           </div>
+           
+           <div class="text-layer">
+             <div class="text-block" data-size-frac="0.028" style="--text-size-frac: 0.028; top: 17.1688%; left: 30.4969%; transform: translate(-50%, -50%); color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1.1; letter-spacing: 0.08em; width: 150.098px; white-space: normal; max-width: none;">${badge}</div>
+             <div class="text-block" data-size-frac="0.062" style="--text-size-frac: 0.062; top: 41.9995%; left: 49.673%; transform: translate(-50%, -50%); color: rgb(10, 10, 10); font-weight: 800; line-height: 1.2; width: 66%; white-space: normal; max-width: none;">${tagline}</div>
+           </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // SVG outlines
+  const SVG_NS='http://www.w3.org/2000/svg';
+  function pouchPathD(w,h){
+    const pts=[[0,20],[4,12],[8,8],[12,4],[20,0],[w-20,0],[w-12,4],[w-8,8],[w-4,12],[w,20],[w,32],[w-12,40],[w,48],[w,h-16],[w-4,h-8],[w-8,h-4],[w-16,h],[16,h],[8,h-4],[4,h-8],[0,h-16],[0,48],[12,40],[0,32],[0,20]];
+    return 'M '+pts.map(([x,y])=>`${x} ${y}`).join(' L ')+' Z';
+  }
+  function makeOutline(container){
+    const w=container.clientWidth,h=container.clientHeight;
+    const svg=document.createElementNS(SVG_NS,'svg');
+    svg.classList.add('pouch-outline');
+    svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+    svg.setAttribute('preserveAspectRatio','none');
+    const d=pouchPathD(w,h);
+    const outer=document.createElementNS(SVG_NS,'path'); outer.setAttribute('class','outer'); outer.setAttribute('d',d);
+    const inner=document.createElementNS(SVG_NS,'path'); inner.setAttribute('class','inner'); inner.setAttribute('d',d);
+    svg.append(outer,inner); container.appendChild(svg); return svg;
+  }
+  function addPouchOutlines(){
+    document.querySelectorAll('.pouch-container').forEach(container=>{
+      if(container._outlines) return;
+      const front = makeOutline(container);
+      container._outlines=[front];
+    });
+  }
+  function updatePouchOutlines(){
+    document.querySelectorAll('.pouch-container').forEach(container=>{
+      const w=container.clientWidth,h=container.clientHeight,d=pouchPathD(w,h);
+      (container._outlines||[]).forEach(svg=>{
+        svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+        svg.querySelectorAll('path').forEach(p=>p.setAttribute('d',d));
+      });
+    });
+  }
+  addEventListener('resize', updatePouchOutlines);
+
+  // Build a single side-by-side pair
+  function createPair(data, idx, inks){
+    const [ink1,ink2,ink3] = inks;
+    const pouch = createMiniPouch({ badge: `${data.name}'s Blend`, tagline: data.blendName || 'Personalized blend', inks: [ink1,ink2,ink3] });
+
+    const reverseClass = (idx % 2 === 1) ? 'reverse' : '';
+
+    return `
+      <article class="rotation ${reverseClass}">
+        <div class="pair" style="--ink1:${ink1}; --ink2:${ink2}; --ink3:${ink3};">
+          <div class="media">
+            ${pouch}
+          </div>
+          <div class="card card-body">
+            <div class="row-small">
+              <div>
+                <div class="d-flex align-items-center">
+                  <img class="avatar mr-2 mr-lg-3 rounded-circle" width="72" height="72"
+                       loading="lazy" decoding="async"
+                       src="${data.avatar}" alt="${data.name}">
+                  <div>
+                    <div class="font-weight-extra-bold text-primary rotation-name">${data.name}</div>
+                    <div class="rotation-location">${data.city}</div>
+                    ${data.blendName ? `<div class="blend-pill">${data.blendName}</div>` : ``}
+                  </div>
+                </div>
+                ${data.brewMethod ? `
+                <div class="brew-method">
+                  <div class="brew-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 2L7 7V13L5 17V22H11V17L9 13V7L12 2H4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M16 7V13L14 17V22H20V17L18 13V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M16 2L20 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="brew-details">
+                    <div class="brew-label">Optimized for</div>
+                    <div class="brew-name">${data.brewMethod}</div>
+                  </div>
+                </div>
+                ` : ''}
+              </div>
+              <div>
+                <p class="quote">${data.quote}</p>
+                ${data.flavorProfile ? `
+                <div class="flavor-matrix">
+                  <div class="matrix-header">
+                    <svg class="flavor-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="2" y="12" width="3" height="2" fill="currentColor" opacity="0.3"/>
+                      <rect x="6.5" y="8" width="3" height="6" fill="currentColor" opacity="0.5"/>
+                      <rect x="11" y="4" width="3" height="10" fill="currentColor" opacity="0.7"/>
+                    </svg>
+                    ${data.name}'s blend profile
+                  </div>
+                  <div class="flavor-grid">
+                    <span class="flavor-label">acidity</span>
+                    <div class="flavor-bar">
+                      <div class="flavor-fill ${data.flavorProfile.acidity > 66 ? 'high' : data.flavorProfile.acidity > 33 ? 'medium' : 'low'}" style="width: 0%; --target-width: ${data.flavorProfile.acidity}%; transition-delay: 0.1s;"></div>
+                    </div>
+                    <span class="flavor-label">body</span>
+                    <div class="flavor-bar">
+                      <div class="flavor-fill ${data.flavorProfile.body > 66 ? 'high' : data.flavorProfile.body > 33 ? 'medium' : 'low'}" style="width: 0%; --target-width: ${data.flavorProfile.body}%; transition-delay: 0.2s;"></div>
+                    </div>
+                    <span class="flavor-label">sweetness</span>
+                    <div class="flavor-bar">
+                      <div class="flavor-fill ${data.flavorProfile.sweetness > 66 ? 'high' : data.flavorProfile.sweetness > 33 ? 'medium' : 'low'}" style="width: 0%; --target-width: ${data.flavorProfile.sweetness}%; transition-delay: 0.3s;"></div>
+                    </div>
+                    <span class="flavor-label">roast level</span>
+                    <div class="flavor-bar">
+                      <div class="flavor-fill ${data.flavorProfile.roast > 66 ? 'high' : data.flavorProfile.roast > 33 ? 'medium' : 'low'}" style="width: 0%; --target-width: ${data.flavorProfile.roast}%; transition-delay: 0.4s;"></div>
+                    </div>
+                  </div>
+                  ${data.tastingNotes ? `
+                  <div class="tasting-notes">
+                    <div class="notes-label">Tasting Notes</div>
+                    <div class="notes-list">
+                      ${data.tastingNotes.map(note => `<span class="note-tag">${note}</span>`).join('')}
+                    </div>
+                  </div>
+                  ` : ''}
+
+                </div>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function createCTA(idx, inks){
+    const [ink1,ink2,ink3] = inks;
+    const pouch = createMiniPouch({ badge:'Your Blend', tagline:'Personalized blend', inks: [ink1,ink2,ink3] });
+    const reverseClass = (idx % 2 === 1) ? 'reverse' : '';
+    return `
+      <article class="rotation ${reverseClass}">
+        <div class="pair" style="--ink1:${ink1}; --ink2:${ink2}; --ink3:${ink3};">
+          <div class="media">${pouch}</div>
+          <div class="card card-body">
+            <div class="row-small">
+              <div class="d-flex align-items-center">
+                <img class="avatar mr-2 mr-lg-3 rounded-circle" width="72" height="72"
+                     src="https://bottomless.imgix.net/landing-coffee/you.jpg?auto=compress,format&w=120" alt="You">
+                <div>
+                  <div class="font-weight-extra-bold text-primary rotation-name">You</div>
+                  <div class="rotation-location">Anywhere, USA</div>
+                </div>
+              </div>
+              <div>
+                <p class="quote">Tell us your preferences for brew method, roast level, and flavor profile. We'll match you to your perfect blend and deliver it right when you need it.</p>
+                <div class="flavor-matrix">
+                  <div class="matrix-header">
+                    <svg class="flavor-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8 2L10 6L14 7L11 10L12 14L8 12L4 14L5 10L2 7L6 6L8 2Z" fill="currentColor" opacity="0.4"/>
+                    </svg>
+                    we'll create your blend profile
+                  </div>
+                  <div class="flavor-grid" style="opacity: 0.6;">
+                    <span class="flavor-label">acidity</span>
+                    <div class="flavor-bar">
+                      <div class="flavor-fill" style="width: 50%; background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);"></div>
+                    </div>
+                    <span class="flavor-label">body</span>
+                    <div class="flavor-bar">
+                      <div class="flavor-fill" style="width: 50%; background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);"></div>
+                    </div>
+                    <span class="flavor-label">sweetness</span>
+                    <div class="flavor-bar">
+                      <div class="flavor-fill" style="width: 50%; background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);"></div>
+                    </div>
+                    <span class="flavor-label">roast level</span>
+                    <div class="flavor-bar">
+                      <div class="flavor-fill" style="width: 50%; background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);"></div>
+                    </div>
+                  </div>
+                  <div class="brew-method" style="background: linear-gradient(135deg, #F5F5F7 0%, #FBFBFD 100%);">
+                    <div class="brew-icon">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 3C7 3 3 7 3 12C3 17 7 21 12 21C17 21 21 17 21 12C21 7 17 3 12 3Z" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+                        <path d="M12 8V16M8 12H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                      </svg>
+                    </div>
+                    <div class="brew-details">
+                      <div class="brew-label">Choose your method</div>
+                      <div class="brew-name" style="font-size: 12px; font-weight: 500;">V60 • Chemex • Aeropress • French Press</div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="cta-actions">
+                  <a href="signup.html" class="cta-btn">Subscribe now <span class="cta-icon">→</span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  (function render(){
+    const mount = document.getElementById('rotations');
+    const chosen = sampleThreePerSession(); // 3 reviews + CTA
+    // pick distinct palettes for reviews and CTA
+    const paletteIndices = Array.from({length: INK_PALETTES.length}, (_,i)=>i);
+    for(let i=paletteIndices.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [paletteIndices[i], paletteIndices[j]] = [paletteIndices[j], paletteIndices[i]];
+    }
+    const needed = Math.min(4, paletteIndices.length);
+    const selectedPalettes = paletteIndices.slice(0, needed).map(idx=> INK_PALETTES[idx]);
+    const items = chosen.map((i, idx) => createPair(reviews[i], idx, selectedPalettes[idx % selectedPalettes.length]));
+    const ctaPalette = selectedPalettes[(items.length) % selectedPalettes.length];
+    items.push(createCTA(items.length, ctaPalette));
+    mount.innerHTML = items.join('');
+
+    // Stagger & reveal
+    Array.from(mount.children).forEach((el, idx) => {
+      el.style.setProperty('--stagger', String(idx));
+    });
+
+    // We don't need outlines for the new pouch design
+    // setTimeout(addPouchOutlines, 0);
+
+    const io = new IntersectionObserver((entries,obs)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ 
+          e.target.classList.add('on-screen'); 
+          obs.unobserve(e.target);
+          
+          // Animate flavor profile bars
+          const flavorBars = e.target.querySelectorAll('.flavor-fill');
+          flavorBars.forEach((bar) => {
+            const targetWidth = bar.style.getPropertyValue('--target-width');
+            if (targetWidth) {
+              setTimeout(() => {
+                bar.style.width = targetWidth;
+              }, 100);
+            }
+          });
+        }
+      });
+    }, {threshold:.10, rootMargin:'0px 0px -10% 0px'});
+    mount.querySelectorAll('.rotation').forEach(el=> io.observe(el));
+  })();
+</script>
+</body>
+</html>

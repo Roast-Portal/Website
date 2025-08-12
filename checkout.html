@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roast Portal — Checkout</title>
+  <style>
+    :root{
+      --bg-primary:#FBFBFD; --text-primary:#1D1D1F; --text-secondary:#6E6E73;
+      --border:rgba(0,0,0,0.08); --blue:#0071E3;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg-primary);color:var(--text-primary)}
+    .container{max-width:1080px;margin:0 auto;padding:24px}
+    .surface{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.06);padding:24px}
+    h1{font-size:28px;margin:0 0 8px}
+    p.sub{color:var(--text-secondary);margin:0 0 16px}
+    .grid{display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:start}
+    .section-title{font-weight:700;margin:0 0 10px}
+    .desc{color:var(--text-secondary);line-height:1.55}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .pill{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid rgba(0,0,0,.1);background:#fff}
+    .divider{height:1px;background:var(--border);margin:12px 0}
+    .line{display:flex;justify-content:space-between;gap:12px}
+    .muted{color:var(--text-secondary)}
+    .price{font-weight:600}
+    .total{font-weight:800}
+    .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+    .btn{appearance:none;border:1px solid rgba(0,0,0,.1);background:#fff;color:#1d1d1f;padding:10px 16px;border-radius:999px;cursor:pointer;font-size:14px;box-shadow:0 1px 6px rgba(0,0,0,.06);transition:transform .15s ease,box-shadow .2s ease}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+    .btn.primary{background:var(--blue);color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(0,113,227,.28)}
+    @media(max-width:860px){.grid{grid-template-columns:1fr}}
+
+    /* Pouch stack visuals */
+    :root{--pouch-w: min(84vw, 340px); --pouch-h: calc(var(--pouch-w) * 1.335);} 
+    .visual{display:grid;place-items:center;margin-bottom:12px; position:relative}
+    .pouch-stack{position:relative;height:calc(var(--pouch-h) + 80px);width:100%;max-width:var(--pouch-w)}
+    .stack-card{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);will-change:transform,filter;}
+    .pouch{position:relative;width:var(--pouch-w);height:var(--pouch-h);background:#0a0a0a;border-radius:20px 20px 16px 16px;box-shadow:0 12px 28px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.1);overflow:hidden;
+      /* Smooth clip-path with fully rounded corners + transparent notches */
+      clip-path: polygon(
+        /* top left corner - smooth curve */
+        0 20px,
+        4px 12px,
+        8px 8px,
+        12px 4px,
+        20px 0,
+        /* top edge */
+        calc(100% - 20px) 0,
+        /* top right corner - smooth curve */
+        calc(100% - 12px) 4px,
+        calc(100% - 8px) 8px,
+        calc(100% - 4px) 12px,
+        100% 20px,
+        /* right edge to notch */
+        100% 32px,
+        /* right notch */
+        calc(100% - 12px) 40px,
+        100% 48px,
+        /* right edge to bottom */
+        100% calc(100% - 16px),
+        /* bottom right corner - smooth curve */
+        calc(100% - 4px) calc(100% - 8px),
+        calc(100% - 8px) calc(100% - 4px),
+        calc(100% - 16px) 100%,
+        /* bottom edge */
+        16px 100%,
+        /* bottom left corner - smooth curve */
+        8px calc(100% - 4px),
+        4px calc(100% - 8px),
+        0 calc(100% - 16px),
+        /* left edge from bottom */
+        0 48px,
+        /* left notch */
+        12px 40px,
+        0 32px,
+        /* left edge to top */
+        0 20px
+      )}
+    /* Matte paper-like texture overlay */
+    .pouch::before{content:"";position:absolute;inset:0;opacity:.10;mix-blend-mode:normal;z-index:0;border-radius:20px 20px 16px 16px;clip-path:inherit;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.3'/%3E%3C/svg%3E");}
+    .pouch-label{position:absolute;left:14px;right:14px;bottom:14px;top:22%;background:#fff;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08),0 8px 18px rgba(0,0,0,.12);padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+    .pouch-label::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:
+      radial-gradient(120% 80% at 18% 20%, var(--ink1, hsla(210,60%,82%,.32)) 0 42%, transparent 72%),
+      radial-gradient(130% 78% at 82% 24%, var(--ink2, hsla(190,58%,84%,.30)) 0 38%, transparent 74%),
+      radial-gradient(110% 88% at 62% 84%, var(--ink3, hsla(160,56%,86%,.28)) 0 44%, transparent 76%)}
+    .blend-name{font-weight:800;letter-spacing:-.01em;font-size:16px;color:#111;position:relative;z-index:1}
+    .tasting{font-size:13px;color:#2b2b30;margin-top:6px;position:relative;z-index:1}
+    .badge{position:absolute;left:16px;top:16px;background:#0071E3;color:#fff;border-radius:999px;padding:6px 10px;font-size:12px;box-shadow:0 6px 16px rgba(0,113,227,.28)}
+    .mini{opacity:1;filter:brightness(.96) saturate(.92)}
+
+    /* === Vector outline that matches the pouch shape exactly === */
+    :root{
+      --outline-inner: rgba(255,255,255,0.5);
+      --outline-outer: rgba(0,0,0,0.2);
+      --outline-inner-w: 0.5px;
+      --outline-outer-w: 1px;
+    }
+    .pouch-outline{ position:absolute; inset:0; pointer-events:none; z-index: 8; transform-style:preserve-3d }
+    .pouch-outline path{ fill:none; vector-effect:non-scaling-stroke; stroke-linejoin:miter; shape-rendering:geometricPrecision }
+    .pouch-outline .outer{ stroke: var(--outline-outer); stroke-width: var(--outline-outer-w); }
+    .pouch-outline .inner{ stroke: var(--outline-inner); stroke-width: var(--outline-inner-w); }
+    @media (prefers-color-scheme: dark){
+      .pouch-outline .outer{ stroke: rgba(0,0,0,0.5); }
+      .pouch-outline .inner{ stroke: rgba(255,255,255,0.72); }
+    }
+
+    /* Grid of packs (mini pouches) */
+    .packs-wrap{margin-top:10px}
+    .packs-badge{position:absolute; right:8px; top:8px; background:#111; color:#fff; border-radius:999px; font-size:12px; padding:6px 10px; box-shadow:0 6px 16px rgba(0,0,0,.18)}
+    .qty-badge{position:absolute; right:8px; top:8px; background:#111; color:#fff; border-radius:999px; font-size:12px; padding:6px 10px; box-shadow:0 6px 16px rgba(0,0,0,.18)}
+    .pack-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(64px, 1fr)); gap:8px; align-items:start}
+    .mini-pouch{position:relative; width:100%; aspect-ratio: 3 / 4; background:#0a0a0a; border-radius:10px; box-shadow:0 6px 14px rgba(0,0,0,.18); overflow:hidden;}
+    .mini-label{position:absolute; inset:auto 6px 6px 6px; height:45%; background:#fff; border-radius:8px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+  </style>
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="surface">
+      <h1>Checkout</h1>
+      <p class="sub">Review your custom blend and complete your order.</p>
+      <div id="checkout" class="grid" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <script>
+    // Load quiz data
+    function loadData(){
+      try{ return JSON.parse(localStorage.getItem('rp_quiz')||'{}'); }catch{ return {}; }
+    }
+    function mapPrice(per){
+      const val = Number(per)||20; const pct=(val-8)/(36-8); const price=Math.max(2,Math.min(9,+(2+7*pct).toFixed(2))); return price;
+    }
+    function roundTo95(amount){
+      // Always round up to next .95
+      const dollars = Math.ceil(amount);
+      return dollars - 0.05 + (dollars === amount ? 0 : 0);
+    }
+    function compute(data){
+      const pricePerCup = mapPrice(data.priceRange);
+      const more = (data.cupsPerDay||'').toLowerCase().includes('more');
+      const billedServings = more?28:14;         // billed packs
+      const bonus = 1;                            // only one bonus per shipment
+      const totalServings = Math.min(31, billedServings + bonus);
+      const rawSubtotal = pricePerCup * billedServings;
+      const shipping = 4.95;
+      const rawTax = rawSubtotal * 0.08;
+      const subtotal = roundTo95(rawSubtotal);
+      const tax = roundTo95(rawTax);
+      const total = roundTo95(subtotal + tax + shipping);
+      return {pricePerCup,billedServings,bonus,totalServings,subtotal,shipping,tax,total,period:'every 2 weeks'};
+    }
+    function topFlavors(d){
+      return [ ['Nutty',d.flavorNutty], ['Fruity',d.flavorFruity], ['Floral',d.flavorFloral], ['Smoky',d.flavorSmoky] ]
+        .filter(([,v])=>v!==''&&!isNaN(Number(v)))
+        .sort((a,b)=>Number(b[1])-Number(a[1]))
+        .slice(0,2).map(([k])=>k).join(' & ');
+    }
+    function pickInks(d){
+      // Map flavor → hue for soft label wash
+      const map = {Nutty:34,Fruity:12,Floral:280,Smoky:210};
+      const favs = [ ['Nutty',d.flavorNutty], ['Fruity',d.flavorFruity], ['Floral',d.flavorFloral], ['Smoky',d.flavorSmoky] ]
+        .filter(([,v])=>v!==''&&!isNaN(Number(v)))
+        .sort((a,b)=>Number(b[1])-Number(a[1]))
+        .slice(0,3).map(([k])=>map[k]||210);
+      const [h1=210,h2=190,h3=160]=favs;
+      return [
+        `hsla(${h1},70%,82%,.32)`,
+        `hsla(${h2},64%,84%,.30)`,
+        `hsla(${h3},60%,86%,.28)`
+      ];
+    }
+    function render(){
+      const d = loadData();
+      const p = compute(d);
+      const flavors = topFlavors(d);
+      const tasting = flavors? `${flavors} notes` : 'Balanced, approachable cup';
+      const brew = d.brewMethod? `Ground for ${d.brewMethod.toLowerCase()}` : 'Ground for your method';
+      const style = d.additions? `Enjoyed with ${d.additions.toLowerCase()}` : 'Enjoyed black or with milk';
+      const el = document.getElementById('checkout');
+      const [ink1,ink2,ink3]=pickInks(d);
+      const rawName = d.blendName || 'Your Daily Roast';
+      const planName = /subscription/i.test(rawName) ? rawName : `${rawName} subscription`;
+      // Build a simple, tidy visual stack (front-most shows user blend)
+      const stackCount = Math.min(5, p.totalServings);
+      let badgeText = 'Your Blend';
+      if(d.firstName && String(d.firstName).trim()){
+        const n = String(d.firstName).trim();
+        badgeText = /s$/i.test(n) ? `${n}' Blend` : `${n}'s Blend`;
+      } else if(d.email){
+        const handle = String(d.email).split('@')[0];
+        if(handle){ badgeText = /s$/i.test(handle) ? `${handle}' Blend` : `${handle}'s Blend`; }
+      }
+      let stack = '';
+      for(let i=0;i<stackCount;i++){
+        const z = 15 - i;
+        // Neat fan: center around 0 with gentle offsets
+        const center = (stackCount - 1) / 2;
+        const dx = (i - center) * 10;      // horizontal spread
+        const dy = -i * 12;                 // vertical lift
+        const rot = (i - center) * 0.6;     // gentle rotation across the fan
+        const scale = 1 - i * 0.01;         // subtle depth scaling
+        const style = `z-index:${z}; transform: translate(-50%,-50%) translate(${dx}px, ${dy}px) rotate(${rot}deg) scale(${scale});`;
+        const custom = i===0;
+        stack += `
+          <div class="stack-card${custom? '': ' mini'}" style="${style}">
+            <div class="pouch" style="--ink1:${ink1};--ink2:${ink2};--ink3:${ink3};">
+              ${custom? `<span class=\"badge\">${badgeText}</span>`: ''}
+              <div class="pouch-label">
+                <div class="blend-name">${custom ? (d.blendName||'Your Daily Roast') : 'Daily pack'}</div>
+                <div class="tasting">${custom ? (tasting||'Balanced, approachable cup') : 'Nitroflushed & sealed'}</div>
+              </div>
+              <svg class="pouch-outline front" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <path class="outer" d=""/>
+                <path class="inner" d=""/>
+              </svg>
+              <svg class="pouch-outline back" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <path class="outer" d=""/>
+                <path class="inner" d=""/>
+              </svg>
+            </div>
+          </div>`;
+      }
+      el.innerHTML = `
+        <div>
+          <div class="visual"><div class="pouch-stack" aria-hidden="true">${stack}</div><div class="qty-badge" aria-label="Total cups">${p.totalServings} cup${p.totalServings===1?'':'s'}</div></div>
+          <div class="section-title">${d.blendName||'Your Daily Roast'} — ${d.roastLevel||'Medium'}</div>
+          <div class="desc">${tasting}. ${brew}. ${style}.</div>
+          <div class="badges">
+            ${d.personality?`<span class='pill'>${d.personality}</span>`:''}
+            ${d.tasteBalance?`<span class='pill'>${d.tasteBalance}</span>`:''}
+            ${d.cupsPerDay?`<span class='pill'>${d.cupsPerDay}</span>`:''}
+          </div>
+          ${d.additionalNotes?`<div class='divider'></div><div class='desc'><strong>Notes:</strong> ${d.additionalNotes}</div>`:''}
+        </div>
+        <div>
+          <div class="line"><span class="muted">Plan</span><span>${planName} • ${p.period}</span></div>
+          <div class="line"><span class="muted">Price per cup</span><span class="price">$${p.pricePerCup.toFixed(2)}</span></div>
+          <div class="line"><span class="muted">Servings (billed)</span><span>${p.billedServings} × $${p.pricePerCup.toFixed(2)}</span></div>
+          <div class="line"><span class="muted">Bonus cup (qty 1)</span><span>$0.00</span></div>
+          <div class="divider"></div>
+          <div class="line"><span class="muted">Subtotal</span><span>$${p.subtotal.toFixed(2)}</span></div>
+          <div class="line"><span class="muted">Shipping</span><span>$${p.shipping.toFixed(2)}</span></div>
+          <div class="line"><span class="muted">Estimated tax</span><span>$${p.tax.toFixed(2)}</span></div>
+          <div class="divider"></div>
+          <div class="line total"><span>Total today</span><span>$${p.total.toFixed(2)}</span></div>
+          <div class="actions">
+            <button class="btn" type="button" onclick="window.history.back()">Back</button>
+            <button class="btn primary" type="button" id="buyBtn">Buy now</button>
+          </div>
+        </div>`;
+    }
+    render();
+
+    // Build SVG outline path that mirrors the pouch clip-path shape
+    function pathDForPouch(w,h){
+      const pts = [
+        [0,20],[4,12],[8,8],[12,4],[20,0],
+        [w-20,0],[w-12,4],[w-8,8],[w-4,12],[w,20],
+        [w,32],[w-12,40],[w,48],
+        [w,h-16],[w-4,h-8],[w-8,h-4],[w-16,h],
+        [16,h],[8,h-4],[4,h-8],[0,h-16],
+        [0,48],[12,40],[0,32],
+        [0,20]
+      ];
+      return 'M '+pts.map(([x,y])=>`${x} ${y}`).join(' L ')+' Z';
+    }
+    function updateOutlines(){
+      document.querySelectorAll('.pouch').forEach(pouch=>{
+        const svgs = pouch.querySelectorAll('.pouch-outline');
+        if(!svgs.length) return;
+        const w = pouch.clientWidth, h = pouch.clientHeight;
+        svgs.forEach(svg=>{
+          svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+          const d = pathDForPouch(w,h);
+          svg.querySelectorAll('path').forEach(p=>p.setAttribute('d', d));
+        });
+      });
+    }
+    window.addEventListener('resize', updateOutlines);
+    // Kick once after first render
+    requestAnimationFrame(updateOutlines);
+
+    // Rebuild payload (same shape as quiz) and POST on Buy now
+    function mapPrice(val){ const num=Number(val)||20; const pct=(num-8)/(36-8); return Math.max(2,Math.min(9,+(2+7*pct).toFixed(2))); }
+    function buildPayload(){
+      let d={}; try{ d=JSON.parse(localStorage.getItem('rp_quiz')||'{}'); }catch{}
+      const pricePerCup = mapPrice(d.priceRange);
+      const more = (d.cupsPerDay||'').toLowerCase().includes('more');
+      const billedServings = more?28:14; const bonus=1; const totalServings=billedServings+bonus;
+      const topFlavors = [ ['Nutty',d.flavorNutty], ['Fruity',d.flavorFruity], ['Floral',d.flavorFloral], ['Smoky',d.flavorSmoky] ]
+        .filter(([,v])=>v!==''&&!isNaN(Number(v))).sort((a,b)=>Number(b[1])-Number(a[1])).slice(0,3).map(([k,v])=>`${k}:${v}`).join(', ');
+      const RP_USER_ID = (function(){ try{ return localStorage.getItem('rp_user_id')||'' }catch{ return '' } })();
+      return {
+        timestamp: new Date().toISOString(),
+        tab: 'FormResponses',
+        userId: RP_USER_ID,
+        firstName: d.firstName||'', lastName: d.lastName||'', email: d.email||'',
+        roastLevel: d.roastLevel||'', brewMethod: d.brewMethod||'', equipmentDetails: d.equipmentDetails||'', additions: d.additions||'',
+        priceRange: d.priceRange||'', pricePerCup, cupsPerDay: d.cupsPerDay||'', personality: d.personality||'', tasteBalance: d.tasteBalance||'',
+        flavorNutty: d.flavorNutty||'', flavorFruity: d.flavorFruity||'', flavorFloral: d.flavorFloral||'', flavorSmoky: d.flavorSmoky||'', topFlavors,
+        blendName: d.blendName||'', billedServings, bonus, totalServings, source: 'checkout'
+      };
+    }
+    function postToSheets(payload){
+      const url = 'https://script.google.com/macros/s/AKfycbzpmoxLyDNV-sVisPIaM-oH3pEXGZEwpL6owB7HBNjK563qzfrWX-uz0rtKc4JNtPcBfQ/exec';
+      const form = new URLSearchParams(); Object.entries(payload).forEach(([k,v])=>form.append(k,String(v??'')));
+      return fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:form.toString()});
+    }
+    document.getElementById('buyBtn')?.addEventListener('click', ()=>{
+      const payload = buildPayload();
+      postToSheets(payload).finally(()=>{
+        try{ localStorage.setItem('rp_last_order_ts', String(Date.now())); }catch{}
+        window.location.href = 'thanks.html';
+      });
+    });
+
+    // If we came from thank you (review mode), hide the Buy now button
+    (function(){
+      const params = new URLSearchParams(window.location.search);
+      if(params.get('review')==='1'){
+        const buy = document.getElementById('buyBtn');
+        if(buy){ buy.remove(); }
+      }
+    })();
+  </script>
+</body>
+</html>
+
+

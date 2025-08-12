@@ -1,0 +1,1813 @@
+<!-- production.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Production — How We Build Your Perfect Blend</title>
+
+  <!--
+    Place these images (or your own) at:
+      /images/production/brew-lab_800.jpg, _1600.jpg
+      /images/production/loring-roaster_800.jpg, _1600.jpg
+      /images/production/blending-table_800.jpg, _1600.jpg
+      /images/production/minerals_800.jpg, _1600.jpg
+      /images/production/ai-dashboard_800.jpg, _1600.jpg
+      /images/production/packaging_800.jpg, _1600.jpg
+  -->
+
+  <style>
+    :root{
+      --bg-primary:#FBFBFD;
+      --bg-secondary:#F5F5F7;
+      --text-primary:#1D1D1F;
+      --text-secondary:#6E6E73;
+      --accent:#0071E3;
+      --radius-xl:28px;
+      --radius-lg:20px;
+      --card-shadow:0 2px 18px rgba(0,0,0,.05),0 10px 26px rgba(0,0,0,.04);
+      --ease-apple:cubic-bezier(.4,0,.2,1);
+      --font-sans:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, system-ui, sans-serif;
+      --overlap: clamp(14px, 3vw, 32px);
+      --img-br: 22px;
+      --outline-inner:rgba(255,255,255,.5);
+      --outline-outer:rgba(0,0,0,.2);
+      --outline-inner-w:.5px;
+      --outline-outer-w:1px;
+    }
+
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{
+      font-family: var(--font-sans);
+      background: transparent;
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    .container{ max-width: 1080px; margin: 0 auto; padding: 40px 40px 80px; overflow-x: hidden; }
+    
+    @media (max-width: 920px) {
+      .container { 
+        padding: 28px 28px 48px; 
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .container { 
+        padding: 20px 20px 32px; 
+      }
+    }
+
+    /* ---------- Hero ---------- */
+    .hero{
+      text-align:center;
+      margin-bottom: 48px;
+      padding: 0;
+    }
+    
+    @media (max-width: 920px) {
+      .hero {
+        margin-bottom: 32px;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .hero {
+        margin-bottom: 24px;
+      }
+    }
+    .hero .eyebrow{
+      font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--text-secondary);
+      word-spacing: 0.05em;
+    }
+    .hero h1{
+      font-size: clamp(32px, 6vw, 56px);
+      line-height: 1.15;
+      letter-spacing: -0.005em;
+      margin: 8px 0 12px;
+      font-weight: 700;
+    }
+    .hero h1 em{
+      font-style: italic;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .hero p{
+      color: var(--text-secondary);
+      font-size: clamp(16px, 2.3vw, 20px);
+      max-width: 820px;
+      margin: 0 auto;
+      letter-spacing: 0.01em;
+      word-spacing: 0.05em;
+      line-height: 1.65;
+    }
+
+    /* ---------- Feature Bands (image + content, overlapped) ---------- */
+    .band{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(16px, 2.8vw, 28px);
+      align-items: center;
+      margin: clamp(42px, 6vw, 80px) 0;
+      position: relative;
+      max-width: 100%;
+    }
+    .band.reverse{ grid-template-columns: 1fr 1fr; }
+    .band.reverse .media{ order:2; }
+    .band.reverse .content{ order:1; }
+
+    .media{ position:relative; overflow:visible; max-width: 100%; z-index: 1; }
+    .image-plate{
+      position:relative;
+      border-radius: var(--img-br);
+      padding: clamp(14px, 2.2vw, 22px);
+      background: linear-gradient(140deg, #fff 0%, #f7f8fb 60%, #eef2ff 100%);
+      box-shadow: 0 1px 0 rgba(0,0,0,.02), 0 12px 28px rgba(37,63,116,.08);
+      overflow: hidden; /* Prevent content from expanding container */
+      max-width: 100%;
+    }
+    .image-plate img{
+      width:100%; height:auto; display:block; border-radius: calc(var(--img-br) - 6px);
+      box-shadow: 0 14px 36px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.06);
+      transform: translateZ(0);
+    }
+    .band .content{ margin-left: calc(var(--overlap) * -1); }
+    .band.reverse .content{ margin-left: 0; margin-right: calc(var(--overlap) * -1); }
+
+    .card{
+      background:#fff; border-radius: var(--radius-xl);
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: var(--card-shadow);
+      padding: clamp(24px, 3.2vw, 32px);
+      position: relative;
+      z-index: 10;
+    }
+    .eyebrow{
+      font-size: 12px; font-weight: 800; letter-spacing:.06em; text-transform: uppercase;
+      color: var(--text-secondary);
+      word-spacing: 0.05em;
+    }
+    .band h3{
+      font-size: clamp(22px, 3.6vw, 32px);
+      line-height: 1.2; letter-spacing: -0.005em; margin: 6px 0 8px;
+    }
+    .band p{ color: var(--text-secondary); font-size: 16px; }
+
+    /* ---------- Mini inline nav ---------- */
+    .mini-nav{ display:flex; gap:14px; justify-content:center; align-items:center; margin:-6px 0 22px; color: var(--text-secondary); }
+    .mini-nav a{ color: var(--text-primary); text-decoration:none; font-weight:600; font-size:14px; padding:6px 10px; border-radius:999px; }
+    .mini-nav a:hover{ background: var(--bg-secondary); }
+
+    /* ---------- Mini blog snippet helpers ---------- */
+    .snippet-meta{
+      font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+      color: var(--text-secondary); margin-bottom: 10px;
+      word-spacing: 0.03em;
+    }
+    .note{
+      margin-top: 12px; padding: 12px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid rgba(0,0,0,.06);
+      border-left: 3px solid var(--accent);
+      border-radius: 14px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    details.read-more{
+      margin-top: 12px; border-top: 1px dashed rgba(0,0,0,.12); padding-top: 10px;
+    }
+    details.read-more > summary{
+      cursor: pointer; list-style: none; user-select: none;
+      font-weight: 700; font-size: 14px; color: var(--text-primary);
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    details.read-more > summary::after{
+      content: "▾"; transform: translateY(-1px); opacity:.7;
+    }
+    details[open].read-more > summary::after{ content:"▴"; }
+    details.read-more p, details.read-more ul{ margin-top: 8px; }
+
+    .bullet-chips{ display:none; }
+    .micro{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; color: var(--text-secondary); }
+
+    /* ---------- Compact DS code preview ---------- */
+    .code-preview{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px; line-height: 1.5;
+      background: #0f1115; color: #e6edf3;
+      border-radius: 12px; padding: 12px 14px; margin-top: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 10px 26px rgba(0,0,0,.20);
+      overflow: auto; max-height: 180px;
+    }
+
+    /* ---------- Data report embed ---------- */
+    .data-embed{ margin-top: 12px; border: 1px solid rgba(0,0,0,.06); border-radius: 14px; box-shadow: var(--card-shadow); overflow:hidden; background:#fff; }
+    .data-embed iframe{ display:block; width:100%; height:min(60vh,560px); border:0; background:#fff; }
+
+    /* ---------- Blend donut overlay ---------- */
+    .blend-viz{ position:absolute; right:14px; top:14px; display:grid; gap:8px; justify-items:end; z-index:2; }
+    .blend-viz .donut{ width:132px; height:132px; filter: drop-shadow(0 6px 16px rgba(0,0,0,.15)); }
+    .blend-viz .ring{ fill:none; stroke:#EEF1F5; stroke-width:12; }
+    .blend-viz .seg{ fill:none; stroke-width:12; stroke-linecap:butt; transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0 276.46; }
+    .blend-viz .seg-a{ stroke:#0071E3; }
+    .blend-viz .seg-b{ stroke:#2FBF71; }
+    .blend-viz .seg-c{ stroke:#C89E5B; }
+    .blend-viz .pct{ font-family: var(--font-sans); font-size: 12px; font-weight: 800; fill:#1D1D1F; }
+
+    /* Blend graph */
+    .blend-graphic { width: 100%; display: grid; gap: 10px; }
+    .blend-svg { width: 100%; height: auto; display: block; }
+
+    /* Donut segment styling */
+    .blend-seg { transition: opacity .28s var(--ease-apple), transform .28s var(--ease-apple); opacity: .92; }
+    .blend-seg.dim { opacity: .28; }
+    .blend-seg.active { opacity: 1; transform: translateY(-1px); }
+
+    /* Legend */
+    .legend-wrap { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: center; }
+    .legend-btn {
+      appearance: none; border:1px solid rgba(0,0,0,.08); background:#fff; color:var(--text-primary);
+      padding:8px 12px; border-radius: 999px; font-weight: 800; font-size: 12px; letter-spacing:.02em;
+      display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      transition: transform .18s var(--ease-apple), box-shadow .18s var(--ease-apple), border-color .18s var(--ease-apple);
+    }
+    .legend-swatch {
+      width: 12px; height: 12px; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+    }
+    .legend-btn:hover, .legend-btn:focus-visible { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,.10); outline: none; }
+    .legend-btn[aria-pressed="true"] { border-color: var(--accent); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .blend-seg { transition: none; }
+      .legend-btn { transition: none; }
+    }
+
+    /* Code runner shell */
+    .code-runner { display: grid; gap: 12px; }
+    .code-header {
+      display:flex; align-items:center; gap:10px; padding:10px 12px;
+      border:1px solid rgba(0,0,0,.06); border-radius:12px; background:#fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    }
+    .code-header .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+    .code-header .red{ background:#ff5f57; } .code-header .yellow{ background:#febc2e; } .code-header .green{ background:#28c840; }
+    .code-header .title{ font-weight:800; font-size:12px; color:var(--text-secondary); margin-left:auto; }
+    .btn { border:1px solid rgba(0,0,0,.08); background:#fff; border-radius:999px; padding:8px 14px; font-weight:800; font-size:12px; cursor:pointer; }
+    .btn.tiny { padding:6px 10px; font-size:11px; }
+    .btn:hover { box-shadow: 0 4px 14px rgba(0,0,0,.08); transform: translateY(-1px); }
+
+    .code-box {
+      background: linear-gradient(140deg, #0b1220 0%, #0f1630 60%, #0b1a3a 100%);
+      color:#A9B7C6; border-radius:16px; padding:18px;
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03), 0 14px 32px rgba(20,28,68,.35);
+      min-height: 220px; white-space: pre; overflow-y:auto; overflow-x:hidden; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      position: relative;
+      line-height: 1.5;
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      scroll-behavior: smooth;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Custom scrollbar for better mobile experience */
+    .code-box::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    .code-box::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+    }
+    
+    .code-box::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+    
+    .code-box::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* PyCharm Darcula-inspired syntax highlighting */
+    .code-box .keyword { color: #CC7832; font-weight: 500; }
+    .code-box .builtin { color: #8888C6; }
+    .code-box .string { color: #6A8759; }
+    .code-box .comment { color: #808080; font-style: italic; }
+    .code-box .number { color: #6897BB; }
+    .code-box .decorator { color: #BBB529; }
+    .code-box .function { color: #FFC66D; }
+    .code-box .classname { color: #A9B7C6; }
+    
+    /* Inherit font size from container for AI section */
+    section[aria-labelledby="ai-h"] .code-box span {
+      font-size: inherit;
+      display: inline;
+      max-width: 100%;
+      overflow-wrap: normal;
+    }
+    .caret { display:inline-block; width:8px; background:#28C840; margin-left:2px; height:1.2em; transform: translateY(3px); animation: blink 1s step-end infinite; }
+    
+    /* Ensure caret stays visible in AI section */
+    section[aria-labelledby="ai-h"] .code-box .caret {
+      height: 1em;
+      width: 6px;
+      transform: translateY(1px);
+      margin-left: 1px;
+      vertical-align: baseline;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .runbar { display:flex; align-items:center; gap:10px; }
+    .status { font-size:12px; color:var(--text-secondary); }
+
+    /* Fade transition for code box */
+    .code-box { transition: opacity .45s var(--ease-apple), transform .45s var(--ease-apple); }
+    .code-box.faded { opacity: 0; transform: translateY(-4px); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .code-box, .result-grid { transition: none !important; }
+    }
+
+    /* --- Blend Builder Styles --- */
+    .blend-builder {
+      width: 100%;
+      aspect-ratio: auto; /* Disable aspect ratio for fixed height */
+      background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0f1419 100%);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.5s ease;
+      min-height: 350px;
+      max-height: 480px;
+      padding: 8px;
+      gap: 8px;
+    }
+    
+    /* Style the code-header inside blend-builder */
+    .blend-builder .code-header {
+      flex-shrink: 0;
+    }
+    
+    /* Ensure blend builder in image-plate has fixed dimensions */
+    .image-plate .blend-builder {
+      height: 380px !important; /* Fixed height */
+      min-height: 380px;
+      max-height: 480px;
+    }
+    
+    @media (max-width: 920px) {
+      .blend-builder {
+        border-radius: 0;
+        min-height: 340px;
+        width: 100%;
+        padding: 0;
+        opacity: 0;
+        animation: fadeInBuilder 0.5s ease-out forwards;
+        animation-delay: 0.15s;
+      }
+      
+      @keyframes fadeInBuilder {
+        to { opacity: 1; }
+      }
+      
+      .blend-builder .code-header {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        background: rgba(255,255,255,0.03);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      
+      .image-plate .blend-builder {
+        width: 100%;
+        height: 340px !important; /* Fixed height on mobile */
+        min-height: 340px;
+        max-height: 450px;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .image-plate .blend-builder {
+        height: 320px !important; /* Fixed height on small mobile */
+      }
+    }
+    
+    /* Removed unused styles for builder-header, status-indicator, and model-stats */
+    
+    .synthesis-workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 150px 1fr 140px;
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 1px;
+      overflow: hidden;
+      min-height: 0;
+      height: 100%;
+    }
+    
+    .data-panel {
+      background: rgba(15,20,25,0.95);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    
+    .data-panel h4, .forest-visualization h4, .data-stream h4 {
+      font-size: 11px;
+      font-weight: 600;
+      color: #FFC66D;
+      margin: 0 0 8px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      word-spacing: 0.02em;
+    }
+    
+    .data-stream h4 {
+      margin: 0 0 6px 0;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+    
+    .feature-matrix {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 12px;
+    }
+    
+    .feature-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .feature-name {
+      font-size: 9px;
+      color: #808080;
+      width: 65px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .feature-importance {
+      flex: 1;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    
+    .importance-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0A84FF 0%, #28C840 100%);
+      width: 0%;
+      transition: width 0.6s ease;
+    }
+    
+    /* metrics styles removed */
+    
+    .forest-visualization {
+      background: rgba(15,20,25,0.95);
+      padding: 10px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .user-analysis {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .analysis-item {
+      background: rgba(255,255,255,0.03);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .analysis-item .label {
+      display: block;
+      font-size: 9px;
+      color: #808080;
+      margin-bottom: 2px;
+    }
+    
+    .analysis-item .value {
+      display: block;
+      font-size: 12px;
+      color: #A9B7C6;
+      font-weight: 600;
+    }
+    
+    .synthesis-output {
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-top: 8px;
+    }
+    
+    .blend-formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+      color: #6A8759;
+      margin: 6px 0;
+      line-height: 1.3;
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-height: 80px;
+      white-space: pre;
+    }
+    
+    .confidence-score {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    
+    .confidence-score .label {
+      font-size: 9px;
+      color: #808080;
+    }
+    
+    .confidence-bar {
+      flex: 1;
+      height: 5px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .confidence-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #FF6B6B 0%, #FFE66D 50%, #28C840 100%);
+      transition: width 0.8s ease;
+    }
+    
+    .confidence-score .percentage {
+      font-size: 11px;
+      color: #6897BB;
+      font-weight: 600;
+      width: 30px;
+      text-align: right;
+    }
+    
+    .data-stream {
+      background: rgba(15,20,25,0.95);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 0;
+    }
+    
+    .stream-container {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .data-log {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 8px;
+      color: #6A8759;
+      line-height: 1.25;
+      white-space: pre-wrap;
+      margin: 0;
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    
+    .data-log .timestamp {
+      color: #808080;
+    }
+    
+    .data-log .feature {
+      color: #FFC66D;
+    }
+    
+    .data-log .value {
+      color: #6897BB;
+    }
+    
+    @media (max-width: 920px) {
+      .synthesis-workspace {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto; /* let sections size to content */
+        border-radius: 0;
+        width: 100%;
+      }
+      .data-panel {
+        order: 1;
+        padding: 16px;
+      }
+      .forest-visualization {
+        order: 2;
+      }
+      .data-stream {
+        order: 3;
+        max-height: none; /* allow full height */
+        padding: 16px;
+      }
+    }
+
+    /* Constrain AI section to prevent expansion */
+    section.band[aria-labelledby="ai-h"] {
+      overflow: hidden !important;
+      max-width: 100%;
+      position: relative;
+    }
+    
+    section[aria-labelledby="ai-h"] .media {
+      overflow: hidden !important;
+      max-width: 100%;
+    }
+    
+    section[aria-labelledby="ai-h"] .image-plate {
+      max-width: 100%;
+      overflow: hidden !important;
+      position: relative;
+    }
+    
+    /* --- Data band sizing: fixed height code viewport --- */
+    section[aria-labelledby="ai-h"] .image-plate .code-runner{
+      width: 100%;
+      max-width: 100%; /* Prevent expansion */
+      height: 380px !important; /* Fixed height matching blend feature */
+      aspect-ratio: auto; /* Disable aspect ratio to ensure fixed height */
+      background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0f1419 100%);
+      border-radius: 16px;
+      overflow: hidden !important; /* Force hide all overflow */
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.5s ease;
+      max-height: 480px;
+      padding: 8px;
+      gap: 8px;
+      box-sizing: border-box;
+      flex-shrink: 0; /* Don't shrink */
+      flex-grow: 0; /* Don't grow */
+    }
+    section[aria-labelledby="ai-h"] .image-plate .code-header{ 
+      padding:8px 10px; 
+      flex-shrink: 0;
+    }
+    section[aria-labelledby="ai-h"] .image-plate .code-box{ 
+      flex: 1;
+      min-height: 0;
+      padding: 12px 12px 20px 12px; /* Extra bottom padding for cursor visibility */
+      overflow-y: auto; /* Allow programmatic scrolling */
+      overflow-x: hidden !important; /* Force hide horizontal overflow */
+      max-height: none;
+      max-width: 100%; /* Constrain width */
+      background: linear-gradient(140deg, #0b1220 0%, #0f1630 60%, #0b1a3a 100%);
+      margin: 0;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      font-size: 10px;
+      line-height: 1.3;
+      /* Prevent user scrolling but allow programmatic */
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: auto;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+      /* Prevent text selection to avoid drag scrolling */
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      /* Disable touch scrolling */
+      touch-action: none;
+      /* Instant scrolling for typing animation */
+      scroll-behavior: auto !important;
+      /* Prevent width expansion */
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    section[aria-labelledby="ai-h"] .image-plate .code-box::-webkit-scrollbar {
+      display: none;
+    }
+    
+    section[aria-labelledby="ai-h"] .image-plate .code-box code {
+      display: block;
+      white-space: pre;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      overflow-x: hidden !important; /* Prevent horizontal expansion */
+      max-width: 100%;
+      word-break: normal; /* Don't break words */
+      overflow-wrap: normal; /* Don't wrap */
+    }
+
+    @media (max-width: 920px){
+      /* Full width code runner */
+      section[aria-labelledby="ai-h"] .image-plate {
+        background: transparent;
+        box-shadow: none;
+      }
+      
+      section[aria-labelledby="ai-h"] .image-plate .code-runner{ 
+        height: 340px !important; /* Fixed height on mobile matching blend feature */
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        aspect-ratio: auto; /* Remove aspect ratio on mobile */
+      }
+      
+      section[aria-labelledby="ai-h"] .image-plate .code-box {
+        font-size: 10px; /* Smaller font for mobile */
+        padding: 12px 16px;
+        line-height: 1.35;
+        border-radius: 0;
+        overflow-y: auto; /* Allow programmatic scrolling on mobile too */
+        overflow-x: hidden;
+        flex: 1; /* Fill available space in fixed viewport */
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      
+      section[aria-labelledby="ai-h"] .image-plate .code-box::-webkit-scrollbar {
+        display: none;
+      }
+      
+      section[aria-labelledby="ai-h"] .image-plate .code-header {
+        font-size: 11px;
+        padding: 8px 16px;
+        border-radius: 0;
+      }
+      
+      /* Make dots smaller on mobile */
+      section[aria-labelledby="ai-h"] .code-header .dot {
+        width: 10px;
+        height: 10px;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      section[aria-labelledby="ai-h"] .image-plate .code-runner {
+        height: 320px !important; /* Even smaller on very small screens matching blend feature */
+      }
+      
+      section[aria-labelledby="ai-h"] .image-plate .code-box {
+        font-size: 9px;
+        padding: 10px 10px 15px 10px; /* Extra bottom padding for cursor */
+        line-height: 1.25;
+      }
+      
+      /* Hide overflow more aggressively on small screens */
+      section[aria-labelledby="ai-h"] .image-plate {
+        max-height: 400px;
+        overflow: hidden;
+      }
+    }
+
+    /* ---------- Gallery strip ---------- */
+    .gallery{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px; margin: 42px 0 18px;
+    }
+    .gallery .stack{ display:grid; grid-template-rows: 1fr 1fr; gap:16px; }
+    .gallery .tile{
+      position:relative; border-radius: var(--img-br); overflow:hidden;
+      box-shadow: 0 12px 28px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.06);
+    }
+    .gallery img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    @media (max-width: 920px){
+      .band{ 
+        grid-template-columns: 1fr !important; 
+        gap: 24px;
+        padding: 32px 0; /* Remove horizontal padding for full width */
+      }
+      
+      /* Full width media on mobile */
+      .band .media {
+        margin: 0;
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        order: 1 !important; /* Always show media first */
+      }
+      
+      .band .content{ 
+        margin: 0;
+        padding: 24px; /* equal top/bottom and sides on tablets */
+        order: 2 !important; /* Always show content second */
+      }
+      
+      /* Override reverse band ordering on mobile */
+      .band.reverse .content { 
+        order: 2 !important;
+      }
+      .band.reverse .media { 
+        order: 1 !important;
+      }
+      
+      /* Full width image plates */
+      .image-plate {
+        border-radius: 0;
+        padding: 0;
+      }
+      
+      .image-plate img {
+        border-radius: 0;
+        width: 100%;
+        height: auto;
+      }
+      
+      /* Better mobile card styling */
+      .card {
+        border-radius: 16px;
+        padding: 36px 34px;
+        margin: 0 24px; /* more space from screen edge on tablets */
+        box-shadow: 0 8px 20px rgba(0,0,0,.08);
+      }
+      
+      .gallery{ grid-template-columns: 1fr; padding: 0 16px; }
+      
+      /* Better mobile text sizes */
+      .band h3 {
+        font-size: 24px;
+        margin-bottom: 16px;
+        line-height: 1.3;
+      }
+      .band p {
+        font-size: 16px;
+        line-height: 1.65;
+        letter-spacing: -0.01em;
+      }
+      .eyebrow {
+        font-size: 11px;
+        margin-bottom: 10px;
+        letter-spacing: 0.15em;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .band {
+        padding: 24px 0;
+        gap: 24px;
+      }
+      
+      .band .content {
+        margin: 0;
+        padding: 20px; /* equal top/bottom and sides on phones */
+      }
+      
+      .card {
+        padding: 32px 26px;
+        margin: 0 18px; /* more space from screen edge on phones */
+      }
+      
+      .band h3 {
+        font-size: 22px;
+        line-height: 1.25;
+      }
+      .band p {
+        font-size: 15px;
+        line-height: 1.6;
+      }
+    }
+
+    /* ---------- CTA ---------- */
+    .cta{ text-align:center; margin: 40px 0 0; padding: 0; }
+    .cta h4{ font-size: clamp(22px, 3.4vw, 30px); margin-bottom: 10px; }
+    .cta p{ color: var(--text-secondary); max-width: 700px; margin: 0 auto 18px; }
+    
+    @media (max-width: 920px) {
+      .cta { 
+        margin: 40px 0 0; 
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .cta { 
+        margin: 32px 0 0; 
+      }
+    }
+    .btn-primary{
+      display: inline-block;
+      background: #0071E3;
+      color: white;
+      padding: 16px 32px;
+      border-radius: 980px;
+      font-size: 17px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover{ 
+      transform: translateY(-2px); 
+      box-shadow: 0 8px 24px rgba(0,113,227,0.3); 
+    }
+    
+    /* Micro CTAs */
+    .micro-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-top: 16px;
+      transition: gap 0.2s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .micro-cta:hover {
+      gap: 10px;
+      transform: translateX(2px);
+    }
+    
+    .micro-cta:active {
+      transform: translateX(0);
+    }
+
+    /* ---------- Reveal ---------- */
+    .reveal{ opacity: 0; transform: translateY(18px); transition: all .6s var(--ease-apple); }
+    .reveal.on{ opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce){
+      .reveal{ opacity: 1; transform: none; transition: none; }
+    }
+    
+    /* Mobile-optimized reveal animation */
+    @media (max-width: 920px) {
+      .reveal { 
+        transform: translateY(12px); 
+        transition: all .4s var(--ease-apple);
+      }
+    }
+    
+    /* Smooth image loading */
+    img {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <link rel="preload" as="image" href="Grind%20Size%20Partially%20Revised.png" imagesrcset="Grind%20Size%20Partially%20Revised.png 1200w" imagesizes="100vw">
+  <main class="container">
+    <!-- HERO -->
+    <header class="hero reveal">
+      <div class="eyebrow">The Science of Perfect Coffee</div>
+      <h1>Your coffee, <em>perfected</em> by technology</h1>
+      <p>Discover how master roasters and machine learning create your ideal cup. From dripper-specific recipes to AI-powered blending, every element is precisely calibrated to your taste preference. This is coffee's future, delivered today.</p>
+
+    </header>
+
+    <!-- NOTE: Promise grid has been removed per request. Content folded below. -->
+
+    <!-- BAND 1: Brew Lab -->
+    <section class="band reveal" aria-labelledby="brew-lab-h">
+      <div class="media">
+        <figure class="image-plate">
+          <picture>
+            <source srcset="https://djd1xqjx2kdnv.cloudfront.net/photos/36/74/488891_18675_XXL.jpg" media="(min-width: 900px)"/>
+            <img src="https://djd1xqjx2kdnv.cloudfront.net/photos/36/74/488891_18675_XXL.jpg" alt="Pour-over coffee dripper comparison showing various brewing methods" loading="lazy" width="1200" height="675"/>
+          </picture>
+        </figure>
+      </div>
+      <div class="content card">
+        <div class="eyebrow">Method Mastery</div>
+        <h3 id="brew-lab-h">Your dripper. Your recipe. Perfected.</h3>
+        <p>Whether you use a V60 or a Chemex, we calibrate recipes for your exact setup. Each box includes 15 pre-dosed cups, with every dose weighed and ground for your equipment so brews land in the ideal window. You also get clear, dripper-specific instructions that work even without specialized gear.</p>
+      </div>
+    </section>
+
+    <!-- BAND 2: Loring Roast -->
+    <section class="band reverse reveal" aria-labelledby="loring-h">
+      <div class="media">
+        <figure class="image-plate">
+          <picture>
+            <source srcset="https://cdn.shopify.com/s/files/1/1510/0358/files/Risteri_6_1.gif?v=1717664303" media="(min-width: 900px)"/>
+            <img src="https://cdn.shopify.com/s/files/1/1510/0358/files/Risteri_6_1.gif?v=1717664303" alt="Loring roaster during production roast (animated)" loading="lazy" width="1200" height="800"/>
+          </picture>
+        </figure>
+      </div>
+            <div class="content card">
+        <div class="eyebrow">Craft Roasting</div>
+        <h3 id="loring-h">Watch your blend come to life</h3>
+        <p>See the magic happen—our Loring roaster transforms green coffee into your perfect cup. With real-time curve monitoring and locked profiles, every batch delivers the exact sweetness and clarity you love. Consistency you can taste, batch after batch.</p>
+      </div>
+    </section>
+
+    <!-- BAND 3: Blending to Target -->
+    <section class="band reveal" aria-labelledby="blend-h">
+      <div class="media">
+        <figure class="image-plate">
+          <!-- Blend Feature Synthesizer -->
+          <div class="blend-builder" id="blendBuilder" aria-label="AI blend synthesis visualization">
+            <div class="code-header">
+              <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+              <span class="title">blend_feature_synthesizer.py</span>
+            </div>
+            
+            <div class="synthesis-workspace">
+              <div class="data-panel">
+                <h4>Feature Analysis</h4>
+                <div class="feature-matrix">
+                  <!-- Feature importance bars -->
+                </div>
+                <!-- metrics removed by request -->
+              </div>
+              
+              <div class="forest-visualization">
+                <div class="synthesis-output">
+                  <h4>Optimal Blend Synthesis</h4>
+                  <div class="user-analysis">
+                    <div class="analysis-item">
+                      <span class="label">Profile Type</span>
+                      <span class="value" id="profileType">Analyzing...</span>
+                    </div>
+                    <div class="analysis-item">
+                      <span class="label">Flavor Match</span>
+                      <span class="value" id="flavorMatch">0%</span>
+                    </div>
+                  </div>
+                  <div class="blend-formula"></div>
+                  <div class="confidence-score">
+                    <span class="label">Confidence</span>
+                    <div class="confidence-bar">
+                      <div class="confidence-fill"></div>
+                    </div>
+                    <span class="percentage">0%</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="data-stream">
+                <h4>Data Stream</h4>
+                <div class="stream-container">
+                  <pre class="data-log"></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+            <div class="content card">
+        <div class="eyebrow">Smart Blending</div>
+        <h3 id="blend-h">Your feedback drives every blend decision</h3>
+        <p>Love it stronger? Prefer less acidity? Just tell us. Our AI synthesizer learns from every rating, comment, and brewing note you share. Watch as your blend evolves box by box—getting closer to perfection with each delivery. It's like having a personal roaster who actually listens.</p>
+      </div>
+    </section>
+
+    <!-- BAND 4: Mineral Integration -->
+    <section class="band reverse reveal" aria-labelledby="minerals-h">
+      <div class="media">
+        <figure class="image-plate">
+          <picture>
+            <source srcset="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv57RqojPEWXiusQhOGIbugh9CqTcdpBIi5w&s" media="(min-width: 900px)"/>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv57RqojPEWXiusQhOGIbugh9CqTcdpBIi5w&s" alt="Mineral integration with coffee for balanced extraction" loading="lazy" width="1200" height="800"/>
+          </picture>
+        </figure>
+      </div>
+            <div class="content card">
+        <div class="eyebrow">Water Chemistry</div>
+        <h3 id="minerals-h">Pre-mineralized for perfect extraction</h3>
+        <p>Bad water ruins great coffee. That's why we pre-integrate the exact minerals your blend needs. Just add distilled water and unlock flavors you've been missing—vibrant sweetness, clean finish, zero bitterness. It's chemistry made simple.</p>
+      </div>
+    </section>
+
+    <!-- BAND 5: Data & AI -->
+    <section class="band reveal" aria-labelledby="ai-h">
+      <div class="media">
+        <figure class="image-plate">
+          <!-- Non-interactive code typing + PNG load -->
+          <div class="code-runner" id="dataCodeTyper" aria-label="Code typing then visualization">
+            <div class="code-header">
+              <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+              <span class="title">coffee_feature_engineering.py</span>
+            </div>
+
+            <pre class="code-box" aria-live="off"><code id="pyCodeData"></code><span class="caret" aria-hidden="true"></span></pre>
+
+            <!-- Python code for typing animation -->
+            <script type="text/plain" class="pycell">
+class CoffeeFeatureVisualizer:
+    """Visualize engineered coffee features and their relationships."""
+    
+    def __init__(self, original_df, engineered_df):
+        self.original_df = original_df
+        self.engineered_df = engineered_df
+        
+    def plot_engineered_distributions(self, n_cols=4):
+        """Plot distributions of engineered features"""
+        # Get new engineered features
+        new_features = set(self.engineered_df.columns) - set(self.original_df.columns)
+        new_features = sorted(list(new_features))
+        
+        # Calculate number of rows needed
+        n_rows = (len(new_features) + n_cols - 1) // n_cols
+        
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(20, 5*n_rows))
+        axes = axes.ravel()
+        
+        for idx, feature in enumerate(new_features):
+            sns.histplot(data=self.engineered_df, x=feature, kde=True, ax=axes[idx])
+            axes[idx].set_title(f'{feature} Distribution')
+            axes[idx].tick_params(axis='x', rotation=45)
+        
+        # Hide empty subplots
+        for idx in range(len(new_features), len(axes)):
+            axes[idx].set_visible(False)
+            
+        plt.tight_layout()
+        plt.show()
+        
+    def plot_correlation_heatmap(self):
+        """Plot correlation heatmap of engineered features"""
+        plt.figure(figsize=(15, 12))
+        new_features = set(self.engineered_df.columns) - set(self.original_df.columns)
+        new_features = sorted(list(new_features))
+        correlation_matrix = self.engineered_df[new_features].corr()
+        
+        sns.heatmap(correlation_matrix,
+                   annot=True,
+                   cmap='coolwarm',
+                   fmt='.2f',
+                   center=0)
+        plt.title('Correlation Matrix of Engineered Features')
+        plt.xticks(rotation=45, ha='right')
+        plt.yticks(rotation=0)
+        plt.tight_layout()
+        plt.show()
+        
+    def plot_target_relationships(self, target='Optimal_Grind_Size'):
+        """Plot relationships between engineered features and target"""
+        new_features = set(self.engineered_df.columns) - set(self.original_df.columns)
+        new_features = sorted(list(new_features))
+        
+        n_cols = 3
+        n_rows = (len(new_features) + n_cols - 1) // n_cols
+        
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(15, 5*n_rows))
+        axes = axes.ravel()
+        
+        for idx, feature in enumerate(new_features):
+            sns.scatterplot(data=self.engineered_df, 
+                          x=feature, 
+                          y=target, 
+                          alpha=0.5,
+                          ax=axes[idx])
+            axes[idx].set_title(f'{feature} vs {target}')
+            axes[idx].tick_params(axis='x', rotation=45)
+        
+        # Hide empty subplots
+        for idx in range(len(new_features), len(axes)):
+            axes[idx].set_visible(False)
+            
+        plt.tight_layout()
+        plt.show()
+        
+    def plot_3d_relationships(self, features=None):
+        """Plot 3D relationships between selected engineered features"""
+        if features is None:
+            new_features = set(self.engineered_df.columns) - set(self.original_df.columns)
+            features = list(new_features)[:3]  # Take first three new features
+            
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        scatter = ax.scatter(self.engineered_df[features[0]],
+                           self.engineered_df[features[1]],
+                           self.engineered_df[features[2]],
+                           c=self.engineered_df['Optimal_Grind_Size'],
+                           cmap='viridis')
+        ax.set_xlabel(features[0])
+        ax.set_ylabel(features[1])
+        ax.set_zlabel(features[2])
+        plt.colorbar(scatter, label='Optimal Grind Size')
+        plt.title('3D Relationship Between Engineered Features')
+        plt.tight_layout()
+        plt.show()
+
+    def plot_all(self):
+        """Generate all visualizations"""
+        print("1. Distributions of Engineered Features")
+        self.plot_engineered_distributions()
+        
+        print("\n2. Correlation Heatmap of Engineered Features")
+        self.plot_correlation_heatmap()
+        
+        print("\n3. Relationships with Target Variable")
+        self.plot_target_relationships()
+        
+        print("\n4. 3D Relationships")
+        self.plot_3d_relationships()
+
+# Create and use the visualizer
+visualizer = CoffeeFeatureVisualizer(train_df, train_df_engineered)
+visualizer.plot_all()
+
+# Additional pairplot for key engineered features
+key_features = ['extraction_intensity', 'water_mineral_index', 
+                'density_moisture_ratio', 'extraction_efficiency', 
+                'Optimal_Grind_Size']
+g = sns.pairplot(train_df_engineered[key_features])
+g.fig.suptitle('Relationships Between Key Engineered Features', y=1.02)
+plt.show()
+            </script>
+          </div>
+        </figure>
+      </div>
+      <div class="content card">
+        <div class="eyebrow">Machine Learning</div>
+        <h3 id="ai-h">Your coffee gets smarter with every cup</h3>
+        <p>See the code that powers your perfect brew. Our algorithms analyze grind size, extraction time, and your feedback to optimize every parameter. Like having a data scientist and barista working together—constantly fine-tuning your morning ritual.</p>
+      </div>
+    </section>
+
+
+
+    <!-- CTA -->
+    <section class="cta reveal">
+      <h4>Stop settling for mediocre coffee</h4>
+      <p>Join thousands of coffee lovers. Subscribe to receive 15 personalized coffee pouches delivered to your door.</p>
+      <a class="btn-primary" href="../signup.html" data-nav="signup">Subscribe now</a>
+    </section>
+  </main>
+
+  <script>
+    // Simple reveal on scroll
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
+      });
+    }, {threshold:.15, rootMargin:'0px 0px -5% 0px'});
+    document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+    // Gentle page fade for seamless nav to signup
+    (function(){
+      function maxRadiusFrom(x, y){
+        const w = innerWidth, h = innerHeight;
+        const dx = Math.max(x, w - x), dy = Math.max(y, h - y);
+        return Math.hypot(dx, dy) + 20;
+      }
+      
+      // Handle all signup links (with or without data-nav)
+      document.addEventListener('click', (e)=>{
+        const link = e.target.closest('a[href*="signup.html"]');
+        if(!link) return;
+        
+        e.preventDefault();
+        
+        // Check if we're in an iframe
+        const inIframe = window !== window.parent;
+        
+        if (inIframe) {
+          // If in iframe, try multiple methods to navigate
+          try {
+            // Method 1: Try to access parent directly
+            window.parent.location.href = link.href;
+          } catch (e) {
+            try {
+              // Method 2: Use window.top
+              window.top.location.href = link.href;
+            } catch (e2) {
+              // Method 3: Use postMessage to communicate with parent
+              window.parent.postMessage({ 
+                type: 'navigate', 
+                href: link.href 
+              }, '*');
+              
+              // Method 4: As a last resort, open in current frame
+              // This will navigate the iframe itself, but parent should detect the URL change
+              setTimeout(() => {
+                window.location.href = link.href;
+              }, 100);
+            }
+          }
+        } else {
+          // For links with data-nav="signup", do the fancy transition
+          if(link.hasAttribute('data-nav') && link.getAttribute('data-nav') === 'signup') {
+            const x = e.clientX || (innerWidth/2);
+            const y = e.clientY || (innerHeight/2);
+            const overlay = document.createElement('div');
+            overlay.className = 'route-overlay';
+            overlay.style.cssText = `
+              position:fixed;inset:0;z-index:9999;pointer-events:none;
+              background:var(--bg-primary);clip-path:circle(0 at ${x}px ${y}px);
+              transition:clip-path .5s cubic-bezier(.4,0,.2,1), opacity .3s ease;
+            `;
+            document.body.appendChild(overlay);
+            requestAnimationFrame(()=>{
+              overlay.style.clipPath = `circle(${maxRadiusFrom(x,y)}px at ${x}px ${y}px)`;
+            });
+            setTimeout(()=>{ location.href = link.href; }, 420);
+          } else {
+            // For micro CTAs and other signup links, just navigate directly
+            location.href = link.href;
+          }
+        }
+      }, {passive:false});
+    })();
+  </script>
+
+  <script>
+  (function(){
+    const root = document.getElementById('dataCodeTyper');
+    if(!root) return;
+    
+    // Only run once per page load
+    if(root.dataset.initialized) return;
+    root.dataset.initialized = 'true';
+
+    // ------- Typing setup -------
+    const codeBox = root.querySelector('#pyCodeData');
+    const caret = root.querySelector('.caret');
+    const cell = root.querySelector('.pycell');
+    let fullCode = cell.textContent.replace(/\s+$/,'');
+    
+    // No truncation - we'll auto-scroll instead
+    
+    // Start typing when visible
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+
+    // Syntax highlighting function
+    function highlightPython(code) {
+      // Truncate very long lines to prevent container expansion
+      const isMobile = window.innerWidth <= 920;
+      const isSmallMobile = window.innerWidth <= 640;
+      const maxLineLength = isSmallMobile ? 50 : (isMobile ? 60 : 75); // Adjusted for viewport sizes
+      const lines = code.split('\n');
+      const truncatedCode = lines.map(line => {
+        if (line.length > maxLineLength) {
+          return line.substring(0, maxLineLength) + '...';
+        }
+        return line;
+      }).join('\n');
+      
+      // Define token patterns and their colors (PyCharm Darcula theme)
+      const tokens = [
+        // Keywords
+        { pattern: /\b(class|def|self|return|import|from|as|if|else|elif|for|while|in|and|or|not|True|False|None|pass|break|continue|try|except|finally|with|yield|lambda|global|nonlocal|del|is|raise|assert)\b/g, class: 'keyword' },
+        // Built-in functions
+        { pattern: /\b(print|len|range|enumerate|zip|map|filter|sorted|list|dict|set|tuple|str|int|float|bool|type|isinstance|hasattr|getattr|setattr|delattr|abs|min|max|sum|round|open|file|input|iter|next|id|help|dir|locals|globals|vars|eval|exec|compile|__init__|__name__|__main__|super)\b/g, class: 'builtin' },
+        // Strings (triple quotes first)
+        { pattern: /"""[\s\S]*?"""/g, class: 'string' },
+        { pattern: /'''[\s\S]*?'''/g, class: 'string' },
+        { pattern: /"(?:[^"\\]|\\.)*"/g, class: 'string' },
+        { pattern: /'(?:[^'\\]|\\.)*'/g, class: 'string' },
+        // Comments
+        { pattern: /#.*/g, class: 'comment' },
+        // Numbers
+        { pattern: /\b\d+\.?\d*\b/g, class: 'number' },
+        // Decorators
+        { pattern: /@\w+/g, class: 'decorator' },
+        // Function/method calls
+        { pattern: /(\w+)(?=\()/g, class: 'function' },
+        // Class names (capitalized)
+        { pattern: /\b[A-Z]\w*\b/g, class: 'classname' },
+      ];
+
+      let highlighted = truncatedCode;
+      
+      // First, replace all special characters with placeholders to preserve them
+      const placeholders = [];
+      highlighted = highlighted.replace(/[<>&]/g, (match) => {
+        const placeholder = `__PLACEHOLDER_${placeholders.length}__`;
+        placeholders.push(match === '<' ? '&lt;' : match === '>' ? '&gt;' : '&amp;');
+        return placeholder;
+      });
+
+      // Apply syntax highlighting
+      tokens.forEach(({ pattern, class: className }) => {
+        highlighted = highlighted.replace(pattern, (match) => `<span class="${className}">${match}</span>`);
+      });
+
+      // Restore special characters
+      placeholders.forEach((char, i) => {
+        highlighted = highlighted.replace(`__PLACEHOLDER_${i}__`, char);
+      });
+
+      return highlighted;
+    }
+
+    function startTyping(){
+      const isMobile = window.innerWidth <= 920;
+      const TYPE_MS_PER_CHAR = prefersReduced ? 0 : (isMobile ? 15 : 20); // Faster on mobile
+      // Accessibility: mute live region while animating
+      const pre = root.querySelector('.code-box');
+      if (pre) {
+        pre.setAttribute('aria-live', 'off');
+        
+        // Prevent user scrolling but allow programmatic
+        pre.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }, { passive: false });
+        
+        pre.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }, { passive: false });
+        
+        pre.addEventListener('keydown', (e) => {
+          // Prevent arrow keys, page up/down from scrolling
+          if([32, 33, 34, 35, 36, 37, 38, 39, 40].includes(e.keyCode)) {
+            e.preventDefault();
+          }
+        });
+      }
+      let i = 0;
+      let lastTime = Date.now();
+      
+      function step(){
+        const now = Date.now();
+        if(now - lastTime < TYPE_MS_PER_CHAR) {
+          requestAnimationFrame(step);
+          return;
+        }
+        lastTime = now;
+        
+        if(i >= fullCode.length){
+          caret.style.display='none';
+          // Apply final syntax highlighting
+          codeBox.innerHTML = highlightPython(fullCode);
+          // Re-enable polite announcements after typing
+          if (pre) pre.setAttribute('aria-live', 'polite');
+          
+          // After typing is done, load the PNG directly
+          setTimeout(()=>{
+            try{
+              const plate = root.closest('.image-plate');
+              if(!plate) {
+                console.warn('No image-plate found');
+                return;
+              }
+              const img = new Image();
+              img.alt = 'Visualization of optimal grind size relationships';
+              img.width = 1200; img.height = 800;
+              img.decoding = 'async';
+              img.loading = 'eager';
+              img.fetchPriority = 'high';
+              // Check if mobile for optimized styles
+              const isMobile = window.innerWidth <= 920;
+              // Start as absolute with 0 opacity for crossfade, avoid layout shift
+              img.style.cssText = `width:100%; height:100%; display:block; border-radius:calc(var(--img-br) - 6px); opacity:0; will-change: opacity; transition:opacity ${isMobile ? '.45s' : '.6s'} var(--ease-apple); position:absolute; inset:0; object-fit:contain;`;
+              
+              img.addEventListener('load', ()=>{
+                console.log('Image loaded, replacing code runner');
+                // First add the image on top of the code runner (absolute), lock container height
+                const codeRunner = plate.querySelector('.code-runner');
+                const plateHeight = plate.getBoundingClientRect().height;
+                plate.style.position = 'relative';
+                plate.style.height = plateHeight + 'px';
+                plate.appendChild(img);
+
+                // Crossfade
+                if(codeRunner) {
+                  const isMobile = window.innerWidth <= 920;
+                  codeRunner.style.transition = `opacity ${isMobile ? '.35s' : '.5s'} var(--ease-apple)`;
+                  // Begin crossfade on next frame to ensure styles applied
+                  requestAnimationFrame(() => {
+                    img.style.opacity = '1';
+                    codeRunner.style.opacity = '0';
+                  });
+                } else {
+                  requestAnimationFrame(() => { img.style.opacity = '1'; });
+                }
+
+                // After crossfade, replace code runner with static image without layout jump
+                const settleDelay = isMobile ? 420 : 600;
+                setTimeout(() => {
+                  if(codeRunner) codeRunner.remove();
+                  // Switch image to static flow sizing
+                  img.style.position = 'static';
+                  img.style.height = 'auto';
+                  img.style.inset = 'auto';
+                  img.style.objectFit = 'contain';
+                  // Smoothly transition container height to new image height
+                  const targetHeight = img.getBoundingClientRect().height || plateHeight;
+                  plate.style.transition = 'height .4s var(--ease-apple)';
+                  plate.style.height = targetHeight + 'px';
+                  // After height transition, clear inline height to allow responsiveness
+                  setTimeout(() => {
+                    plate.style.height = '';
+                    plate.style.transition = '';
+                  }, 420);
+                }, settleDelay);
+              });
+              
+              img.addEventListener('error', (e)=>{
+                console.error('Failed to load image:', e);
+              });
+              
+              img.src = 'Grind%20Size%20Partially%20Revised.png';
+              console.log('Attempting to load image:', img.src);
+            }catch(e){ 
+              console.error('Error in image replacement:', e);
+            }
+          }, prefersReduced ? 100 : 500);
+          return;
+        }
+        
+        i += 1; // Type only 1 character at a time for slowest speed
+        const currentCode = fullCode.slice(0, i);
+        // Add blinking cursor at the end
+        codeBox.innerHTML = highlightPython(currentCode) + '<span class="caret" aria-hidden="true"></span>';
+        
+        // Keep newest line visible while typing - auto-scroll to follow cursor
+        const codeBoxEl = root.querySelector('.code-box');
+        if(codeBoxEl) {
+          // Using a double requestAnimationFrame ensures the DOM has updated
+          // before we try to scroll.
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              // This reliably scrolls to the bottom of the content.
+              codeBoxEl.scrollTop = codeBoxEl.scrollHeight;
+            });
+          });
+        }
+        
+        // Add delay between characters for slower typing (50ms per character)
+        setTimeout(() => requestAnimationFrame(step), 50);
+      }
+      setTimeout(step, prefersReduced ? 0 : 200);
+    }
+    const io2 = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ 
+        if(e.isIntersecting){ 
+          io2.unobserve(root); 
+          // Respect reduced motion: skip typing and show image immediately
+          if (prefersReduced) {
+            try{
+              const plate = root.closest('.image-plate');
+              if(!plate) return;
+              const img = new Image();
+              img.alt = 'Visualization of optimal grind size relationships';
+              img.width = 1200; img.height = 800;
+              img.decoding = 'async';
+              img.loading = 'eager';
+              img.fetchPriority = 'high';
+              img.style.cssText = 'width:100%; height:auto; display:block; border-radius:calc(var(--img-br) - 6px);';
+              img.addEventListener('load', ()=>{
+                plate.innerHTML = '';
+                plate.appendChild(img);
+              });
+              img.src = 'Grind%20Size%20Partially%20Revised.png';
+            }catch(_){}
+          } else {
+            startTyping();
+          }
+        } 
+      });
+    }, {threshold:.25, rootMargin:'0px 0px -10% 0px'});
+    io2.observe(root);
+
+      })();
+  </script>
+
+  <!-- Blend Feature Synthesizer Animation -->
+  <script>
+  (function(){
+    const builder = document.getElementById('blendBuilder');
+    if(!builder) return;
+    
+    // Only run once
+    if(builder.dataset.initialized) return;
+    builder.dataset.initialized = 'true';
+    
+    // User-centric features for Blend Feature Synthesizer
+    const features = [
+      'morning_preference', 'flavor_intensity', 'sweetness_level', 'acidity_tolerance',
+      'brew_frequency', 'cup_size_avg', 'weekend_pattern', 'seasonal_shift',
+      'milk_preference', 'sugar_usage', 'time_of_day', 'energy_needs',
+      'taste_evolution', 'adventure_score', 'consistency_index', 'feedback_rate'
+    ];
+    
+    const profileTypes = [
+      "Morning Enthusiast", "Balanced Explorer", "Comfort Seeker",
+      "Adventure Drinker", "Routine Optimizer", "Flavor Chaser"
+    ];
+    
+    const coffeeData = [
+      { origin: "Ethiopia Yirgacheffe", optimal: 0.89, traits: "bright, floral" },
+      { origin: "Colombia Geisha", optimal: 0.92, traits: "complex, sweet" },
+      { origin: "Kenya AA", optimal: 0.87, traits: "bold, fruity" },
+      { origin: "Costa Rica Honey", optimal: 0.85, traits: "smooth, caramel" },
+      { origin: "Guatemala Antigua", optimal: 0.83, traits: "chocolate, balanced" }
+    ];
+    
+    let dataLog = [];
+    let currentAccuracy = 0;
+    let targetAccuracy = 0;
+    let currentProfileType = 0;
+    
+    function updateFeatureImportance() {
+      const matrix = builder.querySelector('.feature-matrix');
+      matrix.innerHTML = '';
+      
+      const isMobile = window.innerWidth <= 920;
+      const featureCount = isMobile ? 5 : 8; // Show fewer features on mobile, even lighter on phones
+      
+      // Show top features with random importance
+      features.slice(0, featureCount).forEach((feature, idx) => {
+        const importance = Math.random() * (isMobile ? 0.6 : 0.7) + 0.3;
+        const bar = document.createElement('div');
+        bar.className = 'feature-bar';
+        bar.innerHTML = `
+          <span class="feature-name">${feature}</span>
+          <div class="feature-importance">
+            <div class="importance-fill" style="width: 0%"></div>
+          </div>
+        `;
+        matrix.appendChild(bar);
+        
+        setTimeout(() => {
+          bar.querySelector('.importance-fill').style.width = (importance * 100) + '%';
+        }, idx * 100);
+      });
+    }
+    
+    function updateMetrics() {
+      // metrics removed
+      const confidencePercent = (currentAccuracy * 100).toFixed(1);
+      const confidenceText = builder.querySelector('.confidence-score .percentage');
+      if (confidenceText) confidenceText.textContent = confidencePercent + '%';
+    }
+    
+    function addDataLogEntry(entry) {
+      const log = builder.querySelector('.data-log');
+      const timestamp = new Date().toLocaleTimeString();
+      const container = builder.querySelector('.stream-container');
+      
+      // Calculate max entries based on available height
+      const containerHeight = container ? container.clientHeight : 200;
+      const lineHeight = 10; // 8px font * 1.25 line-height
+      const headerHeight = 25; // h4 height
+      const maxEntries = Math.floor((containerHeight - headerHeight) / lineHeight);
+      const entryLimit = Math.max(8, Math.min(maxEntries, 15)); // Between 8-15 entries
+      
+      dataLog.push(`<span class="timestamp">[${timestamp}]</span> ${entry}`);
+      if(dataLog.length > entryLimit) dataLog.shift();
+      
+      log.innerHTML = dataLog.join('\n');
+    }
+    
+    function synthesizeBlend() {
+      const formula = builder.querySelector('.blend-formula');
+      const confidenceFill = builder.querySelector('.confidence-fill');
+      const confidenceText = builder.querySelector('.confidence-score .percentage');
+      const profileTypeEl = document.getElementById('profileType');
+      const flavorMatchEl = document.getElementById('flavorMatch');
+      
+      // Update profile type
+      if(currentAccuracy > 0.3 && profileTypeEl.textContent === 'Analyzing...') {
+        profileTypeEl.textContent = profileTypes[currentProfileType];
+      }
+      
+      // Update flavor match
+      const flavorMatch = (currentAccuracy * 100).toFixed(0);
+      flavorMatchEl.textContent = flavorMatch + '%';
+      
+      // Generate optimal blend based on user features
+      const selectedCoffees = coffeeData
+        .sort((a, b) => b.optimal - a.optimal)
+        .slice(0, 3);
+      
+      let formulaText = '# Personalized blend for you\n';
+      formulaText += 'blend_components = [\n';
+      selectedCoffees.forEach((coffee, idx) => {
+        const percentage = idx === 0 ? 45 : idx === 1 ? 35 : 20;
+        formulaText += `  {"${coffee.origin}": ${percentage}, "notes": "${coffee.traits}"},\n`;
+      });
+      formulaText += ']\nprofile_match = ' + (currentAccuracy * 100).toFixed(1) + '%';
+      
+      formula.textContent = formulaText;
+      
+      // Animate confidence
+      setTimeout(() => {
+        const confidence = currentAccuracy * 100;
+        confidenceFill.style.width = confidence + '%';
+        confidenceText.textContent = confidence.toFixed(0) + '%';
+      }, 100);
+    }
+    
+    function processData() {
+      // Update accuracy incrementally
+      if(currentAccuracy < targetAccuracy) {
+        currentAccuracy += 0.008;
+        updateMetrics();
+        synthesizeBlend();
+      }
+      
+      // Continue processing
+      if(currentAccuracy < targetAccuracy) {
+        setTimeout(processData, 100);
+      }
+    }
+    
+    function startSynthesis() {
+      // Select a random profile type for this session
+      currentProfileType = Math.floor(Math.random() * profileTypes.length);
+      
+      // Start animations
+      updateFeatureImportance();
+      targetAccuracy = 0.94;
+      
+      // Add initial log entries
+      addDataLogEntry('Initializing Blend Feature Synthesizer...');
+      addDataLogEntry(`Loading <span class="feature">16 user preference features</span>`);
+      addDataLogEntry(`Analyzing <span class="value">6 months</span> of your coffee data`);
+      
+      // Periodic log updates with user-centric data
+      const userMetrics = [
+        'morning brew time: <span class="value">7:32 AM avg</span>',
+        'preferred strength: <span class="value">medium-strong</span>',
+        'weekend cups: <span class="value">2.3 avg</span>',
+        'flavor notes liked: <span class="value">chocolate, caramel</span>',
+        'acidity preference: <span class="value">low-medium</span>'
+      ];
+      
+      let metricIndex = 0;
+      setInterval(() => {
+        const feature = features[Math.floor(Math.random() * features.length)];
+        const value = (Math.random() * 100).toFixed(1);
+        
+        if(Math.random() > 0.5 && metricIndex < userMetrics.length) {
+          addDataLogEntry(`User data: ${userMetrics[metricIndex]}`);
+          metricIndex++;
+        } else {
+          addDataLogEntry(`Analyzing <span class="feature">${feature.replace(/_/g, ' ')}</span>: <span class="value">${value}%</span>`);
+        }
+        
+        if(Math.random() > 0.8) {
+          addDataLogEntry(`Feature importance update for <span class="feature">${feature.replace(/_/g, ' ')}</span>`);
+        }
+      }, 1500);
+      
+      processData();
+    }
+    
+    // Start when visible with mobile optimization
+    const isMobile = window.innerWidth <= 920;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          observer.unobserve(builder);
+          // Add slight delay on mobile for smoother loading and ensure reserved height
+          if (isMobile) {
+            builder.style.minHeight = builder.style.minHeight || '360px';
+          }
+          setTimeout(() => {
+            startSynthesis();
+          }, isMobile ? 320 : 100);
+        }
+      });
+    }, { 
+      threshold: isMobile ? 0.08 : 0.3, // Lower threshold on mobile
+      rootMargin: isMobile ? '120px' : '0px' // Start loading earlier on mobile
+    });
+    
+    observer.observe(builder);
+  })();
+  </script>
+</body>
+</html>
