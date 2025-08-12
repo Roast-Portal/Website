@@ -114,7 +114,23 @@
     .mini-pouch{position:relative; width:100%; aspect-ratio: 3 / 4; background:#0a0a0a; border-radius:10px; box-shadow:0 6px 14px rgba(0,0,0,.18); overflow:hidden;}
     .mini-label{position:absolute; inset:auto 6px 6px 6px; height:45%; background:#fff; border-radius:8px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
   </style>
-  </style>
+  <!-- Google tag (gtag.js) event - delayed navigation helper -->
+  <script>
+    // Helper function to delay opening a URL until a gtag event is sent.
+    // Call it in response to an action that should navigate to a URL.
+    function gtagSendEvent(url, eventData) {
+      var callback = function () {
+        if (typeof url === 'string') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'submission_ok', Object.assign({
+        'event_callback': callback,
+        'event_timeout': 2000,
+      }, eventData || {}));
+      return false;
+    }
+  </script>
 </head>
 <body>
   <div class="container">
@@ -311,9 +327,28 @@
     }
     document.getElementById('buyBtn')?.addEventListener('click', ()=>{
       const payload = buildPayload();
+      const d = loadData();
+      const p = compute(d);
+      
       postToSheets(payload).finally(()=>{
         try{ localStorage.setItem('rp_last_order_ts', String(Date.now())); }catch{}
-        window.location.href = 'thanks.html';
+        // Use gtagSendEvent if gtag is available, otherwise navigate directly
+        if (typeof gtag !== 'undefined') {
+          gtagSendEvent('thanks.html', {
+            'value': p.total,
+            'currency': 'USD',
+            'transaction_id': Date.now().toString(),
+            'items': [{
+              'item_id': 'subscription',
+              'item_name': d.blendName || 'Your Daily Roast',
+              'item_category': 'coffee_subscription',
+              'price': p.pricePerCup,
+              'quantity': p.billedServings
+            }]
+          });
+        } else {
+          window.location.href = 'thanks.html';
+        }
       });
     });
 
