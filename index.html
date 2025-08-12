@@ -159,7 +159,7 @@
         try {
           const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
           iframeDoc.addEventListener('click', (e) => {
-            const link = e.target.closest('a[href*="signup.html"]');
+            const link = e.target.closest('a[href*="quiz.html"]');
             if (link) {
               e.preventDefault();
               window.location.href = link.href;
