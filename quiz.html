@@ -137,7 +137,7 @@
       }
     }
     .quiz-card {
-      display: none;
+      display: none !important;
       position: relative;
       background: #fff;
       border: 1px solid rgba(0,0,0,0.06);
@@ -154,7 +154,7 @@
       scrollbar-gutter: stable;
       flex: 1;
     }
-    .quiz-card.active { display: block; animation: cardIn .35s ease both; }
+    .quiz-card.active { display: block !important; animation: cardIn .35s ease both; }
     
 
     .quiz-card:focus-within { box-shadow: 0 10px 28px rgba(0,0,0,0.09); transform: translateY(0); }
