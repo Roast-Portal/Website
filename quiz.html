@@ -2,557 +2,627 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#FBFBFD" />
+  <meta name="color-scheme" content="light dark" />
   <title>Bean • Taste Preference Quiz</title>
+
   <!-- Google tag (gtag.js) -->
-   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
-   <script>
-     window.dataLayer = window.dataLayer || [];
-     function gtag(){dataLayer.push(arguments);}
-     gtag('js', new Date());
- 
-     gtag('config', 'G-5LTTX2TGVQ');
-   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-5LTTX2TGVQ');
+  </script>
+
   <style>
-    :root {
-      --bg-primary: #FBFBFD;
-      --bg-secondary: #F5F5F7;
-      --text-primary: #1D1D1F;
-      --text-secondary: #6E6E73;
-      --accent-blue: #0071E3;
-      --border-light: rgba(0,0,0,0.1);
-      --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      --header-h: 60px;
+    :root{
+      --bg-primary:#FBFBFD;
+      --bg-secondary:#F5F5F7;
+      --text-primary:#1D1D1F;
+      --text-secondary:#6E6E73;
+      --accent-blue:#0071E3;
+      --border-light:rgba(0,0,0,0.12);
+      --radius:14px;
+      --header-h:60px;
+      --shadow:0 2px 10px rgba(0,0,0,.06);
+      --ease: cubic-bezier(.25,.46,.45,.94);
+      --focus: 2px solid #0071E3;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-top: env(safe-area-inset-top, 0px);
     }
-    *, *::before, *::after { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      transition: background-color 0.3s ease;
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg-primary:#0E0E10;
+        --bg-secondary:#151518;
+        --text-primary:#F5F5F7;
+        --text-secondary:#B3B3B8;
+        --border-light:rgba(255,255,255,0.12);
+        --accent-blue:#3AA3FF;
+      }
     }
-    .quiz-container {
-      padding-top: var(--header-h);
-      max-width: 640px;
-      margin: 0 auto;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+
+    *,*::before,*::after{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
+      background:var(--bg-primary);
+      color:var(--text-primary);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-    .quiz-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: var(--header-h);
-      background: rgba(251,251,253,0.8);
+
+    /* Accessibility helpers */
+    .sr-only{
+      position:absolute!important; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+    :focus-visible{ outline: var(--focus); outline-offset: 2px; border-radius: 8px; }
+
+    /* Layout */
+    .quiz-header{
+      position:fixed; top:0; left:0; right:0; height:var(--header-h);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 16px; z-index:100;
+      background: color-mix(in oklab, var(--bg-primary) 80%, transparent);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-light);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      z-index: 100;
+      border-bottom:1px solid var(--border-light);
+      padding-top: calc(var(--safe-top));
     }
-    .brand { font-weight: 700; font-size: 20px; }
-    .progress-bar {
-      position: fixed;
-      top: var(--header-h);
-      left: 0;
-      height: 4px;
-      background-color: var(--accent-blue);
-      width: 0%;
-      transition: width 0.4s var(--ease-out);
-      z-index: 99;
+    .brand{ font-weight:700; font-size:18px; letter-spacing:.2px; }
+    .exit-link{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 14px; border-radius:999px; text-decoration:none;
+      border:1px solid var(--border-light); color:var(--text-primary); background:var(--bg-secondary);
     }
-    .quiz-content {
-      flex-grow: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      overflow: hidden;
+
+    .progress-wrap{
+      position:fixed; top:calc(var(--header-h) + var(--safe-top));
+      left:0; right:0; z-index:90;
     }
-    .quiz-step {
-      display: none;
-      width: 100%;
-      text-align: center;
-      animation: fadeIn 0.5s var(--ease-out) forwards;
+    .progress-rail{ height:4px; background:var(--bg-secondary); }
+    .progress-bar{ height:4px; width:0%; background:var(--accent-blue); transition: width .35s var(--ease); }
+    .progress-text{
+      padding:6px 16px; font-size:12px; color:var(--text-secondary); display:flex; justify-content:space-between;
     }
-    .quiz-step.active { display: block; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    .quiz-container{
+      max-width:720px; margin:0 auto;
+      padding: calc(var(--header-h) + 36px + var(--safe-top)) 16px 120px;
+      min-height:100dvh;
     }
-    .question-title {
-      font-size: clamp(24px, 5vw, 32px);
-      line-height: 1.2;
-      margin: 0 0 12px;
-      font-weight: 600;
+    .quiz-content{ min-height: 52dvh; display:flex; align-items:center; }
+    .quiz-step{
+      width:100%; animation: fadeIn .35s var(--ease) both;
     }
-    .question-subtitle {
-      font-size: 16px;
-      color: var(--text-secondary);
-      margin: 0 auto 32px;
-      max-width: 480px;
+    @media (prefers-reduced-motion: reduce){
+      .quiz-step{ animation:none; }
     }
-    .answers {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 24px;
+    @keyframes fadeIn{
+      from{ opacity:0; transform: translateY(10px); }
+      to{ opacity:1; transform: translateY(0); }
     }
-    .answer-btn {
-      appearance: none;
-      background: #fff;
-      border: 1px solid var(--border-light);
-      border-radius: 12px;
-      padding: 16px;
-      font-size: 16px;
-      font-weight: 500;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    .question-title{
+      font-size: clamp(22px, 4.5vw, 32px); line-height:1.2; margin:0 0 10px; font-weight:700;
     }
-    .answer-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    .question-subtitle{
+      margin:0 0 22px; color:var(--text-secondary); font-size:15px;
     }
-    .answer-btn.selected {
-      background-color: var(--accent-blue);
-      color: #fff;
-      border-color: var(--accent-blue);
+
+    /* Choice groups */
+    fieldset{ border:0; margin:0; padding:0; }
+    .answers{ display:grid; gap:12px; }
+    .choice{
+      display:block; width:100%;
+      border:1px solid var(--border-light); background:#fff; color:#000;
+      background:var(--bg-secondary); color:var(--text-primary);
+      border-radius: var(--radius); padding:16px; font-size:16px; font-weight:600;
+      box-shadow: var(--shadow); cursor:pointer; text-align:center;
+      min-height: 52px;
+      transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
+      user-select:none;
     }
-    .flavor-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px; /* Increased gap */
+    .choice:hover{ transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+    input[type="radio"].visually-hidden,
+    input[type="checkbox"].visually-hidden{ position:absolute; opacity:0; pointer-events:none; }
+
+    input[type="radio"]:checked + label.choice,
+    input[type="checkbox"]:checked + label.choice{
+      background: var(--accent-blue); color:#fff; border-color: var(--accent-blue);
+      box-shadow: 0 6px 18px rgba(0,113,227, .25);
     }
-    .flavor-slider-group {
-      text-align: left;
+
+    /* Sliders */
+    .flavor-grid{ display:grid; grid-template-columns:1fr; gap:22px; }
+    @media (min-width: 620px){ .flavor-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    .flavor-slider-group label{ display:block; font-weight:700; margin:0 0 10px; }
+    .slider-wrap{ position:relative; padding-top: 26px; }
+    input[type="range"]{
+      -webkit-appearance: none; appearance: none; width:100%; height:8px;
+      background: var(--bg-secondary); border-radius:999px; outline:none;
     }
-    .flavor-slider-label {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 16px; /* Increased margin */
-      display: block;
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none; width:28px; height:28px; border-radius:50%;
+      background: var(--accent-blue); box-shadow: 0 2px 6px rgba(0,113,227,.35); cursor:pointer;
+      border:0;
     }
-    .slider-container {
-      position: relative;
-      width: 100%;
+    input[type="range"]::-moz-range-thumb{
+      width:28px; height:28px; border-radius:50%; background: var(--accent-blue); border:0; cursor:pointer;
+      box-shadow: 0 2px 6px rgba(0,113,227,.35);
     }
-    input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 8px;
-      background: var(--bg-secondary);
-      border-radius: 5px;
-      outline: none;
-      transition: opacity .2s;
+    .bubble{
+      position:absolute; top:0; transform: translateX(-50%);
+      padding:4px 8px; font-size:12px; background: var(--bg-secondary); border:1px solid var(--border-light);
+      border-radius: 8px; white-space:nowrap;
     }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 24px;
-      height: 24px;
-      background: var(--accent-blue);
-      cursor: pointer;
-      border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0,113,227,0.3);
-    }
-    input[type="range"]::-moz-range-thumb {
-      width: 24px;
-      height: 24px;
-      background: var(--accent-blue);
-      cursor: pointer;
-      border-radius: 50%;
-      border: none;
-      box-shadow: 0 2px 6px rgba(0,113,227,0.3);
-    }
-    .slider-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 8px;
-    }
-    .chip-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .chip {
-      padding: 10px 16px;
-      font-size: 14px;
-      background: var(--bg-secondary);
-      border-radius: 99px;
-      border: 1px solid transparent;
-      cursor: pointer;
-    }
-    .chip.selected {
-      background-color: var(--accent-blue);
-      color: #fff;
-    }
+    .slider-labels{ display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary); margin-top:6px; }
+
+    /* Inputs */
     .text-input, .textarea-input {
-      width: 100%;
-      padding: 16px;
-      font-size: 16px;
-      border-radius: 12px;
-      border: 1px solid var(--border-light);
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      width:100%; padding:14px 16px; font-size:16px; border-radius: var(--radius);
+      border:1px solid var(--border-light); background:#fff; background:var(--bg-secondary);
+      color:var(--text-primary); box-shadow: var(--shadow);
     }
-    .textarea-input {
-      min-height: 120px;
-      resize: vertical;
+    .textarea-input{ min-height:120px; resize: vertical; }
+    .field-row{ display:grid; gap:12px; grid-template-columns:1fr; }
+    @media (min-width: 600px){ .field-row{ grid-template-columns:1fr 1fr; } }
+
+    /* Sticky nav */
+    .quiz-nav{
+      position: fixed; left:0; right:0; bottom:0; z-index:95;
+      background: color-mix(in oklab, var(--bg-primary) 92%, transparent);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-top:1px solid var(--border-light);
+      padding:12px 16px calc(12px + var(--safe-bottom));
+      display:flex; gap:12px; justify-content:space-between; align-items:center;
     }
-    .field-row {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: 1fr;
+    .nav-btn{
+      flex:1; padding:14px 18px; border-radius:999px; font-weight:700; font-size:16px; cursor:pointer;
+      border:1px solid var(--border-light); background:var(--bg-secondary); color:var(--text-primary); min-height:52px;
+      transition: transform .15s ease, box-shadow .15s ease;
     }
-    @media (min-width: 600px) {
-      .field-row { grid-template-columns: 1fr 1fr; }
+    .nav-btn:hover{ transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+    .primary{ background: var(--accent-blue); color:#fff; border-color: var(--accent-blue); }
+    .nav-btn:disabled{ opacity:.5; transform:none; box-shadow:none; cursor:not-allowed; }
+
+    .toolbar{
+      display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+      margin-top:6px; color:var(--text-secondary); font-size:12px;
     }
-    .quiz-nav {
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-    }
-    .nav-btn {
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 99px;
-      border: 1px solid var(--border-light);
-      background: #fff;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .nav-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .nav-btn.primary {
-      background: var(--accent-blue);
-      color: #fff;
-      border-color: var(--accent-blue);
-    }
+    .linklike{ background:none; border:0; padding:6px 10px; border-radius:8px; cursor:pointer; color:var(--text-secondary); text-decoration:underline; }
+    .error{ color:#B00020; font-size:14px; margin-top:10px; }
+
   </style>
 </head>
 <body>
-  <header class="quiz-header">
-    <div class="brand">Bean</div>
-    <a href="index.html" class="nav-btn">Exit</a>
+  <a class="sr-only" href="#quiz-content">Skip to quiz</a>
+
+  <header class="quiz-header" role="banner">
+    <div class="brand" aria-label="Bean">Bean</div>
+    <div>
+      <button id="reset-btn" class="linklike" aria-describedby="reset-help">Reset</button>
+      <span id="reset-help" class="sr-only">Clears saved answers and restarts the quiz</span>
+      <a href="index.html" class="exit-link" aria-label="Exit quiz">Exit</a>
+    </div>
   </header>
 
-  <div class="progress-bar"></div>
-
-  <main class="quiz-container">
-    <div class="quiz-content">
-      <!-- Quiz steps will be injected here by JavaScript -->
+  <div class="progress-wrap" aria-hidden="true">
+    <div class="progress-rail">
+      <div class="progress-bar" id="progress-bar"></div>
     </div>
-    <nav class="quiz-nav">
-      <button class="nav-btn" id="prev-btn">Back</button>
-      <button class="nav-btn primary" id="next-btn">Next</button>
-    </nav>
+    <div class="progress-text" id="progress-text">
+      <span>Step 1</span><span>0%</span>
+    </div>
+  </div>
+
+  <main id="quiz-content" class="quiz-container" role="main">
+    <div class="quiz-content" aria-live="polite"></div>
+    <div class="toolbar" aria-live="polite" id="status"></div>
   </main>
-  
-  <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', () => {
-      const quizData = [
-        {
-          id: 'roastLevel',
-          title: 'What roast level do you enjoy most?',
-          subtitle: 'From light and bright to deep and bold.',
-          type: 'single-choice',
-          answers: ['Light', 'Light-Medium', 'Medium', 'Medium-Dark', 'Dark']
-        },
-        {
-          id: 'flavorProfile',
-          title: 'What kind of flavors do you enjoy in coffee?',
-          subtitle: 'Select your preference for each category.',
-          type: 'flavor-profile',
-          flavors: [
-            { id: 'flavorNutty', label: 'Nutty & Chocolatey' },
-            { id: 'flavorFruity', label: 'Fruity & Sweet' },
-            { id: 'flavorFloral', label: 'Floral & Delicate' },
-            { id: 'flavorSmoky', label: 'Smoky & Roasty' }
-          ]
-        },
-        {
-          id: 'brewMethod',
-          title: 'How do you usually brew your coffee?',
-          subtitle: "We'll grind to match your method.",
-          type: 'single-choice',
-          answers: ['Drip', 'Pour-over', 'French Press', 'Espresso', 'Single-Serve Pod', 'Cold Brew', 'Other']
-        },
-        {
-          id: 'equipmentDetails',
-          title: 'What brewing equipment do you have?',
-          subtitle: 'Tell us about your setup.',
-          type: 'text',
-          placeholder: 'e.g., Chemex, V60, Moka pot, Nespresso'
-        },
-        {
-          id: 'additions',
-          title: 'How do you take your coffee?',
-          subtitle: 'Select all that apply.',
-          type: 'multiple-choice',
-          answers: ['Black', 'Milk / Cream', 'Dairy-free Milk', 'Sugar / Syrup']
-        },
-        {
-          id: 'priceRange',
-          title: 'How much do you want to spend per cup?',
-          subtitle: "We'll match your budget.",
-          type: 'slider',
-          min: 8,
-          max: 36,
-          defaultValue: 20,
-          minLabel: '$2.00',
-          maxLabel: '$9.00'
-        },
-        {
-          id: 'cupsPerDay',
-          title: 'How many cups of coffee do you drink per day?',
-          subtitle: 'Choose one.',
-          type: 'single-choice',
-          answers: ['1 cup per day', 'More than one cup per day']
-        },
-        {
-          id: 'personality',
-          title: 'How adventurous are you with coffee?',
-          subtitle: "We'll match your personality.",
-          type: 'single-choice',
-          answers: ['Stick to classics', 'Enjoy some variety', 'Bring on the funk!']
-        },
-        {
-          id: 'tasteBalance',
-          title: 'Which tastes do you prefer?',
-          subtitle: 'Choose your ideal profile.',
-          type: 'single-choice',
-          answers: ['Sweet & Smooth', 'Tart & Complex', 'Rich & Bitter']
-        },
-        {
-          id: 'additionalNotes',
-          title: 'Anything else we should know?',
-          subtitle: 'Optional - any notes or allergies.',
-          type: 'textarea',
-          placeholder: 'e.g., love caramel, avoid blueberry; prefer low acidity'
-        },
-        {
-          id: 'blendName',
-          title: 'Name your blend',
-          subtitle: 'Give your custom roast a memorable name.',
-          type: 'text',
-          placeholder: 'e.g., Morning Magic, Daily Grind'
-        },
-        {
-          id: 'contactInfo',
-          title: "Where should we send your match?",
-          subtitle: "We'll email your custom profile and first pack details.",
-          type: 'contact-form'
-        }
-      ];
 
-      const quizContent = document.querySelector('.quiz-content');
-      const progressBar = document.querySelector('.progress-bar');
-      const prevBtn = document.getElementById('prev-btn');
-      const nextBtn = document.getElementById('next-btn');
+  <nav class="quiz-nav" aria-label="Quiz navigation">
+    <button class="nav-btn" id="prev-btn">Back</button>
+    <button class="nav-btn primary" id="next-btn">Next</button>
+  </nav>
 
-      let currentStep = 0;
-      let answers = {};
+  <script>
+    // --- Utilities ---
+    const storageKey = 'quizAnswers';
+    const stepKey = 'quizCurrentStep';
 
-      const renderStep = () => {
-        const stepData = quizData[currentStep];
-        quizContent.innerHTML = ''; // Clear previous content
+    const safeGtag = (...args) => { try{ if(typeof gtag === 'function') gtag(...args); }catch(_){} };
+    const $ = sel => document.querySelector(sel);
 
-        const stepElement = document.createElement('div');
-        stepElement.className = 'quiz-step active';
-        
-        let contentHTML = `
-          <h2 class="question-title">${stepData.title}</h2>
-          <p class="question-subtitle">${stepData.subtitle}</p>
-        `;
+    const moneyFromQuarters = (q)=> `$${(q/4).toFixed(2)}`;
+    const emailOk = (e)=> /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e||'').trim());
 
-        const answersContainer = document.createElement('div');
-        answersContainer.className = 'answers';
+    // --- Data ---
+    const quizData = [
+      { id:'roastLevel', title:'What roast level do you enjoy most?', subtitle:'From light and bright to deep and bold.', type:'single-choice', answers:['Light','Light-Medium','Medium','Medium-Dark','Dark'], required:true },
+      { id:'flavorProfile', title:'What kind of flavors do you enjoy in coffee?', subtitle:'Set your preference for each category.', type:'flavor-profile', flavors:[
+          { id:'flavorNutty', label:'Nutty & Chocolatey' },
+          { id:'flavorFruity', label:'Fruity & Sweet' },
+          { id:'flavorFloral', label:'Floral & Delicate' },
+          { id:'flavorSmoky', label:'Smoky & Roasty' }
+        ], required:false
+      },
+      { id:'brewMethod', title:'How do you usually brew your coffee?', subtitle:"We'll grind to match your method.", type:'single-choice', answers:['Drip','Pour-over','French Press','Espresso','Single-Serve Pod','Cold Brew','Other'], required:true },
+      { id:'equipmentDetails', title:'What brewing equipment do you have?', subtitle:'Tell us about your setup.', type:'text', placeholder:'e.g., Chemex, V60, Moka pot, Nespresso', required:false },
+      { id:'additions', title:'How do you take your coffee?', subtitle:'Select all that apply.', type:'multiple-choice', answers:['Black','Milk / Cream','Dairy-free Milk','Sugar / Syrup'], required:false },
+      { id:'priceRange', title:'How much do you want to spend per cup?', subtitle:"We'll match your budget.", type:'slider', min:8, max:36, defaultValue:20, minLabel:'$2.00', maxLabel:'$9.00', required:false },
+      { id:'cupsPerDay', title:'How many cups of coffee do you drink per day?', subtitle:'Choose one.', type:'single-choice', answers:['1 cup per day','More than one cup per day'], required:false },
+      { id:'personality', title:'How adventurous are you with coffee?', subtitle:"We'll match your personality.", type:'single-choice', answers:['Stick to classics','Enjoy some variety','Bring on the funk!'], required:false },
+      { id:'tasteBalance', title:'Which tastes do you prefer?', subtitle:'Choose your ideal profile.', type:'single-choice', answers:['Sweet & Smooth','Tart & Complex','Rich & Bitter'], required:false },
+      { id:'additionalNotes', title:'Anything else we should know?', subtitle:'Optional—any notes or allergies.', type:'textarea', placeholder:'e.g., love caramel, avoid blueberry; prefer low acidity', required:false },
+      { id:'blendName', title:'Name your blend', subtitle:'Give your custom roast a memorable name.', type:'text', placeholder:'e.g., Morning Magic, Daily Grind', required:false },
+      { id:'contactInfo', title:'Where should we send your match?', subtitle:"We'll email your custom profile and first pack details.", type:'contact-form', required:true }
+    ];
 
-        switch (stepData.type) {
-          case 'single-choice':
-          case 'multiple-choice':
-            stepData.answers.forEach(answer => {
-              const btn = document.createElement('button');
-              btn.className = 'answer-btn';
-              btn.textContent = answer;
-              btn.dataset.value = answer;
-              if (answers[stepData.id] && (Array.isArray(answers[stepData.id]) ? answers[stepData.id].includes(answer) : answers[stepData.id] === answer)) {
-                btn.classList.add('selected');
-              }
-              answersContainer.appendChild(btn);
-            });
-            contentHTML += answersContainer.outerHTML;
-            break;
-          case 'flavor-profile':
-            const flavorGrid = document.createElement('div');
-            flavorGrid.className = 'flavor-grid';
-            stepData.flavors.forEach(flavor => {
-                const group = document.createElement('div');
-                group.className = 'flavor-slider-group';
-                group.innerHTML = `
-                  <label for="${flavor.id}" class="flavor-slider-label">${flavor.label}</label>
-                  <div class="slider-container">
-                    <input type="range" id="${flavor.id}" name="${flavor.id}" min="0" max="100" value="${answers[flavor.id] || 50}">
-                  </div>
-                  <div class="slider-labels">
-                    <span>Dislike</span>
-                    <span>Love it</span>
-                  </div>
-                `;
-                flavorGrid.appendChild(group);
-            });
-            contentHTML += flavorGrid.outerHTML;
-            break;
-          case 'text':
-            contentHTML += `<input type="text" class="text-input" id="${stepData.id}" placeholder="${stepData.placeholder}" value="${answers[stepData.id] || ''}">`;
-            break;
-          case 'textarea':
-            contentHTML += `<textarea class="textarea-input" id="${stepData.id}" placeholder="${stepData.placeholder}">${answers[stepData.id] || ''}</textarea>`;
-            break;
-          case 'contact-form':
-            contentHTML += `
-              <div class="field-row">
-                <input type="text" class="text-input" id="firstName" placeholder="First name" value="${answers.firstName || ''}">
-                <input type="text" class="text-input" id="lastName" placeholder="Last name" value="${answers.lastName || ''}">
-              </div>
-              <input type="email" class="text-input" id="email" placeholder="Email address" style="margin-top: 12px;" value="${answers.email || ''}">
-            `;
-            break;
-          // Slider case can be added here if needed
-        }
-        
-        stepElement.innerHTML = contentHTML;
-        quizContent.appendChild(stepElement);
-        attachEventListeners();
-        updateNav();
-      };
+    const quizContent = document.querySelector('.quiz-content');
+    const progressBar = $('#progress-bar');
+    const progressText = $('#progress-text');
+    const status = $('#status');
+    const prevBtn = $('#prev-btn');
+    const nextBtn = $('#next-btn');
+    const resetBtn = $('#reset-btn');
 
-      const attachEventListeners = () => {
-        const stepData = quizData[currentStep];
-        
-        if (stepData.type === 'single-choice') {
-          document.querySelectorAll('.answer-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-              answers[stepData.id] = btn.dataset.value;
-              document.querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
-              btn.classList.add('selected');
-              saveProgress();
-              setTimeout(() => nextBtn.click(), 200);
-            });
+    let currentStep = 0;
+    let answers = {};
+
+    // --- Storage ---
+    function saveProgress(){
+      try{
+        localStorage.setItem(storageKey, JSON.stringify(answers));
+        localStorage.setItem(stepKey, String(currentStep));
+        status.textContent = 'Saved';
+        setTimeout(()=> status.textContent = '', 1500);
+      }catch(_){}
+    }
+    function loadProgress(){
+      try{
+        const a = localStorage.getItem(storageKey);
+        const s = localStorage.getItem(stepKey);
+        if(a){ answers = JSON.parse(a)||{}; }
+        if(s && !Number.isNaN(Number(s))){ currentStep = Math.min(Math.max(0, Number(s)), quizData.length-1); }
+      }catch(_){}
+    }
+    function resetProgress(){
+      try{
+        localStorage.removeItem(storageKey);
+        localStorage.removeItem(stepKey);
+      }catch(_){}
+      answers = {};
+      currentStep = 0;
+      renderStep(true);
+      updateNav();
+      safeGtag('event','quiz_reset');
+    }
+
+    // --- Rendering ---
+    function renderStep(focusTitle=false){
+      const step = quizData[currentStep];
+      quizContent.innerHTML = '';
+
+      const stepEl = document.createElement('section');
+      stepEl.className = 'quiz-step';
+      stepEl.setAttribute('role','group');
+      stepEl.setAttribute('aria-labelledby', step.id + '-title');
+
+      const title = document.createElement('h2');
+      title.className = 'question-title'; title.id = step.id + '-title';
+      title.textContent = step.title;
+
+      const subtitle = document.createElement('p');
+      subtitle.className = 'question-subtitle';
+      subtitle.textContent = step.subtitle;
+
+      const answersWrap = document.createElement('div');
+      answersWrap.className = 'answers';
+
+      // Build by type:
+      if(step.type === 'single-choice'){
+        const fs = document.createElement('fieldset');
+        fs.setAttribute('role','radiogroup');
+        fs.setAttribute('aria-labelledby', step.id + '-title');
+        step.answers.forEach((opt, idx)=>{
+          const input = document.createElement('input');
+          input.type = 'radio'; input.name = step.id; input.value = opt; input.id = step.id + '-' + idx;
+          input.className = 'visually-hidden';
+          if(answers[step.id] === opt){ input.checked = true; }
+
+          const label = document.createElement('label');
+          label.className = 'choice'; label.setAttribute('for', input.id);
+          label.textContent = opt;
+
+          input.addEventListener('change', ()=>{
+            answers[step.id] = opt;
+            saveProgress();
+            updateNav();
+            safeGtag('event','quiz_answer',{ step_id: step.id, answer: opt });
           });
-        }
 
-        if (stepData.type === 'multiple-choice') {
-          document.querySelectorAll('.answer-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-              if (!answers[stepData.id]) answers[stepData.id] = [];
-              const value = btn.dataset.value;
-              if (answers[stepData.id].includes(value)) {
-                answers[stepData.id] = answers[stepData.id].filter(item => item !== value);
-                btn.classList.remove('selected');
-              } else {
-                answers[stepData.id].push(value);
-                btn.classList.add('selected');
-              }
-              saveProgress();
-            });
+          fs.appendChild(input); fs.appendChild(label);
+        });
+        answersWrap.appendChild(fs);
+      }
+
+      if(step.type === 'multiple-choice'){
+        const fs = document.createElement('fieldset');
+        fs.setAttribute('aria-describedby', step.id + '-desc');
+        const desc = document.createElement('div');
+        desc.id = step.id + '-desc'; desc.className = 'sr-only';
+        desc.textContent = 'You may select multiple.';
+        fs.appendChild(desc);
+
+        const selected = new Set(Array.isArray(answers[step.id]) ? answers[step.id] : []);
+        step.answers.forEach((opt, idx)=>{
+          const input = document.createElement('input');
+          input.type = 'checkbox'; input.name = step.id; input.value = opt; input.id = step.id + '-' + idx;
+          input.className = 'visually-hidden';
+          if(selected.has(opt)) input.checked = true;
+
+          const label = document.createElement('label');
+          label.className = 'choice'; label.setAttribute('for', input.id);
+          label.textContent = opt;
+
+          input.addEventListener('change', ()=>{
+            if(!answers[step.id]) answers[step.id] = [];
+            if(input.checked) { if(!answers[step.id].includes(opt)) answers[step.id].push(opt); }
+            else { answers[step.id] = answers[step.id].filter(v => v !== opt); }
+            saveProgress();
+            updateNav();
           });
-        }
 
-        if (stepData.type === 'flavor-profile') {
-          stepData.flavors.forEach(flavor => {
-            const slider = document.getElementById(flavor.id);
-            if(slider) {
-              slider.addEventListener('input', () => {
-                answers[flavor.id] = slider.value;
-                saveProgress();
-              });
-            }
+          fs.appendChild(input); fs.appendChild(label);
+        });
+        answersWrap.appendChild(fs);
+      }
+
+      if(step.type === 'flavor-profile'){
+        const grid = document.createElement('div');
+        grid.className = 'flavor-grid';
+        step.flavors.forEach(f=>{
+          const group = document.createElement('div');
+          group.className = 'flavor-slider-group';
+          const lab = document.createElement('label');
+          lab.textContent = f.label;
+          lab.setAttribute('for', f.id);
+
+          const wrap = document.createElement('div');
+          wrap.className = 'slider-wrap';
+
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
+          const val = (answers[f.id] ?? 50);
+          bubble.textContent = val;
+
+          const slider = document.createElement('input');
+          slider.type = 'range'; slider.min = 0; slider.max = 100;
+          slider.value = val; slider.id = f.id; slider.name = f.id;
+
+          wrap.appendChild(bubble);
+          wrap.appendChild(slider);
+
+          const labels = document.createElement('div');
+          labels.className = 'slider-labels';
+          labels.innerHTML = '<span>Dislike</span><span>Love it</span>';
+
+          group.appendChild(lab);
+          group.appendChild(wrap);
+          group.appendChild(labels);
+          grid.appendChild(group);
+
+          const positionBubble = ()=>{
+            const min = Number(slider.min), max = Number(slider.max), v = Number(slider.value);
+            const percent = (v - min) / (max - min);
+            bubble.style.left = `calc(${percent*100}% + ${(14 - percent*28)}px)`;
+            bubble.textContent = v;
+          };
+          positionBubble();
+          slider.addEventListener('input', ()=>{
+            answers[f.id] = slider.value;
+            positionBubble();
+            saveProgress();
           });
-        }
+          window.addEventListener('resize', positionBubble, { passive:true });
+        });
+        answersWrap.appendChild(grid);
+      }
 
-        ['text', 'textarea'].forEach(type => {
-            if (stepData.type === type) {
-                const input = document.getElementById(stepData.id);
-                input.addEventListener('input', () => {
-                    answers[stepData.id] = input.value;
-                    saveProgress();
-                });
-            }
+      if(step.type === 'slider'){
+        const group = document.createElement('div');
+        group.className = 'flavor-slider-group';
+        const lab = document.createElement('label');
+        lab.textContent = step.title;
+        lab.className = 'sr-only'; // Title already shown above.
+
+        const wrap = document.createElement('div');
+        wrap.className = 'slider-wrap';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+
+        const slider = document.createElement('input');
+        slider.type='range';
+        slider.min=step.min; slider.max=step.max;
+        slider.value = answers[step.id] ?? step.defaultValue ?? step.min;
+        slider.id = step.id;
+
+        const labels = document.createElement('div');
+        labels.className = 'slider-labels';
+        labels.innerHTML = `<span>${step.minLabel||''}</span><span>${step.maxLabel||''}</span>`;
+
+        const positionBubble = ()=>{
+          const min = Number(slider.min), max = Number(slider.max), v = Number(slider.value);
+          const percent = (v - min) / (max - min);
+          bubble.style.left = `calc(${percent*100}% + ${(14 - percent*28)}px)`;
+          bubble.textContent = moneyFromQuarters(v);
+        };
+        positionBubble();
+
+        slider.addEventListener('input', ()=>{
+          answers[step.id] = Number(slider.value);
+          positionBubble();
+          saveProgress();
+        });
+        window.addEventListener('resize', positionBubble, { passive:true });
+
+        wrap.appendChild(bubble);
+        wrap.appendChild(slider);
+        group.appendChild(lab);
+        group.appendChild(wrap);
+        group.appendChild(labels);
+        answersWrap.appendChild(group);
+      }
+
+      if(step.type === 'text'){
+        const input = document.createElement('input');
+        input.type='text'; input.id=step.id; input.className='text-input';
+        input.placeholder = step.placeholder||''; input.value = answers[step.id] || '';
+        input.autocomplete = 'off'; input.inputMode = 'text';
+        input.addEventListener('input', ()=>{
+          answers[step.id] = input.value;
+          saveProgress();
+          updateNav();
+        });
+        answersWrap.appendChild(input);
+      }
+
+      if(step.type === 'textarea'){
+        const texta = document.createElement('textarea');
+        texta.id=step.id; texta.className='textarea-input';
+        texta.placeholder = step.placeholder||''; texta.value = answers[step.id] || '';
+        texta.addEventListener('input', ()=>{
+          answers[step.id] = texta.value;
+          saveProgress();
+        });
+        answersWrap.appendChild(texta);
+      }
+
+      if(step.type === 'contact-form'){
+        const row = document.createElement('div'); row.className='field-row';
+        const fn = document.createElement('input');
+        fn.type='text'; fn.id='firstName'; fn.className='text-input'; fn.placeholder='First name';
+        fn.autocomplete='given-name'; fn.value = answers.firstName || '';
+        const ln = document.createElement('input');
+        ln.type='text'; ln.id='lastName'; ln.className='text-input'; ln.placeholder='Last name';
+        ln.autocomplete='family-name'; ln.value = answers.lastName || '';
+        const em = document.createElement('input');
+        em.type='email'; em.id='email'; em.className='text-input'; em.placeholder='Email address'; em.style.marginTop='12px';
+        em.autocomplete='email'; em.inputMode='email'; em.value = answers.email || '';
+
+        [fn,ln,em].forEach(inp=>{
+          inp.addEventListener('input', ()=>{
+            answers[inp.id] = inp.value;
+            saveProgress();
+            updateNav();
+          });
         });
 
-        if (stepData.type === 'contact-form') {
-            ['firstName', 'lastName', 'email'].forEach(id => {
-                const input = document.getElementById(id);
-                input.addEventListener('input', () => {
-                    answers[id] = input.value;
-                    saveProgress();
-                });
-            });
-        }
-      };
+        row.appendChild(fn); row.appendChild(ln);
+        answersWrap.appendChild(row);
+        answersWrap.appendChild(em);
 
-      const updateNav = () => {
-        prevBtn.disabled = currentStep === 0;
-        progressBar.style.width = `${((currentStep + 1) / quizData.length) * 100}%`;
-        if (currentStep === quizData.length - 1) {
-          nextBtn.textContent = 'Go to Checkout';
-        } else {
-          nextBtn.textContent = 'Next';
-        }
-      };
-      
-      const saveProgress = () => {
-        localStorage.setItem('quizAnswers', JSON.stringify(answers));
-      };
+        const err = document.createElement('div'); err.id='contact-error'; err.className='error'; err.role='alert';
+        answersWrap.appendChild(err);
+      }
 
-      const loadProgress = () => {
-        const savedAnswers = localStorage.getItem('quizAnswers');
-        if (savedAnswers) {
-          answers = JSON.parse(savedAnswers);
-        }
-      };
+      stepEl.appendChild(title);
+      stepEl.appendChild(subtitle);
+      stepEl.appendChild(answersWrap);
+      quizContent.appendChild(stepEl);
 
-      nextBtn.addEventListener('click', () => {
-        if (currentStep < quizData.length - 1) {
-          currentStep++;
-          renderStep();
-        } else {
-          // Final submission
-          saveProgress();
-          console.log('Final Answers:', answers);
-          window.location.href = 'checkout.html';
-        }
-      });
+      if(focusTitle){
+        // Focus title for SR users on step change
+        setTimeout(()=> title.focus({ preventScroll:true }), 0);
+        title.tabIndex = -1;
+      }
 
-      prevBtn.addEventListener('click', () => {
-        if (currentStep > 0) {
-          currentStep--;
-          renderStep();
-        }
-      });
-      
-      loadProgress();
-      renderStep();
+      updateNav();
+      updateProgress();
+      safeGtag('event','quiz_step_view',{ step_index: currentStep+1, step_id: step.id, step_title: step.title });
+    }
+
+    function updateProgress(){
+      const pct = Math.round(((currentStep+1)/quizData.length)*100);
+      progressBar.style.width = pct + '%';
+      progressText.innerHTML = `<span>Step ${currentStep+1} of ${quizData.length}</span><span>${pct}%</span>`;
+    }
+
+    function isStepValid(){
+      const step = quizData[currentStep];
+      if(!step.required) return true;
+      if(step.type === 'single-choice') return Boolean(answers[step.id]);
+      if(step.type === 'text') return Boolean((answers[step.id]||'').trim());
+      if(step.type === 'contact-form'){
+        const ok = Boolean((answers.firstName||'').trim()) && emailOk(answers.email);
+        const err = document.getElementById('contact-error');
+        if(err) err.textContent = ok ? '' : 'Please enter your first name and a valid email.';
+        return ok;
+      }
+      // Sliders / multi / flavor-profile aren’t required in this config
+      return true;
+    }
+
+    function updateNav(){
+      prevBtn.disabled = currentStep === 0;
+      nextBtn.textContent = (currentStep === quizData.length-1) ? 'Go to Checkout' : 'Next';
+      nextBtn.disabled = !isStepValid();
+    }
+
+    // --- Navigation ---
+    nextBtn.addEventListener('click', ()=>{
+      if(!isStepValid()) return;
+      if(currentStep < quizData.length - 1){
+        currentStep++;
+        saveProgress();
+        renderStep(true);
+      }else{
+        // Finalize
+        const payload = {
+          answers,
+          meta: {
+            completedAt: new Date().toISOString(),
+            steps: quizData.length,
+            version: 1
+          }
+        };
+        try{ localStorage.setItem(storageKey, JSON.stringify(payload.answers)); }catch(_){}
+        safeGtag('event','quiz_completed');
+        // Redirect – your checkout page can read localStorage or URL params if preferred
+        window.location.href = 'checkout.html';
+      }
     });
+
+    prevBtn.addEventListener('click', ()=>{
+      if(currentStep > 0){
+        currentStep--;
+        saveProgress();
+        renderStep(true);
+      }
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e)=>{
+      const tag = (e.target && e.target.tagName) || '';
+      const inField = ['INPUT','TEXTAREA'].includes(tag);
+      if(e.key === 'ArrowRight' && !inField){ e.preventDefault(); if(!nextBtn.disabled) nextBtn.click(); }
+      if(e.key === 'ArrowLeft' && !inField){ e.preventDefault(); if(!prevBtn.disabled) prevBtn.click(); }
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      if(confirm('Reset your quiz and clear saved answers?')) resetProgress();
+    });
+
+    // --- Init ---
+    loadProgress();
+    renderStep();
   </script>
 </body>
 </html>
