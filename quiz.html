@@ -246,13 +246,38 @@
     // --- Utilities ---
     const storageKey = 'quizAnswers';
     const stepKey = 'quizCurrentStep';
-
+    
     const safeGtag = (...args) => { try{ if(typeof gtag === 'function') gtag(...args); }catch(_){} };
     const $ = sel => document.querySelector(sel);
-
+    
     const moneyFromQuarters = (q)=> `$${(q/4).toFixed(2)}`;
     const emailOk = (e)=> /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e||'').trim());
 
+    // Build a checkout-compatible rp_quiz payload from current answers
+    function buildRpQuizPayload(a){
+      const s = v => (v == null ? '' : String(v));
+      const additions = Array.isArray(a.additions) ? a.additions.join(', ') : s(a.additions);
+      return {
+        roastLevel: s(a.roastLevel),
+        brewMethod: s(a.brewMethod),
+        additions,
+        cupsPerDay: s(a.cupsPerDay),
+        personality: s(a.personality),
+        tasteBalance: s(a.tasteBalance),
+        flavorNutty: s(a.flavorNutty),
+        flavorFruity: s(a.flavorFruity),
+        flavorFloral: s(a.flavorFloral),
+        flavorSmoky: s(a.flavorSmoky),
+        priceRange: s(a.priceRange),
+        equipmentDetails: s(a.equipmentDetails),
+        additionalNotes: s(a.additionalNotes),
+        blendName: s(a.blendName),
+        firstName: s(a.firstName),
+        lastName: s(a.lastName),
+        email: s(a.email)
+      };
+    }
+    
     // --- Data ---
     const quizData = [
       { id:'roastLevel', title:'What roast level do you enjoy most?', subtitle:'From light and bright to deep and bold.', type:'single-choice', answers:['Light','Light-Medium','Medium','Medium-Dark','Dark'], required:true },
@@ -291,6 +316,8 @@
       try{
         localStorage.setItem(storageKey, JSON.stringify(answers));
         localStorage.setItem(stepKey, String(currentStep));
+        // Maintain compatibility with checkout by also saving rp_quiz
+        localStorage.setItem('rp_quiz', JSON.stringify(buildRpQuizPayload(answers)));
         status.textContent = 'Saved';
         setTimeout(()=> status.textContent = '', 1500);
       }catch(_){}
@@ -604,9 +631,13 @@
             version: 1
           }
         };
-        try{ localStorage.setItem(storageKey, JSON.stringify(payload.answers)); }catch(_){}
+        try{
+          localStorage.setItem(storageKey, JSON.stringify(payload.answers));
+          // Save rp_quiz one more time before redirect
+          localStorage.setItem('rp_quiz', JSON.stringify(buildRpQuizPayload(answers)));
+        }catch(_){}
         safeGtag('event','quiz_completed');
-        // Redirect – your checkout page can read localStorage or URL params if preferred
+        // Redirect – checkout reads localStorage.rp_quiz
         window.location.href = 'checkout.html';
       }
     });
