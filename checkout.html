@@ -46,58 +46,40 @@
     .visual{display:grid;place-items:center;margin-bottom:12px; position:relative}
     .pouch-stack{position:relative;height:calc(var(--pouch-h) + 80px);width:100%;max-width:var(--pouch-w)}
     .stack-card{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);will-change:transform,filter;}
-    .pouch{position:relative;width:var(--pouch-w);height:var(--pouch-h);background:#0a0a0a;border-radius:20px 20px 16px 16px;box-shadow:0 12px 28px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.1);overflow:hidden;
-      /* Smooth clip-path with fully rounded corners + transparent notches */
-      clip-path: polygon(
-        /* top left corner - smooth curve */
-        0 20px,
-        4px 12px,
-        8px 8px,
-        12px 4px,
-        20px 0,
-        /* top edge */
-        calc(100% - 20px) 0,
-        /* top right corner - smooth curve */
-        calc(100% - 12px) 4px,
-        calc(100% - 8px) 8px,
-        calc(100% - 4px) 12px,
-        100% 20px,
-        /* right edge to notch */
-        100% 32px,
-        /* right notch */
-        calc(100% - 12px) 40px,
-        100% 48px,
-        /* right edge to bottom */
-        100% calc(100% - 16px),
-        /* bottom right corner - smooth curve */
-        calc(100% - 4px) calc(100% - 8px),
-        calc(100% - 8px) calc(100% - 4px),
-        calc(100% - 16px) 100%,
-        /* bottom edge */
-        16px 100%,
-        /* bottom left corner - smooth curve */
-        8px calc(100% - 4px),
-        4px calc(100% - 8px),
-        0 calc(100% - 16px),
-        /* left edge from bottom */
-        0 48px,
-        /* left notch */
-        12px 40px,
-        0 32px,
-        /* left edge to top */
-        0 20px
-      )}
-    /* Matte paper-like texture overlay */
-    .pouch::before{content:"";position:absolute;inset:0;opacity:.10;mix-blend-mode:normal;z-index:0;border-radius:20px 20px 16px 16px;clip-path:inherit;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.3'/%3E%3C/svg%3E");}
-    .pouch-label{position:absolute;left:14px;right:14px;bottom:14px;top:22%;background:#fff;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08),0 8px 18px rgba(0,0,0,.12);padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-    .pouch-label::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:
-      radial-gradient(120% 80% at 18% 20%, var(--ink1, hsla(210,60%,82%,.32)) 0 42%, transparent 72%),
-      radial-gradient(130% 78% at 82% 24%, var(--ink2, hsla(190,58%,84%,.30)) 0 38%, transparent 74%),
-      radial-gradient(110% 88% at 62% 84%, var(--ink3, hsla(160,56%,86%,.28)) 0 44%, transparent 76%)}
-    .blend-name{font-weight:800;letter-spacing:-.01em;font-size:16px;color:#111;position:relative;z-index:1}
-    .tasting{font-size:13px;color:#2b2b30;margin-top:6px;position:relative;z-index:1}
-    .badge{position:absolute;left:16px;top:16px;background:#0071E3;color:#fff;border-radius:999px;padding:6px 10px;font-size:12px;box-shadow:0 6px 16px rgba(0,113,227,.28)}
+    /* Pouch extreme (from product-section) */
+    .pouch-extreme{ --pouch-min: min(var(--pouch-w), var(--pouch-h)); --bag-bg:#0a0a0a; --bag-radius-frac:0.0375; --pouch-border-frac:0.003; --pouch-border-color: rgba(0,0,0,0.1); --label-bg:#FDFEFE; --label-radius-frac:0.055; --label-top-frac:0.88; --label-pad-frac:0.04; --label-gradient: linear-gradient(135deg, rgba(245, 248, 252, 0.65) 0%, rgba(252, 254, 255, 0.45) 50%, rgba(248, 250, 252, 0.4) 100%); --label-gradient-opacity:0.85; }
+    .pouch-extreme.pouch-container{ position:relative; inline-size:var(--pouch-w); block-size:var(--pouch-h); container-type:inline-size }
+    .pouch-extreme .pouch{ position:absolute; inset:0; background:var(--bag-bg); border-radius: calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)); overflow:hidden; isolation:isolate; box-shadow: 0 12px 28px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10); }
+    .pouch-extreme .pouch::after{ content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius: inherit; clip-path: inherit; box-shadow: inset 0 0 0 calc(var(--pouch-border-frac) * var(--pouch-min)) var(--pouch-border-color); }
+    .pouch-extreme .pouch{
+      --rT: calc(var(--bag-radius-frac) * 100cqw);
+      --rB: calc(var(--bag-radius-frac) * 80cqw);
+      --t1: var(--rT); --t2: calc(var(--rT)*.6); --t3: calc(var(--rT)*.4); --t4: calc(var(--rT)*.2);
+      --b1: var(--rB); --b2: calc(var(--rB)*.6); --b3: calc(var(--rB)*.4); --b4: calc(var(--rB)*.2);
+      --nx: 1; --nox: calc(4cqw * var(--nx));
+      clip-path: polygon(0 var(--t1), var(--t4) var(--t2), var(--t3) var(--t3), var(--t2) var(--t4), var(--t1) 0,
+                         calc(100% - var(--t1)) 0, calc(100% - var(--t2)) var(--t4), calc(100% - var(--t3)) var(--t3), calc(100% - var(--t4)) var(--t2), 100% var(--t1),
+                         100% calc(var(--t1) + 4cqw), calc(100% - var(--nox)) calc(var(--t1) + 6cqw), 100% calc(var(--t1) + 8cqw),
+                         100% calc(100% - var(--b1)), calc(100% - var(--b4)) calc(100% - var(--b2)), calc(100% - var(--b3)) calc(100% - var(--b3)), calc(100% - var(--b2)) calc(100% - var(--b4)), calc(100% - var(--b1)) 100%,
+                         var(--b1) 100%, var(--b2) calc(100% - var(--b4)), var(--b3) calc(100% - var(--b3)), var(--b4) calc(100% - var(--b2)), 0 calc(100% - var(--b1)),
+                         0 calc(var(--t1) + 8cqw), var(--nox) calc(var(--t1) + 6cqw), 0 calc(var(--t1) + 4cqw),
+                         0 var(--t1)); }
+    .pouch-extreme .top-seal{ position:absolute; inset-inline:0; inset-block-start:0; height:10cqw; background-color:var(--bag-bg); border-bottom:1px solid rgba(220,225,230,0.32);
+      background-image: repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0 1px, rgba(0,0,0,0.08) 1px 2px, transparent 2px 3px),
+                        linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%),
+                        radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); clip-path: inherit; }
+    .pouch-extreme .pouch-label{ --pad: calc(var(--label-pad-frac) * var(--pouch-min)); position:absolute; left:var(--pad); right:var(--pad); bottom:var(--pad); top: calc(100% - (var(--label-top-frac) * 100%));
+      background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:24px 20px; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+    .pouch-extreme .pouch-label::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:
+      linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%),
+      var(--label-gradient),
+      radial-gradient(120% 80% at 18% 20%, var(--ink1, hsla(210,52%,82%,.35)) 0 40%, transparent 70%),
+      radial-gradient(130% 78% at 80% 24%, var(--ink2, hsla(200,50%,84%,.32)) 0 38%, transparent 72%),
+      radial-gradient(110% 88% at 64% 84%, var(--ink3, hsla(180,48%,86%,.30)) 0 42%, transparent 74%);
+      opacity: .8; }
+    .label-badge{ padding:6px 10px; border-radius:16px; color:#fff; background:#0071E3; font-size:12px; font-weight:800; box-shadow:0 0 0 1px rgba(0,113,227,.28); margin-bottom:8px; }
+    .label-tagline{ font-size:16px; font-weight:800; color:#1d1d1f; }
+    .label-description{ font-size:13px; color:#2b2b30; margin-top:6px; }
     .mini{opacity:1;filter:brightness(.96) saturate(.92)}
 
     /* === Vector outline that matches the pouch shape exactly === */
@@ -224,30 +206,23 @@
       let stack = '';
       for(let i=0;i<stackCount;i++){
         const z = 15 - i;
-        // Neat fan: center around 0 with gentle offsets
-        const center = (stackCount - 1) / 2;
-        const dx = (i - center) * 10;      // horizontal spread
-        const dy = -i * 12;                 // vertical lift
-        const rot = (i - center) * 0.6;     // gentle rotation across the fan
-        const scale = 1 - i * 0.01;         // subtle depth scaling
-        const style = `z-index:${z}; transform: translate(-50%,-50%) translate(${dx}px, ${dy}px) rotate(${rot}deg) scale(${scale});`;
+        // Staggered diagonal stack (no rotation)
+        const dx = i * 16;                  // step to the right each card
+        const dy = -i * 12;                 // lift each card slightly
+        const scale = 1 - i * 0.02;         // stronger depth scaling
+        const style = `z-index:${z}; transform: translate(-50%,-50%) translate(${dx}px, ${dy}px) scale(${scale});`;
         const custom = i===0;
         stack += `
           <div class="stack-card${custom? '': ' mini'}" style="${style}">
-            <div class="pouch" style="--ink1:${ink1};--ink2:${ink2};--ink3:${ink3};">
-              ${custom? `<span class=\"badge\">${badgeText}</span>`: ''}
-              <div class="pouch-label">
-                <div class="blend-name">${custom ? (d.blendName||'Your Daily Roast') : 'Daily pack'}</div>
-                <div class="tasting">${custom ? (tasting||'Balanced, approachable cup') : 'Nitroflushed & sealed'}</div>
+            <div class="pouch-extreme pouch-container" style="--ink1:${ink1};--ink2:${ink2};--ink3:${ink3};">
+              <div class="pouch">
+                <div class="top-seal"></div>
+                <div class="pouch-label">
+                  ${custom? `<div class="label-badge">${badgeText}</div>`: ''}
+                  <div class="label-tagline">${custom ? (d.blendName||'Your Daily Roast') : 'Daily pack'}</div>
+                  <div class="label-description">${custom ? (tasting||'Balanced, approachable cup') : 'Nitroflushed & sealed'}</div>
+                </div>
               </div>
-              <svg class="pouch-outline front" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                <path class="outer" d=""/>
-                <path class="inner" d=""/>
-              </svg>
-              <svg class="pouch-outline back" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                <path class="outer" d=""/>
-                <path class="inner" d=""/>
-              </svg>
             </div>
           </div>`;
       }
