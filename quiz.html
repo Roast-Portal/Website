@@ -49,8 +49,10 @@
     /* Full-viewport stage with premium background */
     .stage {
       min-height: calc(var(--vh, 1vh) * 100);
-      display: grid;
+      display: flex; /* Changed from grid to flex */
+      flex-direction: column; /* Stack header and main content */
       align-items: center;
+      padding-top: var(--header-h); /* Account for sticky header */
       background:
         radial-gradient(1000px 500px at 90% 10%, rgba(0,113,227,0.06), transparent 60%),
         radial-gradient(900px 480px at 10% 90%, rgba(0,113,227,0.05), transparent 60%),
@@ -85,32 +87,45 @@
       border-radius: 28px;
       border: 1px solid rgba(0,0,0,0.06);
       box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-      padding: clamp(16px, 3vw, 32px);
-      height: clamp(480px, calc(var(--vh, 1vh) * 100 - var(--header-h) - 24px), 880px);
+      padding: clamp(20px, 3vw, 32px);
+      /* height: clamp(560px, calc(var(--vh, 1vh) * 100 - var(--header-h) - 24px), 880px); */ /* REMOVED restrictive height */
       width: min(calc(var(--card-max) + 64px), calc(100vw - 40px));
       max-width: calc(var(--card-max) + 64px);
-      margin: 0 auto;
+      margin: 24px auto; /* Added margin for spacing */
       display: grid;
-      grid-template-rows: 1fr; /* form fills card */
+      grid-template-rows: auto 1fr; /* Header, form fills card */
       min-height: 0;
-      overflow: hidden;
-      scrollbar-gutter: stable both-edges;
+      /* overflow: hidden; */ /* REMOVED */
+      /* scrollbar-gutter: stable both-edges; */ /* REMOVED */
     }
     
     /* Mobile surface adjustments */
     @media (max-width: 600px) {
       .surface {
-        height: calc(var(--vh, 1vh) * 100 - var(--header-h) - 8px);
-        min-height: calc(var(--vh, 1vh) * 100 - var(--header-h) - 8px);
-        max-height: calc(var(--vh, 1vh) * 100 - var(--header-h) - 8px);
-        padding: 8px;
-        margin: 4px auto;
-        width: calc(100vw - 16px);
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        flex-grow: 1; /* Allow surface to fill height */
       }
+      .quiz-card { min-height: 0; padding: 16px; } /* Removed min-height */
+      .quiz-header h3 { font-size: 28px; }
+      input[type="range"]::-webkit-slider-thumb { width: 16px; height: 16px; }
+      input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; }
+      .stage { align-items: stretch; padding-top: var(--header-h); } /* Stretch content on mobile */
+      .quiz-wrap { padding-bottom: 0; }
     }
 
     /* Quiz section */
-    .quiz-wrap { padding: 24px 0 80px; min-height: calc(var(--vh, 1vh) * 100 - var(--header-h, 72px)); }
+    .quiz-wrap {
+      padding: 0; /* Simplified padding */
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1; /* Allow wrap to grow */
+    }
     .quiz-header { text-align: center; margin-bottom: 24px; }
     .quiz-header h3 { font-size: 36px; letter-spacing: -0.01em; margin-bottom: 8px; }
     .quiz-header p { font-size: 18px; color: var(--text-secondary); }
@@ -154,16 +169,16 @@
       scrollbar-gutter: stable;
       flex: 1;
     }
-    .quiz-card.active { display: block !important; animation: cardIn .35s ease both; }
+    .quiz-card.active { display: block; animation: cardIn .35s ease both; }
     
 
     .quiz-card:focus-within { box-shadow: 0 10px 28px rgba(0,0,0,0.09); transform: translateY(0); }
     .quiz-card h4 { font-size: 24px; margin-bottom: 10px; letter-spacing: -0.01em; }
-    .quiz-card p.sub { font-size: 15px; color: var(--text-secondary); margin-bottom: 6px; }
+    .quiz-card p.sub { font-size: 15px; color: var(--text-secondary); margin-bottom: 18px; } /* Increased margin */
     @keyframes cardIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
 
-    .chip-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
-    .chip { appearance: none; border: 1px solid rgba(0,0,0,0.10); background: #fff; color: #1d1d1f; padding: 10px 14px; border-radius: 999px; font-size: 14px; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease; }
+    .chip-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; } /* Increased margin */
+    .chip { appearance: none; border: 1px solid rgba(0,0,0,0.10); background: #fff; color: #1d1d1f; padding: 12px 18px; border-radius: 999px; font-size: 15px; font-weight: 500; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease; } /* Adjusted padding and font */
     .chip:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.08); transform: translateY(-1px); }
     .chip:active { transform: translateY(0); box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
     .chip.active { background: #eef6ff; border-color: rgba(0,113,227,0.35); box-shadow: 0 0 0 2px rgba(0,113,227,0.15) inset; }
@@ -211,10 +226,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 12px;
       margin-top: 0;
-      padding: 4px 0 0;
+      padding: 16px 0 0; /* Increased padding */
       background: transparent;
+      border-top: 1px solid rgba(0,0,0,0.06); /* Added separator */
     }
     
     /* Mobile quiz controls */
@@ -231,13 +247,11 @@
     .btn:disabled { opacity: .5; cursor: not-allowed; }
 
     /* Quiz meta: progress */
-    .quiz-meta { display: grid; gap: 8px; align-items: center; margin-top: 8px; }
-    .quiz-step { font-size: 13px; color: var(--text-secondary); display: none; }
+    .quiz-meta { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; margin-top: 8px; } /* Changed layout */
+    .quiz-step { font-size: 13px; color: var(--text-secondary); display: block; } /* Changed display */
     .quiz-progressbar { height: 6px; background: rgba(0,0,0,0.08); border-radius: 999px; overflow: hidden; }
     .quiz-progressbar-fill { height: 100%; width: 0%; background: #0071E3; transition: width .25s ease; }
-    .quiz-progress { display: inline-flex; gap: 6px; align-items: center; }
-    .quiz-dot { width: 6px; height: 6px; border-radius: 999px; background: rgba(0,0,0,0.2); }
-    .quiz-dot.active { background: rgba(0,0,0,0.7); }
+    .quiz-progress { display: none; } /* Hide old dots */
 
     @media (prefers-color-scheme: dark) {
       .quiz-card, .btn { background: #fff; color: #1d1d1f; }
@@ -307,7 +321,7 @@
       .multi-range-container { gap: 16px; }
       .range-group { gap: 6px; }
       .range-label { font-size: 13px; }
-      .range-labels { font-size: 11px; }
+      .range-labels { font-size: 10px; }
       .surface { padding: 16px; }
       .range-slider { padding-top: 28px; padding-bottom: 8px; }
     }
@@ -404,7 +418,7 @@
 <body>
   <header>
     <div class="bar container">
-      <div class="brand">Roast Portal</div>
+      <div class="brand">Bean</div>
       <div style="display:flex; gap:10px; align-items:center;">
         <a href="index.html" class="pill" id="backToLanding">← Back to landing</a>
       </div>
@@ -413,7 +427,15 @@
 
   <div class="stage">
   <main class="container quiz-wrap">
+    <div class="quiz-header">
+      <h3>Find Your Perfect Coffee</h3>
+      <p>This quick quiz helps us tailor a blend to your unique taste.</p>
+    </div>
     <div class="surface">
+      <div class="quiz-meta">
+        <div class="quiz-progressbar"><div class="quiz-progressbar-fill"></div></div>
+        <div class="quiz-step">Step 1 of 12</div>
+      </div>
       <!-- Header removed to maximize vertical space for the quiz content -->
       <form id="quizForm" action="#" method="post">
         <input type="hidden" name="roastLevel" id="f_roastLevel" />
@@ -422,6 +444,10 @@
         <input type="hidden" name="cupsPerDay" id="f_cupsPerDay" />
         <input type="hidden" name="personality" id="f_personality" />
         <input type="hidden" name="tasteBalance" id="f_tasteBalance" />
+        <input type="hidden" name="flavorNutty" id="flavorNutty" />
+        <input type="hidden" name="flavorFruity" id="flavorFruity" />
+        <input type="hidden" name="flavorFloral" id="flavorFloral" />
+        <input type="hidden" name="flavorSmoky" id="flavorSmoky" />
         <div class="quiz-body" id="quiz">
           <div class="quiz-card" data-step="0">
             <h4>What roast level do you enjoy most?</h4>
@@ -435,47 +461,43 @@
             </div>
           </div>
           <div class="quiz-card" data-step="1">
-            <h4>Tell us about your flavor preferences</h4>
-            <p class="sub">Move the sliders to match your taste preference</p>
+            <h4>What kind of flavors do you enjoy in coffee?</h4>
+            <p class="sub">Select your preference for each category. Don't worry, you can like them all!</p>
             <div class="multi-range-container">
               <div class="range-group">
-                <p class="range-label">Nutty</p>
-                <div class="range-slider">
-                  <input type="range" id="flavorNutty" name="flavorNutty" min="0" max="100" step="1" value="50" class="slider">
-                  <div class="range-labels">
-                    <span>Dislike</span>
-                    <span>Love it</span>
-                  </div>
+                <p class="range-label">Nutty &amp; Chocolatey</p>
+                <div class="chip-group" data-name="flavorNutty" data-single="true" role="radiogroup" aria-label="Nutty & Chocolatey preference">
+                  <button class="chip" type="button" data-value="10">Dislike</button>
+                  <button class="chip" type="button" data-value="40">A Little</button>
+                  <button class="chip active" type="button" data-value="70">Enjoy It</button>
+                  <button class="chip" type="button" data-value="100">Love It</button>
                 </div>
               </div>
               <div class="range-group">
-                <p class="range-label">Fruity</p>
-                <div class="range-slider">
-                  <input type="range" id="flavorFruity" name="flavorFruity" min="0" max="100" step="1" value="50" class="slider">
-                  <div class="range-labels">
-                    <span>Dislike</span>
-                    <span>Love it</span>
-                  </div>
+                <p class="range-label">Fruity &amp; Sweet</p>
+                <div class="chip-group" data-name="flavorFruity" data-single="true" role="radiogroup" aria-label="Fruity & Sweet preference">
+                  <button class="chip" type="button" data-value="10">Dislike</button>
+                  <button class="chip" type="button" data-value="40">A Little</button>
+                  <button class="chip active" type="button" data-value="70">Enjoy It</button>
+                  <button class="chip" type="button" data-value="100">Love It</button>
                 </div>
               </div>
               <div class="range-group">
-                <p class="range-label">Floral</p>
-                <div class="range-slider">
-                  <input type="range" id="flavorFloral" name="flavorFloral" min="0" max="100" step="1" value="50" class="slider">
-                  <div class="range-labels">
-                    <span>Dislike</span>
-                    <span>Love it</span>
-                  </div>
+                <p class="range-label">Floral &amp; Delicate</p>
+                <div class="chip-group" data-name="flavorFloral" data-single="true" role="radiogroup" aria-label="Floral & Delicate preference">
+                  <button class="chip" type="button" data-value="10">Dislike</button>
+                  <button class="chip" type="button" data-value="40">A Little</button>
+                  <button class="chip active" type="button" data-value="70">Enjoy It</button>
+                  <button class="chip" type="button" data-value="100">Love It</button>
                 </div>
               </div>
               <div class="range-group">
-                <p class="range-label">Smoky</p>
-                <div class="range-slider">
-                  <input type="range" id="flavorSmoky" name="flavorSmoky" min="0" max="100" step="1" value="50" class="slider">
-                  <div class="range-labels">
-                    <span>Dislike</span>
-                    <span>Love it</span>
-                  </div>
+                <p class="range-label">Smoky &amp; Roasty</p>
+                <div class="chip-group" data-name="flavorSmoky" data-single="true" role="radiogroup" aria-label="Smoky & Roasty preference">
+                  <button class="chip" type="button" data-value="10">Dislike</button>
+                  <button class="chip" type="button" data-value="40">A Little</button>
+                  <button class="chip active" type="button" data-value="70">Enjoy It</button>
+                  <button class="chip" type="button" data-value="100">Love It</button>
                 </div>
               </div>
             </div>
@@ -675,20 +697,25 @@
       const steps = Array.from(quiz.querySelectorAll('.quiz-card'));
       const prev = document.getElementById('quizPrev');
       const next = document.getElementById('quizNext');
-      const progress = quiz.querySelector('.quiz-progress');
+      const progressFill = document.querySelector('.quiz-progressbar-fill');
+      const stepCounter = document.querySelector('.quiz-step');
       let idx = 0;
 
-      function renderDots(){
-        // With header removed, show minimal progress dots only if needed
-        if(!progress) return;
-        progress.innerHTML = steps.map((_,i)=>`<span class="quiz-dot ${i===idx?'active':''}"></span>`).join('');
+      function renderProgress(){
+        // Update new progress bar
+        if(progressFill) {
+          progressFill.style.width = `${((idx + 1) / steps.length) * 100}%`;
+        }
+        if(stepCounter) {
+          stepCounter.textContent = `Step ${idx + 1} of ${steps.length}`;
+        }
       }
 
       function show(i){
         idx = Math.max(0, Math.min(i, steps.length-1));
         steps.forEach((s,j)=>{ s.classList.toggle('active', j===idx); });
         prev.disabled = idx===0; next.textContent = idx===steps.length-1? 'Checkout':'Next';
-        renderDots();
+        renderProgress();
         saveProgress();
       }
 
@@ -739,6 +766,26 @@
           quiz.querySelectorAll('.chip-group').forEach(group=>{
             const name = group.dataset.name; if(!name) return;
             const saved = data[name]; if(!saved) return;
+
+            // Handle flavor profile chips
+            if (group.dataset.single === 'true' && group.dataset.name.startsWith('flavor')) {
+              const chipToSelect = group.querySelector(`.chip[data-value="${saved}"]`);
+              if (chipToSelect) {
+                  group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                  chipToSelect.classList.add('active');
+              } else {
+                // Fallback to closest if direct match not found
+                const closestButton = Array.from(group.querySelectorAll('.chip[data-value]')).reduce((prev, curr) => {
+                  return (Math.abs(curr.dataset.value - saved) < Math.abs(prev.dataset.value - saved) ? curr : prev);
+                });
+                if (closestButton) {
+                  group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                  closestButton.classList.add('active');
+                }
+              }
+              return; // Skip to next group
+            }
+
             const vals = (group.dataset.multi==='true') ? saved.split(',').map(v=>v.trim()) : [saved];
             group.querySelectorAll('.chip').forEach(c=>{
               if(vals.includes(c.textContent.trim())) c.classList.add('active');
@@ -794,7 +841,9 @@
       quiz.querySelectorAll('.chip-group').forEach(group=>{
         group.addEventListener('click', (e)=>{
           const btn = e.target.closest('.chip'); if(!btn) return;
-          if(group.dataset.name==='method' || group.dataset.single==='true'){
+          const isSingle = group.dataset.single === 'true';
+
+          if(isSingle){
             group.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
             btn.classList.add('active');
           } else {
@@ -802,14 +851,21 @@
           }
           const name = group.dataset.name;
           if(name){
-            const hiddenField = document.getElementById('f_' + name);
+            const hiddenField = document.getElementById('f_' + name) || document.getElementById(name); // Also check for direct ID
             if(hiddenField){
               if(group.dataset.multi === 'true'){
                 hiddenField.value = Array.from(group.querySelectorAll('.chip.active')).map(c=>c.textContent.trim()).join(',');
+              } else if (btn.dataset.value) {
+                hiddenField.value = btn.dataset.value; // Use data-value for flavor chips
               } else {
                 hiddenField.value = btn.textContent.trim();
               }
             }
+          }
+
+          // Auto-advance on single-choice questions (but not for flavor profiles)
+          if(isSingle && !btn.dataset.value) {
+            setTimeout(() => next.click(), 250); // Short delay for user to see selection
           }
         });
         group.querySelectorAll('.chip').forEach(chip=>{
