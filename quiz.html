@@ -7,7 +7,7 @@
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   />
   <meta name="theme-color" content="#FBFBFD" />
-  <meta name="color-scheme" content="light dark" />
+  <meta name="color-scheme" content="light" />
   <title>Roast Portal — Taste Preference Quiz</title>
 
   <!-- Google tag (gtag.js) -->
@@ -45,6 +45,17 @@
         --accent-blue:#0071E3;
       }
     }
+
+    /* Force light theme regardless of system preference */
+    :root{
+      --bg-primary:#FBFBFD;
+      --bg-secondary:#F5F5F7;
+      --text-primary:#1D1D1F;
+      --text-secondary:#6E6E73;
+      --border-light:rgba(0,0,0,0.12);
+      --accent-blue:#0071E3;
+    }
+    body{ color-scheme: light; }
 
     *,*::before,*::after{ box-sizing:border-box; }
     html{ scroll-behavior:smooth; }
