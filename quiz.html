@@ -8,7 +8,7 @@
   />
   <meta name="theme-color" content="#FBFBFD" />
   <meta name="color-scheme" content="light dark" />
-  <title>Bean • Taste Preference Quiz</title>
+  <title>Roast Portal — Taste Preference Quiz</title>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
@@ -25,13 +25,13 @@
       --bg-secondary:#F5F5F7;
       --text-primary:#1D1D1F;
       --text-secondary:#6E6E73;
-      --accent-blue:#0071E3;
+      --accent-blue:#2b1608;
       --border-light:rgba(0,0,0,0.12);
       --radius:14px;
       --header-h:60px;
       --shadow:0 2px 10px rgba(0,0,0,.06);
       --ease: cubic-bezier(.25,.46,.45,.94);
-      --focus: 2px solid #0071E3;
+      --focus: 2px solid #2b1608;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-top: env(safe-area-inset-top, 0px);
     }
@@ -42,7 +42,7 @@
         --text-primary:#F5F5F7;
         --text-secondary:#B3B3B8;
         --border-light:rgba(255,255,255,0.12);
-        --accent-blue:#3AA3FF;
+        --accent-blue:#2b1608;
       }
     }
 
@@ -204,7 +204,7 @@
   <a class="sr-only" href="#quiz-content">Skip to quiz</a>
 
   <header class="quiz-header" role="banner">
-    <div class="brand" aria-label="Bean">Bean</div>
+    <div class="brand" aria-label="Roast Portal">Roast Portal</div>
     <div>
       <button id="reset-btn" class="linklike" aria-describedby="reset-help">Reset</button>
       <span id="reset-help" class="sr-only">Clears saved answers and restarts the quiz</span>
@@ -252,7 +252,7 @@
           { id:'flavorSmoky', label:'Smoky & Roasty' }
         ], required:false
       },
-      { id:'brewMethod', title:'How do you usually brew your coffee?', subtitle:"We'll grind to match your method.", type:'single-choice', answers:['Drip','Pour-over','French Press','Espresso','Single-Serve Pod','Cold Brew','Other'], required:true },
+      { id:'brewMethod', title:'How do you usually brew your coffee?', subtitle:"We'll grind to match your method.", type:'single-choice', answers:['Drip','Pour-over','French Press','Single-Serve Pod','Cold Brew','Other'], required:true },
       { id:'equipmentDetails', title:'What brewing equipment do you have?', subtitle:'Tell us about your setup.', type:'text', placeholder:'e.g., Chemex, V60, Moka pot, Nespresso', required:false },
       { id:'additions', title:'How do you take your coffee?', subtitle:'Select all that apply.', type:'multiple-choice', answers:['Black','Milk / Cream','Dairy-free Milk','Sugar / Syrup'], required:false },
       { id:'priceRange', title:'How much do you want to spend per cup?', subtitle:"We'll match your budget.", type:'slider', min:8, max:36, defaultValue:20, minLabel:'$2.00', maxLabel:'$9.00', required:false },
