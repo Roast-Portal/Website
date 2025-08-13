@@ -132,14 +132,56 @@
     .flavor-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 20px;
+      gap: 24px; /* Increased gap */
     }
-    .flavor-group { text-align: left; }
-    .flavor-label {
+    .flavor-slider-group {
+      text-align: left;
+    }
+    .flavor-slider-label {
       font-size: 16px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 16px; /* Increased margin */
       display: block;
+    }
+    .slider-container {
+      position: relative;
+      width: 100%;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      background: var(--bg-secondary);
+      border-radius: 5px;
+      outline: none;
+      transition: opacity .2s;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      background: var(--accent-blue);
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,113,227,0.3);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      background: var(--accent-blue);
+      cursor: pointer;
+      border-radius: 50%;
+      border: none;
+      box-shadow: 0 2px 6px rgba(0,113,227,0.3);
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 8px;
     }
     .chip-group {
       display: flex;
@@ -364,25 +406,17 @@
             flavorGrid.className = 'flavor-grid';
             stepData.flavors.forEach(flavor => {
                 const group = document.createElement('div');
-                group.className = 'flavor-group';
-                group.dataset.flavorId = flavor.id; // Added for robust selection
-                const label = document.createElement('span');
-                label.className = 'flavor-label';
-                label.textContent = flavor.label;
-                const chipGroup = document.createElement('div');
-                chipGroup.className = 'chip-group';
-                ['Dislike', 'A Little', 'Enjoy It', 'Love It'].forEach((level, index) => {
-                    const chip = document.createElement('button');
-                    chip.className = 'chip';
-                    chip.textContent = level;
-                    chip.dataset.value = [10, 40, 70, 100][index];
-                    if (answers[flavor.id] == chip.dataset.value) {
-                      chip.classList.add('selected');
-                    }
-                    chipGroup.appendChild(chip);
-                });
-                group.appendChild(label);
-                group.appendChild(chipGroup);
+                group.className = 'flavor-slider-group';
+                group.innerHTML = `
+                  <label for="${flavor.id}" class="flavor-slider-label">${flavor.label}</label>
+                  <div class="slider-container">
+                    <input type="range" id="${flavor.id}" name="${flavor.id}" min="0" max="100" value="${answers[flavor.id] || 50}">
+                  </div>
+                  <div class="slider-labels">
+                    <span>Dislike</span>
+                    <span>Love it</span>
+                  </div>
+                `;
                 flavorGrid.appendChild(group);
             });
             contentHTML += flavorGrid.outerHTML;
@@ -445,16 +479,11 @@
 
         if (stepData.type === 'flavor-profile') {
           stepData.flavors.forEach(flavor => {
-            const groupElement = document.querySelector(`.flavor-group[data-flavor-id="${flavor.id}"]`);
-            if (groupElement) {
-              const chipGroup = groupElement.querySelector('.chip-group');
-              chipGroup.addEventListener('click', (e) => {
-                if (e.target.classList.contains('chip')) {
-                  answers[flavor.id] = e.target.dataset.value;
-                  chipGroup.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-                  e.target.classList.add('selected');
-                  saveProgress();
-                }
+            const slider = document.getElementById(flavor.id);
+            if(slider) {
+              slider.addEventListener('input', () => {
+                answers[flavor.id] = slider.value;
+                saveProgress();
               });
             }
           });
