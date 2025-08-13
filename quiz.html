@@ -365,6 +365,7 @@
             stepData.flavors.forEach(flavor => {
                 const group = document.createElement('div');
                 group.className = 'flavor-group';
+                group.dataset.flavorId = flavor.id; // Added for robust selection
                 const label = document.createElement('span');
                 label.className = 'flavor-label';
                 label.textContent = flavor.label;
@@ -444,15 +445,18 @@
 
         if (stepData.type === 'flavor-profile') {
           stepData.flavors.forEach(flavor => {
-            const group = document.querySelector(`.flavor-label:contains("${flavor.label}")`).nextElementSibling;
-            group.addEventListener('click', (e) => {
-              if (e.target.classList.contains('chip')) {
-                answers[flavor.id] = e.target.dataset.value;
-                group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-                e.target.classList.add('selected');
-                saveProgress();
-              }
-            });
+            const groupElement = document.querySelector(`.flavor-group[data-flavor-id="${flavor.id}"]`);
+            if (groupElement) {
+              const chipGroup = groupElement.querySelector('.chip-group');
+              chipGroup.addEventListener('click', (e) => {
+                if (e.target.classList.contains('chip')) {
+                  answers[flavor.id] = e.target.dataset.value;
+                  chipGroup.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+                  e.target.classList.add('selected');
+                  saveProgress();
+                }
+              });
+            }
           });
         }
 
