@@ -319,7 +319,7 @@
       };
     }
     function postToSheets(payload){
-      const url = 'https://script.google.com/macros/s/AKfycbzpmoxLyDNV-sVisPIaM-oH3pEXGZEwpL6owB7HBNjK563qzfrWX-uz0rtKc4JNtPcBfQ/exec';
+      const url = 'https://script.google.com/macros/s/AKfycby7AfnuwnXEkhcQQ2X1Mgtc3h86eN2bkwOYgM47jsqBeFuOqIls-08CvKpPm3DAdkn5Bg/exec';
       const form = new URLSearchParams(); Object.entries(payload).forEach(([k,v])=>form.append(k,String(v??'')));
       return fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:form.toString()});
     }
