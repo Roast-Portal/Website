@@ -338,6 +338,7 @@
       }catch(_){}
       answers = {};
       currentStep = 0;
+      hasAttemptedSubmit = false;
       renderStep(true);
       updateNav();
       safeGtag('event','quiz_reset');
@@ -347,6 +348,7 @@
     function renderStep(focusTitle=false){
       const step = quizData[currentStep];
       quizContent.innerHTML = '';
+      hasAttemptedSubmit = false;
 
       const stepEl = document.createElement('section');
       stepEl.className = 'quiz-step';
