@@ -435,16 +435,10 @@
           const wrap = document.createElement('div');
           wrap.className = 'slider-wrap';
 
-          const bubble = document.createElement('div');
-          bubble.className = 'bubble';
-          const val = (answers[f.id] ?? 50);
-          bubble.textContent = val;
-
           const slider = document.createElement('input');
           slider.type = 'range'; slider.min = 0; slider.max = 100;
-          slider.value = val; slider.id = f.id; slider.name = f.id;
+          slider.value = answers[f.id] ?? 50; slider.id = f.id; slider.name = f.id;
 
-          wrap.appendChild(bubble);
           wrap.appendChild(slider);
 
           const labels = document.createElement('div');
@@ -456,19 +450,10 @@
           group.appendChild(labels);
           grid.appendChild(group);
 
-          const positionBubble = ()=>{
-            const min = Number(slider.min), max = Number(slider.max), v = Number(slider.value);
-            const percent = (v - min) / (max - min);
-            bubble.style.left = `calc(${percent*100}% + ${(14 - percent*28)}px)`;
-            bubble.textContent = v;
-          };
-          positionBubble();
           slider.addEventListener('input', ()=>{
             answers[f.id] = slider.value;
-            positionBubble();
             saveProgress();
           });
-          window.addEventListener('resize', positionBubble, { passive:true });
         });
         answersWrap.appendChild(grid);
       }
