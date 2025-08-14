@@ -538,13 +538,27 @@
     return chosen;
   }
 
-  // Inks
-  const INK_PALETTES = [
-    ["hsla(205,70%,78%,0.35)", "hsla(192,60%,80%,0.32)", "hsla(220,62%,84%,0.30)"],
-    ["hsla(132,60%,78%,0.35)", "hsla(150,55%,80%,0.32)", "hsla(170,52%,84%,0.30)"],
-    ["hsla(34,78%,76%,0.35)",  "hsla(20,65%,78%,0.32)",  "hsla(46,70%,82%,0.30)"],
-    ["hsla(280,46%,80%,0.35)", "hsla(260,40%,82%,0.30)", "hsla(300,42%,84%,0.30)"],
-  ];
+  // Generate unique inks for each pouch
+  function generateUniqueInks(index) {
+    // Base hue varies by index to ensure uniqueness
+    const baseHue = (index * 67) % 360; // 67 degrees apart for good separation
+    
+    // Vary saturation and lightness for each pouch
+    const saturation = Math.max(45, 70 - (index % 3) * 8);
+    const lightness = Math.max(70, 80 - (index % 4) * 3);
+    const alpha = Math.max(0.28, 0.35 - (index % 2) * 0.05);
+    
+    // Generate three complementary ink colors
+    const hue1 = baseHue;
+    const hue2 = (baseHue + 25) % 360;
+    const hue3 = (baseHue + 50) % 360;
+    
+    return [
+      `hsla(${hue1},${saturation}%,${lightness}%,${alpha})`,
+      `hsla(${hue2},${Math.max(40, saturation - 8)}%,${Math.max(65, lightness - 5)}%,${Math.max(0.25, alpha - 0.03)})`,
+      `hsla(${hue3},${Math.max(35, saturation - 15)}%,${Math.max(60, lightness - 10)}%,${Math.max(0.22, alpha - 0.06)})`
+    ];
+  }
 
   function createMiniPouch({badge, tagline, inks}){
     const [ink1,ink2,ink3] = inks;
@@ -764,17 +778,14 @@
   (function render(){
     const mount = document.getElementById('rotations');
     const chosen = sampleThreePerSession(); // 3 reviews + CTA
-    // pick distinct palettes for reviews and CTA
-    const paletteIndices = Array.from({length: INK_PALETTES.length}, (_,i)=>i);
-    for(let i=paletteIndices.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [paletteIndices[i], paletteIndices[j]] = [paletteIndices[j], paletteIndices[i]];
-    }
-    const needed = Math.min(4, paletteIndices.length);
-    const selectedPalettes = paletteIndices.slice(0, needed).map(idx=> INK_PALETTES[idx]);
-    const items = chosen.map((i, idx) => createPair(reviews[i], idx, selectedPalettes[idx % selectedPalettes.length]));
-    const ctaPalette = selectedPalettes[(items.length) % selectedPalettes.length];
-    items.push(createCTA(items.length, ctaPalette));
+    // Generate unique inks for each item
+    const items = chosen.map((i, idx) => {
+      const uniqueInks = generateUniqueInks(idx);
+      return createPair(reviews[i], idx, uniqueInks);
+    });
+    // Generate unique inks for CTA as well
+    const ctaInks = generateUniqueInks(items.length);
+    items.push(createCTA(items.length, ctaInks));
     mount.innerHTML = items.join('');
 
     // Stagger & reveal
