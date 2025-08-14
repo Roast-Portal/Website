@@ -587,7 +587,9 @@
       if(step.type === 'contact-form'){
         const ok = Boolean((answers.firstName||'').trim()) && emailOk(answers.email);
         const err = document.getElementById('contact-error');
-        if(err) err.textContent = ok ? '' : 'Please enter your first name and a valid email.';
+        if(err && hasAttemptedSubmit) {
+          err.textContent = ok ? '' : 'Please enter your first name and a valid email.';
+        }
         return ok;
       }
       // Sliders / multi / flavor-profile aren’t required in this config
@@ -602,6 +604,7 @@
 
     // --- Navigation ---
     nextBtn.addEventListener('click', ()=>{
+      hasAttemptedSubmit = true;
       if(!isStepValid()) return;
       if(currentStep < quizData.length - 1){
         currentStep++;
