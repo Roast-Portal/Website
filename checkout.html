@@ -76,11 +76,22 @@
       radial-gradient(120% 80% at 18% 20%, var(--ink1, hsla(210,52%,82%,.35)) 0 40%, transparent 70%),
       radial-gradient(130% 78% at 80% 24%, var(--ink2, hsla(200,50%,84%,.32)) 0 38%, transparent 72%),
       radial-gradient(110% 88% at 64% 84%, var(--ink3, hsla(180,48%,86%,.30)) 0 42%, transparent 74%);
-      opacity: .8; }
+      opacity: .55; }
     .label-badge{ padding:6px 10px; border-radius:16px; color:#fff; background:#0071E3; font-size:12px; font-weight:800; box-shadow:0 0 0 1px rgba(0,113,227,.28); margin-bottom:8px; }
     .label-tagline{ font-size:16px; font-weight:800; color:#1d1d1f; }
     .label-description{ font-size:13px; color:#2b2b30; margin-top:6px; }
     .mini{opacity:1;filter:brightness(.96) saturate(.92)}
+    /* De-emphasize background labels slightly so the front label reads crisp */
+    .stack-card.mini .label-tagline, .stack-card.mini .label-description { opacity: .78; }
+    /* Front-most card: remove any overlay softening and ensure crisp text */
+    .pouch-stack .stack-card:first-child .pouch-label::before { opacity: 0 !important; }
+    .pouch-stack .stack-card:first-child .pouch-label { background:#fff !important; }
+    .pouch-stack .stack-card:first-child .label-tagline,
+    .pouch-stack .stack-card:first-child .label-description {
+      opacity: 1 !important;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
 
     /* === Vector outline that matches the pouch shape exactly === */
     :root{
@@ -209,7 +220,7 @@
         // Staggered diagonal stack (no rotation)
         const dx = i * 16;                  // step to the right each card
         const dy = -i * 12;                 // lift each card slightly
-        const scale = 1 - i * 0.02;         // stronger depth scaling
+        const scale = i===0 ? 1 : (1 - i * 0.02);  // keep front card 1:1 for sharp label
         const style = `z-index:${z}; transform: translate(-50%,-50%) translate(${dx}px, ${dy}px) scale(${scale});`;
         const custom = i===0;
         stack += `
