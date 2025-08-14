@@ -310,6 +310,18 @@
 
     let currentStep = 0;
     let answers = {};
+    let hasAttemptedSubmit = false;
+
+    const quizContent = document.querySelector('.quiz-content');
+    const progressBar = $('#progress-bar');
+    const progressText = $('#progress-text');
+    const status = $('#status');
+    const prevBtn = $('#prev-btn');
+    const nextBtn = $('#next-btn');
+    const resetBtn = $('#reset-btn');
+
+    let currentStep = 0;
+    let answers = {};
 
     // --- Storage ---
     function saveProgress(){
