@@ -349,8 +349,6 @@
         localStorage.setItem(stepKey, String(currentStep));
         // Maintain compatibility with checkout by also saving rp_quiz
         localStorage.setItem('rp_quiz', JSON.stringify(buildRpQuizPayload(answers)));
-        status.textContent = 'Saved';
-        setTimeout(()=> status.textContent = '', 1500);
       }catch(_){}
     }
     function loadProgress(){
