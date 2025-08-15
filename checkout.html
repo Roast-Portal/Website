@@ -21,6 +21,13 @@
     
     *{box-sizing:border-box}
     
+    html,
+    body{
+      height: 100%;
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+    }
+    
     body{
       margin:0; 
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -451,12 +458,12 @@
         -webkit-overflow-scrolling: touch;
         overflow-x: hidden;
         position: relative;
-        height: 100vh;
-        height: -webkit-fill-available;
+        height: calc(var(--vh, 1vh) * 100);
+        min-height: -webkit-fill-available;
       }
       
       .container {
-        min-height: 100vh;
+        min-height: calc(var(--vh, 1vh) * 100);
         min-height: -webkit-fill-available;
         overflow-x: hidden;
         position: relative;
@@ -753,43 +760,19 @@
       }
     });
 
-    // Chrome on iOS scroll behavior fixes
+    // Chrome on iOS viewport height fix - proven solution from Stack Overflow
     (function(){
-      // Detect Chrome on iOS
-      const isChromeOnIOS = /CriOS/.test(navigator.userAgent);
-      
-      if (isChromeOnIOS) {
-        // Prevent scroll jumping and toolbar interference
-        let lastScrollTop = 0;
-        let scrollTimeout;
-        
-        window.addEventListener('scroll', function() {
-          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          
-          // Clear previous timeout
-          clearTimeout(scrollTimeout);
-          
-          // Set a timeout to handle scroll end
-          scrollTimeout = setTimeout(function() {
-            lastScrollTop = scrollTop;
-          }, 100);
-          
-          // Prevent extreme scroll values that cause jumping
-          if (Math.abs(scrollTop - lastScrollTop) > 1000) {
-            window.scrollTo(0, lastScrollTop);
-          }
-        }, { passive: true });
-        
-        // Fix viewport height issues
-        function setViewportHeight() {
-          const vh = window.innerHeight * 0.01;
-          document.documentElement.style.setProperty('--vh', `${vh}px`);
-        }
-        
-        setViewportHeight();
-        window.addEventListener('resize', setViewportHeight);
-        window.addEventListener('orientationchange', setViewportHeight);
+      function fixHeight() {
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
       }
+      
+      // Fix height on load, resize, and orientation change
+      addEventListener('load', fixHeight);
+      addEventListener('resize', fixHeight);
+      addEventListener('orientationchange', fixHeight);
+      
+      // Also run immediately for faster fix
+      fixHeight();
     })();
     
     // Hide Buy button in review mode
