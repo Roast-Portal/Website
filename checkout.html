@@ -17,10 +17,11 @@
     gtag('js', new Date());
     gtag('config', 'G-5LTTX2TGVQ');
   </script>
-
+  
   <style>
     :root{
       --bg-primary:#FBFBFD; 
+      --bg-secondary:#F5F5F7;
       --surface:#ffffff;
       --text-primary:#1D1D1F; 
       --text-secondary:#6E6E73;
@@ -103,41 +104,87 @@
       font-size:clamp(14px, 1.6vw, 16px);
     }
 
+    /* Clean checkout layout */
     .grid{
       display:grid;
-      grid-template-columns:1.5fr 1fr;
-      gap:clamp(16px, 3.2vw, 32px);
-      align-items:start;
+      grid-template-columns:1fr;
+      gap:0;
     }
-
-    .section-title{
-      font-weight:800;
-      margin:0 0 8px;
-      font-size:clamp(16px, 1.9vw, 18px);
-      letter-spacing:-0.01em;
+    
+    .checkout-content {
+      padding: 0;
     }
-
-    .desc{
-      color:var(--text-secondary);
-      line-height:1.5;
-      margin:0 0 16px;
-      font-size:clamp(13px, 1.5vw, 14px);
+    
+    .subscription-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
     }
-
-    .badges{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
-    .pill{
-      font-size:12px; padding:6px 10px; border-radius:999px;
-      border:1px solid var(--border); background:transparent; color:var(--text-secondary);
+    
+    .subscription-badge svg {
+      color: var(--blue);
     }
-
-    .divider{ height:1px; background:var(--border); margin:16px 0; }
-
-    .line{ display:flex; justify-content:space-between; gap:12px; margin:8px 0; font-size:14px; }
-    .muted{ color:var(--text-secondary); }
-    .price{ font-weight:700; }
-    .total{ font-weight:900; font-size:16px; }
-
-    .actions{ display:flex; gap:12px; justify-content:flex-end; margin-top:20px; flex-wrap:wrap; }
+    
+    .order-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 24px;
+      color: var(--text-primary);
+    }
+    
+    .order-items {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .product-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 4px 0 0;
+    }
+    
+    .order-summary {
+      padding: 20px 0;
+    }
+    
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .summary-line.total {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding: 12px 0 8px;
+    }
+    
+    .divider{ 
+      height: 1px; 
+      background: var(--border); 
+      margin: 12px 0; 
+    }
+    
+    .checkout-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+    }
 
     .btn{
       appearance:none; -webkit-appearance:none;
@@ -154,11 +201,83 @@
     .btn:focus-visible{ outline:none; box-shadow:var(--focus); }
     .btn[disabled], .btn[aria-busy="true"]{ opacity:.6; cursor:not-allowed; }
 
-    .btn.primary{ background:var(--blue); color:#fff; border-color:transparent; box-shadow:0 8px 20px rgba(0,113,227,.28); }
+    .btn.primary{ 
+      background:var(--blue); 
+      color:#fff; 
+      border-color:transparent; 
+      box-shadow:0 8px 20px rgba(0,113,227,.28); 
+    }
+    
+    .btn.secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+    
     @media (hover:hover){
       .btn.primary:hover{ box-shadow:0 10px 25px rgba(0,113,227,.35); }
+      .btn.secondary:hover{ background: var(--bg-secondary); }
     }
 
+    /* Product line layout */
+    .product-line {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0;
+    }
+    
+    .product-image {
+      flex-shrink: 0;
+    }
+    
+    .product-details {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .product-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 4px;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+    
+    .product-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 0 0 2px;
+      line-height: 1.4;
+    }
+    
+    .product-meta {
+      font-size: 13px;
+      color: var(--blue);
+      margin: 4px 0 0;
+      font-weight: 500;
+    }
+    
+    .product-qty {
+      flex-shrink: 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      background: var(--surface);
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+    
+    .product-price {
+      flex-shrink: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      min-width: 80px;
+      text-align: right;
+    }
+    
     /* Pouch visualization */
     .visual{ text-align:center; margin-bottom:24px; position:relative; }
     .pouch-stack{ display:inline-block; position:relative; margin-bottom:16px; }
@@ -251,8 +370,8 @@
     .pouch-outline .inner{ stroke: var(--outline-inner); stroke-width: var(--outline-inner-w); }
 
     .pouch-extreme{ 
-      --pouch-w: 120px; 
-      --pouch-h: 160px;
+      --pouch-w: 60px; 
+      --pouch-h: 80px;
       --pouch-min: min(var(--pouch-w), var(--pouch-h)); 
       --pouch-thickness: 38px; /* ~1cm at 96dpi */
       --bag-bg:#0a0a0a; 
@@ -303,7 +422,7 @@
 
     .pouch-extreme .pouch-label{ --pad: calc(var(--label-pad-frac) * var(--pouch-min)); position:absolute; left:var(--pad); right:var(--pad); bottom:var(--pad); top: calc(100% - (var(--label-top-frac) * 100%)); background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:28px 24px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.04); }
 
-    .pouch-extreme .pouch-label::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%), var(--label-gradient), radial-gradient(120% 80% at 18% 20%, hsla(210, 42%, 88%, 0.25) 0 40%, transparent 70%), radial-gradient(130% 78% at 80% 24%, hsla(200, 40%, 90%, 0.22) 0 38%, transparent 72%), radial-gradient(110% 88% at 64% 84%, hsla(180, 38%, 92%, 0.20) 0 42%, transparent 74%); opacity: calc(var(--label-gradient-opacity) * 0.7); }
+    .pouch-extreme .pouch-label::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%), var(--label-gradient), radial-gradient(120% 80% at 18% 20%, var(--ink1, hsla(210, 42%, 88%, 0.25)) 0 40%, transparent 70%), radial-gradient(130% 78% at 80% 24%, var(--ink2, hsla(200, 40%, 90%, 0.22)) 0 38%, transparent 72%), radial-gradient(110% 88% at 64% 84%, var(--ink3, hsla(180, 38%, 92%, 0.20)) 0 42%, transparent 74%); opacity: calc(var(--label-gradient-opacity) * 0.7); }
     .pouch-extreme .pouch-label::after{ content:""; position:absolute; inset:0; border-radius:inherit; opacity: 0.03; pointer-events: none;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='9' numOctaves='4' stitchTiles='stitch'/%3E%3C/svg%3E"); }
     .pouch-extreme .shape-layer, .pouch-extreme .text-layer{ position:absolute; inset:0 }
@@ -361,11 +480,10 @@
 
 
 
-    .qty-badge{ position:absolute; top:8px; inset-inline-end:8px; background:#111; color:#fff; border-radius:999px; font-size:12px; padding:6px 10px; font-weight:700; }
+    .qty-badge{ position:static; background:#111; color:#fff; border-radius:999px; font-size:12px; padding:6px 10px; font-weight:700; margin-left:auto; }
 
     /* Responsive tweaks */
     @media(max-width: 860px){
-      .grid{ grid-template-columns:1fr; gap:24px; }
       .surface{ border-radius:16px; }
     }
     
@@ -377,9 +495,49 @@
     }
 
     @media(max-width: 480px){
-      .actions{ flex-direction:column; }
-      .btn{ width:100%; padding:14px 20px; font-size:15px; }
       .surface{ border-radius:12px; }
+      
+      .checkout-actions {
+        flex-direction: column-reverse;
+        gap: 12px;
+      }
+      
+      .btn{ 
+        width:100%; 
+        padding:14px 20px; 
+        font-size:15px; 
+      }
+      
+      .order-title {
+        font-size: 20px;
+      }
+      
+      .product-line {
+        gap: 12px;
+      }
+      
+      .product-title {
+        font-size: 16px;
+      }
+      
+      .product-subtitle,
+      .product-meta {
+        font-size: 13px;
+      }
+      
+      .product-qty {
+        font-size: 14px;
+      }
+      
+      .product-price {
+        font-size: 16px;
+        min-width: 60px;
+      }
+      
+      .product-image img {
+        width: 50px;
+        height: 67px;
+      }
     }
 
 
@@ -459,20 +617,50 @@
 
     function compute(d){
       const pricePerCup = mapPrice(d.priceRange);
-      const more = String(d.cupsPerDay || '').toLowerCase().includes('more');
-      const billedServings = more ? 28 : 14;
-      const bonus = 1;
-      const totalServings = Math.min(31, billedServings + bonus);
+      const billedServings = 14; // Always 14 cups billed
+      const bonus = 1; // Always 1 free cup
+      const totalServings = 15; // Total 15 cups delivered
       const rawSubtotal = pricePerCup * billedServings;
-      const shipping = 4.95;
+      const shipping = 0; // Free shipping
       const rawTax = rawSubtotal * 0.08;
       const subtotal = roundTo95(rawSubtotal);
       const tax = roundTo95(rawTax);
       const total = roundTo95(subtotal + tax + shipping);
-      return { pricePerCup, billedServings, bonus, totalServings, subtotal, shipping, tax, total, period: 'every 2 weeks' };
+      return { pricePerCup, billedServings, bonus, totalServings, subtotal, shipping, tax, total, period: 'every 14 days' };
     }
 
     function pluralize(word, n){ return n === 1 ? word : word + 's'; }
+
+    function createPouchStack(stackId, badge, tagline, description, count = 15) {
+      let cards = [];
+      for (let i = 0; i < count; i++) {
+        const z = 20 - i;
+        const dx = i * 2;
+        const dy = 0;
+        const scale = 1 - i * 0.008;
+        const miniClass = i > 0 ? 'mini' : '';
+        
+        cards.push(`
+          <div class="stack-card ${miniClass}" data-idx="${i}" style="z-index: ${z}; transform: translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(${scale}); pointer-events: none;">
+            <div class="pouch-extreme pouch-container">
+              <div class="pouch">
+                <div class="top-seal"></div>
+                <div class="pouch-label">
+                  <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Shape layer"><rect x="397.807373046875" y="263.5442199707031" width="200" height="200" rx="3.200347071234561" ry="12" data-corner="12" fill="#ffffff80" data-shape="square" data-rot="0" data-scalex="3.7495933200054137" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(3.74959, 1);"></rect><circle cx="977.3275756835938" cy="24.153820037841797" r="110" fill="rgba(16, 234, 81, 1)" data-shape="circle" data-rot="0" data-scalex="1.278094641436079" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(1.27809, 1);"></circle><polygon points="504.1848449707031,645.3689880371094 614.1848449707031,875.3689880371094 394.1848449707031,875.3689880371094" fill="rgba(0, 0, 0, 1)" data-shape="triangle" data-rot="0" data-scalex="5" data-scaley="2.165829465350702" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(5, 2.16583);"></polygon></svg>
+                </div>
+                
+                <div class="text-layer">
+                  <div class="text-block label-badge" data-size-frac="0.020" style="--text-size-frac: 0.020; top: 12%; left: 50%; transform: translate(-50%, -50%); color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 0.08em; background: rgba(0,0,0,0.75); padding: 8px 16px; border-radius: 20px; white-space: nowrap;">${badge}</div>
+                  <div class="text-block label-tagline" data-size-frac="0.072" style="--text-size-frac: 0.072; top: 38%; left: 50%; transform: translate(-50%, -50%); color: rgb(28, 28, 32); font-weight: 700; line-height: 1.1; text-align: center; width: 85%; white-space: normal; max-width: none;">${tagline}</div>
+                  <div class="text-block label-description" data-size-frac="0.042" style="--text-size-frac: 0.042; top: 73%; left: 50%; transform: translate(-50%, -50%); color: rgb(72, 72, 74); font-weight: 400; line-height: 1.4; text-align: center; width: 80%; white-space: normal; max-width: none;">${description}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `);
+      }
+      return `<div class="pouch-stack" id="${stackId}">${cards.join('')}</div>`;
+    }
 
     function template(d, p){
       const flavors = topFlavors(d);
@@ -493,55 +681,72 @@
       }
 
       return `
-        <div>
-          <div class="visual">
-            <div class="pouch-stack">
-              <div class="pouch-extreme pouch-container" aria-hidden="true">
-                <div class="pouch">
-                  <div class="top-seal"></div>
-                  <div class="pouch-label">
-                    <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Shape layer"><rect x="397.807373046875" y="263.5442199707031" width="200" height="200" rx="3.200347071234561" ry="12" data-corner="12" fill="#ffffff80" data-shape="square" data-rot="0" data-scalex="3.7495933200054137" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(3.74959, 1);"></rect><circle cx="977.3275756835938" cy="24.153820037841797" r="110" fill="rgba(16, 234, 81, 1)" data-shape="circle" data-rot="0" data-scalex="1.278094641436079" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(1.27809, 1);"></circle><polygon points="504.1848449707031,645.3689880371094 614.1848449707031,875.3689880371094 394.1848449707031,875.3689880371094" fill="rgba(0, 0, 0, 1)" data-shape="triangle" data-rot="0" data-scalex="5" data-scaley="2.165829465350702" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(5, 2.16583);"></polygon></svg>
-                  </div>
-                  
-                  <div class="text-layer">
-                    <div class="text-block label-badge" data-size-frac="0.020" style="--text-size-frac: 0.020; top: 12%; left: 50%; transform: translate(-50%, -50%); color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 0.08em; background: rgba(0,0,0,0.75); padding: 8px 16px; border-radius: 20px; white-space: nowrap;">${esc(badgeText)}</div>
-                    <div class="text-block label-tagline" data-size-frac="0.072" style="--text-size-frac: 0.072; top: 38%; left: 50%; transform: translate(-50%, -50%); color: rgb(28, 28, 32); font-weight: 700; line-height: 1.1; text-align: center; width: 85%; white-space: normal; max-width: none;">${esc(d.blendName || 'Your Daily Roast')}</div>
-                    <div class="text-block label-description" data-size-frac="0.042" style="--text-size-frac: 0.042; top: 73%; left: 50%; transform: translate(-50%, -50%); color: rgb(72, 72, 74); font-weight: 700; line-height: 1.4; text-align: center; width: 80%; white-space: normal; max-width: none;">${esc(tasting)}</div>
+        <div class="checkout-content">
+          <div class="subscription-badge">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 1C11.866 1 15 4.134 15 8C15 11.866 11.866 15 8 15C4.134 15 1 11.866 1 8C1 4.134 4.134 1 8 1Z" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8 4V8L10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Recurring subscription • Billed every 14 days</span>
+          </div>
+          <h2 class="order-title">Order Summary</h2>
+          
+          <div class="order-items">
+            <div class="product-line">
+              <div class="product-image">
+                <div class="pouch-extreme pouch-container">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Shape layer"><rect x="397.807373046875" y="263.5442199707031" width="200" height="200" rx="3.200347071234561" ry="12" data-corner="12" fill="#ffffff80" data-shape="square" data-rot="0" data-scalex="3.7495933200054137" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(3.74959, 1);"></rect><circle cx="977.3275756835938" cy="24.153820037841797" r="110" fill="rgba(16, 234, 81, 1)" data-shape="circle" data-rot="0" data-scalex="1.278094641436079" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(1.27809, 1);"></circle><polygon points="504.1848449707031,645.3689880371094 614.1848449707031,875.3689880371094 394.1848449707031,875.3689880371094" fill="rgba(0, 0, 0, 1)" data-shape="triangle" data-rot="0" data-scalex="5" data-scaley="2.165829465350702" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(5, 2.16583);"></polygon></svg>
+                    </div>
+                    
+                    <div class="text-layer">
+                      <div class="text-block label-badge" data-size-frac="0.018" style="--text-size-frac: 0.018; top: 15%; left: 50%; transform: translate(-50%, -50%); color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 0.08em; background: rgba(0,0,0,0.75); padding: 3px 6px; border-radius: 10px; white-space: nowrap;">${esc(badgeText)}</div>
+                      <div class="text-block label-tagline" data-size-frac="0.05" style="--text-size-frac: 0.05; top: 45%; left: 50%; transform: translate(-50%, -50%); color: rgb(28, 28, 32); font-weight: 700; line-height: 1.1; text-align: center; width: 90%; white-space: normal; max-width: none;">${esc(d.blendName || 'Your Daily Roast')}</div>
+                      <div class="text-block label-description" data-size-frac="0.03" style="--text-size-frac: 0.03; top: 75%; left: 50%; transform: translate(-50%, -50%); color: rgb(72, 72, 74); font-weight: 400; line-height: 1.3; text-align: center; width: 85%; white-space: normal; max-width: none;">${esc(tasting).replace(/ & /g, '<br>')}</div>
+                    </div>
                   </div>
                 </div>
               </div>
+              <div class="product-details">
+                <h3 class="product-title">${esc(badgeText)} • ${esc(d.blendName || 'Your Daily Roast')}</h3>
+                <p class="product-subtitle">${esc(d.roastLevel || 'Medium')} roast • ${esc(tasting)}</p>
+                <p class="product-meta">14-day subscription • Delivered every 2 weeks</p>
+              </div>
+              <div class="product-qty">14 + 1 FREE</div>
+              <div class="product-price">${$$(p.subtotal)}</div>
             </div>
-            <div class="qty-badge">${p.totalServings} ${esc(pluralize('cup', p.totalServings))}</div>
           </div>
-
-          <div class="section-title">${esc(d.blendName || 'Your Daily Roast')} — ${esc(d.roastLevel || 'Medium')}</div>
-          <div class="desc">${esc(tasting)}. ${esc(brew)}. ${esc(style)}.</div>
-
-          <div class="badges">
-            ${d.personality ? `<span class='pill'>${esc(d.personality)}</span>` : ''}
-            ${d.tasteBalance ? `<span class='pill'>${esc(d.tasteBalance)}</span>` : ''}
-            ${d.cupsPerDay ? `<span class='pill'>${esc(d.cupsPerDay)}</span>` : ''}
+          
+          <div class="order-summary">
+            <div class="summary-line">
+              <span>14 cups @ ${$$(p.pricePerCup)} each</span>
+              <span>${$$(p.billedServings * p.pricePerCup)}</span>
+            </div>
+            <div class="summary-line">
+              <span>1 bonus cup</span>
+              <span>FREE</span>
+            </div>
+            <div class="summary-line">
+              <span>Shipping</span>
+              <span>${p.shipping === 0 ? 'FREE' : $$(p.shipping)}</span>
+            </div>
+            <div class="summary-line">
+              <span>Tax</span>
+              <span>${$$(p.tax)}</span>
+            </div>
+            <div class="divider"></div>
+            <div class="summary-line total">
+              <span>Total (billed every 14 days)</span>
+              <span>${$$(p.total)}</span>
+            </div>
           </div>
-
-          ${d.additionalNotes ? `<div class='divider'></div><div class='desc'><strong>Notes:</strong> ${esc(d.additionalNotes)}</div>` : ''}
         </div>
-
-        <div>
-          <div class="line"><span class="muted">Plan</span><span>${esc(planName)} • ${esc(p.period)}</span></div>
-          <div class="line"><span class="muted">Price per cup</span><span class="price">${$$(p.pricePerCup)}</span></div>
-          <div class="line"><span class="muted">Servings (billed)</span><span>${p.billedServings} × ${$$(p.pricePerCup)}</span></div>
-          <div class="line"><span class="muted">Bonus cup (qty 1)</span><span>${$$(0)}</span></div>
-          <div class="divider"></div>
-          <div class="line"><span class="muted">Subtotal</span><span>${$$(p.subtotal)}</span></div>
-          <div class="line"><span class="muted">Shipping</span><span>${$$(p.shipping)}</span></div>
-          <div class="line"><span class="muted">Estimated tax</span><span>${$$(p.tax)}</span></div>
-          <div class="divider"></div>
-          <div class="line total"><span>Total today</span><span>${$$(p.total)}</span></div>
-
-          <div class="actions">
-            <button class="btn" type="button" id="backBtn" aria-label="Go back">Back</button>
-            <button class="btn primary" type="button" id="buyBtn" aria-label="Buy now">Buy now</button>
-          </div>
+        
+        <div class="checkout-actions">
+          <button class="btn secondary" type="button" id="backBtn" aria-label="Go back">← Back to Quiz</button>
+          <button class="btn primary" type="button" id="buyBtn" aria-label="Buy now">Continue to Payment</button>
         </div>`;
     }
 
@@ -665,7 +870,7 @@
       const payload = buildPayload();
       const d = loadData();
       const p = compute(d);
-
+      
       // Timestamp last order immediately
       safeSetLS('rp_last_order_ts', Date.now());
 
@@ -769,7 +974,8 @@
 
     // Initial render
     render();
-  })();
+    })();
   </script>
 </body>
 </html>
+
