@@ -974,6 +974,10 @@
 
       const RP_USER_ID = safeGetLS('rp_user_id') || '';
 
+      // Check if quiz was completed and include additional notes if available
+      const quizCompleted = localStorage.getItem('quiz_completed') === 'true';
+      const additionalNotes = quizCompleted ? (d.additionalNotes || '') : '';
+
       return {
         timestamp: new Date().toISOString(),
         tab: 'FormResponses',
@@ -996,10 +1000,12 @@
         flavorSmoky: d.flavorSmoky||'', 
         topFlavors,
         blendName: d.blendName||'', 
+        additionalNotes,
         billedServings, 
         bonus, 
         totalServings, 
-        source: 'checkout'
+        source: 'quiz_completed', // Changed to indicate this includes quiz data
+        submission_id: 'checkout_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) // Add unique ID for deduplication
       };
     }
 
@@ -1012,7 +1018,7 @@
       }
       window.lastSubmissionHash = payloadHash;
       
-      const url = 'https://script.google.com/macros/s/AKfycbxd6pPajYDJEtCIZpUe9zmJrTCypz6_vzWAHABsx0vg-bpAjF0SdfuCkhvhZJ6pTnpz7g/exec';
+      const url = 'https://script.google.com/macros/s/AKfycbwSbx0Aj6FBwXXxAY1xNPfHz8etSqEnlzuw97041FMt5dwroOUS0dfFjKPCvk0K396bZQ/exec';
       const form = new URLSearchParams();
       Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
       const body = form.toString();
