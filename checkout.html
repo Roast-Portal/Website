@@ -1004,6 +1004,14 @@
     }
 
     function postToSheets(payload, { useBeacon = false } = {}){
+      // Prevent duplicate submissions with same payload
+      const payloadHash = JSON.stringify(payload);
+      if (window.lastSubmissionHash === payloadHash) {
+        console.log('Duplicate submission detected, skipping...');
+        return Promise.resolve(true);
+      }
+      window.lastSubmissionHash = payloadHash;
+      
       const url = 'https://script.google.com/macros/s/AKfycbxd6pPajYDJEtCIZpUe9zmJrTCypz6_vzWAHABsx0vg-bpAjF0SdfuCkhvhZJ6pTnpz7g/exec';
       const form = new URLSearchParams();
       Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
@@ -1086,12 +1094,17 @@
     let submissionInProgress = false;
     let submissionCompleted = false;
     let robustSubmissionSetup = false;
+    let submissionAttempted = false; // Track if we've attempted submission
 
     function onBuy(){
       // Prevent duplicate submissions
-      if (submissionInProgress || submissionCompleted) return;
+      if (submissionInProgress || submissionCompleted || submissionAttempted) {
+        console.log('Submission already in progress, completed, or attempted, ignoring...');
+        return;
+      }
       
       submissionInProgress = true;
+      submissionAttempted = true;
       const btn = document.getElementById('buyBtn');
       if (btn){ btn.setAttribute('aria-busy', 'true'); btn.disabled = true; }
 
@@ -1145,8 +1158,10 @@
       const params = new URLSearchParams(window.location.search);
       if (params.get('review') === '1' && buy){ buy.remove(); }
 
-      // Set up robust form submission handlers
-      setupRobustSubmission();
+      // Set up robust form submission handlers (only once per page load)
+      if (!robustSubmissionSetup) {
+        setupRobustSubmission();
+      }
     }
 
     // Ensure form submission happens even if user navigates away quickly
@@ -1155,12 +1170,18 @@
       if (robustSubmissionSetup) return;
       robustSubmissionSetup = true;
       
+      // Reset submission state for this session
+      submissionAttempted = false;
+      submissionCompleted = false;
+      submissionInProgress = false;
+      
       const payload = buildPayload();
       
       // Handle page visibility change (user switching tabs, minimizing, etc.)
       document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'hidden' && !submissionCompleted) {
+        if (document.visibilityState === 'hidden' && !submissionCompleted && !submissionAttempted) {
           // User is leaving the page, submit immediately
+          submissionAttempted = true;
           postToSheets(payload, { useBeacon: true }).catch(err => console.error('Visibility change submission failed:', err));
         }
       });
@@ -1168,24 +1189,27 @@
       // Handle beforeunload (user closing tab, navigating away, etc.)
       // Removed popup confirmation - data still submits in background
       window.addEventListener('beforeunload', function(e) {
-        if (!submissionCompleted) {
+        if (!submissionCompleted && !submissionAttempted) {
           // Submit with beacon for maximum reliability
+          submissionAttempted = true;
           postToSheets(payload, { useBeacon: true });
         }
       });
 
       // Handle pagehide (more reliable than beforeunload on mobile)
       window.addEventListener('pagehide', function() {
-        if (!submissionCompleted) {
+        if (!submissionCompleted && !submissionAttempted) {
           // Final attempt to submit
+          submissionAttempted = true;
           postToSheets(payload, { useBeacon: true });
         }
       });
 
       // Handle unload (final fallback)
       window.addEventListener('unload', function() {
-        if (!submissionCompleted) {
+        if (!submissionCompleted && !submissionAttempted) {
           // Last chance submission
+          submissionAttempted = true;
           postToSheets(payload, { useBeacon: true });
         }
       });
