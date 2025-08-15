@@ -210,15 +210,34 @@
       width:100%; padding:14px 16px; font-size:16px; border-radius: var(--radius);
       border:1px solid var(--border-light); background:#fff; background:var(--bg-secondary);
       color:var(--text-primary); box-shadow: var(--shadow);
+      margin-bottom: 0; /* Reset default margins */
     }
     .textarea-input{ min-height:120px; resize: vertical; }
     .field-row{ display:grid; gap:12px; grid-template-columns:1fr; }
     @media (min-width: 600px){ .field-row{ grid-template-columns:1fr 1fr; } }
     
     /* Contact form specific styling for consistent spacing */
-    .contact-form .field-row { margin-bottom: 12px; }
-    .contact-form .text-input { margin-bottom: 12px; }
-    .contact-form .error { margin-top: 8px; }
+    .contact-form { 
+      display: block !important; /* Override grid display */
+      gap: 0 !important; /* Remove grid gap */
+    }
+    .contact-form .field-row { 
+      margin-bottom: 12px !important; 
+    }
+    .contact-form .text-input { 
+      margin-bottom: 12px !important; 
+    }
+    .contact-form .error { 
+      margin-top: 8px !important; 
+    }
+    
+    /* Ensure consistent spacing for all contact form elements */
+    .contact-form > * {
+      margin-bottom: 12px !important;
+    }
+    .contact-form > *:last-child {
+      margin-bottom: 0 !important;
+    }
 
     /* Sticky nav */
     .quiz-nav{
