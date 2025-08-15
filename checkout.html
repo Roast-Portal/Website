@@ -1,185 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Performance hints -->
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FBFBFD">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0b0d">
+  <title>Roast Portal — Checkout</title>
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-5LTTX2TGVQ');
   </script>
-  
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Roast Portal — Checkout</title>
+
   <style>
     :root{
-      --bg-primary:#FBFBFD; --text-primary:#1D1D1F; --text-secondary:#6E6E73;
-      --border:rgba(0,0,0,0.08); --blue:#0071E3;
+      /* Light scheme */
+      --bg-primary:#FBFBFD; 
+      --surface:#ffffff;
+      --text-primary:#1D1D1F; 
+      --text-secondary:#6E6E73;
+      --border:rgba(0,0,0,0.08); 
+      --blue:#0071E3;
+      --shadow: 0 10px 30px rgba(0,0,0,.06);
+      --surface-radius:20px;
+      --focus: 0 0 0 3px rgba(0,113,227,.35);
     }
-    
-    *{box-sizing:border-box}
-    
-    html,
-    body{
-      height: 100%;
-      height: 100vh;
-      height: calc(var(--vh, 1vh) * 100);
+
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg-primary:#0b0b0d;
+        --surface:#141417;
+        --text-primary:#F5F5F7;
+        --text-secondary:#B0B0B5;
+        --border:rgba(255,255,255,0.12);
+        --blue:#2997ff;
+        --shadow: 0 12px 28px rgba(0,0,0,.45);
+        --focus: 0 0 0 3px rgba(41,151,255,.45);
+      }
     }
-    
+
+    /* Base resets */
+    *,*::before,*::after{ box-sizing:border-box; }
+    html{ -webkit-text-size-adjust:100%; }
+
+    /* Viewport-height that works everywhere */
+    :root{
+      --vh: 1vh; /* JS will update on legacy browsers */
+    }
+
+    html, body{
+      height:100%;
+    }
+
     body{
       margin:0; 
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
       background:var(--bg-primary);
       color:var(--text-primary);
       line-height:1.5;
-      /* Chrome on iOS scroll fixes */
-      -webkit-overflow-scrolling: touch;
-      overflow-x: hidden;
-      position: relative;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      -webkit-overflow-scrolling:touch;
+      overflow-x:hidden;
+      overscroll-behavior-y: contain; /* Prevent rubber-band jank during checkout */
     }
-    
+
+    /* Container uses dvh with graceful fallbacks */
     .container{
       max-width:1080px;
-      margin:0 auto;
-      padding:24px;
+      margin-inline:auto;
+      padding:clamp(12px, 2.2vw, 24px);
+      min-height:100vh;
     }
-    
+    @supports (height: 100dvh){
+      .container{ min-height:100dvh; }
+    }
+
     .surface{
-      background:#fff;
+      background:var(--surface);
       border:1px solid var(--border);
-      border-radius:20px;
-      box-shadow:0 10px 30px rgba(0,0,0,.06);
-      padding:24px;
+      border-radius:var(--surface-radius);
+      box-shadow:var(--shadow);
+      padding:clamp(16px, 2.2vw, 24px);
     }
-    
+
     h1{
-      font-size:28px;
-      margin:0 0 8px;
-      font-weight:700;
+      font-size:clamp(22px, 2.2vw, 28px);
+      margin:0 0 6px;
+      font-weight:800;
+      letter-spacing:-0.01em;
     }
-    
+
     p.sub{
       color:var(--text-secondary);
-      margin:0 0 24px;
-      font-size:16px;
+      margin:0 0 20px;
+      font-size:clamp(14px, 1.6vw, 16px);
     }
-    
+
     .grid{
       display:grid;
       grid-template-columns:1.5fr 1fr;
-      gap:32px;
+      gap:clamp(16px, 3.2vw, 32px);
       align-items:start;
     }
-    
+
     .section-title{
-      font-weight:700;
+      font-weight:800;
       margin:0 0 8px;
-      font-size:18px;
+      font-size:clamp(16px, 1.9vw, 18px);
+      letter-spacing:-0.01em;
     }
-    
+
     .desc{
       color:var(--text-secondary);
       line-height:1.5;
       margin:0 0 16px;
-      font-size:14px;
+      font-size:clamp(13px, 1.5vw, 14px);
     }
-    
-    .badges{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:12px;
-    }
-    
+
+    .badges{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
     .pill{
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(0,0,0,.1);
-      background:#fff;
-      color:var(--text-secondary);
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      border:1px solid var(--border); background:transparent; color:var(--text-secondary);
     }
-    
-    .divider{
-      height:1px;
-      background:var(--border);
-      margin:16px 0;
-    }
-    
-    .line{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      margin:8px 0;
-      font-size:14px;
-    }
-    
-    .muted{
-      color:var(--text-secondary);
-    }
-    
-    .price{
-      font-weight:600;
-    }
-    
-    .total{
-      font-weight:800;
-      font-size:16px;
-    }
-    
-    .actions{
-      display:flex;
-      gap:12px;
-      justify-content:flex-end;
-      margin-top:20px;
-    }
-    
+
+    .divider{ height:1px; background:var(--border); margin:16px 0; }
+
+    .line{ display:flex; justify-content:space-between; gap:12px; margin:8px 0; font-size:14px; }
+    .muted{ color:var(--text-secondary); }
+    .price{ font-weight:700; }
+    .total{ font-weight:900; font-size:16px; }
+
+    .actions{ display:flex; gap:12px; justify-content:flex-end; margin-top:20px; flex-wrap:wrap; }
+
     .btn{
-      appearance:none;
-      border:1px solid rgba(0,0,0,.1);
-      background:#fff;
-      color:#1d1d1f;
-      padding:12px 20px;
-      border-radius:999px;
-      cursor:pointer;
-      font-size:14px;
-      font-weight:500;
-      box-shadow:0 1px 6px rgba(0,0,0,.06);
-      transition:all 0.2s ease;
+      appearance:none; -webkit-appearance:none;
+      border:1px solid var(--border);
+      background:var(--surface);
+      color:var(--text-primary);
+      padding:12px 20px; border-radius:999px; cursor:pointer;
+      font-size:14px; font-weight:600; box-shadow:0 1px 6px rgba(0,0,0,.06);
+      transition:transform .2s ease, box-shadow .2s ease; position:relative;
     }
-    
-    .btn:hover{
-      transform:translateY(-1px);
-      box-shadow:0 6px 18px rgba(0,0,0,.08);
+    @media (hover:hover){
+      .btn:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,.10); }
     }
-    
-    .btn.primary{
-      background:var(--blue);
-      color:#fff;
-      border-color:transparent;
-      box-shadow:0 8px 20px rgba(0,113,227,.28);
+    .btn:focus-visible{ outline:none; box-shadow:var(--focus); }
+    .btn[disabled], .btn[aria-busy="true"]{ opacity:.6; cursor:not-allowed; }
+
+    .btn.primary{ background:var(--blue); color:#fff; border-color:transparent; box-shadow:0 8px 20px rgba(0,113,227,.28); }
+    @media (hover:hover){
+      .btn.primary:hover{ box-shadow:0 10px 25px rgba(0,113,227,.35); }
     }
-    
-    .btn.primary:hover{
-      box-shadow:0 10px 25px rgba(0,113,227,.35);
-    }
-    
-    /* Pouch visualization - using product-section pouch-extreme design */
-    .visual{
-      text-align:center;
-      margin-bottom:24px;
-      position:relative;
-    }
-    
-    .pouch-stack{
-      display:inline-block;
-      position:relative;
-      margin-bottom:16px;
-    }
-    
-    /* Pouch extreme (from product-section) */
+
+    /* Pouch visualization */
+    .visual{ text-align:center; margin-bottom:24px; position:relative; }
+    .pouch-stack{ display:inline-block; position:relative; margin-bottom:16px; }
+
     .pouch-extreme{ 
       --pouch-min: min(120px, 160px); 
       --bag-bg:#0a0a0a; 
@@ -193,35 +178,13 @@
       --label-gradient: linear-gradient(135deg, rgba(245, 248, 252, 0.65) 0%, rgba(252, 254, 255, 0.45) 50%, rgba(248, 250, 252, 0.4) 100%); 
       --label-gradient-opacity:0.85; 
     }
-    
-    .pouch-extreme.pouch-container{ 
-      position:relative; 
-      inline-size:120px; 
-      block-size:160px; 
-      container-type:inline-size 
-    }
-    
-    .pouch-extreme .pouch{ 
-      position:absolute; 
-      inset:0; 
-      background:var(--bag-bg); 
-      border-radius: calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)); 
-      overflow:hidden; 
-      isolation:isolate; 
-      box-shadow: 0 12px 28px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10); 
-    }
-    
-    .pouch-extreme .pouch::after{ 
-      content:""; 
-      position:absolute; 
-      inset:0; 
-      z-index:3; 
-      pointer-events:none; 
-      border-radius: inherit; 
-      clip-path: inherit; 
-      box-shadow: inset 0 0 0 calc(var(--pouch-border-frac) * var(--pouch-min)) var(--pouch-border-color); 
-    }
-    
+
+    .pouch-extreme.pouch-container{ position:relative; inline-size:120px; block-size:160px; container-type:inline-size }
+
+    .pouch-extreme .pouch{ position:absolute; inset:0; background:var(--bag-bg); border-radius: calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)); overflow:hidden; isolation:isolate; box-shadow: 0 12px 28px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10); }
+
+    .pouch-extreme .pouch::after{ content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius: inherit; clip-path: inherit; box-shadow: inset 0 0 0 calc(var(--pouch-border-frac) * var(--pouch-min)) var(--pouch-border-color); }
+
     .pouch-extreme .pouch{
       --rT: calc(var(--bag-radius-frac) * 100cqw);
       --rB: calc(var(--bag-radius-frac) * 80cqw);
@@ -236,310 +199,123 @@
                          0 calc(var(--t1) + 8cqw), var(--nox) calc(var(--t1) + 6cqw), 0 calc(var(--t1) + 4cqw),
                          0 var(--t1)); 
     }
-    
-    .pouch-extreme .top-seal{ 
-      position:absolute; 
-      inset-inline:0; 
-      inset-block-start:0; 
-      height:10cqw; 
-      background-color:var(--bag-bg); 
-      border-bottom:1px solid rgba(220,225,230,0.32);
-      background-image: repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0 1px, rgba(0,0,0,0.08) 1px 2px, transparent 2px 3px),
-                        linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%),
-                        radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); 
-      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); 
-      clip-path: inherit; 
+
+    .pouch-extreme .top-seal{ position:absolute; inset-inline:0; inset-block-start:0; height:10cqw; background-color:var(--bag-bg); border-bottom:1px solid rgba(220,225,230,0.32);
+      background-image: repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0 1px, rgba(0,0,0,0.08) 1px 2px, transparent 2px 3px), linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%), radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); clip-path: inherit; }
+
+    .pouch-extreme .pouch-label{ --pad: calc(var(--label-pad-frac) * var(--pouch-min)); position:absolute; left:var(--pad); right:var(--pad); bottom:var(--pad); top: calc(100% - (var(--label-top-frac) * 100%)); background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:16px 12px; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.04); }
+
+    .pouch-extreme .pouch-label::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%), var(--label-gradient), radial-gradient(120% 80% at 18% 20%, hsla(210, 42%, 88%, 0.25) 0 40%, transparent 70%), radial-gradient(130% 78% at 80% 24%, hsla(200, 40%, 90%, 0.22) 0 38%, transparent 72%), radial-gradient(110% 88% at 64% 84%, hsla(180, 38%, 92%, 0.20) 0 42%, transparent 74%); opacity: calc(var(--label-gradient-opacity) * 0.7); }
+
+    .label-badge{ padding:6px 10px; border-radius:14px; color:#fff; background:var(--blue); font-size:11px; font-weight:800; box-shadow:0 0 0 1px rgba(0,113,227,.28); margin-bottom:8px; display:inline-block; position:relative; z-index:1; }
+    .label-tagline{ font-size:14px; font-weight:800; color:#1d1d1f; margin-bottom:6px; position:relative; z-index:1; text-shadow: 0 1px 2px rgba(0,0,0,0.05); line-height:1.2; }
+    .label-description{ font-size:12px; color:#2b2b30; margin-top:6px; line-height:1.3; position:relative; z-index:1; letter-spacing: -0.01em; }
+
+    @media (prefers-color-scheme: dark){
+      .label-tagline{ color:#F5F5F7; }
+      .label-description{ color:#D8D8DC; }
     }
-    
-    .pouch-extreme .pouch-label{ 
-      --pad: calc(var(--label-pad-frac) * var(--pouch-min)); 
-      position:absolute; 
-      left:var(--pad); 
-      right:var(--pad); 
-      bottom:var(--pad); 
-      top: calc(100% - (var(--label-top-frac) * 100%));
-      background:var(--label-bg); 
-      border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); 
-      padding:16px 12px; 
-      overflow:hidden; 
-      display:flex; 
-      flex-direction:column; 
-      align-items:center; 
-      justify-content:center; 
-      text-align:center; 
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.08); 
-      border: 1px solid rgba(0,0,0,0.04); 
+
+    .qty-badge{ position:absolute; top:8px; inset-inline-end:8px; background:#111; color:#fff; border-radius:999px; font-size:12px; padding:6px 10px; font-weight:700; }
+
+    /* Responsive tweaks */
+    @media(max-width: 860px){
+      .grid{ grid-template-columns:1fr; gap:24px; }
+      .surface{ border-radius:16px; }
     }
-    
-    .pouch-extreme .pouch-label::before{ 
-      content:""; 
-      position:absolute; 
-      inset:0; 
-      border-radius:inherit; 
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%),
-        var(--label-gradient),
-        radial-gradient(120% 80% at 18% 20%, hsla(210, 42%, 88%, 0.25) 0 40%, transparent 70%),
-        radial-gradient(130% 78% at 80% 24%, hsla(200, 40%, 90%, 0.22) 0 38%, transparent 72%),
-        radial-gradient(110% 88% at 64% 84%, hsla(180, 38%, 92%, 0.20) 0 42%, transparent 74%); 
-      opacity: calc(var(--label-gradient-opacity) * 0.7); 
+
+    @media(max-width: 480px){
+      .actions{ flex-direction:column; }
+      .btn{ width:100%; padding:14px 20px; font-size:15px; }
+      .surface{ border-radius:12px; }
     }
-    
-    .label-badge{
-      padding:6px 10px;
-      border-radius:14px;
-      color:#fff;
-      background:var(--blue);
-      font-size:11px;
-      font-weight:700;
-      box-shadow:0 0 0 1px rgba(0,113,227,.28);
-      margin-bottom:8px;
-      display:inline-block;
-      position:relative;
-      z-index:1;
+
+    /* Motion & contrast prefs */
+    @media (prefers-reduced-motion: reduce){
+      *{ transition:none !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
     }
-    
-    .label-tagline{
-      font-size:14px;
-      font-weight:700;
-      color:#1d1d1f;
-      margin-bottom:6px;
-      position:relative;
-      z-index:1;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      line-height:1.2;
-    }
-    
-    .label-description{
-      font-size:12px;
-      color:#2b2b30;
-      margin-top:6px;
-      line-height:1.3;
-      position:relative;
-      z-index:1;
-      letter-spacing: -0.01em;
-    }
-    
-    .qty-badge{
-      position:absolute;
-      top:8px;
-      right:8px;
-      background:#111;
-      color:#fff;
-      border-radius:999px;
-      font-size:12px;
-      padding:6px 10px;
-      font-weight:600;
-    }
-    
-    /* Mobile optimizations */
-    @media(max-width:860px){
-      .grid{
-        grid-template-columns:1fr;
-        gap:24px;
-      }
-      
-      .container{
-        padding:16px;
-      }
-      
-      .surface{
-        padding:20px;
-        border-radius:16px;
-      }
-      
-      h1{
-        font-size:24px;
-      }
-      
-      .pouch-extreme.pouch-container{
-        inline-size:100px;
-        block-size:133px;
-      }
-      
-      .pouch-extreme .pouch-label{
-        padding:12px 8px;
-      }
-      
-      .label-badge{
-        font-size:10px;
-        padding:4px 8px;
-        margin-bottom:6px;
-      }
-      
-      .label-tagline{
-        font-size:12px;
-        margin-bottom:5px;
-      }
-      
-      .label-description{
-        font-size:10px;
-        margin-top:5px;
-      }
-      
-      /* Chrome on iOS specific fixes */
-      body{
-        -webkit-overflow-scrolling: touch;
-        overflow-x: hidden;
-        position: relative;
-        height: 100vh;
-        height: -webkit-fill-available;
-      }
-      
-      .container{
-        min-height: 100vh;
-        min-height: -webkit-fill-available;
-        overflow-x: hidden;
-      }
-      
-      .surface{
-        overflow-x: hidden;
-      }
-    }
-    
-    @media(max-width:480px){
-      .container{
-        padding:12px;
-      }
-      
-      .surface{
-        padding:16px;
-        border-radius:12px;
-      }
-      
-      h1{
-        font-size:22px;
-      }
-      
-      .actions{
-        flex-direction:column;
-      }
-      
-      .btn{
-        width:100%;
-        padding:14px 20px;
-        font-size:15px;
-      }
-      
-      .pouch-extreme.pouch-container{
-        inline-size:80px;
-        block-size:107px;
-      }
-      
-      .pouch-extreme .pouch-label{
-        padding:8px 6px;
-      }
-      
-      .label-badge{
-        font-size:9px;
-        padding:3px 6px;
-        margin-bottom:4px;
-      }
-      
-      .label-tagline{
-        font-size:10px;
-        margin-bottom:3px;
-      }
-      
-      .label-description{
-        font-size:9px;
-        margin-top:3px;
-      }
-      
-      .qty-badge{
-        font-size:11px;
-        padding:4px 8px;
-      }
-    }
-    
-    /* Chrome on iOS specific fixes */
-    @supports (-webkit-touch-callout: none) {
-      body {
-        -webkit-overflow-scrolling: touch;
-        overflow-x: hidden;
-        position: relative;
-        height: calc(var(--vh, 1vh) * 100);
-        min-height: -webkit-fill-available;
-      }
-      
-      .container {
-        min-height: calc(var(--vh, 1vh) * 100);
-        min-height: -webkit-fill-available;
-        overflow-x: hidden;
-        position: relative;
-      }
-      
-      .surface {
-        overflow-x: hidden;
-        position: relative;
-      }
-      
-      /* Prevent Chrome toolbar interference */
-      .visual {
-        overflow: visible;
-        position: relative;
-      }
-      
-      .pouch-stack {
-        overflow: visible;
-        position: relative;
-      }
+    @media (prefers-contrast: more){
+      :root{ --border: rgba(0,0,0,.35); }
+      @media (prefers-color-scheme: dark){ :root{ --border: rgba(255,255,255,.45); } }
     }
   </style>
-  
-  <!-- Google tag (gtag.js) event - delayed navigation helper -->
-  <script>
-    function gtagSendEvent(url, eventData) {
-      var callback = function () {
-        console.log('✅ GA callback executed, navigating to:', url);
-        if (typeof url === 'string') {
-          window.location = url;
-        }
-      };
-      console.log('📊 Sending GA event "submission_ok" with data:', eventData);
-      gtag('event', 'submission_ok', Object.assign({
-        'event_callback': callback,
-        'event_timeout': 2000,
-      }, eventData || {}));
-      return false;
-    }
-  </script>
 </head>
 <body>
   <div class="container">
-    <div class="surface">
-      <h1>Checkout</h1>
+    <main class="surface" role="main" aria-labelledby="page-title">
+      <h1 id="page-title">Checkout</h1>
       <p class="sub">Review your custom blend and complete your order.</p>
-      <div id="checkout" class="grid" aria-live="polite"></div>
-    </div>
+      <section id="checkout" class="grid" aria-live="polite" aria-atomic="true"></section>
+    </main>
   </div>
 
+  <noscript>
+    <style> .grid{display:block} .actions{display:none} </style>
+    <div style="max-width:1080px;margin:12px auto;color:#b00;padding-inline:16px;">
+      JavaScript is disabled. Enable it to review your blend and complete checkout.
+    </div>
+  </noscript>
+
   <script>
-    // Load quiz data
-    function loadData(){
-      try{ 
-        return JSON.parse(localStorage.getItem('rp_quiz')||'{}');
-      }catch{ 
-        return {}; 
-      }
+  (function(){
+    'use strict';
+
+    // ---- Utilities ----
+    const currencyFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+    const $$ = (n) => currencyFmt.format(Number(n || 0));
+
+    const esc = (s) => String(s ?? '')
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'",'&#39;');
+
+    function safeGetLS(key){
+      try{ return window.localStorage.getItem(key); }catch{ return null; }
     }
-    
+    function safeSetLS(key, val){
+      try{ window.localStorage.setItem(key, String(val)); }catch{}
+    }
+
+    function parseNumberLike(x, fallback = 0){
+      if (typeof x === 'number' && isFinite(x)) return x;
+      if (typeof x === 'string'){
+        const m = x.match(/[\d.]+/);
+        if (m) return parseFloat(m[0]);
+      }
+      return fallback;
+    }
+
     function mapPrice(per){
-      const val = Number(per)||20; 
-      const pct=(val-8)/(36-8); 
-      const price=Math.max(2,Math.min(9,+(2+7*pct).toFixed(2))); 
+      const val = parseNumberLike(per, 20);
+      const pct = (val - 8) / (36 - 8);
+      const price = Math.max(2, Math.min(9, +(2 + 7 * pct).toFixed(2)));
       return price;
     }
-    
+
     function roundTo95(amount){
-      const dollars = Math.ceil(amount);
-      return dollars - 0.05 + (dollars === amount ? 0 : 0);
+      const ceil = Math.ceil(Number(amount || 0));
+      return Math.max(0, ceil - 0.05); // e.g. 12.01 -> 12.95, 12 -> 11.95 (intentional pricing rule)
     }
-    
-    function compute(data){
-      const pricePerCup = mapPrice(data.priceRange);
-      const more = (data.cupsPerDay||'').toLowerCase().includes('more');
-      const billedServings = more?28:14;
+
+    function loadData(){
+      try{ return JSON.parse(safeGetLS('rp_quiz') || '{}'); }catch{ return {}; }
+    }
+
+    function topFlavors(d){
+      return [ ['Nutty', d.flavorNutty], ['Fruity', d.flavorFruity], ['Floral', d.flavorFloral], ['Smoky', d.flavorSmoky] ]
+        .filter(([,v]) => v !== '' && !isNaN(parseFloat(v)))
+        .sort((a,b) => parseFloat(b[1]) - parseFloat(a[1]))
+        .slice(0,2)
+        .map(([k]) => k)
+        .join(' & ');
+    }
+
+    function compute(d){
+      const pricePerCup = mapPrice(d.priceRange);
+      const more = String(d.cupsPerDay || '').toLowerCase().includes('more');
+      const billedServings = more ? 28 : 14;
       const bonus = 1;
       const totalServings = Math.min(31, billedServings + bonus);
       const rawSubtotal = pricePerCup * billedServings;
@@ -548,141 +324,107 @@
       const subtotal = roundTo95(rawSubtotal);
       const tax = roundTo95(rawTax);
       const total = roundTo95(subtotal + tax + shipping);
-      
-      return {
-        pricePerCup,
-        billedServings,
-        bonus,
-        totalServings,
-        subtotal,
-        shipping,
-        tax,
-        total,
-        period:'every 2 weeks'
-      };
+      return { pricePerCup, billedServings, bonus, totalServings, subtotal, shipping, tax, total, period: 'every 2 weeks' };
     }
-    
-    function topFlavors(d){
-      return [ 
-        ['Nutty',d.flavorNutty], 
-        ['Fruity',d.flavorFruity], 
-        ['Floral',d.flavorFloral], 
-        ['Smoky',d.flavorSmoky] 
-      ]
-        .filter(([,v])=>v!==''&&!isNaN(Number(v)))
-        .sort((a,b)=>Number(b[1])-Number(a[1]))
-        .slice(0,2)
-        .map(([k])=>k)
-        .join(' & ');
-    }
-    
-    function render(){
-      const d = loadData();
-      const p = compute(d);
+
+    function pluralize(word, n){ return n === 1 ? word : word + 's'; }
+
+    function template(d, p){
       const flavors = topFlavors(d);
-      const tasting = flavors? `${flavors} notes` : 'Balanced, approachable cup';
-      const brew = d.brewMethod? `Ground for ${d.brewMethod.toLowerCase()}` : 'Ground for your method';
-      const style = d.additions? `Enjoyed with ${d.additions.toLowerCase()}` : 'Enjoyed black or with milk';
-      
-      const el = document.getElementById('checkout');
+      const tasting = flavors ? `${flavors} notes` : 'Balanced, approachable cup';
+      const brew = d.brewMethod ? `Ground for ${String(d.brewMethod).toLowerCase()}` : 'Ground for your method';
+      const style = d.additions ? `Enjoyed with ${String(d.additions).toLowerCase()}` : 'Enjoyed black or with milk';
+
       const rawName = d.blendName || 'Your Daily Roast';
       const planName = /subscription/i.test(rawName) ? rawName : `${rawName} subscription`;
-      
+
       let badgeText = 'Your Blend';
-      if(d.firstName && String(d.firstName).trim()){
+      if (d.firstName && String(d.firstName).trim()){
         const n = String(d.firstName).trim();
         badgeText = /s$/i.test(n) ? `${n}' Blend` : `${n}'s Blend`;
-      } else if(d.email){
+      } else if (d.email){
         const handle = String(d.email).split('@')[0];
-        if(handle){ 
-          badgeText = /s$/i.test(handle) ? `${handle}' Blend` : `${handle}'s Blend`; 
-        }
+        if (handle){ badgeText = /s$/i.test(handle) ? `${handle}' Blend` : `${handle}'s Blend`; }
       }
-      
-      el.innerHTML = `
+
+      return `
         <div>
           <div class="visual">
             <div class="pouch-stack">
-              <div class="pouch-extreme pouch-container">
+              <div class="pouch-extreme pouch-container" aria-hidden="true">
                 <div class="pouch">
                   <div class="top-seal"></div>
                   <div class="pouch-label">
-                    <div class="label-badge">${badgeText}</div>
-                    <div class="label-tagline">${d.blendName||'Your Daily Roast'}</div>
-                    <div class="label-description">${tasting}</div>
+                    <div class="label-badge">${esc(badgeText)}</div>
+                    <div class="label-tagline">${esc(d.blendName || 'Your Daily Roast')}</div>
+                    <div class="label-description">${esc(tasting)}</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="qty-badge">${p.totalServings} cup${p.totalServings===1?'':'s'}</div>
+            <div class="qty-badge">${p.totalServings} ${esc(pluralize('cup', p.totalServings))}</div>
           </div>
-          
-          <div class="section-title">${d.blendName||'Your Daily Roast'} — ${d.roastLevel||'Medium'}</div>
-          <div class="desc">${tasting}. ${brew}. ${style}.</div>
-          
+
+          <div class="section-title">${esc(d.blendName || 'Your Daily Roast')} — ${esc(d.roastLevel || 'Medium')}</div>
+          <div class="desc">${esc(tasting)}. ${esc(brew)}. ${esc(style)}.</div>
+
           <div class="badges">
-            ${d.personality?`<span class='pill'>${d.personality}</span>`:''}
-            ${d.tasteBalance?`<span class='pill'>${d.tasteBalance}</span>`:''}
-            ${d.cupsPerDay?`<span class='pill'>${d.cupsPerDay}</span>`:''}
+            ${d.personality ? `<span class='pill'>${esc(d.personality)}</span>` : ''}
+            ${d.tasteBalance ? `<span class='pill'>${esc(d.tasteBalance)}</span>` : ''}
+            ${d.cupsPerDay ? `<span class='pill'>${esc(d.cupsPerDay)}</span>` : ''}
           </div>
-          
-          ${d.additionalNotes?`<div class='divider'></div><div class='desc'><strong>Notes:</strong> ${d.additionalNotes}</div>`:''}
+
+          ${d.additionalNotes ? `<div class='divider'></div><div class='desc'><strong>Notes:</strong> ${esc(d.additionalNotes)}</div>` : ''}
         </div>
-        
+
         <div>
-          <div class="line"><span class="muted">Plan</span><span>${planName} • ${p.period}</span></div>
-          <div class="line"><span class="muted">Price per cup</span><span class="price">$${p.pricePerCup.toFixed(2)}</span></div>
-          <div class="line"><span class="muted">Servings (billed)</span><span>${p.billedServings} × $${p.pricePerCup.toFixed(2)}</span></div>
-          <div class="line"><span class="muted">Bonus cup (qty 1)</span><span>$0.00</span></div>
+          <div class="line"><span class="muted">Plan</span><span>${esc(planName)} • ${esc(p.period)}</span></div>
+          <div class="line"><span class="muted">Price per cup</span><span class="price">${$$(p.pricePerCup)}</span></div>
+          <div class="line"><span class="muted">Servings (billed)</span><span>${p.billedServings} × ${$$(p.pricePerCup)}</span></div>
+          <div class="line"><span class="muted">Bonus cup (qty 1)</span><span>${$$(0)}</span></div>
           <div class="divider"></div>
-          <div class="line"><span class="muted">Subtotal</span><span>$${p.subtotal.toFixed(2)}</span></div>
-          <div class="line"><span class="muted">Shipping</span><span>$${p.shipping.toFixed(2)}</span></div>
-          <div class="line"><span class="muted">Estimated tax</span><span>$${p.tax.toFixed(2)}</span></div>
+          <div class="line"><span class="muted">Subtotal</span><span>${$$(p.subtotal)}</span></div>
+          <div class="line"><span class="muted">Shipping</span><span>${$$(p.shipping)}</span></div>
+          <div class="line"><span class="muted">Estimated tax</span><span>${$$(p.tax)}</span></div>
           <div class="divider"></div>
-          <div class="line total"><span>Total today</span><span>$${p.total.toFixed(2)}</span></div>
-          
+          <div class="line total"><span>Total today</span><span>${$$(p.total)}</span></div>
+
           <div class="actions">
-            <button class="btn" type="button" onclick="window.history.back()">Back</button>
-            <button class="btn primary" type="button" id="buyBtn">Buy now</button>
+            <button class="btn" type="button" id="backBtn" aria-label="Go back">Back</button>
+            <button class="btn primary" type="button" id="buyBtn" aria-label="Buy now">Buy now</button>
           </div>
         </div>`;
     }
-    
-    render();
-    
-    // Build payload and submit
+
+    function render(){
+      const d = loadData();
+      const p = compute(d);
+      const el = document.getElementById('checkout');
+      if (!el) return;
+      el.setAttribute('aria-busy','true');
+      el.innerHTML = template(d, p);
+      el.removeAttribute('aria-busy');
+      bindHandlers(d, p);
+    }
+
+    // ---- Networking ----
     function buildPayload(){
-      let d = {}; 
-      try{ 
-        d = JSON.parse(localStorage.getItem('rp_quiz')||'{}'); 
-      }catch{}
-      
+      let d = loadData();
       const pricePerCup = mapPrice(d.priceRange);
-      const more = (d.cupsPerDay||'').toLowerCase().includes('more');
-      const billedServings = more?28:14; 
-      const bonus=1; 
-      const totalServings=billedServings+bonus;
-      
-      const topFlavors = [ 
-        ['Nutty',d.flavorNutty], 
-        ['Fruity',d.flavorFruity], 
-        ['Floral',d.flavorFloral], 
-        ['Smoky',d.flavorSmoky] 
-      ]
-        .filter(([,v])=>v!==''&&!isNaN(Number(v)))
-        .sort((a,b)=>Number(b[1])-Number(a[1]))
+      const more = String(d.cupsPerDay || '').toLowerCase().includes('more');
+      const billedServings = more ? 28 : 14; 
+      const bonus = 1; 
+      const totalServings = billedServings + bonus;
+
+      const topFlavors = [ ['Nutty',d.flavorNutty], ['Fruity',d.flavorFruity], ['Floral',d.flavorFloral], ['Smoky',d.flavorSmoky] ]
+        .filter(([,v]) => v !== '' && !isNaN(Number(v)))
+        .sort((a,b) => Number(b[1]) - Number(a[1]))
         .slice(0,3)
-        .map(([k,v])=>`${k}:${v}`)
+        .map(([k,v]) => `${k}:${v}`)
         .join(', ');
-      
-      const RP_USER_ID = (function(){ 
-        try{ 
-          return localStorage.getItem('rp_user_id')||'' 
-        }catch{ 
-          return '' 
-        } 
-      })();
-      
+
+      const RP_USER_ID = safeGetLS('rp_user_id') || '';
+
       return {
         timestamp: new Date().toISOString(),
         tab: 'FormResponses',
@@ -711,82 +453,121 @@
         source: 'checkout'
       };
     }
-    
-    function postToSheets(payload){
+
+    function postToSheets(payload, { useBeacon = false } = {}){
       const url = 'https://script.google.com/macros/s/AKfycbxd6pPajYDJEtCIZpUe9zmJrTCypz6_vzWAHABsx0vg-bpAjF0SdfuCkhvhZJ6pTnpz7g/exec';
-      const form = new URLSearchParams(); 
-      Object.entries(payload).forEach(([k,v])=>form.append(k,String(v??'')));
-      return fetch(url,{
-        method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},
-        body:form.toString()
+      const form = new URLSearchParams();
+      Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
+      const body = form.toString();
+
+      // Try sendBeacon on navigation for reliability
+      if (useBeacon && 'sendBeacon' in navigator){
+        const blob = new Blob([body], { type:'application/x-www-form-urlencoded;charset=UTF-8' });
+        const ok = navigator.sendBeacon(url, blob);
+        if (ok) return Promise.resolve(true);
+      }
+
+      // Fallback to fetch
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body
       });
     }
-    
-    // Buy button handler
-    document.getElementById('buyBtn')?.addEventListener('click', ()=>{
+
+    // ---- Analytics + Navigation ----
+    function gtagNavigate(url, data){
+      let navigated = false;
+      const nav = () => {
+        if (!navigated && typeof url === 'string'){
+          navigated = true;
+          window.location.assign(url);
+        }
+      };
+
+      if (typeof gtag === 'function'){
+        // GA4 recommended purchase event
+        try{
+          gtag('event', 'purchase', {
+            transaction_id: String(Date.now()),
+            value: data.value,
+            currency: 'USD',
+            items: data.items || []
+          });
+        }catch{}
+
+        // Custom event w/ callback; short timeout + manual backup
+        try{
+          gtag('event', 'submission_ok', Object.assign({
+            event_callback: nav,
+            event_timeout: 800
+          }, data || {}));
+        }catch{}
+        setTimeout(nav, 400); // ensure we leave quickly even if blocked
+      } else {
+        nav();
+      }
+    }
+
+    function onBuy(){
+      const btn = document.getElementById('buyBtn');
+      if (btn){ btn.setAttribute('aria-busy', 'true'); btn.disabled = true; }
+
       const payload = buildPayload();
       const d = loadData();
       const p = compute(d);
-      
-      // Save timestamp immediately
-      try{ 
-        localStorage.setItem('rp_last_order_ts', String(Date.now())); 
-      }catch{}
-      
-      // Start Google Sheets submission in background (non-blocking)
-      postToSheets(payload).catch(err => {
-        console.error('⚠️ Background submission failed:', err);
-      });
-      
-      // Navigate immediately without waiting for submission
-      if (typeof gtag !== 'undefined') {
-        console.log('🎯 Buy button clicked - GA is available');
-        gtagSendEvent('thanks.html', {
-          'value': p.total,
-          'currency': 'USD',
-          'transaction_id': Date.now().toString(),
-          'items': [{
-            'item_id': 'subscription',
-            'item_name': d.blendName || 'Your Daily Roast',
-            'item_category': 'coffee_subscription',
-            'price': p.pricePerCup,
-            'quantity': p.billedServings
-          }]
-        });
-      } else {
-        console.warn('⚠️ Google Analytics (gtag) not found - navigating directly');
-        window.location.href = 'thanks.html';
-      }
-    });
 
-    // Chrome on iOS viewport height fix - proven solution from Stack Overflow
-    (function(){
-      function fixHeight() {
-        document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
-      }
-      
-      // Fix height on load, resize, and orientation change
-      addEventListener('load', fixHeight);
-      addEventListener('resize', fixHeight);
-      addEventListener('orientationchange', fixHeight);
-      
-      // Also run immediately for faster fix
-      fixHeight();
-    })();
-    
-    // Hide Buy button in review mode
-    (function(){
+      // Timestamp last order immediately
+      safeSetLS('rp_last_order_ts', Date.now());
+
+      // Fire-and-forget to Sheets with beacon where possible
+      postToSheets(payload, { useBeacon: true }).catch(err => console.error('Background submission failed:', err));
+
+      // Navigate immediately (with GA callback attempts)
+      gtagNavigate('thanks.html', {
+        value: p.total,
+        currency: 'USD',
+        transaction_id: Date.now().toString(),
+        items: [{
+          item_id: 'subscription',
+          item_name: d.blendName || 'Your Daily Roast',
+          item_category: 'coffee_subscription',
+          price: p.pricePerCup,
+          quantity: p.billedServings
+        }]
+      });
+    }
+
+    function bindHandlers(d, p){
+      const buy = document.getElementById('buyBtn');
+      const back = document.getElementById('backBtn');
+      if (buy){ buy.addEventListener('click', onBuy, { passive:true }); }
+      if (back){ back.addEventListener('click', () => history.length ? history.back() : window.location.assign('index.html')); }
+
+      // Review mode
       const params = new URLSearchParams(window.location.search);
-      if(params.get('review')==='1'){
-        const buy = document.getElementById('buyBtn');
-        if(buy){ 
-          buy.remove(); 
-        }
+      if (params.get('review') === '1' && buy){ buy.remove(); }
+    }
+
+    // ---- Viewport height fix for legacy iOS Chrome/Safari ----
+    (function viewportFix(){
+      const set = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
+      const useLegacy = !CSS.supports('height', '100dvh');
+      if (useLegacy){
+        window.addEventListener('resize', set, { passive:true });
+        window.addEventListener('orientationchange', set, { passive:true });
+        window.addEventListener('load', set, { once:true });
+        set();
+        // Use the custom var in CSS only if needed
+        const style = document.createElement('style');
+        style.textContent = `.container{min-height: calc(var(--vh, 1vh) * 100);}`;
+        document.head.appendChild(style);
       }
     })();
+
+    // Initial render
+    render();
+  })();
   </script>
 </body>
 </html>
-
-
