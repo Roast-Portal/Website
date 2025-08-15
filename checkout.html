@@ -39,12 +39,54 @@
     .btn{appearance:none;border:1px solid rgba(0,0,0,.1);background:#fff;color:#1d1d1f;padding:10px 16px;border-radius:999px;cursor:pointer;font-size:14px;box-shadow:0 1px 6px rgba(0,0,0,.06);transition:transform .15s ease,box-shadow .2s ease}
     .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
     .btn.primary{background:var(--blue);color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(0,113,227,.28)}
-    @media(max-width:860px){.grid{grid-template-columns:1fr}}
+    /* Mobile optimizations for checkout */
+    @media(max-width:860px){
+      .grid{grid-template-columns:1fr}
+      .container{padding:16px}
+      .surface{padding:20px; border-radius:16px}
+      h1{font-size:24px; margin:0 0 6px}
+      p.sub{font-size:14px; margin:0 0 12px}
+      .section-title{font-size:18px; margin:0 0 8px}
+      .desc{font-size:14px; line-height:1.4}
+      .badges{gap:6px; margin-top:6px}
+      .pill{font-size:11px; padding:4px 8px}
+      .divider{margin:8px 0}
+      .line{gap:8px; font-size:14px}
+      .actions{gap:8px; margin-top:12px; flex-direction:column}
+      .btn{padding:12px 16px; font-size:15px; min-height:48px}
+    }
+    
+    /* Small mobile optimizations */
+    @media(max-width:480px){
+      .container{padding:12px}
+      .surface{padding:16px; border-radius:12px}
+      h1{font-size:22px}
+      .section-title{font-size:16px}
+      .desc{font-size:13px}
+      .line{font-size:13px; gap:6px}
+      .btn{padding:10px 14px; font-size:14px}
+      
+      /* Ensure price breakdown fits on small screens */
+      .line span:first-child{min-width:80px}
+      .line span:last-child{text-align:right}
+    }
 
     /* Pouch stack visuals */
     :root{--pouch-w: min(84vw, 340px); --pouch-h: calc(var(--pouch-w) * 1.335);} 
     .visual{display:grid;place-items:center;margin-bottom:12px; position:relative}
     .pouch-stack{position:relative;height:calc(var(--pouch-h) + 80px);width:100%;max-width:var(--pouch-w)}
+    
+    /* Mobile pouch optimizations */
+    @media(max-width:860px){
+      :root{--pouch-w: min(90vw, 280px);}
+      .visual{margin-bottom:8px}
+      .pouch-stack{height:calc(var(--pouch-h) + 60px)}
+    }
+    
+    @media(max-width:480px){
+      :root{--pouch-w: min(95vw, 240px);}
+      .pouch-stack{height:calc(var(--pouch-h) + 40px)}
+    }
     .stack-card{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);will-change:transform,filter;}
     /* Pouch extreme (from product-section) */
     .pouch-extreme{ --pouch-min: min(var(--pouch-w), var(--pouch-h)); --bag-bg:#0a0a0a; --bag-radius-frac:0.0375; --pouch-border-frac:0.003; --pouch-border-color: rgba(0,0,0,0.1); --label-bg:#FDFEFE; --label-radius-frac:0.055; --label-top-frac:0.88; --label-pad-frac:0.04; --label-gradient: linear-gradient(135deg, rgba(245, 248, 252, 0.65) 0%, rgba(252, 254, 255, 0.45) 50%, rgba(248, 250, 252, 0.4) 100%); --label-gradient-opacity:0.85; }
@@ -70,6 +112,21 @@
                         radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); clip-path: inherit; }
     .pouch-extreme .pouch-label{ --pad: calc(var(--label-pad-frac) * var(--pouch-min)); position:absolute; left:var(--pad); right:var(--pad); bottom:var(--pad); top: calc(100% - (var(--label-top-frac) * 100%));
       background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:24px 20px; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+    
+    /* Mobile pouch label optimizations */
+    @media(max-width:860px){
+      .pouch-extreme .pouch-label{padding:20px 16px}
+      .label-badge{padding:5px 8px; font-size:11px; margin-bottom:6px}
+      .label-tagline{font-size:14px}
+      .label-description{font-size:12px; margin-top:4px}
+    }
+    
+    @media(max-width:480px){
+      .pouch-extreme .pouch-label{padding:16px 12px}
+      .label-badge{padding:4px 6px; font-size:10px; margin-bottom:4px}
+      .label-tagline{font-size:12px}
+      .label-description{font-size:11px; margin-top:3px}
+    }
     .pouch-extreme .pouch-label::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:
       linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%),
       var(--label-gradient),
