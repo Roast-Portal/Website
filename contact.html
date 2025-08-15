@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-5LTTX2TGVQ');
+    gtag('config', 'AW-17346642053');
+  </script>
+  
+  <!-- Event snippet for Submit lead form (1) conversion page -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+        'value': 0.0,
+        'currency': 'USD',
+        'event_callback': callback
+      });
+      return false;
+    }
+  </script>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Roast Portal</title>
+  <meta name="description" content="Get in touch with Roast Portal. We're here to help with your coffee questions and subscription needs." />
+  <link rel="icon" type="image/svg+xml" href="images/bean-favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #FBFBFD;
+      --bg-secondary: #F5F5F7;
+      --text-primary: #1D1D1F;
+      --text-secondary: #6E6E73;
+      --accent-blue: #0071E3;
+      --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: 'Kanit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(180deg, 
+        #FFFFFF 0%, 
+        #FBFBFD 20%, 
+        #F8F9FB 50%, 
+        #FBFBFD 80%, 
+        #FFFFFF 100%
+      );
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+    }
+    
+    /* Main Content Styles */
+    .main-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+    
+    .page-subtitle {
+      font-size: 1.125rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      color: var(--text-secondary);
+    }
+    
+    .contact-container {
+      display: flex;
+      justify-content: center;
+    }
+    
+    .contact-form {
+      background: var(--bg-primary);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+    
+    .contact-form h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--accent-blue);
+      padding-bottom: 0.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      border: 1px solid #E5E5E7;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color var(--ease-apple);
+      background: white;
+    }
+    
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+    }
+    
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    
+    .form-button {
+      width: 100%;
+      background: var(--accent-blue);
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: background-color var(--ease-apple);
+    }
+    
+    .form-button:hover {
+      background: #0056b3;
+    }
+    
+    .form-button:active {
+      transform: translateY(1px);
+    }
+    
+    /* Footer Styles */
+    .site-footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid #E5E5E7;
+      padding: 2rem 0;
+      margin-top: 2rem;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .footer-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      transition: transform var(--ease-apple);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .footer-logo:hover {
+      transform: scale(1.05);
+    }
+    
+    .logo-text {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      letter-spacing: 0.025em;
+    }
+    
+    .footer-copyright {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      text-align: center;
+      margin: 0;
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .footer-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color var(--ease-apple);
+    }
+    
+    .footer-link:hover {
+      color: var(--text-primary);
+    }
+    
+    /* Responsive adjustments */
+    @media (min-width: 768px) {
+      .contact-container {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .footer-section {
+        align-items: flex-start;
+      }
+      
+      .footer-links {
+        justify-content: flex-end;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="main-content">
+    <h1 class="page-title">Contact Us</h1>
+    <p class="page-subtitle">We'd love to hear from you. Get in touch with our coffee experts.</p>
+    
+    <div class="contact-container">
+      <div class="contact-form">
+        <h2>Send us a Message</h2>
+        <form id="contactForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="firstName">First Name *</label>
+              <input id="firstName" name="firstName" type="text" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="lastName">Last Name *</label>
+              <input id="lastName" name="lastName" type="text" class="form-input" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address *</label>
+            <input id="email" name="email" type="email" class="form-input" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="subject">Subject *</label>
+            <select id="subject" name="subject" class="form-select" required>
+              <option value="">Select a topic</option>
+              <option>Subscription Question</option>
+              <option>Order Status</option>
+              <option>Coffee & Brewing</option>
+              <option>Technical Support</option>
+              <option>Feedback</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="message">Message *</label>
+            <textarea id="message" name="message" class="form-textarea" placeholder="Tell us how we can help..." required></textarea>
+          </div>
+
+          <!-- Honeypot (hidden from humans) -->
+          <div class="form-group" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;">
+            <label for="hp">Leave this blank</label>
+            <input id="hp" name="hp" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <button type="submit" id="submitBtn" class="form-button">Send Message</button>
+          <p id="formStatus" class="page-subtitle" style="display:none;margin-top:1rem;"></p>
+        </form>
+      </div>
+    </div>
+  </main>
+  
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <a href="index.html" class="footer-logo" aria-label="Roast Portal Home">
+          <span class="logo-text">Roast Portal</span>
+        </a>
+        <p class="footer-copyright">© 2025 Roast Portal. All rights reserved.</p>
+      </div>
+      <div class="footer-section">
+        <div class="footer-links">
+          <a href="terms.html" class="footer-link">Terms</a>
+          <a href="privacy.html" class="footer-link">Privacy</a>
+          <a href="contact.html" class="footer-link">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIKhWYaf-61hUyMc3pjkwKfuhycSSpn2XUXFMbo4wAM3robyxIEdTmwx-dKcd8o87saA/exec';
+
+    function parseQueryParams() {
+      const p = new URLSearchParams(window.location.search);
+      return {
+        gclid: p.get('gclid') || '',
+        utm_source: p.get('utm_source') || '',
+        utm_medium: p.get('utm_medium') || '',
+        utm_campaign: p.get('utm_campaign') || '',
+        utm_term: p.get('utm_term') || '',
+        utm_content: p.get('utm_content') || ''
+      };
+    }
+
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = document.getElementById('formStatus');
+      const btn = document.getElementById('submitBtn');
+      status.style.display = 'none';
+
+      // Basic validation
+      const required = ['firstName','lastName','email','subject','message'];
+      for (const id of required) {
+        if (!document.getElementById(id).value.trim()) {
+          status.textContent = 'Please fill in all required fields.';
+          status.style.display = 'block';
+          return;
+        }
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+
+      // Build FormData (simple request = no preflight)
+      const fd = new FormData(document.getElementById('contactForm'));
+
+      // Extra context
+      const qs = parseQueryParams();
+      fd.append('pagePath', window.location.pathname);
+      fd.append('referrer', document.referrer || '');
+      fd.append('userAgent', navigator.userAgent);
+      Object.entries(qs).forEach(([k,v]) => fd.append(k, v));
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: fd  // <-- no headers, no mode: 'no-cors'
+        });
+
+        // Apps Script Web Apps will respond 200; read as text then try JSON
+        const text = await res.text();
+        let data = {};
+        try { data = JSON.parse(text); } catch { data = { ok: res.ok }; }
+
+        if (res.ok && (data.ok === true || data.ok === undefined)) {
+          if (window.gtag) {
+            gtag('event', 'conversion', {
+              'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+              'value': 0.0,
+              'currency': 'USD'
+            });
+          }
+          document.getElementById('contactForm').innerHTML = `
+            <div style="text-align:center;padding:2rem 1rem">
+              <h3 style="font-weight:700;margin-bottom:0.5rem;">Thanks — we got your message!</h3>
+              <p class="page-subtitle" style="margin:0 auto;max-width:34ch;">
+                Our team will reply to <b>${document.getElementById('email').value.trim()}</b> shortly.
+              </p>
+            </div>
+          `;
+        } else {
+          throw new Error(data.error || 'Submit failed');
+        }
+      } catch (err) {
+        console.error(err);
+        status.textContent = 'Something went wrong. Please try again in a moment.';
+        status.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Send Message';
+      }
+    });
+  </script>
+</body>
+</html>
