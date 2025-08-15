@@ -109,6 +109,12 @@
       min-height:100dvh;
     }
     .quiz-content{ min-height: 52dvh; display:flex; align-items:center; }
+    
+    /* Mobile height optimization */
+    @media (max-width: 619px) {
+      .quiz-container { padding: calc(var(--header-h) + 24px + var(--safe-top)) 16px 120px; }
+      .quiz-content { min-height: 40dvh; }
+    }
     .quiz-step{
       width:100%; animation: fadeIn .35s var(--ease) both;
     }
@@ -124,6 +130,12 @@
     }
     .question-subtitle{
       margin:0 0 22px; color:var(--text-secondary); font-size:15px;
+    }
+    
+    /* Mobile question spacing optimization */
+    @media (max-width: 619px) {
+      .question-title { margin: 0 0 8px; }
+      .question-subtitle { margin: 0 0 16px; font-size: 14px; }
     }
 
     /* Choice groups */
@@ -154,6 +166,14 @@
     @media (min-width: 620px){ .flavor-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
     .flavor-slider-group label{ display:block; font-weight:700; margin:0 0 10px; }
     .slider-wrap{ position:relative; padding-top: 26px; }
+    
+    /* Mobile optimization for flavor sliders */
+    @media (max-width: 619px) {
+      .flavor-grid { gap: 16px; }
+      .flavor-slider-group label { margin: 0 0 8px; font-size: 14px; }
+      .slider-wrap { padding-top: 20px; }
+      .slider-labels { font-size: 11px; margin-top: 4px; }
+    }
     input[type="range"]{
       -webkit-appearance: none; appearance: none; width:100%; height:8px;
       background: var(--bg-secondary); border-radius:999px; outline:none;
