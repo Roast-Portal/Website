@@ -965,7 +965,7 @@
         lat: '',
         lng: '',
         accuracy_m: '',
-        loc_source: 'browser',
+        loc_source: 'ip', // Only IP-based location, no GPS
         city: '',
         region: '',
         country: '',
@@ -1013,35 +1013,7 @@
       return data;
     }
     
-    // Get precise location if user allows
-    function getPreciseLocation() {
-      return new Promise((resolve) => {
-        if (!navigator.geolocation) {
-          resolve({ lat: '', lng: '', accuracy_m: '' });
-          return;
-        }
-        
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const coords = position.coords;
-            resolve({
-              lat: coords.latitude.toFixed(6),
-              lng: coords.longitude.toFixed(6),
-              accuracy_m: Math.round(coords.accuracy)
-            });
-          },
-          (error) => {
-            console.log('Geolocation failed:', error.message);
-            resolve({ lat: '', lng: '', accuracy_m: '' });
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 300000 // 5 minutes
-          }
-        );
-      });
-    }
+    // GPS location removed - no popups, only IP-based location
     
     function buildPayload(){
       let d = loadData();
@@ -1227,19 +1199,8 @@
       // Timestamp last order immediately
       safeSetLS('rp_last_order_ts', Date.now());
 
-      // Get precise location data first, then submit
-      getPreciseLocation().then(preciseLocation => {
-        // Update payload with precise location if available
-        if (preciseLocation.lat && preciseLocation.lng) {
-          payload.lat = preciseLocation.lat;
-          payload.lng = preciseLocation.lng;
-          payload.accuracy_m = preciseLocation.accuracy_m;
-          payload.loc_source = 'gps';
-        }
-        
-        // Submit ONCE when user clicks Buy Now
-        return postToSheets(payload, { useBeacon: false });
-      }).then(() => {
+      // Submit immediately - no GPS popups, only IP-based location
+      postToSheets(payload, { useBeacon: false }).then(() => {
         console.log('Order submitted successfully');
         
         // Track conversion when purchase is made
