@@ -49,7 +49,11 @@
 
     /* Base resets */
     *,*::before,*::after{ box-sizing:border-box; }
-    html{ -webkit-text-size-adjust:100%; }
+    html{ 
+      -webkit-text-size-adjust:100%;
+      margin: 0;
+      overscroll-behavior: none; /* Prevent pull-to-refresh and scroll chaining */
+    }
 
     /* Viewport-height that works everywhere */
     :root{
@@ -70,7 +74,7 @@
       -moz-osx-font-smoothing:grayscale;
       -webkit-overflow-scrolling:touch;
       overflow-x:hidden;
-      overscroll-behavior-y: contain; /* Prevent rubber-band jank during checkout */
+      overscroll-behavior: none; /* Prevent overscroll effects completely */
     }
 
     /* Container uses dvh with graceful fallbacks */
@@ -79,6 +83,9 @@
       margin-inline:auto;
       padding:clamp(12px, 2.2vw, 24px);
       min-height:100vh;
+      /* Chrome on iOS scroll fixes */
+      overscroll-behavior: contain;
+      overflow-x: hidden;
     }
     @supports (height: 100dvh){
       .container{ min-height:100dvh; }
@@ -90,6 +97,9 @@
       border-radius:var(--surface-radius);
       box-shadow:var(--shadow);
       padding:clamp(16px, 2.2vw, 24px);
+      /* Chrome on iOS scroll fixes */
+      overscroll-behavior: contain;
+      overflow-x: hidden;
     }
 
     h1{
@@ -549,6 +559,59 @@
       if (params.get('review') === '1' && buy){ buy.remove(); }
     }
 
+    // ---- Chrome on iOS specific fixes ----
+    (function chromeIOSFix(){
+      // Detect Chrome on iOS
+      const isChromeOnIOS = /CriOS/.test(navigator.userAgent);
+      
+      if (isChromeOnIOS) {
+        // Prevent scroll jumping and toolbar interference
+        let lastScrollTop = 0;
+        let scrollTimeout;
+        
+        // Enhanced scroll event handling
+        window.addEventListener('scroll', function(e) {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          
+          // Clear previous timeout
+          clearTimeout(scrollTimeout);
+          
+          // Set a timeout to handle scroll end
+          scrollTimeout = setTimeout(function() {
+            lastScrollTop = scrollTop;
+          }, 150);
+          
+          // Prevent extreme scroll values that cause jumping
+          if (Math.abs(scrollTop - lastScrollTop) > 500) {
+            e.preventDefault();
+            window.scrollTo(0, lastScrollTop);
+            return false;
+          }
+        }, { passive: false });
+        
+        // Fix viewport height issues
+        function setViewportHeight() {
+          const vh = window.innerHeight * 0.01;
+          document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        
+        setViewportHeight();
+        window.addEventListener('resize', setViewportHeight, { passive: true });
+        window.addEventListener('orientationchange', setViewportHeight, { passive: true });
+        
+        // Prevent pull-to-refresh
+        document.addEventListener('touchstart', function(e) {
+          if (e.touches.length === 1 && e.touches[0].clientY < 50) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+        
+        // Prevent overscroll on body
+        document.body.style.overscrollBehavior = 'none';
+        document.documentElement.style.overscrollBehavior = 'none';
+      }
+    })();
+    
     // ---- Viewport height fix for legacy iOS Chrome/Safari ----
     (function viewportFix(){
       const set = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
