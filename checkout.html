@@ -7,7 +7,6 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-5LTTX2TGVQ');
   </script>
   
@@ -19,180 +18,305 @@
       --bg-primary:#FBFBFD; --text-primary:#1D1D1F; --text-secondary:#6E6E73;
       --border:rgba(0,0,0,0.08); --blue:#0071E3;
     }
+    
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg-primary);color:var(--text-primary);overflow-x:hidden;scroll-behavior:smooth;overscroll-behavior:contain}
-    .container{max-width:1080px;margin:0 auto;padding:24px;position:relative}
-    .surface{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.06);padding:24px;position:relative}
-    h1{font-size:28px;margin:0 0 8px}
-    p.sub{color:var(--text-secondary);margin:0 0 16px}
-    .grid{display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:start}
-    .section-title{font-weight:700;margin:0 0 10px}
-    .desc{color:var(--text-secondary);line-height:1.55}
-    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-    .pill{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid rgba(0,0,0,.1);background:#fff}
-    .divider{height:1px;background:var(--border);margin:12px 0}
-    .line{display:flex;justify-content:space-between;gap:12px}
-    .muted{color:var(--text-secondary)}
-    .price{font-weight:600}
-    .total{font-weight:800}
-    .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
-    .btn{appearance:none;border:1px solid rgba(0,0,0,.1);background:#fff;color:#1d1d1f;padding:10px 16px;border-radius:999px;cursor:pointer;font-size:14px;box-shadow:0 1px 6px rgba(0,0,0,.06);transition:transform .15s ease,box-shadow .2s ease}
-    .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
-    .btn.primary{background:var(--blue);color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(0,113,227,.28)}
-    /* Mobile optimizations for checkout */
+    
+    body{
+      margin:0; 
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      background:var(--bg-primary);
+      color:var(--text-primary);
+      line-height:1.5;
+    }
+    
+    .container{
+      max-width:1080px;
+      margin:0 auto;
+      padding:24px;
+    }
+    
+    .surface{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.06);
+      padding:24px;
+    }
+    
+    h1{
+      font-size:28px;
+      margin:0 0 8px;
+      font-weight:700;
+    }
+    
+    p.sub{
+      color:var(--text-secondary);
+      margin:0 0 24px;
+      font-size:16px;
+    }
+    
+    .grid{
+      display:grid;
+      grid-template-columns:1.5fr 1fr;
+      gap:32px;
+      align-items:start;
+    }
+    
+    .section-title{
+      font-weight:700;
+      margin:0 0 8px;
+      font-size:18px;
+    }
+    
+    .desc{
+      color:var(--text-secondary);
+      line-height:1.5;
+      margin:0 0 16px;
+      font-size:14px;
+    }
+    
+    .badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    
+    .pill{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.1);
+      background:#fff;
+      color:var(--text-secondary);
+    }
+    
+    .divider{
+      height:1px;
+      background:var(--border);
+      margin:16px 0;
+    }
+    
+    .line{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin:8px 0;
+      font-size:14px;
+    }
+    
+    .muted{
+      color:var(--text-secondary);
+    }
+    
+    .price{
+      font-weight:600;
+    }
+    
+    .total{
+      font-weight:800;
+      font-size:16px;
+    }
+    
+    .actions{
+      display:flex;
+      gap:12px;
+      justify-content:flex-end;
+      margin-top:20px;
+    }
+    
+    .btn{
+      appearance:none;
+      border:1px solid rgba(0,0,0,.1);
+      background:#fff;
+      color:#1d1d1f;
+      padding:12px 20px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:14px;
+      font-weight:500;
+      box-shadow:0 1px 6px rgba(0,0,0,.06);
+      transition:all 0.2s ease;
+    }
+    
+    .btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 6px 18px rgba(0,0,0,.08);
+    }
+    
+    .btn.primary{
+      background:var(--blue);
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 8px 20px rgba(0,113,227,.28);
+    }
+    
+    .btn.primary:hover{
+      box-shadow:0 10px 25px rgba(0,113,227,.35);
+    }
+    
+    /* Pouch visualization */
+    .visual{
+      text-align:center;
+      margin-bottom:24px;
+      position:relative;
+    }
+    
+    .pouch-stack{
+      display:inline-block;
+      position:relative;
+      margin-bottom:16px;
+    }
+    
+    .pouch{
+      width:120px;
+      height:160px;
+      background:#0a0a0a;
+      border-radius:8px 8px 12px 12px;
+      position:relative;
+      margin:0 auto;
+      box-shadow:0 8px 20px rgba(0,0,0,.15);
+    }
+    
+    .pouch-label{
+      position:absolute;
+      bottom:12px;
+      left:12px;
+      right:12px;
+      background:#fff;
+      border-radius:8px;
+      padding:16px 12px;
+      text-align:center;
+      box-shadow:0 2px 8px rgba(0,0,0,.1);
+    }
+    
+    .label-badge{
+      background:var(--blue);
+      color:#fff;
+      padding:4px 8px;
+      border-radius:12px;
+      font-size:10px;
+      font-weight:700;
+      margin-bottom:6px;
+      display:inline-block;
+    }
+    
+    .label-tagline{
+      font-size:12px;
+      font-weight:700;
+      color:var(--text-primary);
+      margin-bottom:4px;
+    }
+    
+    .label-description{
+      font-size:10px;
+      color:var(--text-secondary);
+      line-height:1.3;
+    }
+    
+    .qty-badge{
+      position:absolute;
+      top:8px;
+      right:8px;
+      background:#111;
+      color:#fff;
+      border-radius:999px;
+      font-size:12px;
+      padding:6px 10px;
+      font-weight:600;
+    }
+    
+    /* Mobile optimizations */
     @media(max-width:860px){
-      .grid{grid-template-columns:1fr}
-      .container{padding:16px}
-      .surface{padding:20px; border-radius:16px}
-      h1{font-size:24px; margin:0 0 6px}
-      p.sub{font-size:14px; margin:0 0 12px}
-      .section-title{font-size:18px; margin:0 0 8px}
-      .desc{font-size:14px; line-height:1.4}
-      .badges{gap:6px; margin-top:6px}
-      .pill{font-size:11px; padding:4px 8px}
-      .divider{margin:8px 0}
-      .line{gap:8px; font-size:14px}
-      .actions{gap:8px; margin-top:12px; flex-direction:column}
-      .btn{padding:12px 16px; font-size:15px; min-height:48px}
+      .grid{
+        grid-template-columns:1fr;
+        gap:24px;
+      }
       
-      /* Fix mobile scrolling issues */
-      body{scroll-behavior:auto; overscroll-behavior:contain}
-      .container{transform:none}
-      .surface{transform:none}
+      .container{
+        padding:16px;
+      }
       
-      /* Ensure pouches are visible on mobile */
-      .stack-card{opacity:1; visibility:visible}
-      .pouch-extreme{opacity:1; visibility:visible}
-    }
-    
-    /* Small mobile optimizations */
-    @media(max-width:480px){
-      .container{padding:12px}
-      .surface{padding:16px; border-radius:12px}
-      h1{font-size:22px}
-      .section-title{font-size:16px}
-      .desc{font-size:13px}
-      .line{font-size:13px; gap:6px}
-      .btn{padding:10px 14px; font-size:14px}
+      .surface{
+        padding:20px;
+        border-radius:16px;
+      }
       
-      /* Ensure price breakdown fits on small screens */
-      .line span:first-child{min-width:80px}
-      .line span:last-child{text-align:right}
-    }
-
-    /* Pouch stack visuals */
-    :root{--pouch-w: min(84vw, 340px); --pouch-h: calc(var(--pouch-w) * 1.335);} 
-    .visual{display:grid;place-items:center;margin-bottom:12px; position:relative}
-    .pouch-stack{position:relative;height:calc(var(--pouch-h) + 80px);width:100%;max-width:var(--pouch-w);overflow:visible}
-    
-    /* Mobile pouch optimizations */
-    @media(max-width:860px){
-      :root{--pouch-w: min(90vw, 280px);}
-      .visual{margin-bottom:8px}
-      .pouch-stack{height:calc(var(--pouch-h) + 60px)}
+      h1{
+        font-size:24px;
+      }
+      
+      .pouch{
+        width:100px;
+        height:133px;
+      }
+      
+      .pouch-label{
+        padding:12px 8px;
+        bottom:8px;
+        left:8px;
+        right:8px;
+      }
+      
+      .label-badge{
+        font-size:9px;
+        padding:3px 6px;
+      }
+      
+      .label-tagline{
+        font-size:11px;
+      }
+      
+      .label-description{
+        font-size:9px;
+      }
     }
     
     @media(max-width:480px){
-      :root{--pouch-w: min(95vw, 240px);}
-      .pouch-stack{height:calc(var(--pouch-h) + 40px)}
+      .container{
+        padding:12px;
+      }
+      
+      .surface{
+        padding:16px;
+        border-radius:12px;
+      }
+      
+      h1{
+        font-size:22px;
+      }
+      
+      .actions{
+        flex-direction:column;
+      }
+      
+      .btn{
+        width:100%;
+        padding:14px 20px;
+        font-size:15px;
+      }
+      
+      .pouch{
+        width:80px;
+        height:107px;
+      }
+      
+      .pouch-label{
+        padding:8px 6px;
+        bottom:6px;
+        left:6px;
+        right:6px;
+      }
+      
+      .qty-badge{
+        font-size:11px;
+        padding:4px 8px;
+      }
     }
-    
-    /* Fix bottom scrolling issues */
-    .visual{contain:layout}
-    .pouch-stack{contain:layout}
-    .stack-card{contain:layout}
-    .stack-card{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);transform-style:preserve-3d;backface-visibility:hidden;will-change:auto}
-    /* Pouch extreme (from product-section) */
-    .pouch-extreme{ --pouch-min: min(var(--pouch-w), var(--pouch-h)); --bag-bg:#0a0a0a; --bag-radius-frac:0.0375; --pouch-border-frac:0.003; --pouch-border-color: rgba(0,0,0,0.1); --label-bg:#FDFEFE; --label-radius-frac:0.055; --label-top-frac:0.88; --label-pad-frac:0.04; --label-gradient: linear-gradient(135deg, rgba(245, 248, 252, 0.65) 0%, rgba(252, 254, 255, 0.45) 50%, rgba(248, 250, 252, 0.4) 100%); --label-gradient-opacity:0.85; }
-    .pouch-extreme.pouch-container{ position:relative; inline-size:var(--pouch-w); block-size:var(--pouch-h); container-type:inline-size }
-    .pouch-extreme .pouch{ position:absolute; inset:0; background:var(--bag-bg); border-radius: calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)); overflow:hidden; isolation:isolate; box-shadow: 0 12px 28px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10); }
-    .pouch-extreme .pouch::after{ content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius: inherit; clip-path: inherit; box-shadow: inset 0 0 0 calc(var(--pouch-border-frac) * var(--pouch-min)) var(--pouch-border-color); }
-    .pouch-extreme .pouch{
-      --rT: calc(var(--bag-radius-frac) * 100cqw);
-      --rB: calc(var(--bag-radius-frac) * 80cqw);
-      --t1: var(--rT); --t2: calc(var(--rT)*.6); --t3: calc(var(--rT)*.4); --t4: calc(var(--rT)*.2);
-      --b1: var(--rB); --b2: calc(var(--rB)*.6); --b3: calc(var(--rB)*.4); --b4: calc(var(--rB)*.2);
-      --nx: 1; --nox: calc(4cqw * var(--nx));
-      clip-path: polygon(0 var(--t1), var(--t4) var(--t2), var(--t3) var(--t3), var(--t2) var(--t4), var(--t1) 0,
-                         calc(100% - var(--t1)) 0, calc(100% - var(--t2)) var(--t4), calc(100% - var(--t3)) var(--t3), calc(100% - var(--t4)) var(--t2), 100% var(--t1),
-                         100% calc(var(--t1) + 4cqw), calc(100% - var(--nox)) calc(var(--t1) + 6cqw), 100% calc(var(--t1) + 8cqw),
-                         100% calc(100% - var(--b1)), calc(100% - var(--b4)) calc(100% - var(--b2)), calc(100% - var(--b3)) calc(100% - var(--b3)), calc(100% - var(--b2)) calc(100% - var(--b4)), calc(100% - var(--b1)) 100%,
-                         var(--b1) 100%, var(--b2) calc(100% - var(--b4)), var(--b3) calc(100% - var(--b3)), var(--b4) calc(100% - var(--b2)), 0 calc(100% - var(--b1)),
-                         0 calc(var(--t1) + 8cqw), var(--nox) calc(var(--t1) + 6cqw), 0 calc(var(--t1) + 4cqw),
-                         0 var(--t1)); }
-    .pouch-extreme .top-seal{ position:absolute; inset-inline:0; inset-block-start:0; height:10cqw; background-color:var(--bag-bg); border-bottom:1px solid rgba(220,225,230,0.32);
-      background-image: repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0 1px, rgba(0,0,0,0.08) 1px 2px, transparent 2px 3px),
-                        linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%),
-                        radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); clip-path: inherit; }
-    .pouch-extreme .pouch-label{ --pad: calc(var(--label-pad-frac) * var(--pouch-min)); position:absolute; left:var(--pad); right:var(--pad); bottom:var(--pad); top: calc(100% - (var(--label-top-frac) * 100%));
-      background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:24px 20px; overflow:visible; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:1; }
-    
-    /* Mobile pouch label optimizations */
-    @media(max-width:860px){
-      .pouch-extreme .pouch-label{padding:20px 16px}
-      .label-badge{padding:5px 8px; font-size:11px; margin-bottom:6px}
-      .label-tagline{font-size:14px}
-      .label-description{font-size:12px; margin-top:4px}
-    }
-    
-    @media(max-width:480px){
-      .pouch-extreme .pouch-label{padding:16px 12px}
-      .label-badge{padding:4px 6px; font-size:10px; margin-bottom:4px}
-      .label-tagline{font-size:12px}
-      .label-description{font-size:11px; margin-top:3px}
-    }
-    .pouch-extreme .pouch-label::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:
-      linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%),
-      var(--label-gradient),
-      radial-gradient(120% 80% at 18% 20%, var(--ink1, hsla(210,52%,82%,.35)) 0 40%, transparent 70%),
-      radial-gradient(130% 78% at 80% 24%, var(--ink2, hsla(200,50%,84%,.32)) 0 38%, transparent 72%),
-      radial-gradient(110% 88% at 64% 84%, var(--ink3, hsla(180,48%,86%,.30)) 0 42%, transparent 74%);
-      opacity: .55; }
-    .label-badge{ padding:6px 10px; border-radius:16px; color:#fff; background:#0071E3; font-size:12px; font-weight:800; box-shadow:0 0 0 1px rgba(0,113,227,.28); margin-bottom:8px; }
-    .label-tagline{ font-size:16px; font-weight:800; color:#1d1d1f; }
-    .label-description{ font-size:13px; color:#2b2b30; margin-top:6px; }
-    .mini{opacity:1;filter:brightness(.96) saturate(.92)}
-    /* De-emphasize background labels slightly so the front label reads crisp */
-    .stack-card.mini .label-tagline, .stack-card.mini .label-description { opacity: .78; }
-    /* Front-most card: remove any overlay softening and ensure crisp text */
-    .pouch-stack .stack-card:first-child .pouch-label::before { opacity: 0 !important; }
-    .pouch-stack .stack-card:first-child .pouch-label { background:#fff !important; }
-    .pouch-stack .stack-card:first-child .label-tagline,
-    .pouch-stack .stack-card:first-child .label-description {
-      opacity: 1 !important;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-
-    /* === Vector outline that matches the pouch shape exactly === */
-    :root{
-      --outline-inner: rgba(255,255,255,0.5);
-      --outline-outer: rgba(0,0,0,0.2);
-      --outline-inner-w: 0.5px;
-      --outline-outer-w: 1px;
-    }
-    .pouch-outline{ position:absolute; inset:0; pointer-events:none; z-index: 8; transform-style:preserve-3d }
-    .pouch-outline path{ fill:none; vector-effect:non-scaling-stroke; stroke-linejoin:miter; shape-rendering:geometricPrecision }
-    .pouch-outline .outer{ stroke: var(--outline-outer); stroke-width: var(--outline-outer-w); }
-    .pouch-outline .inner{ stroke: var(--outline-inner); stroke-width: var(--outline-inner-w); }
-    @media (prefers-color-scheme: dark){
-      .pouch-outline .outer{ stroke: rgba(0,0,0,0.5); }
-      .pouch-outline .inner{ stroke: rgba(255,255,255,0.72); }
-    }
-
-    /* Grid of packs (mini pouches) */
-    .packs-wrap{margin-top:10px}
-    .packs-badge{position:absolute; right:8px; top:8px; background:#111; color:#fff; border-radius:999px; font-size:12px; padding:6px 10px; box-shadow:0 6px 16px rgba(0,0,0,.18)}
-    .qty-badge{position:absolute; right:8px; top:8px; background:#111; color:#fff; border-radius:999px; font-size:12px; padding:6px 10px; box-shadow:0 6px 16px rgba(0,0,0,.18)}
-    .pack-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(64px, 1fr)); gap:8px; align-items:start}
-    .mini-pouch{position:relative; width:100%; aspect-ratio: 3 / 4; background:#0a0a0a; border-radius:10px; box-shadow:0 6px 14px rgba(0,0,0,.18); overflow:hidden;}
-    .mini-label{position:absolute; inset:auto 6px 6px 6px; height:45%; background:#fff; border-radius:8px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
   </style>
+  
   <!-- Google tag (gtag.js) event - delayed navigation helper -->
   <script>
-    // Helper function to delay opening a URL until a gtag event is sent.
-    // Call it in response to an action that should navigate to a URL.
     function gtagSendEvent(url, eventData) {
       var callback = function () {
         console.log('✅ GA callback executed, navigating to:', url);
@@ -221,21 +345,30 @@
   <script>
     // Load quiz data
     function loadData(){
-      try{ return JSON.parse(localStorage.getItem('rp_quiz')||'{}'); }catch{ return {}; }
+      try{ 
+        return JSON.parse(localStorage.getItem('rp_quiz')||'{}');
+      }catch{ 
+        return {}; 
+      }
     }
+    
     function mapPrice(per){
-      const val = Number(per)||20; const pct=(val-8)/(36-8); const price=Math.max(2,Math.min(9,+(2+7*pct).toFixed(2))); return price;
+      const val = Number(per)||20; 
+      const pct=(val-8)/(36-8); 
+      const price=Math.max(2,Math.min(9,+(2+7*pct).toFixed(2))); 
+      return price;
     }
+    
     function roundTo95(amount){
-      // Always round up to next .95
       const dollars = Math.ceil(amount);
       return dollars - 0.05 + (dollars === amount ? 0 : 0);
     }
+    
     function compute(data){
       const pricePerCup = mapPrice(data.priceRange);
       const more = (data.cupsPerDay||'').toLowerCase().includes('more');
-      const billedServings = more?28:14;         // billed packs
-      const bonus = 1;                            // only one bonus per shipment
+      const billedServings = more?28:14;
+      const bonus = 1;
       const totalServings = Math.min(31, billedServings + bonus);
       const rawSubtotal = pricePerCup * billedServings;
       const shipping = 4.95;
@@ -243,38 +376,34 @@
       const subtotal = roundTo95(rawSubtotal);
       const tax = roundTo95(rawTax);
       const total = roundTo95(subtotal + tax + shipping);
-      return {pricePerCup,billedServings,bonus,totalServings,subtotal,shipping,tax,total,period:'every 2 weeks'};
+      
+      return {
+        pricePerCup,
+        billedServings,
+        bonus,
+        totalServings,
+        subtotal,
+        shipping,
+        tax,
+        total,
+        period:'every 2 weeks'
+      };
     }
+    
     function topFlavors(d){
-      return [ ['Nutty',d.flavorNutty], ['Fruity',d.flavorFruity], ['Floral',d.flavorFloral], ['Smoky',d.flavorSmoky] ]
+      return [ 
+        ['Nutty',d.flavorNutty], 
+        ['Fruity',d.flavorFruity], 
+        ['Floral',d.flavorFloral], 
+        ['Smoky',d.flavorSmoky] 
+      ]
         .filter(([,v])=>v!==''&&!isNaN(Number(v)))
         .sort((a,b)=>Number(b[1])-Number(a[1]))
-        .slice(0,2).map(([k])=>k).join(' & ');
+        .slice(0,2)
+        .map(([k])=>k)
+        .join(' & ');
     }
-    function pickInks(d, pouchIndex = 0){
-      // Map flavor → hue for soft label wash
-      const map = {Nutty:34,Fruity:12,Floral:280,Smoky:210};
-      const favs = [ ['Nutty',d.flavorNutty], ['Fruity',d.flavorFruity], ['Floral',d.flavorFloral], ['Smoky',d.flavorSmoky] ]
-        .filter(([,v])=>v!==''&&!isNaN(Number(v)))
-        .sort((a,b)=>Number(b[1])-Number(a[1]))
-        .slice(0,3).map(([k])=>map[k]||210);
-      
-      // Generate unique colors for each pouch based on index
-      const baseHue = favs[0] || 210;
-      const hueOffset = pouchIndex * 45; // 45 degree separation for distinct colors
-      const hue = (baseHue + hueOffset) % 360;
-      
-      // Vary saturation and lightness slightly for each pouch
-      const saturation = Math.max(60, 80 - pouchIndex * 5);
-      const lightness = Math.max(75, 85 - pouchIndex * 3);
-      const alpha = Math.max(0.25, 0.35 - pouchIndex * 0.02);
-      
-      return [
-        `hsla(${hue},${saturation}%,${lightness}%,${alpha})`,
-        `hsla(${hue + 20},${Math.max(50, saturation - 10)}%,${Math.max(70, lightness - 5)}%,${Math.max(0.20, alpha - 0.05)})`,
-        `hsla(${hue + 40},${Math.max(40, saturation - 20)}%,${Math.max(65, lightness - 10)}%,${Math.max(0.15, alpha - 0.10)})`
-      ];
-    }
+    
     function render(){
       const d = loadData();
       const p = compute(d);
@@ -282,58 +411,49 @@
       const tasting = flavors? `${flavors} notes` : 'Balanced, approachable cup';
       const brew = d.brewMethod? `Ground for ${d.brewMethod.toLowerCase()}` : 'Ground for your method';
       const style = d.additions? `Enjoyed with ${d.additions.toLowerCase()}` : 'Enjoyed black or with milk';
+      
       const el = document.getElementById('checkout');
       const rawName = d.blendName || 'Your Daily Roast';
       const planName = /subscription/i.test(rawName) ? rawName : `${rawName} subscription`;
-      // Build a simple, tidy visual stack (front-most shows user blend)
-      const stackCount = Math.min(5, p.totalServings);
+      
       let badgeText = 'Your Blend';
       if(d.firstName && String(d.firstName).trim()){
         const n = String(d.firstName).trim();
         badgeText = /s$/i.test(n) ? `${n}' Blend` : `${n}'s Blend`;
       } else if(d.email){
         const handle = String(d.email).split('@')[0];
-        if(handle){ badgeText = /s$/i.test(handle) ? `${handle}' Blend` : `${handle}'s Blend`; }
+        if(handle){ 
+          badgeText = /s$/i.test(handle) ? `${handle}' Blend` : `${handle}'s Blend`; 
+        }
       }
-      let stack = '';
-      for(let i=0;i<stackCount;i++){
-        const z = 15 - i;
-        // Staggered diagonal stack (no rotation)
-        const dx = i * 16;                  // step to the right each card
-        const dy = -i * 12;                 // lift each card slightly
-        const scale = i===0 ? 1 : (1 - i * 0.02);  // keep front card 1:1 for sharp label
-        const style = `z-index:${z}; transform: translate(-50%,-50%) translate(${dx}px, ${dy}px) scale(${scale});`;
-        const custom = i===0;
-        
-        // Generate unique colors for each pouch
-        const [ink1,ink2,ink3] = pickInks(d, i);
-        
-        stack += `
-          <div class="stack-card${custom? '': ' mini'}" style="${style}">
-            <div class="pouch-extreme pouch-container" style="--ink1:${ink1};--ink2:${ink2};--ink3:${ink3};">
+      
+      el.innerHTML = `
+        <div>
+          <div class="visual">
+            <div class="pouch-stack">
               <div class="pouch">
-                <div class="top-seal"></div>
                 <div class="pouch-label">
-                  ${custom? `<div class="label-badge">${badgeText}</div>`: ''}
-                  <div class="label-tagline">${custom ? (d.blendName||'Your Daily Roast') : 'Daily pack'}</div>
-                  <div class="label-description">${custom ? (tasting||'Balanced, approachable cup') : 'Nitroflushed & sealed'}</div>
+                  <div class="label-badge">${badgeText}</div>
+                  <div class="label-tagline">${d.blendName||'Your Daily Roast'}</div>
+                  <div class="label-description">${tasting}</div>
                 </div>
               </div>
             </div>
-          </div>`;
-      }
-      el.innerHTML = `
-        <div>
-          <div class="visual"><div class="pouch-stack" aria-hidden="true">${stack}</div><div class="qty-badge" aria-label="Total cups">${p.totalServings} cup${p.totalServings===1?'':'s'}</div></div>
+            <div class="qty-badge">${p.totalServings} cup${p.totalServings===1?'':'s'}</div>
+          </div>
+          
           <div class="section-title">${d.blendName||'Your Daily Roast'} — ${d.roastLevel||'Medium'}</div>
           <div class="desc">${tasting}. ${brew}. ${style}.</div>
+          
           <div class="badges">
             ${d.personality?`<span class='pill'>${d.personality}</span>`:''}
             ${d.tasteBalance?`<span class='pill'>${d.tasteBalance}</span>`:''}
             ${d.cupsPerDay?`<span class='pill'>${d.cupsPerDay}</span>`:''}
           </div>
+          
           ${d.additionalNotes?`<div class='divider'></div><div class='desc'><strong>Notes:</strong> ${d.additionalNotes}</div>`:''}
         </div>
+        
         <div>
           <div class="line"><span class="muted">Plan</span><span>${planName} • ${p.period}</span></div>
           <div class="line"><span class="muted">Price per cup</span><span class="price">$${p.pricePerCup.toFixed(2)}</span></div>
@@ -345,92 +465,108 @@
           <div class="line"><span class="muted">Estimated tax</span><span>$${p.tax.toFixed(2)}</span></div>
           <div class="divider"></div>
           <div class="line total"><span>Total today</span><span>$${p.total.toFixed(2)}</span></div>
+          
           <div class="actions">
             <button class="btn" type="button" onclick="window.history.back()">Back</button>
             <button class="btn primary" type="button" id="buyBtn">Buy now</button>
           </div>
         </div>`;
     }
+    
     render();
-
-    // Build SVG outline path that mirrors the pouch clip-path shape
-    function pathDForPouch(w,h){
-      const pts = [
-        [0,20],[4,12],[8,8],[12,4],[20,0],
-        [w-20,0],[w-12,4],[w-8,8],[w-4,12],[w,20],
-        [w,32],[w-12,40],[w,48],
-        [w,h-16],[w-4,h-8],[w-8,h-4],[w-16,h],
-        [16,h],[8,h-4],[4,h-8],[0,h-16],
-        [0,48],[12,40],[0,32],
-        [0,20]
-      ];
-      return 'M '+pts.map(([x,y])=>`${x} ${y}`).join(' L ')+' Z';
-    }
-    function updateOutlines(){
-      document.querySelectorAll('.pouch').forEach(pouch=>{
-        const svgs = pouch.querySelectorAll('.pouch-outline');
-        if(!svgs.length) return;
-        const w = pouch.clientWidth, h = pouch.clientHeight;
-        svgs.forEach(svg=>{
-          svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-          const d = pathDForPouch(w,h);
-          svg.querySelectorAll('path').forEach(p=>p.setAttribute('d', d));
-        });
-      });
-    }
-    window.addEventListener('resize', updateOutlines);
-    // Kick once after first render
-    requestAnimationFrame(updateOutlines);
-
-    // Rebuild payload (same shape as quiz) and POST on Buy now
-    function mapPrice(val){ const num=Number(val)||20; const pct=(num-8)/(36-8); return Math.max(2,Math.min(9,+(2+7*pct).toFixed(2))); }
+    
+    // Build payload and submit
     function buildPayload(){
-      let d={}; try{ d=JSON.parse(localStorage.getItem('rp_quiz')||'{}'); }catch{}
+      let d = {}; 
+      try{ 
+        d = JSON.parse(localStorage.getItem('rp_quiz')||'{}'); 
+      }catch{}
+      
       const pricePerCup = mapPrice(d.priceRange);
       const more = (d.cupsPerDay||'').toLowerCase().includes('more');
-      const billedServings = more?28:14; const bonus=1; const totalServings=billedServings+bonus;
-      const topFlavors = [ ['Nutty',d.flavorNutty], ['Fruity',d.flavorFruity], ['Floral',d.flavorFloral], ['Smoky',d.flavorSmoky] ]
-        .filter(([,v])=>v!==''&&!isNaN(Number(v))).sort((a,b)=>Number(b[1])-Number(a[1])).slice(0,3).map(([k,v])=>`${k}:${v}`).join(', ');
-      const RP_USER_ID = (function(){ try{ return localStorage.getItem('rp_user_id')||'' }catch{ return '' } })();
+      const billedServings = more?28:14; 
+      const bonus=1; 
+      const totalServings=billedServings+bonus;
+      
+      const topFlavors = [ 
+        ['Nutty',d.flavorNutty], 
+        ['Fruity',d.flavorFruity], 
+        ['Floral',d.flavorFloral], 
+        ['Smoky',d.flavorSmoky] 
+      ]
+        .filter(([,v])=>v!==''&&!isNaN(Number(v)))
+        .sort((a,b)=>Number(b[1])-Number(a[1]))
+        .slice(0,3)
+        .map(([k,v])=>`${k}:${v}`)
+        .join(', ');
+      
+      const RP_USER_ID = (function(){ 
+        try{ 
+          return localStorage.getItem('rp_user_id')||'' 
+        }catch{ 
+          return '' 
+        } 
+      })();
+      
       return {
         timestamp: new Date().toISOString(),
         tab: 'FormResponses',
         userId: RP_USER_ID,
-        firstName: d.firstName||'', lastName: d.lastName||'', email: d.email||'',
-        roastLevel: d.roastLevel||'', brewMethod: d.brewMethod||'', equipmentDetails: d.equipmentDetails||'', additions: d.additions||'',
-        priceRange: d.priceRange||'', pricePerCup, cupsPerDay: d.cupsPerDay||'', personality: d.personality||'', tasteBalance: d.tasteBalance||'',
-        flavorNutty: d.flavorNutty||'', flavorFruity: d.flavorFruity||'', flavorFloral: d.flavorFloral||'', flavorSmoky: d.flavorSmoky||'', topFlavors,
-        blendName: d.blendName||'', billedServings, bonus, totalServings, source: 'checkout'
+        firstName: d.firstName||'', 
+        lastName: d.lastName||'', 
+        email: d.email||'',
+        roastLevel: d.roastLevel||'', 
+        brewMethod: d.brewMethod||'', 
+        equipmentDetails: d.equipmentDetails||'', 
+        additions: d.additions||'',
+        priceRange: d.priceRange||'', 
+        pricePerCup, 
+        cupsPerDay: d.cupsPerDay||'', 
+        personality: d.personality||'', 
+        tasteBalance: d.tasteBalance||'',
+        flavorNutty: d.flavorNutty||'', 
+        flavorFruity: d.flavorFruity||'', 
+        flavorFloral: d.flavorFloral||'', 
+        flavorSmoky: d.flavorSmoky||'', 
+        topFlavors,
+        blendName: d.blendName||'', 
+        billedServings, 
+        bonus, 
+        totalServings, 
+        source: 'checkout'
       };
     }
+    
     function postToSheets(payload){
       const url = 'https://script.google.com/macros/s/AKfycbxd6pPajYDJEtCIZpUe9zmJrTCypz6_vzWAHABsx0vg-bpAjF0SdfuCkhvhZJ6pTnpz7g/exec';
-      const form = new URLSearchParams(); Object.entries(payload).forEach(([k,v])=>form.append(k,String(v??'')));
-      return fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:form.toString()});
+      const form = new URLSearchParams(); 
+      Object.entries(payload).forEach(([k,v])=>form.append(k,String(v??'')));
+      return fetch(url,{
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},
+        body:form.toString()
+      });
     }
+    
+    // Buy button handler
     document.getElementById('buyBtn')?.addEventListener('click', ()=>{
       const payload = buildPayload();
       const d = loadData();
       const p = compute(d);
       
       // Save timestamp immediately
-      try{ localStorage.setItem('rp_last_order_ts', String(Date.now())); }catch{}
+      try{ 
+        localStorage.setItem('rp_last_order_ts', String(Date.now())); 
+      }catch{}
       
       // Start Google Sheets submission in background (non-blocking)
       postToSheets(payload).catch(err => {
         console.error('⚠️ Background submission failed:', err);
-        // Submission failure doesn't block user experience
       });
       
       // Navigate immediately without waiting for submission
       if (typeof gtag !== 'undefined') {
         console.log('🎯 Buy button clicked - GA is available');
-        console.log('💰 Order data:', {
-          total: p.total,
-          pricePerCup: p.pricePerCup,
-          servings: p.billedServings,
-          blendName: d.blendName || 'Your Daily Roast'
-        });
         gtagSendEvent('thanks.html', {
           'value': p.total,
           'currency': 'USD',
@@ -449,12 +585,14 @@
       }
     });
 
-    // If we came from thank you (review mode), hide the Buy now button
+    // Hide Buy button in review mode
     (function(){
       const params = new URLSearchParams(window.location.search);
       if(params.get('review')==='1'){
         const buy = document.getElementById('buyBtn');
-        if(buy){ buy.remove(); }
+        if(buy){ 
+          buy.remove(); 
+        }
       }
     })();
   </script>
