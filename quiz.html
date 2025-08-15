@@ -675,8 +675,16 @@
     document.addEventListener('keydown', (e)=>{
       const tag = (e.target && e.target.tagName) || '';
       const inField = ['INPUT','TEXTAREA'].includes(tag);
+      
+      // Arrow keys for navigation (when not in input fields)
       if(e.key === 'ArrowRight' && !inField){ e.preventDefault(); if(!nextBtn.disabled) nextBtn.click(); }
       if(e.key === 'ArrowLeft' && !inField){ e.preventDefault(); if(!prevBtn.disabled) prevBtn.click(); }
+      
+      // Enter/Return key acts as Next button (when not in input fields)
+      if((e.key === 'Enter' || e.key === 'Return') && !inField){ 
+        e.preventDefault(); 
+        if(!nextBtn.disabled) nextBtn.click(); 
+      }
     });
 
     resetBtn.addEventListener('click', ()=>{
