@@ -165,13 +165,13 @@
     .flavor-grid{ display:grid; grid-template-columns:1fr; gap:22px; }
     @media (min-width: 620px){ .flavor-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
     .flavor-slider-group label{ display:block; font-weight:700; margin:0 0 10px; }
-    .slider-wrap{ position:relative; padding-top: 26px; }
+    .slider-wrap{ position:relative; padding-top: 32px; }
     
     /* Mobile optimization for flavor sliders */
     @media (max-width: 619px) {
       .flavor-grid { gap: 12px; }
       .flavor-slider-group label { margin: 0 0 6px; font-size: 13px; }
-      .slider-wrap { padding-top: 16px; }
+      .slider-wrap { padding-top: 24px; }
       .slider-labels { font-size: 10px; margin-top: 3px; }
     }
     input[type="range"]{
@@ -198,9 +198,10 @@
       }
     }
     .bubble{
-      position:absolute; top:0; transform: translateX(-50%);
+      position:absolute; top:-8px; transform: translateX(-50%);
       padding:4px 8px; font-size:12px; background: var(--bg-secondary); border:1px solid var(--border-light);
       border-radius: 8px; white-space:nowrap;
+      z-index: 10;
     }
     .slider-labels{ display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary); margin-top:6px; }
 
