@@ -734,20 +734,20 @@
       flex-direction: column;
       font-size: 10px;
       line-height: 1.3;
-      /* Prevent user scrolling but allow programmatic */
-      overscroll-behavior: contain;
-      -webkit-overflow-scrolling: auto;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE/Edge */
-      /* Prevent text selection to avoid drag scrolling */
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      /* Disable touch scrolling */
-      touch-action: none;
-      /* Instant scrolling for typing animation */
-      scroll-behavior: auto !important;
+          /* Allow normal scrolling behavior */
+    overscroll-behavior: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: auto; /* Firefox */
+    -ms-overflow-style: auto; /* IE/Edge */
+    /* Allow text selection */
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    /* Enable touch scrolling */
+    touch-action: auto;
+    /* Smooth scrolling for typing animation */
+    scroll-behavior: smooth;
       /* Prevent width expansion */
       width: 100%;
       box-sizing: border-box;
@@ -1502,23 +1502,8 @@ plt.show()
       if (pre) {
         pre.setAttribute('aria-live', 'off');
         
-        // Prevent user scrolling but allow programmatic
-        pre.addEventListener('wheel', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }, { passive: false });
-        
-        pre.addEventListener('touchmove', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }, { passive: false });
-        
-        pre.addEventListener('keydown', (e) => {
-          // Prevent arrow keys, page up/down from scrolling
-          if([32, 33, 34, 35, 36, 37, 38, 39, 40].includes(e.keyCode)) {
-            e.preventDefault();
-          }
-        });
+        // Allow all scrolling - both within code box and page
+        // No event prevention needed
       }
       let i = 0;
       let lastTime = Date.now();
