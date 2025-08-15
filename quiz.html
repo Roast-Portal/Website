@@ -214,6 +214,11 @@
     .textarea-input{ min-height:120px; resize: vertical; }
     .field-row{ display:grid; gap:12px; grid-template-columns:1fr; }
     @media (min-width: 600px){ .field-row{ grid-template-columns:1fr 1fr; } }
+    
+    /* Contact form specific styling for consistent spacing */
+    .contact-form .field-row { margin-bottom: 12px; }
+    .contact-form .text-input { margin-bottom: 12px; }
+    .contact-form .error { margin-top: 8px; }
 
     /* Sticky nav */
     .quiz-nav{
@@ -561,6 +566,9 @@
       }
 
       if(step.type === 'contact-form'){
+        // Add contact-form class to answersWrap for consistent spacing
+        answersWrap.classList.add('contact-form');
+        
         const row = document.createElement('div'); row.className='field-row';
         const fn = document.createElement('input');
         fn.type='text'; fn.id='firstName'; fn.className='text-input'; fn.placeholder='First name';
@@ -569,7 +577,7 @@
         ln.type='text'; ln.id='lastName'; ln.className='text-input'; ln.placeholder='Last name';
         ln.autocomplete='family-name'; ln.value = answers.lastName || '';
         const em = document.createElement('input');
-        em.type='email'; em.id='email'; em.className='text-input'; em.placeholder='Email address'; em.style.marginTop='12px';
+        em.type='email'; em.id='email'; em.className='text-input'; em.placeholder='Email address';
         em.autocomplete='email'; em.inputMode='email'; em.value = answers.email || '';
 
         [fn,ln,em].forEach(inp=>{
