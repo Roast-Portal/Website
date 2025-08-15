@@ -284,7 +284,15 @@
     <div class="contact-container">
       <div class="contact-form">
         <h2>Send us a Message</h2>
-        <form id="contactForm" novalidate>
+        <!-- Hidden iframe to receive the form POST -->
+        <iframe id="formSink" name="formSink" style="display:none;"></iframe>
+
+        <form id="contactForm"
+              action="https://script.google.com/macros/s/AKfycbxOc04sZBKKvmgFFlys2hF-jsc5NUl85DSGnYEuX5zm8ipu610QO4rE3mXre5dWRfRyvw/exec"
+              method="POST"
+              target="formSink"  <!-- key: no CORS -->
+              novalidate>
+
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="firstName">First Name *</label>
@@ -319,11 +327,22 @@
             <textarea id="message" name="message" class="form-textarea" placeholder="Tell us how we can help..." required></textarea>
           </div>
 
-          <!-- Honeypot (hidden from humans) -->
+          <!-- Honeypot -->
           <div class="form-group" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;">
             <label for="hp">Leave this blank</label>
             <input id="hp" name="hp" type="text" tabindex="-1" autocomplete="off">
           </div>
+
+          <!-- Tracking fields (populated by JS) -->
+          <input type="hidden" name="pagePath" id="pagePath">
+          <input type="hidden" name="referrer" id="referrer">
+          <input type="hidden" name="userAgent" id="userAgent">
+          <input type="hidden" name="gclid" id="gclid">
+          <input type="hidden" name="utm_source" id="utm_source">
+          <input type="hidden" name="utm_medium" id="utm_medium">
+          <input type="hidden" name="utm_campaign" id="utm_campaign">
+          <input type="hidden" name="utm_term" id="utm_term">
+          <input type="hidden" name="utm_content" id="utm_content">
 
           <button type="submit" id="submitBtn" class="form-button">Send Message</button>
           <p id="formStatus" class="page-subtitle" style="display:none;margin-top:1rem;"></p>
@@ -351,86 +370,52 @@
   </footer>
   
   <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIKhWYaf-61hUyMc3pjkwKfuhycSSpn2XUXFMbo4wAM3robyxIEdTmwx-dKcd8o87saA/exec';
+    // Populate hidden fields on load
+    (function initHiddenFields(){
+      const qs = new URLSearchParams(location.search);
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+      set('pagePath', location.pathname);
+      set('referrer', document.referrer || '');
+      set('userAgent', navigator.userAgent);
+      ['gclid','utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k => {
+        const el = document.getElementById(k);
+        if (el) el.value = qs.get(k) || '';
+      });
+    })();
 
-    function parseQueryParams() {
-      const p = new URLSearchParams(window.location.search);
-      return {
-        gclid: p.get('gclid') || '',
-        utm_source: p.get('utm_source') || '',
-        utm_medium: p.get('utm_medium') || '',
-        utm_campaign: p.get('utm_campaign') || '',
-        utm_term: p.get('utm_term') || '',
-        utm_content: p.get('utm_content') || ''
-      };
-    }
+    // Swap UI + fire conversion when the iframe reports a load event
+    const form = document.getElementById('contactForm');
+    const iframe = document.getElementById('formSink');
+    const btn = document.getElementById('submitBtn');
+    const statusEl = document.getElementById('formStatus');
 
-    document.getElementById('contactForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const status = document.getElementById('formStatus');
-      const btn = document.getElementById('submitBtn');
-      status.style.display = 'none';
-
-      // Basic validation
-      const required = ['firstName','lastName','email','subject','message'];
-      for (const id of required) {
-        if (!document.getElementById(id).value.trim()) {
-          status.textContent = 'Please fill in all required fields.';
-          status.style.display = 'block';
-          return;
-        }
-      }
-
+    form.addEventListener('submit', () => {
       btn.disabled = true;
       btn.textContent = 'Sending…';
+      statusEl.style.display = 'none';
+    });
 
-      // Build FormData (simple request = no preflight)
-      const fd = new FormData(document.getElementById('contactForm'));
+    iframe.addEventListener('load', () => {
+      // If the GAS endpoint loads anything at all, treat as success.
+      // Show thank-you state and fire Google Ads conversion.
+      const email = document.getElementById('email').value.trim();
 
-      // Extra context
-      const qs = parseQueryParams();
-      fd.append('pagePath', window.location.pathname);
-      fd.append('referrer', document.referrer || '');
-      fd.append('userAgent', navigator.userAgent);
-      Object.entries(qs).forEach(([k,v]) => fd.append(k, v));
-
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: fd  // <-- no headers, no mode: 'no-cors'
+      if (window.gtag) {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+          'value': 0.0,
+          'currency': 'USD'
         });
-
-        // Apps Script Web Apps will respond 200; read as text then try JSON
-        const text = await res.text();
-        let data = {};
-        try { data = JSON.parse(text); } catch { data = { ok: res.ok }; }
-
-        if (res.ok && (data.ok === true || data.ok === undefined)) {
-          if (window.gtag) {
-            gtag('event', 'conversion', {
-              'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
-              'value': 0.0,
-              'currency': 'USD'
-            });
-          }
-          document.getElementById('contactForm').innerHTML = `
-            <div style="text-align:center;padding:2rem 1rem">
-              <h3 style="font-weight:700;margin-bottom:0.5rem;">Thanks — we got your message!</h3>
-              <p class="page-subtitle" style="margin:0 auto;max-width:34ch;">
-                Our team will reply to <b>${document.getElementById('email').value.trim()}</b> shortly.
-              </p>
-            </div>
-          `;
-        } else {
-          throw new Error(data.error || 'Submit failed');
-        }
-      } catch (err) {
-        console.error(err);
-        status.textContent = 'Something went wrong. Please try again in a moment.';
-        status.style.display = 'block';
-        btn.disabled = false;
-        btn.textContent = 'Send Message';
       }
+
+      form.innerHTML = `
+        <div style="text-align:center;padding:2rem 1rem">
+          <h3 style="font-weight:700;margin-bottom:0.5rem;">Thanks — we got your message!</h3>
+          <p class="page-subtitle" style="margin:0 auto;max-width:34ch;">
+            Our team will reply to <b>${email}</b> shortly.
+          </p>
+        </div>
+      `;
     });
   </script>
 </body>
