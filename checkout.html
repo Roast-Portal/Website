@@ -956,7 +956,93 @@
       bindHandlers(d, p);
     }
 
-    // ---- Networking ----
+    // ---- Location & Networking ----
+    
+    // Get comprehensive location data
+    function getLocationData() {
+      const data = {
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+        lat: '',
+        lng: '',
+        accuracy_m: '',
+        loc_source: 'browser',
+        city: '',
+        region: '',
+        country: '',
+        ip: ''
+      };
+      
+      // Try to get IP and basic location info from multiple services
+      const ipServices = [
+        'https://ipapi.co/json/',
+        'https://ipinfo.io/json',
+        'https://api.ipify.org?format=json'
+      ];
+      
+      // Try first service
+      fetch(ipServices[0])
+        .then(response => response.json())
+        .then(ipData => {
+          data.ip = ipData.ip || '';
+          data.city = ipData.city || '';
+          data.region = ipData.region || '';
+          data.country = ipData.country || '';
+          data.lat = ipData.latitude || '';
+          data.lng = ipData.longitude || '';
+          data.loc_source = 'ipapi';
+        })
+        .catch(err => {
+          console.log('Primary IP service failed, trying fallback...');
+          // Try fallback service
+          return fetch(ipServices[1]);
+        })
+        .then(response => response?.json())
+        .then(ipData => {
+          if (ipData) {
+            data.ip = ipData.ip || data.ip;
+            data.city = ipData.city || data.city;
+            data.region = ipData.region || data.region;
+            data.country = ipData.country || data.country;
+            data.loc_source = 'ipinfo';
+          }
+        })
+        .catch(err => {
+          console.log('IP location services failed, using browser data only');
+        });
+      
+      return data;
+    }
+    
+    // Get precise location if user allows
+    function getPreciseLocation() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+          resolve({ lat: '', lng: '', accuracy_m: '' });
+          return;
+        }
+        
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const coords = position.coords;
+            resolve({
+              lat: coords.latitude.toFixed(6),
+              lng: coords.longitude.toFixed(6),
+              accuracy_m: Math.round(coords.accuracy)
+            });
+          },
+          (error) => {
+            console.log('Geolocation failed:', error.message);
+            resolve({ lat: '', lng: '', accuracy_m: '' });
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000 // 5 minutes
+          }
+        );
+      });
+    }
+    
     function buildPayload(){
       let d = loadData();
       const pricePerCup = mapPrice(d.priceRange);
@@ -977,6 +1063,9 @@
       // Check if quiz was completed and include additional notes if available
       const quizCompleted = localStorage.getItem('quiz_completed') === 'true';
       const additionalNotes = quizCompleted ? (d.additionalNotes || '') : '';
+
+      // Get location data
+      const locationData = getLocationData();
 
       return {
         timestamp: new Date().toISOString(),
@@ -1005,7 +1094,26 @@
         bonus, 
         totalServings, 
         source: 'quiz_completed', // Changed to indicate this includes quiz data
-        submission_id: 'checkout_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) // Add unique ID for deduplication
+        submission_id: 'checkout_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9), // Add unique ID for deduplication
+        
+        // Location data
+        timezone: locationData.timezone,
+        lat: locationData.lat,
+        lng: locationData.lng,
+        accuracy_m: locationData.accuracy_m,
+        loc_source: locationData.loc_source,
+        city: locationData.city,
+        region: locationData.region,
+        country: locationData.country,
+        ip: locationData.ip,
+        
+        // Additional context
+        page_path: window.location.pathname,
+        referrer: document.referrer || '',
+        user_agent: navigator.userAgent,
+        language: navigator.language || '',
+        screen_resolution: `${screen.width}x${screen.height}`,
+        viewport: `${window.innerWidth}x${window.innerHeight}`
       };
     }
 
@@ -1119,8 +1227,19 @@
       // Timestamp last order immediately
       safeSetLS('rp_last_order_ts', Date.now());
 
-      // Submit ONCE when user clicks Buy Now
-      postToSheets(payload, { useBeacon: false }).then(() => {
+      // Get precise location data first, then submit
+      getPreciseLocation().then(preciseLocation => {
+        // Update payload with precise location if available
+        if (preciseLocation.lat && preciseLocation.lng) {
+          payload.lat = preciseLocation.lat;
+          payload.lng = preciseLocation.lng;
+          payload.accuracy_m = preciseLocation.accuracy_m;
+          payload.loc_source = 'gps';
+        }
+        
+        // Submit ONCE when user clicks Buy Now
+        return postToSheets(payload, { useBeacon: false });
+      }).then(() => {
         console.log('Order submitted successfully');
         
         // Track conversion when purchase is made
