@@ -1166,15 +1166,11 @@
       });
 
       // Handle beforeunload (user closing tab, navigating away, etc.)
+      // Removed popup confirmation - data still submits in background
       window.addEventListener('beforeunload', function(e) {
         if (!submissionCompleted) {
           // Submit with beacon for maximum reliability
           postToSheets(payload, { useBeacon: true });
-          
-          // Show confirmation dialog to give submission time
-          e.preventDefault();
-          e.returnValue = 'Your order is being processed. Are you sure you want to leave?';
-          return e.returnValue;
         }
       });
 
