@@ -391,6 +391,8 @@
     let currentStep = 0;
     let answers = {};
     let hasAttemptedSubmit = false;
+    let submissionInProgress = false;
+    let submissionCompleted = false;
 
     // --- Storage ---
     function saveProgress(){
@@ -687,6 +689,22 @@
 
     // --- Quiz Submission ---
     async function submitQuizToGoogleScript(answers) {
+      // Prevent multiple submissions
+      if (submissionInProgress || submissionCompleted) {
+        console.log('Submission already in progress or completed, skipping...');
+        return;
+      }
+      
+      // Check if already submitted in this session
+      const submissionKey = 'quiz_submitted_' + Date.now().toString().slice(0, -3); // Daily key
+      if (localStorage.getItem(submissionKey)) {
+        console.log('Quiz already submitted today, skipping...');
+        submissionCompleted = true;
+        return;
+      }
+      
+      submissionInProgress = true;
+      
       try {
         // Show loading state
         nextBtn.disabled = true;
@@ -735,6 +753,16 @@
         console.log('Quiz submitted to Google Apps Script');
         safeGtag('event', 'quiz_submitted_to_google_script');
         
+        // Mark submission as completed
+        submissionCompleted = true;
+        
+        // Mark as submitted in localStorage to prevent duplicates
+        try {
+          localStorage.setItem(submissionKey, 'true');
+        } catch (e) {
+          console.warn('Could not save submission flag:', e);
+        }
+        
         // Update status
         status.innerHTML = '<span style="color: #34A853;">Quiz submitted successfully! Redirecting to checkout...</span>';
         
@@ -746,6 +774,8 @@
         console.error('Error submitting quiz to Google Apps Script:', error);
         // Fallback to traditional form submission
         submitQuizViaForm(answers);
+      } finally {
+        submissionInProgress = false;
       }
     }
     
@@ -756,6 +786,12 @@
     
     // Fallback submission method using a hidden form
     function submitQuizViaForm(answers) {
+      // Prevent multiple submissions
+      if (submissionCompleted) {
+        console.log('Submission already completed, skipping fallback...');
+        return;
+      }
+      
       try {
         // Create a hidden form and submit it
         const form = document.createElement('form');
@@ -812,6 +848,16 @@
         console.log('Quiz submitted to Google Apps Script via form fallback');
         safeGtag('event', 'quiz_submitted_to_google_script_fallback');
         
+        // Mark submission as completed
+        submissionCompleted = true;
+        
+        // Mark as submitted in localStorage to prevent duplicates
+        try {
+          localStorage.setItem(submissionKey, 'true');
+        } catch (e) {
+          console.warn('Could not save submission flag:', e);
+        }
+        
         // Update status
         status.innerHTML = '<span style="color: #34A853;">Quiz submitted successfully! Redirecting to checkout...</span>';
         
@@ -832,6 +878,12 @@
 
     // --- Navigation ---
     nextBtn.addEventListener('click', ()=>{
+      // Prevent multiple clicks during submission
+      if (submissionInProgress || submissionCompleted) {
+        console.log('Submission in progress or completed, ignoring click...');
+        return;
+      }
+      
       hasAttemptedSubmit = true;
       if(!isStepValid()) return;
       if(currentStep < quizData.length - 1){
@@ -889,13 +941,13 @@
       const inField = ['INPUT','TEXTAREA'].includes(tag);
       
       // Arrow keys for navigation (when not in input fields)
-      if(e.key === 'ArrowRight' && !inField){ e.preventDefault(); if(!nextBtn.disabled) nextBtn.click(); }
+      if(e.key === 'ArrowRight' && !inField){ e.preventDefault(); if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); }
       if(e.key === 'ArrowLeft' && !inField){ e.preventDefault(); if(!prevBtn.disabled) prevBtn.click(); }
       
       // Enter/Return key acts as Next button (always, including in text fields)
       if(e.key === 'Enter' || e.key === 'Return'){ 
         e.preventDefault(); 
-        if(!nextBtn.disabled) nextBtn.click(); 
+        if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); 
       }
     });
     
@@ -907,7 +959,7 @@
       // Enter/Return key acts as Next button (always, including in text fields)
       if(e.key === 'Enter' || e.key === 'Return'){ 
         e.preventDefault(); 
-        if(!nextBtn.disabled) nextBtn.click(); 
+        if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); 
       }
     });
     
@@ -919,7 +971,7 @@
       // Enter/Return key acts as Next button (always, including in text fields)
       if(e.key === 'Enter' || e.key === 'Return'){ 
         e.preventDefault(); 
-        if(!nextBtn.disabled) nextBtn.click(); 
+        if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); 
       }
     });
 
@@ -929,6 +981,15 @@
 
     // --- Init ---
     loadProgress();
+    
+    // Check if quiz was already submitted today
+    const today = Date.now().toString().slice(0, -3); // Daily key
+    const submissionKey = 'quiz_submitted_' + today;
+    if (localStorage.getItem(submissionKey)) {
+      submissionCompleted = true;
+      console.log('Quiz already submitted today, preventing duplicate submissions');
+    }
+    
     renderStep();
   </script>
 </body>
