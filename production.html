@@ -10,6 +10,25 @@
     gtag('js', new Date());
 
     gtag('config', 'G-5LTTX2TGVQ');
+    gtag('config', 'AW-17346642053');
+  </script>
+  
+  <!-- Event snippet for Submit lead form (1) conversion page -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+        'value': 1.0,
+        'currency': 'USD',
+        'event_callback': callback
+      });
+      return false;
+    }
   </script>
   
   <meta charset="UTF-8"/>
@@ -1311,7 +1330,7 @@ plt.show()
     <section class="cta reveal">
       <h4>Stop settling for mediocre coffee</h4>
       <p>Join thousands of coffee lovers. Subscribe to receive 15 personalized coffee pouches delivered to your door.</p>
-      <a class="btn-primary" href="quiz.html" data-nav="signup">Subscribe now</a>
+      <a class="btn-primary" href="quiz.html" data-nav="signup" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
     </section>
   </main>
 

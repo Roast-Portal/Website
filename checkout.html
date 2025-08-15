@@ -16,6 +16,25 @@
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-5LTTX2TGVQ');
+    gtag('config', 'AW-17346642053');
+  </script>
+  
+  <!-- Event snippet for Submit lead form (1) conversion page -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+        'value': 1.0,
+        'currency': 'USD',
+        'event_callback': callback
+      });
+      return false;
+    }
   </script>
   
   <style>
@@ -1050,6 +1069,15 @@
       // Fire-and-forget to Sheets with beacon where possible
       postToSheets(payload, { useBeacon: true }).catch(err => console.error('Background submission failed:', err));
 
+      // Track conversion when purchase is made
+      if (typeof gtag === 'function') {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+          'value': p.total,
+          'currency': 'USD'
+        });
+      }
+      
       // Navigate immediately (with GA callback attempts)
       gtagNavigate('thanks.html', {
         value: p.total,

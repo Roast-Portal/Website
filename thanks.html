@@ -9,6 +9,25 @@
     gtag('js', new Date());
 
     gtag('config', 'G-5LTTX2TGVQ');
+    gtag('config', 'AW-17346642053');
+  </script>
+  
+  <!-- Event snippet for Submit lead form (1) conversion page -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+        'value': 1.0,
+        'currency': 'USD',
+        'event_callback': callback
+      });
+      return false;
+    }
   </script>
   
   <meta charset="UTF-8" />
@@ -37,8 +56,8 @@
         <h1 id="headline">Our roasters are warming up</h1>
         <p class="lead" id="message">We're not quite live yet. We'll reach out soon to see if you'd like to join our beta tasting program.</p>
         <div style="display:flex;gap:10px;justify-content:center;margin-top:6px">
-          <button class="btn" type="button" onclick="window.location.href='index.html'">Back to site</button>
-          <button class="btn primary" type="button" onclick="window.location.href='checkout.html?review=1'">Review order</button>
+          <button class="btn" type="button" onclick="return gtag_report_conversion('index.html');">Back to site</button>
+          <button class="btn primary" type="button" onclick="return gtag_report_conversion('checkout.html?review=1');">Review order</button>
         </div>
       </div>
     </div>

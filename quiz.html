@@ -17,6 +17,25 @@
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-5LTTX2TGVQ');
+    gtag('config', 'AW-17346642053');
+  </script>
+  
+  <!-- Event snippet for Submit lead form (1) conversion page -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+        'value': 1.0,
+        'currency': 'USD',
+        'event_callback': callback
+      });
+      return false;
+    }
   </script>
 
   <style>
@@ -684,6 +703,12 @@
           localStorage.setItem('rp_quiz', JSON.stringify(buildRpQuizPayload(answers)));
         }catch(_){}
         safeGtag('event','quiz_completed');
+        // Track conversion when quiz is completed
+        gtag('event', 'conversion', {
+          'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+          'value': 1.0,
+          'currency': 'USD'
+        });
         // Redirect – checkout reads localStorage.rp_quiz
         window.location.href = 'checkout.html';
       }
