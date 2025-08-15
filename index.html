@@ -109,6 +109,92 @@
     iframe + iframe {
       margin-top: 0;
     }
+    
+    /* Footer Styles */
+    .site-footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid #E5E5E7;
+      padding: 2rem 0;
+      margin-top: 2rem;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .footer-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      transition: transform var(--ease-apple);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .footer-logo:hover {
+      transform: scale(1.05);
+    }
+    
+    .logo-text {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      letter-spacing: 0.025em;
+    }
+    
+    .footer-copyright {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      text-align: center;
+      margin: 0;
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .footer-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color var(--ease-apple);
+    }
+    
+    .footer-link:hover {
+      color: var(--text-primary);
+    }
+    
+    /* Responsive adjustments */
+    @media (min-width: 768px) {
+      .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .footer-section {
+        align-items: flex-start;
+      }
+      
+      .footer-links {
+        justify-content: flex-end;
+      }
+    }
   </style>
 </head>
 <body>
@@ -121,6 +207,25 @@
   <div class="section-divider"></div>
   
   <iframe id="production-frame" src="production.html" title="Production Process"></iframe>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <a href="index.html" class="footer-logo" aria-label="Roast Portal Home">
+          <span class="logo-text">Roast Portal</span>
+        </a>
+        <p class="footer-copyright">© 2025 Roast Portal. All rights reserved.</p>
+      </div>
+      <div class="footer-section">
+        <div class="footer-links">
+          <a href="terms.html" class="footer-link">Terms</a>
+          <a href="privacy.html" class="footer-link">Privacy</a>
+          <a href="contact.html" class="footer-link">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <script>
     // Auto-resize iframes based on content
