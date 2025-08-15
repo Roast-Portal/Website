@@ -103,9 +103,7 @@
     .pouch-extreme .pouch-label::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:
       linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%),
       var(--label-gradient),
-      radial-gradient(120% 80% at 18% 20%, var(--ink1) 0 40%, transparent 70%),
-      radial-gradient(130% 78% at 80% 24%, var(--ink2) 0 38%, transparent 72%),
-      radial-gradient(110% 88% at 64% 84%, var(--ink3) 0 42%, transparent 74%); opacity: calc(var(--label-gradient-opacity) * 0.7); }
+      linear-gradient(135deg, var(--ink1) 0%, var(--ink2) 50%, var(--ink3) 100%); opacity: calc(var(--label-gradient-opacity) * 0.7); }
     .pouch-extreme .pouch-label::after{ content:""; position:absolute; inset:0; border-radius:inherit; opacity: 0.03; pointer-events: none;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E"); }
     .pouch-extreme .shape-layer, .pouch-extreme .text-layer{ position:absolute; inset:0 }
@@ -766,38 +764,41 @@
     #stack2 .pouch-label { --label-sat: 58%; --label-alpha: 0.42; }
     #stack3 .pouch-label { --label-sat: 56%; --label-alpha: 0.38; }
 
-    #stack1 .stack-card:nth-child(1) .pouch-label { --ink1: hsla(34, 78%, 76%, 0.35); --ink2: hsla(20, 65%, 78%, 0.32); --ink3: hsla(46, 70%, 82%, 0.30); }
-    #stack1 .stack-card:nth-child(2) .pouch-label { --ink1: hsla(28, 76%, 78%, 0.35); --ink2: hsla(16, 62%, 78%, 0.32); --ink3: hsla(40, 68%, 84%, 0.30); }
-    #stack1 .stack-card:nth-child(3) .pouch-label { --ink1: hsla(42, 74%, 80%, 0.35); --ink2: hsla(24, 60%, 80%, 0.32); --ink3: hsla(50, 66%, 86%, 0.30); }
-    #stack1 .stack-card:nth-child(4) .pouch-label { --ink1: hsla(22, 70%, 78%, 0.35); --ink2: hsla(12, 58%, 78%, 0.32); --ink3: hsla(38, 64%, 84%, 0.30); }
-    #stack1 .stack-card:nth-child(5) .pouch-label { --ink1: hsla(18, 68%, 76%, 0.35); --ink2: hsla(8,  56%, 76%, 0.32); --ink3: hsla(32, 62%, 84%, 0.30); }
-    #stack1 .stack-card:nth-child(1) .feature-badge { --badge-hue: 28;  --badge-sat: 78%; --badge-lit: 46%; }
-    #stack1 .stack-card:nth-child(2) .feature-badge { --badge-hue: 35;  --badge-sat: 72%; --badge-lit: 48%; }
-    #stack1 .stack-card:nth-child(3) .feature-badge { --badge-hue: 48;  --badge-sat: 70%; --badge-lit: 44%; }
-    #stack1 .stack-card:nth-child(4) .feature-badge { --badge-hue: 18;  --badge-sat: 68%; --badge-lit: 42%; }
-    #stack1 .stack-card:nth-child(5) .feature-badge { --badge-hue: 12;  --badge-sat: 65%; --badge-lit: 40%; }
+    /* Stack 1: Smooth Red gradient (left) - flows from warm red to vibrant orange */
+    #stack1 .stack-card:nth-child(1) .pouch-label { --ink1: hsla(0, 85%, 75%, 0.45); --ink2: hsla(15, 90%, 75%, 0.50); --ink3: hsla(30, 95%, 80%, 0.55); }
+    #stack1 .stack-card:nth-child(2) .pouch-label { --ink1: hsla(2, 86%, 75%, 0.46); --ink2: hsla(17, 91%, 75%, 0.51); --ink3: hsla(32, 96%, 80%, 0.56); }
+    #stack1 .stack-card:nth-child(3) .pouch-label { --ink1: hsla(4, 87%, 75%, 0.47); --ink2: hsla(19, 92%, 75%, 0.52); --ink3: hsla(34, 97%, 80%, 0.57); }
+    #stack1 .stack-card:nth-child(4) .pouch-label { --ink1: hsla(6, 88%, 75%, 0.48); --ink2: hsla(21, 93%, 75%, 0.53); --ink3: hsla(36, 98%, 80%, 0.58); }
+    #stack1 .stack-card:nth-child(5) .pouch-label { --ink1: hsla(8, 89%, 75%, 0.49); --ink2: hsla(23, 94%, 75%, 0.54); --ink3: hsla(38, 99%, 80%, 0.59); }
+    #stack1 .stack-card:nth-child(1) .feature-badge { --badge-hue: 15;  --badge-sat: 90%; --badge-lit: 46%; }
+    #stack1 .stack-card:nth-child(2) .feature-badge { --badge-hue: 17;  --badge-sat: 91%; --badge-lit: 48%; }
+    #stack1 .stack-card:nth-child(3) .feature-badge { --badge-hue: 19;  --badge-sat: 92%; --badge-lit: 44%; }
+    #stack1 .stack-card:nth-child(4) .feature-badge { --badge-hue: 21;  --badge-sat: 93%; --badge-lit: 42%; }
+    #stack1 .stack-card:nth-child(5) .feature-badge { --badge-hue: 23;  --badge-sat: 94%; --badge-lit: 40%; }
 
-    #stack2 .stack-card:nth-child(1) .pouch-label { --ink1: hsla(205, 70%, 78%, 0.35); --ink2: hsla(192, 60%, 80%, 0.32); --ink3: hsla(220, 62%, 84%, 0.30); }
-    #stack2 .stack-card:nth-child(2) .pouch-label { --ink1: hsla(198, 68%, 78%, 0.35); --ink2: hsla(186, 58%, 80%, 0.32); --ink3: hsla(210, 60%, 84%, 0.30); }
-    #stack2 .stack-card:nth-child(3) .pouch-label { --ink1: hsla(215, 66%, 80%, 0.35); --ink2: hsla(200, 56%, 80%, 0.32); --ink3: hsla(228, 60%, 86%, 0.30); }
-    #stack2 .stack-card:nth-child(4) .pouch-label { --ink1: hsla(188, 66%, 78%, 0.35); --ink2: hsla(175, 56%, 78%, 0.32); --ink3: hsla(205, 58%, 84%, 0.30); }
-    #stack2 .stack-card:nth-child(5) .pouch-label { --ink1: hsla(202, 66%, 78%, 0.35); --ink2: hsla(190, 56%, 80%, 0.32); --ink3: hsla(218, 58%, 85%, 0.30); }
-    #stack2 .stack-card:nth-child(1) .feature-badge { --badge-hue: 205; --badge-sat: 76%; --badge-lit: 45%; }
-    #stack2 .stack-card:nth-child(2) .feature-badge { --badge-hue: 190; --badge-sat: 72%; --badge-lit: 46%; }
-    #stack2 .stack-card:nth-child(3) .feature-badge { --badge-hue: 220; --badge-sat: 70%; --badge-lit: 44%; }
-    #stack2 .stack-card:nth-child(4) .feature-badge { --badge-hue: 175; --badge-sat: 70%; --badge-lit: 44%; }
-    #stack2 .stack-card:nth-child(5) .feature-badge { --badge-hue: 200; --badge-sat: 72%; --badge-lit: 45%; }
+    /* Stack 2: Smooth Green gradient (middle) - flows from lime to emerald */
+    #stack2 .stack-card:nth-child(1) .pouch-label { --ink1: hsla(120, 80%, 75%, 0.45); --ink2: hsla(135, 85%, 75%, 0.50); --ink3: hsla(150, 90%, 80%, 0.55); }
+    #stack2 .stack-card:nth-child(2) .pouch-label { --ink1: hsla(122, 81%, 75%, 0.46); --ink2: hsla(137, 86%, 75%, 0.51); --ink3: hsla(152, 91%, 80%, 0.56); }
+    #stack2 .stack-card:nth-child(3) .pouch-label { --ink1: hsla(124, 82%, 75%, 0.47); --ink2: hsla(139, 87%, 75%, 0.52); --ink3: hsla(154, 92%, 80%, 0.57); }
+    #stack2 .stack-card:nth-child(4) .pouch-label { --ink1: hsla(126, 83%, 75%, 0.48); --ink2: hsla(141, 88%, 75%, 0.53); --ink3: hsla(156, 93%, 80%, 0.58); }
+    #stack2 .stack-card:nth-child(5) .pouch-label { --ink1: hsla(128, 84%, 75%, 0.49); --ink2: hsla(143, 89%, 75%, 0.54); --ink3: hsla(158, 94%, 80%, 0.59); }
+    #stack2 .stack-card:nth-child(1) .feature-badge { --badge-hue: 135; --badge-sat: 85%; --badge-lit: 45%; }
+    #stack2 .stack-card:nth-child(2) .feature-badge { --badge-hue: 137; --badge-sat: 86%; --badge-lit: 46%; }
+    #stack2 .stack-card:nth-child(3) .feature-badge { --badge-hue: 139; --badge-sat: 87%; --badge-lit: 44%; }
+    #stack2 .stack-card:nth-child(4) .feature-badge { --badge-hue: 141; --badge-sat: 88%; --badge-lit: 44%; }
+    #stack2 .stack-card:nth-child(5) .feature-badge { --badge-hue: 143; --badge-sat: 89%; --badge-lit: 45%; }
 
-    #stack3 .stack-card:nth-child(1) .pouch-label { --ink1: hsla(132, 60%, 78%, 0.35); --ink2: hsla(150, 55%, 80%, 0.32); --ink3: hsla(170, 52%, 84%, 0.30); }
-    #stack3 .stack-card:nth-child(2) .pouch-label { --ink1: hsla(140, 60%, 78%, 0.35); --ink2: hsla(158, 55%, 80%, 0.32); --ink3: hsla(175, 52%, 84%, 0.30); }
-    #stack3 .stack-card:nth-child(3) .pouch-label { --ink1: hsla(150, 58%, 78%, 0.35); --ink2: hsla(165, 54%, 80%, 0.32); --ink3: hsla(185, 52%, 84%, 0.30); }
-    #stack3 .stack-card:nth-child(4) .pouch-label { --ink1: hsla(160, 58%, 78%, 0.35); --ink2: hsla(175, 54%, 80%, 0.32); --ink3: hsla(195, 52%, 84%, 0.30); }
-    #stack3 .stack-card:nth-child(5) .pouch-label { --ink1: hsla(170, 58%, 78%, 0.35); --ink2: hsla(185, 54%, 80%, 0.32); --ink3: hsla(205, 52%, 84%, 0.30); }
-    #stack3 .stack-card:nth-child(1) .feature-badge { --badge-hue: 140; --badge-sat: 70%; --badge-lit: 42%; }
-    #stack3 .stack-card:nth-child(2) .feature-badge { --badge-hue: 155; --badge-sat: 68%; --badge-lit: 44%; }
-    #stack3 .stack-card:nth-child(3) .feature-badge { --badge-hue: 165; --badge-sat: 66%; --badge-lit: 45%; }
-    #stack3 .stack-card:nth-child(4) .feature-badge { --badge-hue: 185; --badge-sat: 66%; --badge-lit: 45%; }
-    #stack3 .stack-card:nth-child(5) .feature-badge { --badge-hue: 205; --badge-sat: 66%; --badge-lit: 46%; }
+    /* Stack 3: Smooth Blue gradient (right) - flows from sky blue to deep blue */
+    #stack3 .stack-card:nth-child(1) .pouch-label { --ink1: hsla(200, 75%, 75%, 0.45); --ink2: hsla(220, 80%, 75%, 0.50); --ink3: hsla(240, 85%, 80%, 0.55); }
+    #stack3 .stack-card:nth-child(2) .pouch-label { --ink1: hsla(202, 76%, 75%, 0.46); --ink2: hsla(222, 81%, 75%, 0.51); --ink3: hsla(242, 86%, 80%, 0.56); }
+    #stack3 .stack-card:nth-child(3) .pouch-label { --ink1: hsla(204, 77%, 75%, 0.47); --ink2: hsla(224, 82%, 75%, 0.52); --ink3: hsla(244, 87%, 80%, 0.57); }
+    #stack3 .stack-card:nth-child(4) .pouch-label { --ink1: hsla(206, 78%, 75%, 0.48); --ink2: hsla(226, 83%, 75%, 0.53); --ink3: hsla(246, 88%, 80%, 0.58); }
+    #stack3 .stack-card:nth-child(5) .pouch-label { --ink1: hsla(208, 79%, 75%, 0.49); --ink2: hsla(228, 84%, 75%, 0.54); --ink3: hsla(248, 89%, 80%, 0.59); }
+    #stack3 .stack-card:nth-child(1) .feature-badge { --badge-hue: 220; --badge-sat: 80%; --badge-lit: 42%; }
+    #stack3 .stack-card:nth-child(2) .feature-badge { --badge-hue: 222; --badge-sat: 81%; --badge-lit: 44%; }
+    #stack3 .stack-card:nth-child(3) .feature-badge { --badge-hue: 224; --badge-sat: 82%; --badge-lit: 45%; }
+    #stack3 .stack-card:nth-child(4) .feature-badge { --badge-hue: 226; --badge-sat: 83%; --badge-lit: 45%; }
+    #stack3 .stack-card:nth-child(5) .feature-badge { --badge-hue: 228; --badge-sat: 84%; --badge-lit: 46%; }
 
     /* Route transition overlay */
     .route-overlay{

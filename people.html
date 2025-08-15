@@ -39,7 +39,7 @@
     --overlap:clamp(40px, 6vw, 80px);
   }
   
-  /* New pouch-extreme styles */
+  /* New pouch-extreme styles - matching product-section.html exactly */
   .pouch-extreme{
     --pouch-w: var(--pouch-width); 
     --pouch-h: var(--pouch-height);
@@ -47,16 +47,16 @@
     --bag-bg: #0a0a0a;
     --bag-radius-frac: 0.0375;
     --pouch-border-frac: 0.003;
-    --pouch-border-color: #0aff27;
-    --label-bg: #f70808;
-    --label-radius-frac: 0.05;
-    --label-top-frac: 0.89;
-    --label-pad-frac: 0.035;
-    --label-gradient: linear-gradient(to right, rgba(205, 224, 242, 0.38) 8%, rgba(216, 241, 231, 0.35) 48%, rgba(242, 247, 255, 0.32) 88%);
-    --label-gradient-opacity: 1;
-    --ink1: hsla(210, 52%, 82%, 0.35);
-    --ink2: hsla(200, 50%, 84%, 0.32);
-    --ink3: hsla(180, 48%, 86%, 0.30);
+    --pouch-border-color: rgba(0, 0, 0, 0.1);
+    --label-bg: #FDFEFE;
+    --label-radius-frac: 0.055;
+    --label-top-frac: 0.88;
+    --label-pad-frac: 0.04;
+    --label-gradient: linear-gradient(135deg, rgba(245, 248, 252, 0.65) 0%, rgba(252, 254, 255, 0.45) 50%, rgba(248, 250, 252, 0.4) 100%);
+    --label-gradient-opacity: 0.85;
+    --ink1: hsla(210, 42%, 88%, 0.25);
+    --ink2: hsla(200, 40%, 90%, 0.22);
+    --ink3: hsla(180, 38%, 92%, 0.20);
     --notch-amp: 1;
     --text-size-frac-default: .05;
   }
@@ -84,15 +84,24 @@
                       linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%),
                       radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); clip-path: inherit; }
   .pouch-extreme .pouch-label{ --pad: calc(var(--label-pad-frac) * var(--pouch-min)); position:absolute; left:var(--pad); right:var(--pad); bottom:var(--pad); top: calc(100% - (var(--label-top-frac) * 100%));
-    background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:24px 20px; overflow:hidden; }
+    background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:28px 24px; overflow:hidden; 
+    display: flex; flex-direction: column; justify-content: space-between;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.08); 
+    border: 1px solid rgba(0,0,0,0.04); }
   .pouch-extreme .pouch-label::before{ content:""; position:absolute; inset:0; border-radius:inherit; background:
+    linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%),
     var(--label-gradient),
-    radial-gradient(120% 80% at 18% 20%, var(--ink1) 0 40%, transparent 70%),
-    radial-gradient(130% 78% at 80% 24%, var(--ink2) 0 38%, transparent 72%),
-    radial-gradient(110% 88% at 64% 84%, var(--ink3) 0 42%, transparent 74%); opacity: var(--label-gradient-opacity); }
+    linear-gradient(135deg, var(--ink1) 0%, var(--ink2) 50%, var(--ink3) 100%); opacity: calc(var(--label-gradient-opacity) * 0.7); }
   .pouch-extreme .shape-layer, .pouch-extreme .text-layer{ position:absolute; inset:0 }
-  .pouch-extreme .shape-layer{ width:100%; height:100%; }
+  .pouch-extreme .shape-layer{ display: none; }
+  .pouch-extreme .text-layer{ z-index: 2; }
   .pouch-extreme .text-block{ position:absolute; font-size: calc(var(--text-size-frac, .05) * var(--pouch-min)); }
+  .pouch-extreme .label-badge { 
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .pouch-extreme .label-tagline { text-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+  .pouch-extreme .label-description { letter-spacing: -0.01em; }
 
   *{box-sizing:border-box;margin:0;padding:0}
   body{
@@ -371,6 +380,24 @@
   }
 
   /* ===== Pouch visuals (unchanged core) ===== */
+  /* === Contrast outline that matches the pouch shape exactly === */
+  :root{
+    --outline-inner: rgba(255,255,255,0.5);
+    --outline-outer: rgba(0,0,0,0.2);
+    --outline-inner-w: 0.5px;
+    --outline-outer-w: 1px;
+  }
+  .pouch-outline{ position: absolute; inset: 0; pointer-events: none; z-index: 8; transform-style: preserve-3d; }
+  .pouch-outline.front{ transform: translateZ(calc(var(--pouch-thickness) / 2)); }
+  .pouch-outline.back{ transform: rotateY(180deg) translateZ(calc(var(--pouch-thickness) / 2)); }
+  .pouch-outline path{ fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: miter; shape-rendering: geometricPrecision; }
+  .pouch-outline .outer{ stroke: var(--outline-outer); stroke-width: var(--outline-inner-w); }
+  .pouch-outline .inner{ stroke: var(--outline-inner); stroke-width: var(--outline-outer-w); }
+  @media (prefers-color-scheme: dark){
+    .pouch-outline .outer{ stroke: rgba(0,0,0,0.5); }
+    .pouch-outline .inner{ stroke: rgba(255,255,255,0.72); }
+  }
+  
   .pouch-container{ width:var(--pouch-width); height:var(--pouch-height); position:relative; transform-style:preserve-3d; }
   .pouch{
     position:absolute; inset:0; backface-visibility:hidden; background:#0a0a0a;
@@ -538,25 +565,25 @@
     return chosen;
   }
 
-  // Generate unique inks for each pouch
+  // Generate unique inks for each pouch with smooth 3-color gradients
   function generateUniqueInks(index) {
     // Base hue varies by index to ensure uniqueness
     const baseHue = (index * 67) % 360; // 67 degrees apart for good separation
     
-    // Vary saturation and lightness for each pouch
-    const saturation = Math.max(45, 70 - (index % 3) * 8);
-    const lightness = Math.max(70, 80 - (index % 4) * 3);
-    const alpha = Math.max(0.28, 0.35 - (index % 2) * 0.05);
+    // Create smooth gradients with consistent saturation and lightness
+    const saturation = Math.max(65, 80 - (index % 3) * 5);
+    const lightness = Math.max(70, 78 - (index % 4) * 2);
+    const alpha = Math.max(0.35, 0.45 - (index % 2) * 0.03);
     
-    // Generate three complementary ink colors
+    // Generate three ink colors that flow smoothly from one to the next
     const hue1 = baseHue;
-    const hue2 = (baseHue + 25) % 360;
-    const hue3 = (baseHue + 50) % 360;
+    const hue2 = (baseHue + 20) % 360;
+    const hue3 = (baseHue + 40) % 360;
     
     return [
       `hsla(${hue1},${saturation}%,${lightness}%,${alpha})`,
-      `hsla(${hue2},${Math.max(40, saturation - 8)}%,${Math.max(65, lightness - 5)}%,${Math.max(0.25, alpha - 0.03)})`,
-      `hsla(${hue3},${Math.max(35, saturation - 15)}%,${Math.max(60, lightness - 10)}%,${Math.max(0.22, alpha - 0.06)})`
+      `hsla(${hue2},${Math.max(60, saturation - 5)}%,${Math.max(68, lightness - 2)}%,${Math.max(0.32, alpha - 0.02)})`,
+      `hsla(${hue3},${Math.max(55, saturation - 10)}%,${Math.max(66, lightness - 4)}%,${Math.max(0.30, alpha - 0.04)})`
     ];
   }
 
@@ -566,24 +593,50 @@
       <div class="pouch-extreme pouch-container" style="--ink1:${ink1}; --ink2:${ink2}; --ink3:${ink3};">
         <div class="pouch">
           <div class="top-seal"></div>
-                     <div class="pouch-label">
-             <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Shape layer"><rect x="397.807373046875" y="263.5442199707031" width="200" height="200" rx="3.200347071234561" ry="12" data-corner="12" fill="#ffffff80" data-shape="square" data-rot="0" data-scalex="3.7495933200054137" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(3.74959, 1);"></rect><circle cx="977.3275756835938" cy="24.153820037841797" r="110" fill="rgba(16, 234, 81, 1)" data-shape="circle" data-rot="0" data-scalex="1.278094641436079" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(1.27809, 1);"></circle><polygon points="504.1848449707031,645.3689880371094 614.1848449707031,875.3689880371094 394.1848449707031,875.3689880371094" fill="rgba(0, 0, 0, 1)" data-shape="triangle" data-rot="0" data-scalex="5" data-scaley="2.165829465350702" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(5, 2.16583);"></polygon></svg>
-           </div>
-           
-           <div class="text-layer">
-             <div class="text-block" data-size-frac="0.028" style="--text-size-frac: 0.028; top: 17.1688%; left: 30.4969%; transform: translate(-50%, -50%); color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1.1; letter-spacing: 0.08em; width: 150.098px; white-space: normal; max-width: none;">${badge}</div>
-             <div class="text-block" data-size-frac="0.062" style="--text-size-frac: 0.062; top: 41.9995%; left: 49.673%; transform: translate(-50%, -50%); color: rgb(10, 10, 10); font-weight: 800; line-height: 1.2; width: 66%; white-space: normal; max-width: none;">${tagline}</div>
-           </div>
+          <div class="pouch-label">
+            <div class="text-layer">
+              <div class="text-block label-badge" data-size-frac="0.020" style="--text-size-frac: 0.020; top: 12%; left: 50%; transform: translate(-50%, -50%); color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 0.08em; background: rgba(0,0,0,0.75); padding: 8px 16px; border-radius: 20px; white-space: nowrap;">${badge}</div>
+              <div class="text-block label-tagline" data-size-frac="0.072" style="--text-size-frac: 0.072; top: 38%; left: 50%; transform: translate(-50%, -50%); color: rgb(28, 28, 32); font-weight: 700; line-height: 1.1; text-align: center; width: 85%; white-space: normal; max-width: none;">${tagline}</div>
+            </div>
+          </div>
         </div>
       </div>
     `;
   }
 
-  // SVG outlines
+  // SVG outlines - matching the new pouch-extreme design exactly
   const SVG_NS='http://www.w3.org/2000/svg';
   function pouchPathD(w,h){
-    const pts=[[0,20],[4,12],[8,8],[12,4],[20,0],[w-20,0],[w-12,4],[w-8,8],[w-4,12],[w,20],[w,32],[w-12,40],[w,48],[w,h-16],[w-4,h-8],[w-8,h-4],[w-16,h],[16,h],[8,h-4],[4,h-8],[0,h-16],[0,48],[12,40],[0,32],[0,20]];
-    return 'M '+pts.map(([x,y])=>`${x} ${y}`).join(' L ')+' Z';
+    // This matches the exact clip-path used in .pouch-extreme .pouch
+    // Using the same calculations as CSS: --bag-radius-frac: 0.0375
+    const pouchMin = Math.min(w, h);
+    const rT = pouchMin * 0.0375; // bag-radius-frac
+    const rB = rT * 0.8;
+    const t1 = rT; const t2 = rT * 0.6; const t3 = rT * 0.4; const t4 = rT * 0.2;
+    const b1 = rB; const b2 = rB * 0.6; const b3 = rB * 0.4; const b4 = rB * 0.2;
+    const nx = 1; const nox = pouchMin * 0.04 * nx; // 4cqw * var(--nx)
+    
+    const pts = [
+      [0, t1], [t4, t2], [t3, t3], [t2, t4], [t1, 0],
+      [w - t1, 0], [w - t2, t4], [w - t3, t3], [w - t4, t2], [w, t1],
+      [w, t1 + 4], [w - nox, t1 + 6], [w, t1 + 8],
+      [w, h - b1], [w - b4, h - b2], [w - b3, h - b3], [w - b2, h - b4], [w - b1, h],
+      [b1, h], [b2, h - b4], [b3, h - b3], [b4, h - b2], [0, h - b1],
+      [0, t1 + 8], [nox, t1 + 6], [0, t1 + 4],
+      [0, t1]
+    ];
+    return 'M ' + pts.map(([x,y]) => `${x} ${y}`).join(' L ') + ' Z';
+  }
+  function makeOutline(container, side){
+    const w = container.clientWidth; const h = container.clientHeight;
+    const svg = document.createElementNS(SVG_NS, 'svg');
+    svg.classList.add('pouch-outline', side);
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('preserveAspectRatio', 'none');
+    const d = pouchPathD(w, h);
+    const outer = document.createElementNS(SVG_NS, 'path'); outer.setAttribute('class','outer'); outer.setAttribute('d', d);
+    const inner = document.createElementNS(SVG_NS, 'path'); inner.setAttribute('class','inner'); inner.setAttribute('d', d);
+    svg.append(outer, inner); container.appendChild(svg); return svg;
   }
   function makeOutline(container){
     const w=container.clientWidth,h=container.clientHeight;
@@ -612,7 +665,7 @@
       });
     });
   }
-  addEventListener('resize', updatePouchOutlines);
+  // Outlines removed for clean pouch design
 
   // Build a single side-by-side pair
   function createPair(data, idx, inks){
@@ -793,7 +846,7 @@
       el.style.setProperty('--stagger', String(idx));
     });
 
-    // We don't need outlines for the new pouch design
+    // No outlines needed for the clean pouch design
     // setTimeout(addPouchOutlines, 0);
 
     const io = new IntersectionObserver((entries,obs)=>{
