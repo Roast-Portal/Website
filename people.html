@@ -124,7 +124,7 @@
 
   /* each pair = media + card, side-by-side with a subtle overlap */
   .pair{
-    display:grid; grid-template-columns: 1.1fr 0.9fr;
+    display:grid; grid-template-columns: 1fr 1fr;
     align-items:center; gap: clamp(20px, 2.8vw, 28px);
     position:relative; overflow:visible;
     isolation: isolate;
@@ -157,13 +157,15 @@
     border:1px solid rgba(0,0,0,.06);
     position: relative;
     z-index: 2;
+    width: 100%;
+    min-width: 0;
     transition: transform 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
   }
   .card:hover{
     transform: translateY(-2px);
     box-shadow: 0 8px 32px rgba(0,0,0,.12), 0 16px 40px rgba(0,0,0,.08);
   }
-  .card-body{ padding:clamp(16px,3vw,24px); }
+  .card-body{ padding:clamp(16px,3vw,24px); min-height: 280px; display: flex; flex-direction: column; }
   .row-small{ display:grid; grid-template-columns:5fr 7fr; gap:16px; align-items:start; }
   .d-flex{ display:flex; } .align-items-center{ align-items:center; }
   .mr-2{ margin-right:10px; } .mr-lg-3{ margin-right:12px; }
@@ -178,7 +180,7 @@
     padding:4px 8px; border-radius:999px;
     max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .quote{ color:#1d1d1f; font-size:16px; line-height:1.55; }
+  .quote{ color:#1d1d1f; font-size:16px; line-height:1.55; margin-bottom: 16px; }
 
   /* Flavor matrix visualization */
   .flavor-matrix {
@@ -187,6 +189,7 @@
     background: var(--bg-secondary);
     border-radius: 12px;
     border: 1px solid rgba(0,0,0,0.06);
+    flex: 1;
   }
   
   .matrix-header {
