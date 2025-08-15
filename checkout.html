@@ -65,6 +65,10 @@
       .visual{transform:none}
       .pouch-stack{transform:none}
       .stack-card{transform:translate(-50%,-50%) translate(var(--dx, 0px), var(--dy, 0px)) scale(var(--scale, 1))}
+      
+      /* Ensure pouches are visible on mobile */
+      .stack-card{opacity:1; visibility:visible}
+      .pouch-extreme{opacity:1; visibility:visible}
     }
     
     /* Small mobile optimizations */
@@ -85,7 +89,7 @@
     /* Pouch stack visuals */
     :root{--pouch-w: min(84vw, 340px); --pouch-h: calc(var(--pouch-w) * 1.335);} 
     .visual{display:grid;place-items:center;margin-bottom:12px; position:relative}
-    .pouch-stack{position:relative;height:calc(var(--pouch-h) + 80px);width:100%;max-width:var(--pouch-w);overflow:visible;transform:translateZ(0)}
+    .pouch-stack{position:relative;height:calc(var(--pouch-h) + 80px);width:100%;max-width:var(--pouch-w);overflow:visible}
     
     /* Mobile pouch optimizations */
     @media(max-width:860px){
@@ -100,9 +104,9 @@
     }
     
     /* Fix bottom scrolling issues */
-    .visual{contain:layout style paint}
-    .pouch-stack{contain:layout style paint}
-    .stack-card{contain:layout style paint}
+    .visual{contain:layout style}
+    .pouch-stack{contain:layout style}
+    .stack-card{contain:layout style}
     .stack-card{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);transform-style:preserve-3d;backface-visibility:hidden;will-change:auto}
     /* Pouch extreme (from product-section) */
     .pouch-extreme{ --pouch-min: min(var(--pouch-w), var(--pouch-h)); --bag-bg:#0a0a0a; --bag-radius-frac:0.0375; --pouch-border-frac:0.003; --pouch-border-color: rgba(0,0,0,0.1); --label-bg:#FDFEFE; --label-radius-frac:0.055; --label-top-frac:0.88; --label-pad-frac:0.04; --label-gradient: linear-gradient(135deg, rgba(245, 248, 252, 0.65) 0%, rgba(252, 254, 255, 0.45) 50%, rgba(248, 250, 252, 0.4) 100%); --label-gradient-opacity:0.85; }
@@ -127,7 +131,7 @@
                         linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%),
                         radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); clip-path: inherit; }
     .pouch-extreme .pouch-label{ --pad: calc(var(--label-pad-frac) * var(--pouch-min)); position:absolute; left:var(--pad); right:var(--pad); bottom:var(--pad); top: calc(100% - (var(--label-top-frac) * 100%));
-      background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:24px 20px; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+      background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:24px 20px; overflow:visible; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:1; }
     
     /* Mobile pouch label optimizations */
     @media(max-width:860px){
