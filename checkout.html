@@ -1009,18 +1009,42 @@
       Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
       const body = form.toString();
 
-      // Try sendBeacon on navigation for reliability
+      // Try sendBeacon first for maximum reliability during navigation
       if (useBeacon && 'sendBeacon' in navigator){
-        const blob = new Blob([body], { type:'application/x-www-form-urlencoded;charset=UTF-8' });
-        const ok = navigator.sendBeacon(url, blob);
-        if (ok) return Promise.resolve(true);
+        try {
+          const blob = new Blob([body], { type:'application/x-www-form-urlencoded;charset=UTF-8' });
+          const ok = navigator.sendBeacon(url, blob);
+          if (ok) {
+            console.log('Form submitted successfully via sendBeacon');
+            return Promise.resolve(true);
+          }
+        } catch (err) {
+          console.warn('sendBeacon failed, falling back to fetch:', err);
+        }
       }
 
-      // Fallback to fetch
+      // Fallback to fetch with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
       return fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-        body
+        body,
+        signal: controller.signal,
+        keepalive: true // Keep connection alive for background requests
+      }).then(response => {
+        clearTimeout(timeoutId);
+        if (response.ok) {
+          console.log('Form submitted successfully via fetch');
+          return response;
+        } else {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+      }).catch(err => {
+        clearTimeout(timeoutId);
+        console.error('Form submission failed:', err);
+        throw err;
       });
     }
 
@@ -1058,7 +1082,16 @@
       }
     }
 
+    // Track submission state to prevent duplicate submissions
+    let submissionInProgress = false;
+    let submissionCompleted = false;
+    let robustSubmissionSetup = false;
+
     function onBuy(){
+      // Prevent duplicate submissions
+      if (submissionInProgress || submissionCompleted) return;
+      
+      submissionInProgress = true;
       const btn = document.getElementById('buyBtn');
       if (btn){ btn.setAttribute('aria-busy', 'true'); btn.disabled = true; }
 
@@ -1069,9 +1102,9 @@
       // Timestamp last order immediately
       safeSetLS('rp_last_order_ts', Date.now());
 
-      // Fire-and-forget to Sheets with beacon where possible
-      postToSheets(payload, { useBeacon: true }).catch(err => console.error('Background submission failed:', err));
-
+      // Submit immediately with beacon for reliability
+      const submitPromise = postToSheets(payload, { useBeacon: true });
+      
       // Track conversion when purchase is made
       if (typeof gtag === 'function') {
         gtag('event', 'conversion', {
@@ -1080,7 +1113,13 @@
           'currency': 'USD'
         });
       }
-      
+
+      // Mark submission as completed after a short delay
+      setTimeout(() => {
+        submissionCompleted = true;
+        submissionInProgress = false;
+      }, 1000);
+
       // Navigate immediately (with GA callback attempts)
       gtagNavigate('thanks.html', {
         value: p.total,
@@ -1105,6 +1144,55 @@
       // Review mode
       const params = new URLSearchParams(window.location.search);
       if (params.get('review') === '1' && buy){ buy.remove(); }
+
+      // Set up robust form submission handlers
+      setupRobustSubmission();
+    }
+
+    // Ensure form submission happens even if user navigates away quickly
+    function setupRobustSubmission() {
+      // Only set up once
+      if (robustSubmissionSetup) return;
+      robustSubmissionSetup = true;
+      
+      const payload = buildPayload();
+      
+      // Handle page visibility change (user switching tabs, minimizing, etc.)
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden' && !submissionCompleted) {
+          // User is leaving the page, submit immediately
+          postToSheets(payload, { useBeacon: true }).catch(err => console.error('Visibility change submission failed:', err));
+        }
+      });
+
+      // Handle beforeunload (user closing tab, navigating away, etc.)
+      window.addEventListener('beforeunload', function(e) {
+        if (!submissionCompleted) {
+          // Submit with beacon for maximum reliability
+          postToSheets(payload, { useBeacon: true });
+          
+          // Show confirmation dialog to give submission time
+          e.preventDefault();
+          e.returnValue = 'Your order is being processed. Are you sure you want to leave?';
+          return e.returnValue;
+        }
+      });
+
+      // Handle pagehide (more reliable than beforeunload on mobile)
+      window.addEventListener('pagehide', function() {
+        if (!submissionCompleted) {
+          // Final attempt to submit
+          postToSheets(payload, { useBeacon: true });
+        }
+      });
+
+      // Handle unload (final fallback)
+      window.addEventListener('unload', function() {
+        if (!submissionCompleted) {
+          // Last chance submission
+          postToSheets(payload, { useBeacon: true });
+        }
+      });
     }
 
     // ---- Chrome on iOS specific fixes ----
@@ -1176,8 +1264,24 @@
       }
     })();
 
+    // Handle any pending submissions when the page loads
+    function handlePendingSubmissions() {
+      const lastOrderTs = safeGetLS('rp_last_order_ts');
+      const now = Date.now();
+      
+      // If there was a recent order attempt (within last 30 seconds) but no completion
+      if (lastOrderTs && (now - lastOrderTs) < 30000) {
+        const payload = buildPayload();
+        // Submit in background to ensure it goes through
+        postToSheets(payload, { useBeacon: false }).catch(err => console.error('Pending submission failed:', err));
+      }
+    }
+
     // Initial render
     render();
+    
+    // Handle any pending submissions
+    handlePendingSubmissions();
     })();
   </script>
 </body>
