@@ -155,7 +155,7 @@
       box-shadow:0 10px 25px rgba(0,113,227,.35);
     }
     
-    /* Pouch visualization */
+    /* Pouch visualization - using product-section pouch-extreme design */
     .visual{
       text-align:center;
       margin-bottom:24px;
@@ -168,50 +168,145 @@
       margin-bottom:16px;
     }
     
-    .pouch{
-      width:120px;
-      height:160px;
-      background:#0a0a0a;
-      border-radius:8px 8px 12px 12px;
-      position:relative;
-      margin:0 auto;
-      box-shadow:0 8px 20px rgba(0,0,0,.15);
+    /* Pouch extreme (from product-section) */
+    .pouch-extreme{ 
+      --pouch-min: min(120px, 160px); 
+      --bag-bg:#0a0a0a; 
+      --bag-radius-frac:0.0375; 
+      --pouch-border-frac:0.003; 
+      --pouch-border-color: rgba(0,0,0,0.1); 
+      --label-bg:#FDFEFE; 
+      --label-radius-frac:0.055; 
+      --label-top-frac:0.88; 
+      --label-pad-frac:0.04; 
+      --label-gradient: linear-gradient(135deg, rgba(245, 248, 252, 0.65) 0%, rgba(252, 254, 255, 0.45) 50%, rgba(248, 250, 252, 0.4) 100%); 
+      --label-gradient-opacity:0.85; 
     }
     
-    .pouch-label{
-      position:absolute;
-      bottom:12px;
-      left:12px;
-      right:12px;
-      background:#fff;
-      border-radius:8px;
-      padding:16px 12px;
-      text-align:center;
-      box-shadow:0 2px 8px rgba(0,0,0,.1);
+    .pouch-extreme.pouch-container{ 
+      position:relative; 
+      inline-size:120px; 
+      block-size:160px; 
+      container-type:inline-size 
+    }
+    
+    .pouch-extreme .pouch{ 
+      position:absolute; 
+      inset:0; 
+      background:var(--bag-bg); 
+      border-radius: calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)); 
+      overflow:hidden; 
+      isolation:isolate; 
+      box-shadow: 0 12px 28px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10); 
+    }
+    
+    .pouch-extreme .pouch::after{ 
+      content:""; 
+      position:absolute; 
+      inset:0; 
+      z-index:3; 
+      pointer-events:none; 
+      border-radius: inherit; 
+      clip-path: inherit; 
+      box-shadow: inset 0 0 0 calc(var(--pouch-border-frac) * var(--pouch-min)) var(--pouch-border-color); 
+    }
+    
+    .pouch-extreme .pouch{
+      --rT: calc(var(--bag-radius-frac) * 100cqw);
+      --rB: calc(var(--bag-radius-frac) * 80cqw);
+      --t1: var(--rT); --t2: calc(var(--rT)*.6); --t3: calc(var(--rT)*.4); --t4: calc(var(--rT)*.2);
+      --b1: var(--rB); --b2: calc(var(--rB)*.6); --b3: calc(var(--rB)*.4); --b4: calc(var(--rB)*.2);
+      --nx: 1; --nox: calc(4cqw * var(--nx));
+      clip-path: polygon(0 var(--t1), var(--t4) var(--t2), var(--t3) var(--t3), var(--t2) var(--t4), var(--t1) 0,
+                         calc(100% - var(--t1)) 0, calc(100% - var(--t2)) var(--t4), calc(100% - var(--t3)) var(--t3), calc(100% - var(--t4)) var(--t2), 100% var(--t1),
+                         100% calc(var(--t1) + 4cqw), calc(100% - var(--nox)) calc(var(--t1) + 6cqw), 100% calc(var(--t1) + 8cqw),
+                         100% calc(100% - var(--b1)), calc(100% - var(--b4)) calc(100% - var(--b2)), calc(100% - var(--b3)) calc(100% - var(--b3)), calc(100% - var(--b2)) calc(100% - var(--b4)), calc(100% - var(--b1)) 100%,
+                         var(--b1) 100%, var(--b2) calc(100% - var(--b4)), var(--b3) calc(100% - var(--b3)), var(--b4) calc(100% - var(--b2)), 0 calc(100% - var(--b1)),
+                         0 calc(var(--t1) + 8cqw), var(--nox) calc(var(--t1) + 6cqw), 0 calc(var(--t1) + 4cqw),
+                         0 var(--t1)); 
+    }
+    
+    .pouch-extreme .top-seal{ 
+      position:absolute; 
+      inset-inline:0; 
+      inset-block-start:0; 
+      height:10cqw; 
+      background-color:var(--bag-bg); 
+      border-bottom:1px solid rgba(220,225,230,0.32);
+      background-image: repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0 1px, rgba(0,0,0,0.08) 1px 2px, transparent 2px 3px),
+                        linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%),
+                        radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); 
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); 
+      clip-path: inherit; 
+    }
+    
+    .pouch-extreme .pouch-label{ 
+      --pad: calc(var(--label-pad-frac) * var(--pouch-min)); 
+      position:absolute; 
+      left:var(--pad); 
+      right:var(--pad); 
+      bottom:var(--pad); 
+      top: calc(100% - (var(--label-top-frac) * 100%));
+      background:var(--label-bg); 
+      border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); 
+      padding:16px 12px; 
+      overflow:hidden; 
+      display:flex; 
+      flex-direction:column; 
+      align-items:center; 
+      justify-content:center; 
+      text-align:center; 
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.08); 
+      border: 1px solid rgba(0,0,0,0.04); 
+    }
+    
+    .pouch-extreme .pouch-label::before{ 
+      content:""; 
+      position:absolute; 
+      inset:0; 
+      border-radius:inherit; 
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%),
+        var(--label-gradient),
+        radial-gradient(120% 80% at 18% 20%, hsla(210, 42%, 88%, 0.25) 0 40%, transparent 70%),
+        radial-gradient(130% 78% at 80% 24%, hsla(200, 40%, 90%, 0.22) 0 38%, transparent 72%),
+        radial-gradient(110% 88% at 64% 84%, hsla(180, 38%, 92%, 0.20) 0 42%, transparent 74%); 
+      opacity: calc(var(--label-gradient-opacity) * 0.7); 
     }
     
     .label-badge{
-      background:var(--blue);
+      padding:6px 10px;
+      border-radius:14px;
       color:#fff;
-      padding:4px 8px;
-      border-radius:12px;
-      font-size:10px;
+      background:var(--blue);
+      font-size:11px;
       font-weight:700;
-      margin-bottom:6px;
+      box-shadow:0 0 0 1px rgba(0,113,227,.28);
+      margin-bottom:8px;
       display:inline-block;
+      position:relative;
+      z-index:1;
     }
     
     .label-tagline{
-      font-size:12px;
+      font-size:14px;
       font-weight:700;
-      color:var(--text-primary);
-      margin-bottom:4px;
+      color:#1d1d1f;
+      margin-bottom:6px;
+      position:relative;
+      z-index:1;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      line-height:1.2;
     }
     
     .label-description{
-      font-size:10px;
-      color:var(--text-secondary);
+      font-size:12px;
+      color:#2b2b30;
+      margin-top:6px;
       line-height:1.3;
+      position:relative;
+      z-index:1;
+      letter-spacing: -0.01em;
     }
     
     .qty-badge{
@@ -246,29 +341,29 @@
         font-size:24px;
       }
       
-      .pouch{
-        width:100px;
-        height:133px;
+      .pouch-extreme.pouch-container{
+        inline-size:100px;
+        block-size:133px;
       }
       
-      .pouch-label{
+      .pouch-extreme .pouch-label{
         padding:12px 8px;
-        bottom:8px;
-        left:8px;
-        right:8px;
       }
       
       .label-badge{
-        font-size:9px;
-        padding:3px 6px;
+        font-size:10px;
+        padding:4px 8px;
+        margin-bottom:6px;
       }
       
       .label-tagline{
-        font-size:11px;
+        font-size:12px;
+        margin-bottom:5px;
       }
       
       .label-description{
-        font-size:9px;
+        font-size:10px;
+        margin-top:5px;
       }
     }
     
@@ -296,16 +391,29 @@
         font-size:15px;
       }
       
-      .pouch{
-        width:80px;
-        height:107px;
+      .pouch-extreme.pouch-container{
+        inline-size:80px;
+        block-size:107px;
       }
       
-      .pouch-label{
+      .pouch-extreme .pouch-label{
         padding:8px 6px;
-        bottom:6px;
-        left:6px;
-        right:6px;
+      }
+      
+      .label-badge{
+        font-size:9px;
+        padding:3px 6px;
+        margin-bottom:4px;
+      }
+      
+      .label-tagline{
+        font-size:10px;
+        margin-bottom:3px;
+      }
+      
+      .label-description{
+        font-size:9px;
+        margin-top:3px;
       }
       
       .qty-badge{
@@ -431,11 +539,14 @@
         <div>
           <div class="visual">
             <div class="pouch-stack">
-              <div class="pouch">
-                <div class="pouch-label">
-                  <div class="label-badge">${badgeText}</div>
-                  <div class="label-tagline">${d.blendName||'Your Daily Roast'}</div>
-                  <div class="label-description">${tasting}</div>
+              <div class="pouch-extreme pouch-container">
+                <div class="pouch">
+                  <div class="top-seal"></div>
+                  <div class="pouch-label">
+                    <div class="label-badge">${badgeText}</div>
+                    <div class="label-tagline">${d.blendName||'Your Daily Roast'}</div>
+                    <div class="label-description">${tasting}</div>
+                  </div>
                 </div>
               </div>
             </div>
