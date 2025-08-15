@@ -319,6 +319,10 @@
   </nav>
 
   <script>
+    // --- Google Apps Script Integration ---
+    // Quiz submissions are sent to: https://script.google.com/macros/s/AKfycbwSbx0Aj6FBwXXxAY1xNPfHz8etSqEnlzuw97041FMt5dwroOUS0dfFjKPCvk0K396bZQ/exec
+    // This script handles quiz data collection and can be configured to send emails, store in Google Sheets, etc.
+    
     // --- Utilities ---
     const storageKey = 'quizAnswers';
     const stepKey = 'quizCurrentStep';
@@ -681,6 +685,151 @@
       nextBtn.disabled = !isStepValid();
     }
 
+    // --- Quiz Submission ---
+    async function submitQuizToGoogleScript(answers) {
+      try {
+        // Show loading state
+        nextBtn.disabled = true;
+        nextBtn.textContent = 'Submitting...';
+        
+        // Build the data payload optimized for your Google Apps Script
+        const formData = new FormData();
+        
+        // Add all quiz answers with proper field mapping
+        Object.keys(answers).forEach(key => {
+          if (answers[key] !== null && answers[key] !== undefined) {
+            if (Array.isArray(answers[key])) {
+              formData.append(key, answers[key].join(', '));
+            } else {
+              formData.append(key, String(answers[key]));
+            }
+          }
+        });
+        
+        // Add metadata and tracking for your script
+        formData.append('source', 'quiz');
+        formData.append('tab', 'FormResponses'); // Explicitly set tab for quiz submissions
+        formData.append('submission_id', generateSubmissionId()); // For deduplication
+        formData.append('timestamp', new Date().toISOString());
+        
+        // Add UTM parameters if available
+        const urlParams = new URLSearchParams(window.location.search);
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid'].forEach(param => {
+          if (urlParams.has(param)) {
+            formData.append(param, urlParams.get(param));
+          }
+        });
+        
+        // Add page context
+        formData.append('page_path', window.location.pathname);
+        formData.append('referrer', document.referrer || '');
+        formData.append('user_agent', navigator.userAgent);
+        
+        // Submit to Google Apps Script
+        const response = await fetch('https://script.google.com/macros/s/AKfycbwSbx0Aj6FBwXXxAY1xNPfHz8etSqEnlzuw97041FMt5dwroOUS0dfFjKPCvk0K396bZQ/exec', {
+          method: 'POST',
+          body: formData,
+          mode: 'no-cors' // Required for cross-origin requests to Google Apps Script
+        });
+        
+        console.log('Quiz submitted to Google Apps Script');
+        safeGtag('event', 'quiz_submitted_to_google_script');
+        
+        // Update status
+        status.innerHTML = '<span style="color: #34A853;">Quiz submitted successfully! Redirecting to checkout...</span>';
+        
+        // Reset button state
+        nextBtn.textContent = 'Go to Checkout';
+        nextBtn.disabled = false;
+        
+      } catch (error) {
+        console.error('Error submitting quiz to Google Apps Script:', error);
+        // Fallback to traditional form submission
+        submitQuizViaForm(answers);
+      }
+    }
+    
+    // Generate unique submission ID for deduplication
+    function generateSubmissionId() {
+      return 'quiz_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+    
+    // Fallback submission method using a hidden form
+    function submitQuizViaForm(answers) {
+      try {
+        // Create a hidden form and submit it
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'https://script.google.com/macros/s/AKfycbwSbx0Aj6FBwXXxAY1xNPfHz8etSqEnlzuw97041FMt5dwroOUS0dfFjKPCvk0K396bZQ/exec';
+        form.target = '_blank'; // Open in new tab to avoid navigation issues
+        form.style.display = 'none';
+        
+        // Add all quiz answers as hidden inputs
+        Object.keys(answers).forEach(key => {
+          if (answers[key] !== null && answers[key] !== undefined) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            if (Array.isArray(answers[key])) {
+              input.value = answers[key].join(', ');
+            } else {
+              input.value = String(answers[key]);
+            }
+            form.appendChild(input);
+          }
+        });
+        
+        // Add enhanced metadata for your script
+        const addHiddenInput = (name, value) => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = name;
+          input.value = value;
+          form.appendChild(input);
+        };
+        
+        addHiddenInput('source', 'quiz');
+        addHiddenInput('tab', 'FormResponses');
+        addHiddenInput('submission_id', generateSubmissionId());
+        addHiddenInput('timestamp', new Date().toISOString());
+        addHiddenInput('page_path', window.location.pathname);
+        addHiddenInput('referrer', document.referrer || '');
+        addHiddenInput('user_agent', navigator.userAgent);
+        
+        // Add UTM parameters if available
+        const urlParams = new URLSearchParams(window.location.search);
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid'].forEach(param => {
+          if (urlParams.has(param)) {
+            addHiddenInput(param, urlParams.get(param));
+          }
+        });
+        
+        // Submit the form
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+        
+        console.log('Quiz submitted to Google Apps Script via form fallback');
+        safeGtag('event', 'quiz_submitted_to_google_script_fallback');
+        
+        // Update status
+        status.innerHTML = '<span style="color: #34A853;">Quiz submitted successfully! Redirecting to checkout...</span>';
+        
+        // Reset button state after form submission
+        nextBtn.textContent = 'Go to Checkout';
+        nextBtn.disabled = false;
+        
+      } catch (error) {
+        console.error('Error with form fallback submission:', error);
+        // Continue with checkout even if submission fails
+        safeGtag('event', 'quiz_submission_error', { error: error.message });
+        
+        // Reset button state on error
+        nextBtn.textContent = 'Go to Checkout';
+        nextBtn.disabled = false;
+      }
+    }
+
     // --- Navigation ---
     nextBtn.addEventListener('click', ()=>{
       hasAttemptedSubmit = true;
@@ -699,6 +848,13 @@
             version: 1
           }
         };
+        
+        // Submit to Google Apps Script
+        submitQuizToGoogleScript(answers);
+        
+        // Show submission status
+        status.innerHTML = '<span style="color: var(--accent-blue);">Submitting your quiz answers...</span>';
+        
         try{
           localStorage.setItem(storageKey, JSON.stringify(payload.answers));
           // Save rp_quiz one more time before redirect
@@ -711,8 +867,11 @@
           'value': 0.0,
           'currency': 'USD'
         });
-        // Redirect – checkout reads localStorage.rp_quiz
-        window.location.href = 'checkout.html';
+        // Small delay to show success message before redirect
+        setTimeout(() => {
+          // Redirect – checkout reads localStorage.rp_quiz
+          window.location.href = 'checkout.html';
+        }, 1500);
       }
     });
 
