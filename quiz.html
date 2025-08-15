@@ -684,6 +684,30 @@
         if(!nextBtn.disabled) nextBtn.click(); 
       }
     });
+    
+    // Also listen for keypress events for better mobile compatibility
+    document.addEventListener('keypress', (e)=>{
+      const tag = (e.target && e.target.tagName) || '';
+      const inField = ['INPUT','TEXTAREA'].includes(tag);
+      
+      // Enter/Return key acts as Next button (when not in input fields)
+      if((e.key === 'Enter' || e.key === 'Return') && !inField){ 
+        e.preventDefault(); 
+        if(!nextBtn.disabled) nextBtn.click(); 
+      }
+    });
+    
+    // Additional mobile-friendly Enter key handling
+    document.addEventListener('keyup', (e)=>{
+      const tag = (e.target && e.target.tagName) || '';
+      const inField = ['INPUT','TEXTAREA'].includes(tag);
+      
+      // Enter/Return key acts as Next button (when not in input fields)
+      if((e.key === 'Enter' || e.key === 'Return') && !inField){ 
+        e.preventDefault(); 
+        if(!nextBtn.disabled) nextBtn.click(); 
+      }
+    });
 
     resetBtn.addEventListener('click', ()=>{
       if(confirm('Reset your quiz and clear saved answers?')) resetProgress();
