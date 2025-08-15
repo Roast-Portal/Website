@@ -1100,17 +1100,15 @@
     let submissionInProgress = false;
     let submissionCompleted = false;
     let robustSubmissionSetup = false;
-    let submissionAttempted = false; // Track if we've attempted submission
 
     function onBuy(){
       // Prevent duplicate submissions
-      if (submissionInProgress || submissionCompleted || submissionAttempted) {
-        console.log('Submission already in progress, completed, or attempted, ignoring...');
+      if (submissionInProgress || submissionCompleted) {
+        console.log('Submission already in progress or completed, ignoring...');
         return;
       }
       
       submissionInProgress = true;
-      submissionAttempted = true;
       const btn = document.getElementById('buyBtn');
       if (btn){ btn.setAttribute('aria-busy', 'true'); btn.disabled = true; }
 
@@ -1121,36 +1119,41 @@
       // Timestamp last order immediately
       safeSetLS('rp_last_order_ts', Date.now());
 
-      // Submit immediately with beacon for reliability
-      const submitPromise = postToSheets(payload, { useBeacon: true });
-      
-      // Track conversion when purchase is made
-      if (typeof gtag === 'function') {
-        gtag('event', 'conversion', {
-          'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
-          'value': p.total,
-          'currency': 'USD'
-        });
-      }
+      // Submit ONCE when user clicks Buy Now
+      postToSheets(payload, { useBeacon: false }).then(() => {
+        console.log('Order submitted successfully');
+        
+        // Track conversion when purchase is made
+        if (typeof gtag === 'function') {
+          gtag('event', 'conversion', {
+            'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+            'value': p.total,
+            'currency': 'USD'
+          });
+        }
 
-      // Mark submission as completed after a short delay
-      setTimeout(() => {
+        // Mark submission as completed
         submissionCompleted = true;
         submissionInProgress = false;
-      }, 1000);
 
-      // Navigate immediately (with GA callback attempts)
-      gtagNavigate('thanks.html', {
-        value: p.total,
-        currency: 'USD',
-        transaction_id: Date.now().toString(),
-        items: [{
-          item_id: 'subscription',
-          item_name: d.blendName || 'Your Daily Roast',
-          item_category: 'coffee_subscription',
-          price: p.pricePerCup,
-          quantity: p.billedServings
-        }]
+        // Navigate to thanks page
+        gtagNavigate('thanks.html', {
+          value: p.total,
+          currency: 'USD',
+          transaction_id: Date.now().toString(),
+          items: [{
+            item_id: 'subscription',
+            item_name: d.blendName || 'Your Daily Roast',
+            item_category: 'coffee_subscription',
+            price: p.pricePerCup,
+            quantity: p.billedServings
+          }]
+        });
+      }).catch(err => {
+        console.error('Submission failed:', err);
+        // Reset button state on error
+        if (btn) { btn.removeAttribute('aria-busy'); btn.disabled = false; }
+        submissionInProgress = false;
       });
     }
 
@@ -1170,55 +1173,17 @@
       }
     }
 
-    // Ensure form submission happens even if user navigates away quickly
+    // No more automatic submissions - only manual "Buy Now" button
     function setupRobustSubmission() {
       // Only set up once
       if (robustSubmissionSetup) return;
       robustSubmissionSetup = true;
       
       // Reset submission state for this session
-      submissionAttempted = false;
       submissionCompleted = false;
       submissionInProgress = false;
       
-      const payload = buildPayload();
-      
-      // Handle page visibility change (user switching tabs, minimizing, etc.)
-      document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'hidden' && !submissionCompleted && !submissionAttempted) {
-          // User is leaving the page, submit immediately
-          submissionAttempted = true;
-          postToSheets(payload, { useBeacon: true }).catch(err => console.error('Visibility change submission failed:', err));
-        }
-      });
-
-      // Handle beforeunload (user closing tab, navigating away, etc.)
-      // Removed popup confirmation - data still submits in background
-      window.addEventListener('beforeunload', function(e) {
-        if (!submissionCompleted && !submissionAttempted) {
-          // Submit with beacon for maximum reliability
-          submissionAttempted = true;
-          postToSheets(payload, { useBeacon: true });
-        }
-      });
-
-      // Handle pagehide (more reliable than beforeunload on mobile)
-      window.addEventListener('pagehide', function() {
-        if (!submissionCompleted && !submissionAttempted) {
-          // Final attempt to submit
-          submissionAttempted = true;
-          postToSheets(payload, { useBeacon: true });
-        }
-      });
-
-      // Handle unload (final fallback)
-      window.addEventListener('unload', function() {
-        if (!submissionCompleted && !submissionAttempted) {
-          // Last chance submission
-          submissionAttempted = true;
-          postToSheets(payload, { useBeacon: true });
-        }
-      });
+      console.log('Checkout ready - submission only happens on "Buy Now" click');
     }
 
     // ---- Chrome on iOS specific fixes ----
