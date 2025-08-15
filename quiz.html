@@ -608,7 +608,7 @@
     function updateProgress(){
       const pct = Math.round((currentStep/quizData.length)*100);
       progressBar.style.width = pct + '%';
-      progressText.innerHTML = `<span>Step ${currentStep+1} of ${quizData.length}</span><span>${pct}%</span>`;
+      progressText.innerHTML = `<span></span><span>${pct}%</span>`;
     }
 
     function isStepValid(){
