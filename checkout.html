@@ -20,9 +20,10 @@
       --border:rgba(0,0,0,0.08); --blue:#0071E3;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg-primary);color:var(--text-primary)}
-    .container{max-width:1080px;margin:0 auto;padding:24px}
-    .surface{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.06);padding:24px}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg-primary);color:var(--text-primary);overflow-x:hidden}
+    .container{max-width:1080px;margin:0 auto;padding:24px;position:relative}
+    .surface{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.06);padding:24px;position:relative}
     h1{font-size:28px;margin:0 0 8px}
     p.sub{color:var(--text-secondary);margin:0 0 16px}
     .grid{display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:start}
@@ -54,6 +55,11 @@
       .line{gap:8px; font-size:14px}
       .actions{gap:8px; margin-top:12px; flex-direction:column}
       .btn{padding:12px 16px; font-size:15px; min-height:48px}
+      
+      /* Fix mobile scrolling issues */
+      body{scroll-behavior:auto}
+      .container{transform:none}
+      .surface{transform:none}
     }
     
     /* Small mobile optimizations */
@@ -74,7 +80,7 @@
     /* Pouch stack visuals */
     :root{--pouch-w: min(84vw, 340px); --pouch-h: calc(var(--pouch-w) * 1.335);} 
     .visual{display:grid;place-items:center;margin-bottom:12px; position:relative}
-    .pouch-stack{position:relative;height:calc(var(--pouch-h) + 80px);width:100%;max-width:var(--pouch-w)}
+    .pouch-stack{position:relative;height:calc(var(--pouch-h) + 80px);width:100%;max-width:var(--pouch-w);overflow:visible}
     
     /* Mobile pouch optimizations */
     @media(max-width:860px){
@@ -87,7 +93,7 @@
       :root{--pouch-w: min(95vw, 240px);}
       .pouch-stack{height:calc(var(--pouch-h) + 40px)}
     }
-    .stack-card{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);will-change:transform,filter;}
+    .stack-card{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);transform-style:preserve-3d;backface-visibility:hidden}
     /* Pouch extreme (from product-section) */
     .pouch-extreme{ --pouch-min: min(var(--pouch-w), var(--pouch-h)); --bag-bg:#0a0a0a; --bag-radius-frac:0.0375; --pouch-border-frac:0.003; --pouch-border-color: rgba(0,0,0,0.1); --label-bg:#FDFEFE; --label-radius-frac:0.055; --label-top-frac:0.88; --label-pad-frac:0.04; --label-gradient: linear-gradient(135deg, rgba(245, 248, 252, 0.65) 0%, rgba(252, 254, 255, 0.45) 50%, rgba(248, 250, 252, 0.4) 100%); --label-gradient-opacity:0.85; }
     .pouch-extreme.pouch-container{ position:relative; inline-size:var(--pouch-w); block-size:var(--pouch-h); container-type:inline-size }
