@@ -112,8 +112,8 @@
     
     /* Mobile height optimization */
     @media (max-width: 619px) {
-      .quiz-container { padding: calc(var(--header-h) + 24px + var(--safe-top)) 16px 120px; }
-      .quiz-content { min-height: 40dvh; }
+      .quiz-container { padding: calc(var(--header-h) + 16px + var(--safe-top)) 16px 120px; }
+      .quiz-content { min-height: 35dvh; }
     }
     .quiz-step{
       width:100%; animation: fadeIn .35s var(--ease) both;
@@ -134,8 +134,8 @@
     
     /* Mobile question spacing optimization */
     @media (max-width: 619px) {
-      .question-title { margin: 0 0 8px; }
-      .question-subtitle { margin: 0 0 16px; font-size: 14px; }
+      .question-title { margin: 0 0 6px; font-size: clamp(20px, 4vw, 28px); }
+      .question-subtitle { margin: 0 0 12px; font-size: 13px; line-height: 1.3; }
     }
 
     /* Choice groups */
@@ -169,10 +169,10 @@
     
     /* Mobile optimization for flavor sliders */
     @media (max-width: 619px) {
-      .flavor-grid { gap: 16px; }
-      .flavor-slider-group label { margin: 0 0 8px; font-size: 14px; }
-      .slider-wrap { padding-top: 20px; }
-      .slider-labels { font-size: 11px; margin-top: 4px; }
+      .flavor-grid { gap: 12px; }
+      .flavor-slider-group label { margin: 0 0 6px; font-size: 13px; }
+      .slider-wrap { padding-top: 16px; }
+      .slider-labels { font-size: 10px; margin-top: 3px; }
     }
     input[type="range"]{
       -webkit-appearance: none; appearance: none; width:100%; height:8px;
@@ -186,6 +186,16 @@
     input[type="range"]::-moz-range-thumb{
       width:28px; height:28px; border-radius:50%; background: var(--accent-blue); border:0; cursor:pointer;
       box-shadow: 0 2px 6px rgba(0,113,227,.35);
+    }
+    
+    /* Mobile slider thumb optimization */
+    @media (max-width: 619px) {
+      input[type="range"]::-webkit-slider-thumb {
+        width: 24px; height: 24px;
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 24px; height: 24px;
+      }
     }
     .bubble{
       position:absolute; top:0; transform: translateX(-50%);
