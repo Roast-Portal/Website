@@ -678,8 +678,8 @@
       if(e.key === 'ArrowRight' && !inField){ e.preventDefault(); if(!nextBtn.disabled) nextBtn.click(); }
       if(e.key === 'ArrowLeft' && !inField){ e.preventDefault(); if(!prevBtn.disabled) prevBtn.click(); }
       
-      // Enter/Return key acts as Next button (when not in input fields)
-      if((e.key === 'Enter' || e.key === 'Return') && !inField){ 
+      // Enter/Return key acts as Next button (always, including in text fields)
+      if(e.key === 'Enter' || e.key === 'Return'){ 
         e.preventDefault(); 
         if(!nextBtn.disabled) nextBtn.click(); 
       }
@@ -690,8 +690,8 @@
       const tag = (e.target && e.target.tagName) || '';
       const inField = ['INPUT','TEXTAREA'].includes(tag);
       
-      // Enter/Return key acts as Next button (when not in input fields)
-      if((e.key === 'Enter' || e.key === 'Return') && !inField){ 
+      // Enter/Return key acts as Next button (always, including in text fields)
+      if(e.key === 'Enter' || e.key === 'Return'){ 
         e.preventDefault(); 
         if(!nextBtn.disabled) nextBtn.click(); 
       }
@@ -702,8 +702,8 @@
       const tag = (e.target && e.target.tagName) || '';
       const inField = ['INPUT','TEXTAREA'].includes(tag);
       
-      // Enter/Return key acts as Next button (when not in input fields)
-      if((e.key === 'Enter' || e.key === 'Return') && !inField){ 
+      // Enter/Return key acts as Next button (always, including in text fields)
+      if(e.key === 'Enter' || e.key === 'Return'){ 
         e.preventDefault(); 
         if(!nextBtn.disabled) nextBtn.click(); 
       }
