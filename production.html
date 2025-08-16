@@ -389,7 +389,7 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.3s ease;
       min-height: 350px;
       max-height: 480px;
       padding: 8px;
@@ -519,7 +519,7 @@
       height: 100%;
       background: linear-gradient(90deg, #0A84FF 0%, #28C840 100%);
       width: 0%;
-      transition: width 0.6s ease;
+      transition: width 0.4s ease;
     }
     
     /* metrics styles removed */
@@ -603,7 +603,7 @@
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #FF6B6B 0%, #FFE66D 50%, #28C840 100%);
-      transition: width 0.8s ease;
+      transition: width 0.5s ease;
     }
     
     .confidence-score .percentage {
@@ -707,7 +707,7 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.3s ease;
       max-height: 480px;
       padding: 8px;
       gap: 8px;
@@ -1033,18 +1033,18 @@
       transform: translateX(0);
     }
 
-    /* ---------- Reveal ---------- */
-    .reveal{ opacity: 0; transform: translateY(18px); transition: all .6s var(--ease-apple); }
+    /* ---------- No Reveal Animations ---------- */
+    .reveal{ opacity: 1; transform: none; transition: none; }
     .reveal.on{ opacity: 1; transform: none; }
     @media (prefers-reduced-motion: reduce){
       .reveal{ opacity: 1; transform: none; transition: none; }
     }
     
-    /* Mobile-optimized reveal animation */
+    /* No animations on mobile either */
     @media (max-width: 920px) {
       .reveal { 
-        transform: translateY(12px); 
-        transition: all .4s var(--ease-apple);
+        transform: none; 
+        transition: none;
       }
     }
     
@@ -1338,13 +1338,10 @@ plt.show()
   </main>
 
   <script>
-    // Simple reveal on scroll
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{
-        if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
-      });
-    }, {threshold:.15, rootMargin:'0px 0px -5% 0px'});
-    document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+    // No scroll animations - elements appear immediately
+    document.querySelectorAll('.reveal').forEach(el=> {
+      el.classList.add('on'); // Add 'on' class immediately
+    });
 
     // Gentle page fade for seamless nav to signup
     (function(){
@@ -1616,10 +1613,10 @@ plt.show()
           });
         }
         
-        // Add delay between characters for slower typing (50ms per character)
-        setTimeout(() => requestAnimationFrame(step), 50);
+        // Add delay between characters for ultra-fast typing (10ms per character)
+        setTimeout(() => requestAnimationFrame(step), 10);
       }
-      setTimeout(step, prefersReduced ? 0 : 200);
+      setTimeout(step, prefersReduced ? 0 : 25);
     }
     const io2 = new IntersectionObserver((entries)=>{
       entries.forEach(e=>{ 
@@ -1790,7 +1787,7 @@ plt.show()
       
       // Continue processing
       if(currentAccuracy < targetAccuracy) {
-        setTimeout(processData, 100);
+        setTimeout(processData, 25);
       }
     }
     
@@ -1831,7 +1828,7 @@ plt.show()
         if(Math.random() > 0.8) {
           addDataLogEntry(`Feature importance update for <span class="feature">${feature.replace(/_/g, ' ')}</span>`);
         }
-      }, 1500);
+      }, 600);
       
       processData();
     }
@@ -1842,18 +1839,17 @@ plt.show()
       entries.forEach(entry => {
         if(entry.isIntersecting) {
           observer.unobserve(builder);
-          // Add slight delay on mobile for smoother loading and ensure reserved height
+          // Zero delay for instant response
           if (isMobile) {
             builder.style.minHeight = builder.style.minHeight || '360px';
           }
-          setTimeout(() => {
-            startSynthesis();
-          }, isMobile ? 320 : 100);
+          // Start immediately - no delay
+          startSynthesis();
         }
       });
     }, { 
-      threshold: isMobile ? 0.08 : 0.3, // Lower threshold on mobile
-      rootMargin: isMobile ? '120px' : '0px' // Start loading earlier on mobile
+      threshold: 0, // Zero threshold - trigger immediately
+      rootMargin: isMobile ? '400px' : '300px' // Start loading way before visible
     });
     
     observer.observe(builder);

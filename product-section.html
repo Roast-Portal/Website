@@ -118,7 +118,7 @@
                         linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%),
                         radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); clip-path: inherit; }
     .pouch-extreme .pouch-label{ --pad: calc(var(--label-pad-frac) * var(--pouch-min)); position:absolute; left:var(--pad); right:var(--pad); bottom:var(--pad); top: calc(100% - (var(--label-top-frac) * 100%));
-      background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:28px 24px; overflow:hidden; 
+      background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:32px 28px 24px 28px; overflow:hidden; 
       display: flex; flex-direction: column; justify-content: space-between;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.08); 
       border: 1px solid rgba(0,0,0,0.04); }
@@ -179,6 +179,40 @@
     @media (max-width: 640px) {
       .container { 
         padding: 32px 20px 20px; 
+      }
+      
+      /* Better small mobile pouch positioning */
+      .pouch-stack { 
+        height: calc(var(--pouch-height) + 60px); 
+        margin: 0 auto;
+        max-width: calc(var(--pouch-width) + 100px); /* Responsive width for small screens */
+      }
+      
+      /* Ensure stack is centered on small screens */
+      .stack-area .pouch-stack {
+        margin-left: auto;
+        margin-right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0 15px; /* Responsive padding for small screens */
+      }
+      
+      /* Adjust text positioning for very small screens */
+      .pouch-extreme .label-badge {
+        left: 20px !important;
+        top: 12% !important;
+      }
+      
+      .pouch-extreme .label-tagline {
+        left: 20px !important;
+        top: 45% !important;
+        width: calc(100% - 40px) !important;
+      }
+      
+      .pouch-extreme .label-description {
+        left: 20px !important;
+        top: 70% !important;
+        width: calc(100% - 40px) !important;
       }
     }
     
@@ -763,36 +797,51 @@
       .pouches-grid { grid-template-columns: 1fr; gap: 40px; }
       .pouch-info p { font-size: 15px; }
       
-      /* Adjust label text sizes for mobile */
-      .pouch-extreme .label-badge { --text-size-frac: 0.024 !important; }
-      .pouch-extreme .label-tagline { --text-size-frac: 0.065 !important; }
-      .pouch-extreme .label-description { --text-size-frac: 0.045 !important; }
+      /* Keep our custom text sizes for mobile */
+      .pouch-extreme .label-badge { --text-size-frac: 0.025 !important; }
+      .pouch-extreme .label-tagline { --text-size-frac: 0.125 !important; }
+      .pouch-extreme .label-description { --text-size-frac: 0.042 !important; }
 
       .comparison { grid-template-columns: 1fr; }
 
       /* Scale pouch to viewport while keeping ratio */
       :root { --pouch-height: calc(var(--pouch-width) * 1.335); }
 
-      /* Show all cards on mobile; keep static fan positions */
-      .pouch-stack { height: calc(var(--pouch-height) + 64px); }
-      .pouch-stack .stack-card { opacity: 1; pointer-events: none; }
-
-      /* Reposition nav below stack on mobile */
-      .stack-area { display: block; }
-      .stack-area .pouch-stack { margin-bottom: 10px; }
-      .stack-controls {
-        position: static;
-        left: auto; bottom: auto; transform: none;
-        justify-content: center;
-        margin: 8px auto 0;
-        gap: 16px;
-        padding: 10px 14px;
-        background: rgba(255,255,255,0.9);
-        backdrop-filter: blur(8px);
-        width: fit-content;
+      /* Better mobile positioning */
+      .pouch-stack { 
+        height: calc(var(--pouch-height) + 80px); 
+        margin: 0 auto;
+        position: relative;
+        left: 0;
+        right: 0;
       }
-      .stack-controls button { width: 44px; height: 44px; font-size: 20px; }
-      .stack-controls .dot { width: 10px; height: 10px; }
+      .pouch-stack .stack-card { 
+        opacity: 1; 
+        pointer-events: none;
+        top: 50% !important;
+      }
+
+      /* Center pouches better on mobile */
+      .stack-area { 
+        display: flex; 
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 0;
+        width: 100%;
+        overflow: hidden;
+      }
+      .stack-area .pouch-stack { 
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        max-width: calc(var(--pouch-width) + 120px); /* Responsive width based on viewport */
+        padding: 0 20px; /* Responsive padding */
+      }
+      
+      /* Hide controls on mobile for cleaner look */
+      .stack-controls { display: none !important; }
     }
     
       /* Signup section (moved to signup.html) */
@@ -1071,15 +1120,15 @@
     const stackData = {
       // Stack 1: Personalized Blend
       stack1: [
-        { category: 'Experience', badge: 'PERSONALIZED BLEND', tagline: '15 premium pouches', description: 'Sourced from around the world\n\nFlavor notes you love\n\nExpertly blended for you' }
+        { category: 'Experience', badge: 'PERSONALIZED BLEND', tagline: '15 Premium Single Serve Bags of Coffee', description: '' }
       ],
       // Stack 2: Barista Prepared
       stack2: [
-        { category: 'Preparation', badge: 'BARISTA PREPARED', tagline: 'Ground for your brew method', description: 'Perfect mineral balance\n\nNitro-sealed for freshness\n\nPre-dosed, ready to brew' }
+        { category: 'Preparation', badge: 'BARISTA PREPARED', tagline: 'Ground for your brew method', description: '' }
       ],
       // Stack 3: Bonus Bag — Exploration
       stack3: [
-        { category: 'Discovery', badge: 'BONUS BAG — EXPLORATION', tagline: 'One mystery blend', description: 'Picked just for you\n\nDistinct flavor profile\n\nExclusive small batch' }
+        { category: 'Discovery', badge: 'BONUS BAG — EXPLORATION', tagline: 'One mystery blend', description: '' }
       ]
     };
     
@@ -1117,9 +1166,9 @@
               </div>
               
               <div class="text-layer">
-                <div class="text-block label-badge" data-size-frac="0.020" style="--text-size-frac: 0.020; top: 12%; left: 50%; transform: translate(-50%, -50%); color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 0.08em; background: rgba(0,0,0,0.75); padding: 8px 16px; border-radius: 20px; white-space: nowrap;">${data.badge}</div>
-                <div class="text-block label-tagline" data-size-frac="0.072" style="--text-size-frac: 0.072; top: 38%; left: 50%; transform: translate(-50%, -50%); color: rgb(28, 28, 32); font-weight: 700; line-height: 1.1; text-align: center; width: 85%; white-space: normal; max-width: none;">${data.tagline}</div>
-                <div class="text-block label-description" data-size-frac="0.042" style="--text-size-frac: 0.042; top: 73%; left: 50%; transform: translate(-50%, -50%); color: rgb(72, 72, 74); font-weight: 400; line-height: 1.4; text-align: center; width: 80%; white-space: normal; max-width: none;">${data.description.replace(/\n\n/g, '<br><br>')}</div>
+                <div class="text-block label-badge" data-size-frac="0.020" style="--text-size-frac: 0.025; top: 15%; left: 28px; transform: none; color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 0.08em; background: rgba(0,0,0,0.75); padding: 12px 20px; border-radius: 24px; white-space: nowrap;">${data.badge}</div>
+                <div class="text-block label-tagline" data-size-frac="0.072" style="--text-size-frac: 0.125; top: 48%; left: 28px; transform: none; color: rgb(28, 28, 32); font-weight: 700; line-height: 1.1; text-align: left; width: calc(100% - 56px); white-space: normal; max-width: none;">${data.tagline}</div>
+                <div class="text-block label-description" data-size-frac="0.042" style="--text-size-frac: 0.042; top: 73%; left: 28px; transform: none; color: rgb(72, 72, 74); font-weight: 400; line-height: 1.4; text-align: left; width: calc(100% - 56px); white-space: normal; max-width: none;">${data.description.replace(/\n\n/g, '<br><br>')}</div>
               </div>
             </div>
           </div>
@@ -1157,7 +1206,26 @@
           const scale = 1 - i * 0.015;       // subtle depth scaling
           if (i > 0) card.classList.add('mini');
           card.style.zIndex = String(z);
-          card.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(${scale})`;
+          
+          // Responsive stack positioning based on viewport width
+          const viewportWidth = window.innerWidth;
+          const totalSpread = (count - 1) * 12; // Total horizontal spread of all cards
+          const centerOffset = totalSpread / 2;  // Half the spread to center the stack
+          const adjustedDx = dx - centerOffset;  // Adjust each card position
+          
+          // Dynamic edge buffer based on screen size
+          let edgeBuffer;
+          if (viewportWidth <= 640) {
+            edgeBuffer = 8; // Small mobile - tighter spacing
+          } else if (viewportWidth <= 768) {
+            edgeBuffer = 12; // Medium mobile - moderate spacing
+          } else {
+            edgeBuffer = 15; // Larger screens - comfortable spacing
+          }
+          
+          const finalDx = adjustedDx + edgeBuffer;
+          
+          card.style.transform = `translate(-50%, -50%) translate(${finalDx}px, ${dy}px) scale(${scale})`;
         });
         // Removed calls to old outline functions
       });
@@ -1189,6 +1257,42 @@
         el.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
         observer.observe(el);
       });
+      
+      // Responsive repositioning on window resize
+      function updateStackPositions() {
+        Object.keys(stackData).forEach(stackId => {
+          const stack = document.getElementById(stackId);
+          if (!stack) return;
+          
+          const cardEls = Array.from(stack.querySelectorAll('.stack-card'));
+          cardEls.forEach((card, i) => {
+            const z = 15 - i;
+            const dx = i * 12;
+            const dy = -i * 8;
+            const scale = 1 - i * 0.015;
+            
+            const viewportWidth = window.innerWidth;
+            const totalSpread = (cardEls.length - 1) * 12;
+            const centerOffset = totalSpread / 2;
+            const adjustedDx = dx - centerOffset;
+            
+            let edgeBuffer;
+            if (viewportWidth <= 640) {
+              edgeBuffer = 8;
+            } else if (viewportWidth <= 768) {
+              edgeBuffer = 12;
+            } else {
+              edgeBuffer = 15;
+            }
+            
+            const finalDx = adjustedDx + edgeBuffer;
+            card.style.transform = `translate(-50%, -50%) translate(${finalDx}px, ${dy}px) scale(${scale})`;
+          });
+        });
+      }
+      
+      // Update positions on resize
+      window.addEventListener('resize', updateStackPositions);
     });
     // window.addEventListener('resize', updatePouchOutlines);
     // Removed old pouch-container manipulation

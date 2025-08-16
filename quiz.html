@@ -295,7 +295,7 @@
     <div>
       <button id="reset-btn" class="linklike" aria-describedby="reset-help">Reset</button>
       <span id="reset-help" class="sr-only">Clears saved answers and restarts the quiz</span>
-      <a href="index.html" class="exit-link" aria-label="Exit quiz">Exit</a>
+      <a href="index.html" class="exit-link" aria-label="Return to main page">Back to Main</a>
     </div>
   </header>
 
@@ -682,7 +682,14 @@
     }
 
     function updateNav(){
-      prevBtn.disabled = currentStep === 0;
+      // On first question, back button should go to previous page
+      if (currentStep === 0) {
+        prevBtn.disabled = false;
+        prevBtn.textContent = 'Back';
+      } else {
+        prevBtn.disabled = false;
+        prevBtn.textContent = 'Back';
+      }
       nextBtn.textContent = (currentStep === quizData.length-1) ? 'Go to Checkout' : 'Next';
       nextBtn.disabled = !isStepValid();
     }
@@ -758,9 +765,18 @@
 
     prevBtn.addEventListener('click', ()=>{
       if(currentStep > 0){
+        // Go to previous quiz question
         currentStep--;
         saveProgress();
         renderStep(true);
+      } else {
+        // On first question, go back to previous page
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          // Fallback to main page if no history
+          window.location.href = 'index.html';
+        }
       }
     });
 

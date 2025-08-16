@@ -74,6 +74,53 @@
       min-height: 100vh;
     }
     
+    /* Loading state to prevent flash of unstyled content */
+    .loading {
+      opacity: 0;
+      transition: opacity 0.3s ease-in;
+    }
+    
+    .loaded {
+      opacity: 1;
+    }
+    
+    /* Hide iframes completely during loading to prevent content jumping */
+    .loading iframe {
+      opacity: 0;
+      visibility: hidden;
+      height: 0 !important;
+      overflow: hidden;
+    }
+    
+    .loaded iframe {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.3s ease-in;
+    }
+    
+    /* Spinner animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Hide loading indicator when content is ready */
+    .loaded #loading-indicator {
+      display: none;
+    }
+    
+    /* Hide footer during loading to prevent it from appearing first */
+    .loading .site-footer {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .loaded .site-footer {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.3s ease-in;
+    }
+    
     iframe {
       width: 100%;
       border: none;
@@ -86,24 +133,37 @@
       display: none;
     }
     
-    /* Hide iframe scrollbars */
+    /* Quick, snappy entrance animations */
     iframe {
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-                  transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    iframe.loaded {
+      width: 100%;
+      border: none;
+      display: block;
+      background: transparent;
       opacity: 1;
-      transform: translateY(0);
+      transform: none;
+      transition: none;
     }
     
-    /* Stagger the animations */
-    #product-frame { transition-delay: 0s; }
-    #people-frame { transition-delay: 0.1s; }
-    #production-frame { transition-delay: 0.2s; }
+    /* Add subtle entrance effect that feels immediate */
+    iframe {
+      animation: quickEntrance 0.3s ease-out;
+    }
+    
+    @keyframes quickEntrance {
+      0% {
+        opacity: 0.8;
+        transform: translateY(8px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Stagger the quick animations for visual flow */
+    #product-frame { animation-delay: 0s; }
+    #people-frame { animation-delay: 0.05s; }
+    #production-frame { animation-delay: 0.1s; }
     
     /* Ensure iframes flow seamlessly */
     iframe + iframe {
@@ -197,7 +257,30 @@
     }
   </style>
 </head>
-<body>
+<body class="loading">
+  <!-- Loading indicator -->
+  <div id="loading-indicator" style="
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 1000;
+    font-family: 'Kanit', sans-serif;
+    color: var(--text-primary);
+  ">
+    <div style="
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--bg-secondary);
+      border-top: 3px solid var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    "></div>
+    <p style="margin: 0; font-size: 16px; font-weight: 500;">Loading your personalized experience...</p>
+  </div>
+  
   <iframe id="product-frame" src="product-section.html" title="Product Section"></iframe>
   
   <div class="section-divider"></div>
@@ -228,6 +311,27 @@
   </footer>
 
   <script>
+    // Track iframe loading to prevent flash of unstyled content
+    let loadedIframes = 0;
+    const totalIframes = 3;
+    
+    function showContentWhenReady() {
+      loadedIframes++;
+      console.log(`Iframe loaded: ${loadedIframes}/${totalIframes}`);
+      if (loadedIframes >= totalIframes) {
+        // All iframes loaded, show the page
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        console.log('All iframes loaded, showing content');
+        
+        // Hide loading indicator
+        const loadingIndicator = document.getElementById('loading-indicator');
+        if (loadingIndicator) {
+          loadingIndicator.style.display = 'none';
+        }
+      }
+    }
+    
     // Auto-resize iframes based on content
     function resizeIframe(iframe) {
       const checkHeight = () => {
@@ -258,42 +362,12 @@
       iframe.onload = () => {
         checkHeight();
         // Check again after content might have rendered
-        setTimeout(checkHeight, 500);
-        setTimeout(checkHeight, 1000);
-        setTimeout(checkHeight, 2000);
-      };
-      
-      // Also check if already loaded
-      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
-        checkHeight();
-      }
-    }
-    
-    // Apply to all iframes
-    document.querySelectorAll('iframe').forEach(resizeIframe);
-    
-    // Intersection Observer for scroll animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Add loaded class when iframe comes into view
-          entry.target.classList.add('loaded');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.05,
-      rootMargin: '0px 0px -50px 0px'
-    });
-    
-    // Observe all iframes
-    document.querySelectorAll('iframe').forEach(iframe => {
-      observer.observe(iframe);
-    });
-    
-    // Handle iframe navigation to ensure signup links work
-    document.querySelectorAll('iframe').forEach(iframe => {
-      iframe.addEventListener('load', () => {
+        setTimeout(checkHeight, 100);
+        setTimeout(checkHeight, 300);
+        // Mark this iframe as loaded
+        showContentWhenReady();
+        
+        // Handle iframe navigation to ensure signup links work
         try {
           const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
           iframeDoc.addEventListener('click', (e) => {
@@ -306,8 +380,47 @@
         } catch (e) {
           // Cross-origin restriction, links will work normally
         }
-      });
-    });
+      };
+      
+      // Also check if already loaded
+      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+        checkHeight();
+        showContentWhenReady();
+        
+        // Handle navigation for already loaded iframes
+        try {
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+          iframeDoc.addEventListener('click', (e) => {
+            const link = e.target.closest('a[href*="quiz.html"]');
+            if (link) {
+              e.preventDefault();
+              window.location.href = link.href;
+            }
+          });
+        } catch (e) {
+          // Cross-origin restriction, links will work normally
+        }
+      }
+    }
+    
+    // Apply to all iframes
+    document.querySelectorAll('iframe').forEach(resizeIframe);
+    
+    // Debug: Check initial state
+    console.log('Initial body classes:', document.body.className);
+    console.log('Total iframes found:', document.querySelectorAll('iframe').length);
+    
+    // Fallback: show content after 3 seconds even if iframes haven't loaded
+    setTimeout(() => {
+      if (document.body.classList.contains('loading')) {
+        console.log('Fallback: showing content after timeout');
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+      }
+    }, 3000);
+    
+    // Handle iframe navigation to ensure signup links work
+    // Note: This is now handled in the resizeIframe function above
     
     // Listen for postMessage from iframes for navigation
     window.addEventListener('message', (event) => {
@@ -317,14 +430,6 @@
         window.location.href = event.data.href;
       }
     });
-    
-    // Immediately show first section
-    setTimeout(() => {
-      const firstFrame = document.getElementById('product-frame');
-      if (firstFrame) {
-        firstFrame.classList.add('loaded');
-      }
-    }, 100);
   </script>
 </body>
 </html>

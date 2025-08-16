@@ -106,7 +106,7 @@
                       linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%),
                       radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); clip-path: inherit; }
   .pouch-extreme .pouch-label{ --pad: calc(var(--label-pad-frac) * var(--pouch-min)); position:absolute; left:var(--pad); right:var(--pad); bottom:var(--pad); top: calc(100% - (var(--label-top-frac) * 100%)); height: auto !important;
-    background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:28px 24px; overflow:hidden; 
+    background:var(--label-bg); border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); padding:32px 28px 24px 28px; overflow:hidden; 
     display: flex; flex-direction: column; justify-content: space-between;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.08); 
     border: 1px solid rgba(0,0,0,0.04); }
@@ -124,8 +124,15 @@
     backdrop-filter: blur(8px);
     box-shadow: 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
   }
-  .pouch-extreme .label-tagline { text-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-  .pouch-extreme .label-description { letter-spacing: -0.01em; }
+  .pouch-extreme .label-tagline { 
+    text-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .pouch-extreme .label-description { 
+    letter-spacing: -0.01em; 
+    line-height: 1.4;
+  }
 
   *{box-sizing:border-box;margin:0;padding:0}
   body{
@@ -363,8 +370,8 @@
     transform: translateX(3px); 
   }
 
-  /* Reveal animation */
-  .rotation{ opacity:0; transform:translateY(12px); transition:all .5s var(--ease-apple); transition-delay:calc(var(--stagger,0)*100ms); }
+  /* No animations - elements appear immediately */
+  .rotation{ opacity:1; transform:none; }
   .rotation.on-screen{ opacity:1; transform:none; }
 
   /* Responsive: stack on narrow, remove overlap */
@@ -625,9 +632,9 @@
           </div>
           
           <div class="text-layer">
-            <div class="text-block label-badge" data-size-frac="0.020" style="--text-size-frac: 0.020; top: 12%; left: 50%; transform: translate(-50%, -50%); color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 0.08em; background: rgba(0,0,0,0.75); padding: 8px 16px; border-radius: 20px; white-space: nowrap;">${badge}</div>
-            <div class="text-block label-tagline" data-size-frac="0.072" style="--text-size-frac: 0.072; top: 38%; left: 50%; transform: translate(-50%, -50%); color: rgb(28, 28, 32); font-weight: 700; line-height: 1.1; text-align: center; width: 85%; white-space: normal; max-width: none;">${tagline}</div>
-            <div class="text-block label-description" data-size-frac="0.042" style="--text-size-frac: 0.042; top: 73%; left: 50%; transform: translate(-50%, -50%); color: rgb(72, 72, 74); font-weight: 400; line-height: 1.4; text-align: center; width: 80%; white-space: normal; max-width: none;">&nbsp;</div>
+            <div class="text-block label-badge" data-size-frac="0.020" style="--text-size-frac: 0.025; top: 15%; left: 28px; transform: none; color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 0.08em; background: rgba(0,0,0,0.75); padding: 12px 20px; border-radius: 24px; white-space: nowrap;">${badge}</div>
+            <div class="text-block label-tagline" data-size-frac="0.072" style="--text-size-frac: 0.125; top: 48%; left: 28px; transform: none; color: rgb(28, 28, 32); font-weight: 700; line-height: 1.1; text-align: left; width: calc(100% - 56px); white-space: normal; max-width: none;">${tagline}</div>
+            <div class="text-block label-description" data-size-frac="0.042" style="--text-size-frac: 0.042; top: 73%; left: 28px; transform: none; color: rgb(72, 72, 74); font-weight: 400; line-height: 1.4; text-align: left; width: calc(100% - 56px); white-space: normal; max-width: none;">&nbsp;</div>
           </div>
         </div>
       </div>
@@ -871,34 +878,19 @@
     items.push(createCTA(items.length, ctaInks));
     mount.innerHTML = items.join('');
 
-    // Stagger & reveal
+    // Elements appear immediately - no scroll animations
     Array.from(mount.children).forEach((el, idx) => {
-      el.style.setProperty('--stagger', String(idx));
-    });
-
-    // No outlines needed for the clean pouch design
-    // setTimeout(addPouchOutlines, 0);
-
-    const io = new IntersectionObserver((entries,obs)=>{
-      entries.forEach(e=>{
-        if(e.isIntersecting){ 
-          e.target.classList.add('on-screen'); 
-          obs.unobserve(e.target);
-          
-          // Animate flavor profile bars
-          const flavorBars = e.target.querySelectorAll('.flavor-fill');
-          flavorBars.forEach((bar) => {
-            const targetWidth = bar.style.getPropertyValue('--target-width');
-            if (targetWidth) {
-              setTimeout(() => {
-                bar.style.width = targetWidth;
-              }, 100);
-            }
-          });
+      // Animate flavor profile bars immediately
+      const flavorBars = el.querySelectorAll('.flavor-fill');
+      flavorBars.forEach((bar) => {
+        const targetWidth = bar.style.getPropertyValue('--target-width');
+        if (targetWidth) {
+          setTimeout(() => {
+            bar.style.width = targetWidth;
+          }, 100);
         }
       });
-    }, {threshold:.10, rootMargin:'0px 0px -10% 0px'});
-    mount.querySelectorAll('.rotation').forEach(el=> io.observe(el));
+    });
   })();
 </script>
 </body>

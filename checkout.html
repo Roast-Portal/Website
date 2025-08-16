@@ -956,65 +956,7 @@
       bindHandlers(d, p);
     }
 
-    // ---- Location & Networking ----
-    
-    // Get comprehensive location data
-    function getLocationData() {
-      const data = {
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
-        lat: '',
-        lng: '',
-        accuracy_m: '',
-        loc_source: 'ip', // Only IP-based location, no GPS
-        city: '',
-        region: '',
-        country: '',
-        ip: ''
-      };
-      
-      // Try to get IP and basic location info from multiple services
-      const ipServices = [
-        'https://ipapi.co/json/',
-        'https://ipinfo.io/json',
-        'https://api.ipify.org?format=json'
-      ];
-      
-      // Try first service
-      fetch(ipServices[0])
-        .then(response => response.json())
-        .then(ipData => {
-          data.ip = ipData.ip || '';
-          data.city = ipData.city || '';
-          data.region = ipData.region || '';
-          data.country = ipData.country || '';
-          data.lat = ipData.latitude || '';
-          data.lng = ipData.longitude || '';
-          data.loc_source = 'ipapi';
-        })
-        .catch(err => {
-          console.log('Primary IP service failed, trying fallback...');
-          // Try fallback service
-          return fetch(ipServices[1]);
-        })
-        .then(response => response?.json())
-        .then(ipData => {
-          if (ipData) {
-            data.ip = ipData.ip || data.ip;
-            data.city = ipData.city || data.city;
-            data.region = ipData.region || data.region;
-            data.country = ipData.country || data.country;
-            data.loc_source = 'ipinfo';
-          }
-        })
-        .catch(err => {
-          console.log('IP location services failed, using browser data only');
-        });
-      
-      return data;
-    }
-    
-    // GPS location removed - no popups, only IP-based location
-    
+    // ---- Networking ----
     function buildPayload(){
       let d = loadData();
       const pricePerCup = mapPrice(d.priceRange);
@@ -1031,13 +973,6 @@
         .join(', ');
 
       const RP_USER_ID = safeGetLS('rp_user_id') || '';
-
-      // Check if quiz was completed and include additional notes if available
-      const quizCompleted = localStorage.getItem('quiz_completed') === 'true';
-      const additionalNotes = quizCompleted ? (d.additionalNotes || '') : '';
-
-      // Get location data
-      const locationData = getLocationData();
 
       return {
         timestamp: new Date().toISOString(),
@@ -1061,44 +996,15 @@
         flavorSmoky: d.flavorSmoky||'', 
         topFlavors,
         blendName: d.blendName||'', 
-        additionalNotes,
         billedServings, 
         bonus, 
         totalServings, 
-        source: 'quiz_completed', // Changed to indicate this includes quiz data
-        submission_id: 'checkout_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9), // Add unique ID for deduplication
-        
-        // Location data
-        timezone: locationData.timezone,
-        lat: locationData.lat,
-        lng: locationData.lng,
-        accuracy_m: locationData.accuracy_m,
-        loc_source: locationData.loc_source,
-        city: locationData.city,
-        region: locationData.region,
-        country: locationData.country,
-        ip: locationData.ip,
-        
-        // Additional context
-        page_path: window.location.pathname,
-        referrer: document.referrer || '',
-        user_agent: navigator.userAgent,
-        language: navigator.language || '',
-        screen_resolution: `${screen.width}x${screen.height}`,
-        viewport: `${window.innerWidth}x${window.innerHeight}`
+        source: 'checkout'
       };
     }
 
     function postToSheets(payload, { useBeacon = false } = {}){
-      // Prevent duplicate submissions with same payload
-      const payloadHash = JSON.stringify(payload);
-      if (window.lastSubmissionHash === payloadHash) {
-        console.log('Duplicate submission detected, skipping...');
-        return Promise.resolve(true);
-      }
-      window.lastSubmissionHash = payloadHash;
-      
-      const url = 'https://script.google.com/macros/s/AKfycbwSbx0Aj6FBwXXxAY1xNPfHz8etSqEnlzuw97041FMt5dwroOUS0dfFjKPCvk0K396bZQ/exec';
+      const url = 'https://script.google.com/macros/s/AKfycbxd6pPajYDJEtCIZpUe9zmJrTCypz6_vzWAHABsx0vg-bpAjF0SdfuCkhvhZJ6pTnpz7g/exec';
       const form = new URLSearchParams();
       Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
       const body = form.toString();
@@ -1183,10 +1089,7 @@
 
     function onBuy(){
       // Prevent duplicate submissions
-      if (submissionInProgress || submissionCompleted) {
-        console.log('Submission already in progress or completed, ignoring...');
-        return;
-      }
+      if (submissionInProgress || submissionCompleted) return;
       
       submissionInProgress = true;
       const btn = document.getElementById('buyBtn');
@@ -1199,41 +1102,36 @@
       // Timestamp last order immediately
       safeSetLS('rp_last_order_ts', Date.now());
 
-      // Submit immediately - no GPS popups, only IP-based location
-      postToSheets(payload, { useBeacon: false }).then(() => {
-        console.log('Order submitted successfully');
-        
-        // Track conversion when purchase is made
-        if (typeof gtag === 'function') {
-          gtag('event', 'conversion', {
-            'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
-            'value': p.total,
-            'currency': 'USD'
-          });
-        }
+      // Submit immediately with beacon for reliability
+      const submitPromise = postToSheets(payload, { useBeacon: true });
+      
+      // Track conversion when purchase is made
+      if (typeof gtag === 'function') {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+          'value': p.total,
+          'currency': 'USD'
+        });
+      }
 
-        // Mark submission as completed
+      // Mark submission as completed after a short delay
+      setTimeout(() => {
         submissionCompleted = true;
         submissionInProgress = false;
+      }, 1000);
 
-        // Navigate to thanks page
-        gtagNavigate('thanks.html', {
-          value: p.total,
-          currency: 'USD',
-          transaction_id: Date.now().toString(),
-          items: [{
-            item_id: 'subscription',
-            item_name: d.blendName || 'Your Daily Roast',
-            item_category: 'coffee_subscription',
-            price: p.pricePerCup,
-            quantity: p.billedServings
-          }]
-        });
-      }).catch(err => {
-        console.error('Submission failed:', err);
-        // Reset button state on error
-        if (btn) { btn.removeAttribute('aria-busy'); btn.disabled = false; }
-        submissionInProgress = false;
+      // Navigate immediately (with GA callback attempts)
+      gtagNavigate('thanks.html', {
+        value: p.total,
+        currency: 'USD',
+        transaction_id: Date.now().toString(),
+        items: [{
+          item_id: 'subscription',
+          item_name: d.blendName || 'Your Daily Roast',
+          item_category: 'coffee_subscription',
+          price: p.pricePerCup,
+          quantity: p.billedServings
+        }]
       });
     }
 
@@ -1247,25 +1145,114 @@
       const params = new URLSearchParams(window.location.search);
       if (params.get('review') === '1' && buy){ buy.remove(); }
 
-      // Set up robust form submission handlers (only once per page load)
-      if (!robustSubmissionSetup) {
-        setupRobustSubmission();
-      }
+      // Set up robust form submission handlers
+      setupRobustSubmission();
     }
 
-    // No more automatic submissions - only manual "Buy Now" button
+    // Ensure form submission happens even if user navigates away quickly
     function setupRobustSubmission() {
       // Only set up once
       if (robustSubmissionSetup) return;
       robustSubmissionSetup = true;
       
-      // Reset submission state for this session
-      submissionCompleted = false;
-      submissionInProgress = false;
+      const payload = buildPayload();
       
-      console.log('Checkout ready - submission only happens on "Buy Now" click');
+      // Handle page visibility change (user switching tabs, minimizing, etc.)
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden' && !submissionCompleted) {
+          // User is leaving the page, submit immediately
+          postToSheets(payload, { useBeacon: true }).catch(err => console.error('Visibility change submission failed:', err));
+        }
+      });
+
+      // Removed beforeunload to prevent "Leave site?" popup
+      // Form submission still happens via pagehide and unload events
+
+      // Handle pagehide (more reliable than beforeunload on mobile)
+      window.addEventListener('pagehide', function() {
+        if (!submissionCompleted) {
+          // Final attempt to submit
+          postToSheets(payload, { useBeacon: true });
+        }
+      });
+
+      // Handle unload (final fallback)
+      window.addEventListener('unload', function() {
+        if (!submissionCompleted) {
+          // Last chance submission
+          postToSheets(payload, { useBeacon: true });
+        }
+      });
     }
 
+    // ---- Prevent "Leave site?" popup ----
+    (function preventLeaveSitePopup(){
+      // Clear any potential form state that might trigger the popup
+      function clearFormState() {
+        // Clear any input fields
+        document.querySelectorAll('input, textarea, select').forEach(element => {
+          if (element.type !== 'hidden') {
+            element.value = '';
+          }
+        });
+        
+        // Remove any contenteditable attributes
+        document.querySelectorAll('[contenteditable]').forEach(element => {
+          element.removeAttribute('contenteditable');
+        });
+        
+        // Clear any localStorage that might indicate unsaved changes
+        try {
+          localStorage.removeItem('quizAnswers');
+          localStorage.removeItem('quizCurrentStep');
+        } catch (e) {}
+      }
+      
+      // Clear form state immediately
+      clearFormState();
+      
+      // Clear browser history to prevent "Leave site?" popup
+      try {
+        // Replace current history entry to clear any unsaved state
+        history.replaceState(null, '', window.location.href);
+        
+        // Push a new clean state
+        history.pushState({ clean: true }, '', window.location.href);
+        
+        // Listen for back button to prevent issues
+        window.addEventListener('popstate', (e) => {
+          if (e.state && e.state.clean) {
+            // User pressed back, go forward to stay on checkout
+            history.forward();
+          }
+        });
+      } catch (e) {
+        console.log('History manipulation failed:', e);
+      }
+      
+      // Clear form state on any user interaction
+      document.addEventListener('click', clearFormState, { once: true });
+      document.addEventListener('touchstart', clearFormState, { once: true });
+      
+      // Clear form state before page unload
+      window.addEventListener('beforeunload', (e) => {
+        clearFormState();
+        // Don't prevent the unload, just clear the state
+      });
+      
+      // Clear form state on page hide
+      window.addEventListener('pagehide', clearFormState);
+      
+      // Clear form state on visibility change
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          clearFormState();
+        }
+      });
+      
+      console.log('Leave site popup prevention active');
+    })();
+    
     // ---- Chrome on iOS specific fixes ----
     (function chromeIOSFix(){
       // Detect Chrome on iOS
