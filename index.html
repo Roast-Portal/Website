@@ -47,6 +47,7 @@
       --accent-blue: #0071E3;
       --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
     }
+    html.lock-scroll, body.lock-scroll { overflow: hidden; }
     
     * {
       box-sizing: border-box;
@@ -128,6 +129,16 @@
       background: transparent;
     }
     
+    /* Make the hero iframe fill the viewport and not animate on load */
+    #hero-frame {
+      height: 100svh;
+      display: block;
+      opacity: 1;
+      transform: none;
+      transition: none;
+      overscroll-behavior: none;
+    }
+    
     /* Remove section dividers for continuous flow */
     .section-divider {
       display: none;
@@ -159,6 +170,9 @@
         transform: translateY(0);
       }
     }
+
+    /* Prevent initial nudge by removing margin collapsing/body shifts */
+    html, body { overflow-anchor: none; }
     
     /* Stagger the quick animations for visual flow */
     #product-frame { animation-delay: 0s; }
@@ -257,6 +271,11 @@
     }
   </style>
 </head>
+<body>
+  <iframe id="hero-frame" src="hero.html" title="Hero Section" loading="eager"></iframe>
+
+  <div class="section-divider"></div>
+
 <body class="loading">
   <!-- Loading indicator -->
   <div id="loading-indicator" style="
@@ -311,6 +330,19 @@
   </footer>
 
   <script>
+    // Lock outer page scroll until hero signals it finished initial animation
+    document.documentElement.classList.add('lock-scroll');
+    document.body.classList.add('lock-scroll');
+
+    function alignHero() {
+      const hero = document.getElementById('hero-frame');
+      if (!hero) return;
+      try { hero.scrollIntoView({ behavior: 'auto', block: 'start' }); } catch (_) {}
+      // Align again after potential layout/height adjustments
+      setTimeout(() => { try { hero.scrollIntoView({ behavior: 'auto', block: 'start' }); } catch (_) {} }, 50);
+      setTimeout(() => { try { hero.scrollIntoView({ behavior: 'auto', block: 'start' }); } catch (_) {} }, 250);
+    }
+
     // Track iframe loading to prevent flash of unstyled content
     let loadedIframes = 0;
     const totalIframes = 3;
@@ -336,6 +368,11 @@
     function resizeIframe(iframe) {
       const checkHeight = () => {
         try {
+          // Keep hero fixed to viewport height; skip auto-resize
+          if (iframe.id === 'hero-frame') {
+            iframe.style.height = '100vh';
+            return;
+          }
           const doc = iframe.contentDocument || iframe.contentWindow.document;
           const height = Math.max(
             doc.body.scrollHeight,
@@ -352,6 +389,7 @@
         } catch (e) {
           console.log(`Could not auto-resize ${iframe.id}, using fallback`);
           // Fallback heights
+          if (iframe.id === 'hero-frame') iframe.style.height = '100vh';
           if (iframe.id === 'product-frame') iframe.style.height = '2200px';
           if (iframe.id === 'people-frame') iframe.style.height = '2000px';
           if (iframe.id === 'production-frame') iframe.style.height = '4200px';
@@ -361,6 +399,11 @@
       // Check when iframe loads
       iframe.onload = () => {
         checkHeight();
+        // Release scroll as soon as hero reports layout
+        if (iframe.id === 'hero-frame') {
+          document.documentElement.classList.remove('lock-scroll');
+          document.body.classList.remove('lock-scroll');
+        }
         // Check again after content might have rendered
         setTimeout(checkHeight, 100);
         setTimeout(checkHeight, 300);
@@ -386,6 +429,56 @@
       if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
         checkHeight();
         showContentWhenReady();
+      }
+    }
+    
+    // Listen for hero readiness and align requests
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'hero-ready') {
+        document.documentElement.classList.remove('lock-scroll');
+        document.body.classList.remove('lock-scroll');
+      }
+      if (event.data && event.data.type === 'hero-align') {
+        // Snap hero fully into view while animation is active
+        alignHero();
+      }
+      if (event.data && event.data.type === 'hero-complete') {
+        // Ensure outer page can scroll freely once hero completes
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Apply to all iframes
+    document.querySelectorAll('iframe').forEach(resizeIframe);
+    
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add loaded class when iframe comes into view
+          entry.target.classList.add('loaded');
+          // If product section is entering view, tell hero to hide its arrow
+          if (entry.target && entry.target.id === 'product-frame') {
+            const hero = document.getElementById('hero-frame');
+            try { hero && hero.contentWindow && hero.contentWindow.postMessage({ type: 'hide-arrow' }, '*'); } catch (_) {}
+          }
+          // No scroll locking; hero handles its own pinning
+        }
+      });
+    }, {
+      threshold: 0.75,
+      rootMargin: '0px'
+    });
+    
+    // Observe all iframes (hero won't animate due to CSS override)
+    document.querySelectorAll('iframe').forEach(iframe => {
+      observer.observe(iframe);
+    });
+    
+    // Handle iframe navigation to ensure signup links work
+    document.querySelectorAll('iframe').forEach(iframe => {
+      iframe.addEventListener('load', () => {
         
         // Handle navigation for already loaded iframes
         try {
@@ -400,8 +493,8 @@
         } catch (e) {
           // Cross-origin restriction, links will work normally
         }
-      }
-    }
+      });
+    });
     
     // Apply to all iframes
     document.querySelectorAll('iframe').forEach(resizeIframe);
