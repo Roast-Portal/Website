@@ -893,7 +893,7 @@
               <div class="pouch">
                 <div class="top-seal"></div>
                 <div class="pouch-label">
-                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Shape layer"><rect x="397.807373046875" y="263.5442199707031" width="200" height="200" rx="3.200347071234561" ry="12" data-corner="12" fill="#ffffff80" data-shape="square" data-rot="0" data-scalex="3.7495933200054137" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(3.74959, 1);"></rect><circle cx="977.3275756835938" cy="24.153820037841797" r="110" fill="rgba(16, 234, 81, 1)" data-shape="circle" data-rot="0" data-scalex="1.278094641436079" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(1.27809, 1);"></circle><polygon points="504.1848449707031,645.3689880371094 614.1848449707031,875.3689880371094 394.1848449707031,875.3689880371094" fill="rgba(0, 0, 0, 1)" data-shape="triangle" data-rot="0" data-scalex="5" data-scaley="2.165829465350702" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(5, 2.16583);"></polygon></svg>
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Shape layer"><rect x="397.807373046875" y="263.5442199707031" width="200" height="200" rx="3.200347071234561" ry="12" data-corner="12" fill="#ffffff80" data-shape="square" data-rot="0" data-scalex="3.7495933200054137" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(3.74959, 1);"></rect><circle cx="977.3275756835938" cy="24.153820037841797" r="110" fill="rgba(16, 234, 81, 1)" data-shape="circle" data-rot="0" data-scalex="1.27809" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(1.27809, 1);"></circle><polygon points="504.1848449707031,645.3689880371094 614.1848449707031,875.3689880371094 394.1848449707031,875.3689880371094" fill="rgba(0, 0, 0, 1)" data-shape="triangle" data-rot="0" data-scalex="5" data-scaley="2.165829465350702" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(5, 2.16583);"></polygon></svg>
                     </div>
                     
                     <div class="text-layer">
@@ -957,170 +957,98 @@
     }
 
     // ---- Networking ----
+    // ---------- CONFIG ----------
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwzv2BKso5R2s-c2HYPODVTYBtHjYcXgiJoybYtvQ6H4ftzlyiTLCvQ0lmLs_qyF0QHYA/exec';
+
+    // ---------- PAYLOAD ----------
     function buildPayload(){
-      let d = loadData();
-      console.log('Quiz data loaded for payload:', d);
-      
-      const pricePerCup = mapPrice(d.priceRange);
-      const more = String(d.cupsPerDay || '').toLowerCase().includes('more');
-      const billedServings = more ? 28 : 14; 
-      const bonus = 1; 
-      const totalServings = billedServings + bonus;
-
-      const topFlavors = [ ['Nutty',d.flavorNutty], ['Fruity',d.flavorFruity], ['Floral',d.flavorFloral], ['Smoky',d.flavorSmoky] ]
-        .filter(([,v]) => v !== '' && !isNaN(Number(v)))
-        .sort((a,b) => Number(b[1]) - Number(a[1]))
-        .slice(0,3)
-        .map(([k,v]) => `${k}:${v}`)
-        .join(', ');
-
-      const RP_USER_ID = safeGetLS('rp_user_id') || '';
-
+      const d = loadData();
+      const p = compute(d);
       return {
-        timestamp: new Date().toISOString(),
-        tab: 'Orders', // Changed from 'FormResponses' to 'Orders' to trigger email
-        userId: RP_USER_ID,
-        firstName: d.firstName||'', 
-        lastName: d.lastName||'', 
-        email: d.email||'',
-        roastLevel: d.roastLevel||'', 
-        brewMethod: d.brewMethod||'', 
-        equipmentDetails: d.equipmentDetails||'', 
-        additions: d.additions||'',
-        priceRange: d.priceRange||'', 
-        pricePerCup, 
-        cupsPerDay: d.cupsPerDay||'', 
-        personality: d.personality||'', 
-        tasteBalance: d.tasteBalance||'',
-        flavorNutty: d.flavorNutty||'', 
-        flavorFruity: d.flavorFruity||'', 
-        flavorFloral: d.flavorFloral||'', 
-        flavorSmoky: d.flavorSmoky||'', 
-        topFlavors,
-        blendName: d.blendName||'', 
-        billedServings, 
-        bonus, 
-        totalServings, 
-        source: 'buy_click', // Changed from 'checkout' to 'buy_click' to trigger email
-        submission_id: submissionId // Add submission ID for deduplication
+        tab: 'Orders',
+        source: 'buy_click',
+
+        firstName: d.firstName || '',
+        lastName:  d.lastName  || '',
+        email:     d.email     || '',
+
+        roastLevel: d.roastLevel || '',
+        brewMethod: d.brewMethod || '',
+        equipmentDetails: d.equipmentDetails || '',
+        additions: Array.isArray(d.additions) ? d.additions.join(', ') : (d.additions||''),
+        priceRange: d.priceRange || '',
+        pricePerCup: p.pricePerCup,
+        cupsPerDay: d.cupsPerDay || '',
+        personality: d.personality || '',
+        tasteBalance: d.tasteBalance || '',
+        flavorNutty: d.flavorNutty || '',
+        flavorFruity: d.flavorFruity || '',
+        flavorFloral: d.flavorFloral || '',
+        flavorSmoky:  d.flavorSmoky  || '',
+        blendName: d.blendName || 'Your Daily Roast',
+        billedServings: p.billedServings,
+        bonus: p.bonus,
+        totalServings: p.totalServings
       };
     }
 
+    // ---------- SINGLE POST ----------
+    async function postToSheets(payload){
+      const form = new URLSearchParams();
+      Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
 
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8' },
+        body: form.toString(),
+        signal: controller.signal,
+        keepalive: true
+      });
 
-      // ---------- CONFIG ----------
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwzv2BKso5R2s-c2HYPODVTYBtHjYcXgiJoybYtvQ6H4ftzlyiTLCvQ0lmLs_qyF0QHYA/exec';
+      clearTimeout(timer);
+      if (!res.ok) throw new Error('HTTP '+res.status);
+      return res.json().catch(() => ({}));
+    }
 
-  // ---------- HELPERS ----------
-  const getLS = k => { try{return localStorage.getItem(k)}catch{return null} };
-  const setLS = (k,v) => { try{ localStorage.setItem(k,String(v)) }catch{} };
+    // ---------- BUY CLICK ----------
+    let submitting = false;
+    async function onBuy(){
+      if (submitting) return;
+      submitting = true;
 
-  function loadQuiz()    { try{ return JSON.parse(getLS('rp_quiz')||'{}') }catch{ return {} } }
-  function mapPrice(per) {
-    const val = Number(per)||20;
-    const pct = (val - 8) / (36 - 8);
-    return Math.max(2, Math.min(9, +(2 + 7*pct).toFixed(2)));
-  }
-  function compute(d){
-    const pricePerCup = mapPrice(d.priceRange);
-    const billedServings = 14;
-    const bonus = 1;
-    const totalServings = billedServings + bonus;
-    const shipping = 4.95;
-    const subtotal = Math.ceil(pricePerCup * billedServings) - 0.05;
-    const tax = Math.ceil(subtotal * 0.08) - 0.05;
-    const total = Math.ceil(subtotal + tax + shipping) - 0.05;
-    return { pricePerCup, billedServings, bonus, totalServings, shipping, subtotal, tax, total };
-  }
+      const btn = document.getElementById('buyBtn');
+      if (btn){ btn.disabled = true; btn.setAttribute('aria-busy','true'); }
 
-  // ---------- PAYLOAD ----------
-  function buildPayload(){
-    const d = loadQuiz();
+      const d = loadData();
       const p = compute(d);
-    return {
-      tab: 'Orders',
-      source: 'buy_click',
 
-      firstName: d.firstName || '',
-      lastName:  d.lastName  || '',
-      email:     d.email     || '',
+      // Optional: ad/analytics event (won't block)
+      try { gtag('event','conversion',{ send_to:'AW-17346642053/djvHCNG48f4aEIWBw89A', value:p.total, currency:'USD' }); } catch{}
 
-      roastLevel: d.roastLevel || '',
-      brewMethod: d.brewMethod || '',
-      equipmentDetails: d.equipmentDetails || '',
-      additions: Array.isArray(d.additions) ? d.additions.join(', ') : (d.additions||''),
-      priceRange: d.priceRange || '',
-      pricePerCup: p.pricePerCup,
-      cupsPerDay: d.cupsPerDay || '',
-      personality: d.personality || '',
-      tasteBalance: d.tasteBalance || '',
-      flavorNutty: d.flavorNutty || '',
-      flavorFruity: d.flavorFruity || '',
-      flavorFloral: d.flavorFloral || '',
-      flavorSmoky:  d.flavorSmoky  || '',
-      blendName: d.blendName || 'Your Daily Roast',
-      billedServings: p.billedServings,
-      bonus: p.bonus,
-      totalServings: p.totalServings
-    };
-  }
-
-  // ---------- SINGLE POST ----------
-  async function postToSheets(payload){
-    const form = new URLSearchParams();
-    Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8000);
-
-    const res = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8' },
-      body: form.toString(),
-      signal: controller.signal,
-      keepalive: true
-    });
-
-    clearTimeout(timer);
-    if (!res.ok) throw new Error('HTTP '+res.status);
-    return res.json().catch(() => ({}));
-  }
-
-  // ---------- BUY CLICK ----------
-  let submitting = false;
-  async function onBuy(){
-    if (submitting) return;
-    submitting = true;
-
-    const btn = document.getElementById('buyBtn');
-    if (btn){ btn.disabled = true; btn.setAttribute('aria-busy','true'); }
-
-    const d = loadQuiz();
-    const p = compute(d);
-
-    // Optional: ad/analytics event (won't block)
-    try { gtag('event','conversion',{ send_to:'AW-17346642053/djvHCNG48f4aEIWBw89A', value:p.total, currency:'USD' }); } catch{}
-
-    try{
-      await postToSheets(buildPayload());   // <-- ONE request only
-      // Success: go to thanks
-      window.location.assign('thanks.html');
-    }catch(err){
-      alert('Order failed to submit. Please try again.');
-      console.error(err);
-      submitting = false;
-      if (btn){ btn.disabled = false; btn.removeAttribute('aria-busy'); }
+      try{
+        await postToSheets(buildPayload());   // <-- ONE request only
+        // Success: go to thanks
+        window.location.assign('thanks.html');
+      }catch(err){
+        alert('Order failed to submit. Please try again.');
+        console.error(err);
+        submitting = false;
+        if (btn){ btn.disabled = false; btn.removeAttribute('aria-busy'); }
       }
+    }
+
+    function bindHandlers(d, p){
+      const buy = document.getElementById('buyBtn');
+      const back = document.getElementById('backBtn');
+      if (buy) buy.addEventListener('click', onBuy);
+      if (back) back.addEventListener('click', () => history.length ? history.back() : window.location.assign('index.html'));
     }
 
     // Initial render
     render();
-    
-    // Bind the buy button
-    const buy = document.getElementById('buyBtn');
-    const back = document.getElementById('backBtn');
-    if (buy) buy.addEventListener('click', onBuy);
-    if (back) back.addEventListener('click', () => history.length ? history.back() : window.location.assign('index.html'));
-    })();
+  })();
   </script>
 </body>
 </html>
