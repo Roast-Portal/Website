@@ -1007,7 +1007,7 @@
     }
 
     function postToSheets(payload) {
-      const url = 'https://script.google.com/macros/s/AKfycbxj_pC39hjHuXLbL_1wgS3FbAdps7RkwjF41kGdaPDkeJ9BfHC0WcFPc2QqhQn8L2IAXg/exec';
+      const url = 'https://script.google.com/macros/s/AKfycbyrtagbnx1ia2udIicThcDHMIafItVvuFMJWpXfEr4g4h1oJwU3MYjrbtyPwtfsUM9j/exec';
 
       const form = new URLSearchParams();
       Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
