@@ -958,7 +958,7 @@
 
     // ---- Networking ----
     // ---------- CONFIG ----------
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzjpGAUmZQdL6Gq8Af-xrWd4zIBBfofwgNuH72ve5U9wbCcUHjW2bjxXVw/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbydtAyHqdtJL7E_RvbG6VuXmekBX55tZDcZXFFZNTNINRtv8GZggubdrn1nOSUHaBZd5w/exec';
 
     // ---------- PAYLOAD ----------
     function buildPayload(){
@@ -994,22 +994,40 @@
 
     // ---------- SINGLE POST ----------
     async function postToSheets(payload){
+      console.log('Submitting payload:', payload);
+      console.log('To URL:', GAS_URL);
+      
       const form = new URLSearchParams();
       Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 8000);
 
-      const res = await fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8' },
-        body: form.toString(),
-        signal: controller.signal,
-        keepalive: true
-      });
+      try {
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8' },
+          body: form.toString(),
+          signal: controller.signal,
+          keepalive: true
+        });
 
-      clearTimeout(timer);
-      if (!res.ok) throw new Error('HTTP '+res.status);
-      return res.json().catch(() => ({}));
+        clearTimeout(timer);
+        console.log('Response status:', res.status);
+        console.log('Response headers:', res.headers);
+        
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error('HTTP Error Response:', errorText);
+          throw new Error('HTTP '+res.status + ': ' + errorText);
+        }
+        
+        const responseData = await res.json().catch(() => ({}));
+        console.log('Success response:', responseData);
+        return responseData;
+      } catch (err) {
+        console.error('Fetch error:', err);
+        throw err;
+      }
     }
 
     // ---------- BUY CLICK ----------
@@ -1023,17 +1041,24 @@
 
       const d = loadData();
       const p = compute(d);
+      
+      console.log('Quiz data loaded:', d);
+      console.log('Computed pricing:', p);
 
       // Optional: ad/analytics event (won't block)
       try { gtag('event','conversion',{ send_to:'AW-17346642053/djvHCNG48f4aEIWBw89A', value:p.total, currency:'USD' }); } catch{}
 
       try{
-        await postToSheets(buildPayload());   // <-- ONE request only
+        const payload = buildPayload();
+        console.log('Built payload:', payload);
+        
+        await postToSheets(payload);   // <-- ONE request only
         // Success: go to thanks
+        console.log('Order submitted successfully, redirecting...');
         window.location.assign('thanks.html');
       }catch(err){
-        alert('Order failed to submit. Please try again.');
-        console.error(err);
+        console.error('Order submission failed:', err);
+        alert('Order failed to submit. Please try again. Check console for details.');
         submitting = false;
         if (btn){ btn.disabled = false; btn.removeAttribute('aria-busy'); }
       }
