@@ -976,7 +976,7 @@
 
       return {
         timestamp: new Date().toISOString(),
-        tab: 'FormResponses',
+        tab: 'Orders', // Changed from 'FormResponses' to 'Orders' to trigger email
         userId: RP_USER_ID,
         firstName: d.firstName||'', 
         lastName: d.lastName||'', 
@@ -999,7 +999,8 @@
         billedServings, 
         bonus, 
         totalServings, 
-        source: 'checkout'
+        source: 'buy_click', // Changed from 'checkout' to 'buy_click' to trigger email
+        submission_id: submissionId // Add submission ID for deduplication
       };
     }
 
@@ -1087,6 +1088,7 @@
     let submissionCompleted = false;
     let robustSubmissionSetup = false;
     let formAlreadySubmitted = false;
+    let submissionId = null; // Track the submission ID for deduplication
 
     function onBuy(){
       console.log('Buy button clicked - checking submission state...');
@@ -1101,6 +1103,12 @@
       submissionInProgress = true;
       const btn = document.getElementById('buyBtn');
       if (btn){ btn.setAttribute('aria-busy', 'true'); btn.disabled = true; }
+
+      // Generate submission ID for deduplication
+      if (!submissionId) {
+        submissionId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        console.log('Generated submission ID:', submissionId);
+      }
 
       const payload = buildPayload();
       const d = loadData();
@@ -1164,6 +1172,12 @@
       // Only set up once
       if (robustSubmissionSetup) return;
       robustSubmissionSetup = true;
+      
+      // Generate submission ID if not already generated
+      if (!submissionId) {
+        submissionId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        console.log('Generated submission ID for robust submission:', submissionId);
+      }
       
       const payload = buildPayload();
       
@@ -1341,8 +1355,8 @@
       const now = Date.now();
       
       // If there was a recent order attempt (within last 30 seconds) but no completion
-      // AND no form has been submitted yet
-      if (lastOrderTs && (now - lastOrderTs) < 30000 && !formAlreadySubmitted && !submissionCompleted) {
+      // AND no form has been submitted yet AND no submission ID exists
+      if (lastOrderTs && (now - lastOrderTs) < 30000 && !formAlreadySubmitted && !submissionCompleted && !submissionId) {
         const payload = buildPayload();
         console.log('Handling pending submission from previous session');
         // Submit in background to ensure it goes through
