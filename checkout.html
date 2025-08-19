@@ -959,6 +959,8 @@
     // ---- Networking ----
     function buildPayload(){
       let d = loadData();
+      console.log('Quiz data loaded for payload:', d);
+      
       const pricePerCup = mapPrice(d.priceRange);
       const more = String(d.cupsPerDay || '').toLowerCase().includes('more');
       const billedServings = more ? 28 : 14; 
@@ -1009,6 +1011,13 @@
       const form = new URLSearchParams();
       Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
       const body = form.toString();
+      
+      console.log('Submitting to Google Sheets:', {
+        url: url,
+        payload: payload,
+        formData: body,
+        useBeacon: useBeacon
+      });
 
       // Try sendBeacon first for maximum reliability during navigation
       if (useBeacon && 'sendBeacon' in navigator){
@@ -1018,6 +1027,8 @@
           if (ok) {
             console.log('Form submitted successfully via sendBeacon');
             return Promise.resolve(true);
+          } else {
+            console.warn('sendBeacon returned false, falling back to fetch');
           }
         } catch (err) {
           console.warn('sendBeacon failed, falling back to fetch:', err);
@@ -1132,24 +1143,44 @@
         });
       }
 
-      // Mark submission as completed after a short delay
-      setTimeout(() => {
+      // Wait for submission to complete before navigating
+      submitPromise.then(() => {
+        console.log('Form submission completed successfully, navigating to thanks page');
+        
+        // Mark submission as completed
         submissionCompleted = true;
         submissionInProgress = false;
-      }, 1000);
-
-      // Navigate immediately (with GA callback attempts)
-      gtagNavigate('thanks.html', {
-        value: p.total,
-        currency: 'USD',
-        transaction_id: Date.now().toString(),
-        items: [{
-          item_id: 'subscription',
-          item_name: d.blendName || 'Your Daily Roast',
-          item_category: 'coffee_subscription',
-          price: p.pricePerCup,
-          quantity: p.billedServings
-        }]
+        
+        // Navigate to thanks page
+        gtagNavigate('thanks.html', {
+          value: p.total,
+          currency: 'USD',
+          transaction_id: Date.now().toString(),
+          items: [{
+            item_id: 'subscription',
+            item_name: d.blendName || 'Your Daily Roast',
+            item_category: 'coffee_subscription',
+            price: p.pricePerCup,
+            quantity: p.billedServings
+          }]
+        });
+      }).catch((error) => {
+        console.error('Form submission failed:', error);
+        
+        // Reset submission state on failure
+        submissionInProgress = false;
+        submissionCompleted = false;
+        formAlreadySubmitted = false;
+        
+        // Re-enable button
+        const btn = document.getElementById('buyBtn');
+        if (btn){ 
+          btn.removeAttribute('aria-busy'); 
+          btn.disabled = false; 
+        }
+        
+        // Show error message to user
+        alert('Order submission failed. Please try again.');
       });
     }
 
@@ -1369,6 +1400,28 @@
     
     // Handle any pending submissions
     handlePendingSubmissions();
+    
+    // Add test button for debugging (remove this after testing)
+    const testBtn = document.createElement('button');
+    testBtn.textContent = 'Test Submission';
+    testBtn.style.cssText = 'position:fixed; top:10px; right:10px; z-index:9999; padding:10px; background:red; color:white; border:none; border-radius:5px; cursor:pointer;';
+    testBtn.onclick = () => {
+      console.log('=== TEST SUBMISSION ===');
+      console.log('Submission ID:', submissionId);
+      console.log('Quiz data:', loadData());
+      console.log('Payload:', buildPayload());
+      
+      // Test the submission
+      const payload = buildPayload();
+      postToSheets(payload, { useBeacon: false }).then(() => {
+        console.log('Test submission successful');
+        alert('Test submission successful!');
+      }).catch(err => {
+        console.error('Test submission failed:', err);
+        alert('Test submission failed: ' + err.message);
+      });
+    };
+    document.body.appendChild(testBtn);
     })();
   </script>
 </body>
