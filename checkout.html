@@ -1086,11 +1086,18 @@
     let submissionInProgress = false;
     let submissionCompleted = false;
     let robustSubmissionSetup = false;
+    let formAlreadySubmitted = false;
 
     function onBuy(){
-      // Prevent duplicate submissions
-      if (submissionInProgress || submissionCompleted) return;
+      console.log('Buy button clicked - checking submission state...');
       
+      // Prevent duplicate submissions
+      if (submissionInProgress || submissionCompleted) {
+        console.log('Submission blocked - in progress:', submissionInProgress, 'completed:', submissionCompleted);
+        return;
+      }
+      
+      console.log('Starting form submission...');
       submissionInProgress = true;
       const btn = document.getElementById('buyBtn');
       if (btn){ btn.setAttribute('aria-busy', 'true'); btn.disabled = true; }
@@ -1104,6 +1111,9 @@
 
       // Submit immediately with beacon for reliability
       const submitPromise = postToSheets(payload, { useBeacon: true });
+      
+      // Mark form as submitted to prevent duplicates
+      formAlreadySubmitted = true;
       
       // Track conversion when purchase is made
       if (typeof gtag === 'function') {
@@ -1159,8 +1169,9 @@
       
       // Handle page visibility change (user switching tabs, minimizing, etc.)
       document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'hidden' && !submissionCompleted) {
-          // User is leaving the page, submit immediately
+        if (document.visibilityState === 'hidden' && !submissionCompleted && !submissionInProgress && !formAlreadySubmitted) {
+          // User is leaving the page, submit immediately only if not already submitted
+          console.log('Visibility change - submitting form as user is leaving page');
           postToSheets(payload, { useBeacon: true }).catch(err => console.error('Visibility change submission failed:', err));
         }
       });
@@ -1170,16 +1181,18 @@
 
       // Handle pagehide (more reliable than beforeunload on mobile)
       window.addEventListener('pagehide', function() {
-        if (!submissionCompleted) {
-          // Final attempt to submit
+        if (!submissionCompleted && !submissionInProgress && !formAlreadySubmitted) {
+          // Final attempt to submit only if not already submitted
+          console.log('Page hide - submitting form as user is navigating away');
           postToSheets(payload, { useBeacon: true });
         }
       });
 
       // Handle unload (final fallback)
       window.addEventListener('unload', function() {
-        if (!submissionCompleted) {
-          // Last chance submission
+        if (!submissionCompleted && !submissionInProgress && !formAlreadySubmitted) {
+          // Last chance submission only if not already submitted
+          console.log('Unload - final form submission attempt');
           postToSheets(payload, { useBeacon: true });
         }
       });
@@ -1328,8 +1341,10 @@
       const now = Date.now();
       
       // If there was a recent order attempt (within last 30 seconds) but no completion
-      if (lastOrderTs && (now - lastOrderTs) < 30000) {
+      // AND no form has been submitted yet
+      if (lastOrderTs && (now - lastOrderTs) < 30000 && !formAlreadySubmitted && !submissionCompleted) {
         const payload = buildPayload();
+        console.log('Handling pending submission from previous session');
         // Submit in background to ensure it goes through
         postToSheets(payload, { useBeacon: false }).catch(err => console.error('Pending submission failed:', err));
       }

@@ -712,15 +712,23 @@
 
     // --- Navigation ---
     nextBtn.addEventListener('click', ()=>{
+      console.log('Next button clicked, step:', currentStep + 1, 'of', quizData.length);
+      
       // Prevent multiple clicks during submission
       if (submissionInProgress || submissionCompleted) {
         console.log('Submission in progress or completed, ignoring click...');
         return;
       }
       
+      // Set submission in progress immediately to prevent rapid clicking
+      submissionInProgress = true;
+      console.log('Submission in progress set to true');
+      
       hasAttemptedSubmit = true;
       if(!isStepValid()) return;
       if(currentStep < quizData.length - 1){
+        // Reset submission in progress for next step
+        submissionInProgress = false;
         currentStep++;
         saveProgress();
         renderStep(true);
@@ -752,11 +760,21 @@
           'currency': 'USD'
         });
         
+        // Mark submission as completed to prevent multiple submissions
+        submissionCompleted = true;
+        submissionInProgress = false;
+        console.log('Quiz completed, submission flags set - completed:', submissionCompleted, 'in progress:', submissionInProgress);
+        
         // Show completion status
         status.innerHTML = '<span style="color: #34A853;">Quiz completed! Redirecting to checkout...</span>';
         
+        // Disable the button to prevent further clicks
+        nextBtn.disabled = true;
+        console.log('Next button disabled to prevent further clicks');
+        
         // Small delay to show success message before redirect
         setTimeout(() => {
+          console.log('Redirecting to checkout...');
           // Redirect – checkout reads localStorage.rp_quiz
           window.location.href = 'checkout.html';
         }, 1500);
@@ -780,38 +798,20 @@
       }
     });
 
-    // Keyboard shortcuts
+    // Keyboard shortcuts - consolidated to prevent multiple submissions
     document.addEventListener('keydown', (e)=>{
       const tag = (e.target && e.target.tagName) || '';
       const inField = ['INPUT','TEXTAREA'].includes(tag);
       
       // Arrow keys for navigation (when not in input fields)
-      if(e.key === 'ArrowRight' && !inField){ e.preventDefault(); if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); }
-      if(e.key === 'ArrowLeft' && !inField){ e.preventDefault(); if(!prevBtn.disabled) prevBtn.click(); }
-      
-      // Enter/Return key acts as Next button (always, including in text fields)
-      if(e.key === 'Enter' || e.key === 'Return'){ 
+      if(e.key === 'ArrowRight' && !inField){ 
         e.preventDefault(); 
         if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); 
       }
-    });
-    
-    // Also listen for keypress events for better mobile compatibility
-    document.addEventListener('keypress', (e)=>{
-      const tag = (e.target && e.target.tagName) || '';
-      const inField = ['INPUT','TEXTAREA'].includes(tag);
-      
-      // Enter/Return key acts as Next button (always, including in text fields)
-      if(e.key === 'Enter' || e.key === 'Return'){ 
+      if(e.key === 'ArrowLeft' && !inField){ 
         e.preventDefault(); 
-        if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); 
+        if(!prevBtn.disabled) prevBtn.click(); 
       }
-    });
-    
-    // Additional mobile-friendly Enter key handling
-    document.addEventListener('keyup', (e)=>{
-      const tag = (e.target && e.target.tagName) || '';
-      const inField = ['INPUT','TEXTAREA'].includes(tag);
       
       // Enter/Return key acts as Next button (always, including in text fields)
       if(e.key === 'Enter' || e.key === 'Return'){ 
