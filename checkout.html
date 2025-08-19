@@ -1004,7 +1004,7 @@
     }
 
     function postToSheets(payload, { useBeacon = false } = {}){
-      const url = 'https://script.google.com/macros/s/AKfycbxd6pPajYDJEtCIZpUe9zmJrTCypz6_vzWAHABsx0vg-bpAjF0SdfuCkhvhZJ6pTnpz7g/exec';
+      const url = 'https://script.google.com/macros/s/AKfycbz51E_2YHKN4KLQnghZgiys4yfQcYuD27jyfsPAKDWaIVzWngueaErxnAhDc_nLTPzjsA/exec';
       const form = new URLSearchParams();
       Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
       const body = form.toString();
