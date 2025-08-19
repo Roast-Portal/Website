@@ -1006,56 +1006,46 @@
       };
     }
 
-    function postToSheets(payload, { useBeacon = false } = {}){
-      const url = 'https://script.google.com/macros/s/AKfycbyrtagbnx1ia2udIicThcDHMIafItVvuFMJWpXfEr4g4h1oJwU3MYjrbtyPChfsUM9j/exec';
+    function postToSheets(payload) {
+      const url = 'https://script.google.com/macros/s/AKfycbxj_pC39hjHuXLbL_1wgS3FbAdps7RkwjF41kGdaPDkeJ9BfHC0WcFPc2QqhQn8L2IAXg/exec';
+
       const form = new URLSearchParams();
       Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
-      const body = form.toString();
-      
-      console.log('Submitting to Google Sheets:', {
-        url: url,
-        payload: payload,
-        formData: body,
-        useBeacon: useBeacon
-      });
 
-      // Try sendBeacon first for maximum reliability during navigation
-      if (useBeacon && 'sendBeacon' in navigator){
+      // Fire both: beacon (best effort) + fetch (confirmation). Either can win.
+      let beaconSent = false;
+      if ('sendBeacon' in navigator) {
         try {
-          const blob = new Blob([body], { type:'application/x-www-form-urlencoded;charset=UTF-8' });
-          const ok = navigator.sendBeacon(url, blob);
-          if (ok) {
-            console.log('Form submitted successfully via sendBeacon');
-            return Promise.resolve(true);
-          } else {
-            console.warn('sendBeacon returned false, falling back to fetch');
+          const blob = new Blob([form.toString()], { type:'application/x-www-form-urlencoded;charset=UTF-8' });
+          beaconSent = navigator.sendBeacon(url, blob);
+          if (beaconSent) {
+            console.log('sendBeacon sent successfully');
           }
         } catch (err) {
-          console.warn('sendBeacon failed, falling back to fetch:', err);
+          console.warn('sendBeacon failed:', err);
         }
       }
 
-      // Fallback to fetch with timeout
+      // Fetch with keepalive + short timeout for confirmation
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      const t = setTimeout(() => controller.abort(), 6000);
 
-      return fetch(url, {
+      const fetchPromise = fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-        body,
+        body: form.toString(),
         signal: controller.signal,
-        keepalive: true // Keep connection alive for background requests
-      }).then(response => {
-        clearTimeout(timeoutId);
-        if (response.ok) {
-          console.log('Form submitted successfully via fetch');
-          return response;
-        } else {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-      }).catch(err => {
-        clearTimeout(timeoutId);
-        console.error('Form submission failed:', err);
+        keepalive: true
+      }).then(r => {
+        clearTimeout(t);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json().catch(() => ({}));
+      });
+
+      // If fetch resolves, we know the server accepted it. If fetch fails but beacon was sent,
+      // we assume OK (server will dedupe anyway). If both fail → surface error.
+      return fetchPromise.catch(err => {
+        if (beaconSent) return { status: 'BEACON_ONLY' };
         throw err;
       });
     }
@@ -1099,89 +1089,64 @@
     let submissionCompleted = false;
     let robustSubmissionSetup = false;
     let formAlreadySubmitted = false;
-    let submissionId = null; // Track the submission ID for deduplication
-
-    function onBuy(){
-      console.log('Buy button clicked - checking submission state...');
-      
-      // Prevent duplicate submissions
-      if (submissionInProgress || submissionCompleted) {
-        console.log('Submission blocked - in progress:', submissionInProgress, 'completed:', submissionCompleted);
-        return;
+    
+    // ---- Submission ID: persist across any fallback ----
+    function getSubmissionId() {
+      const k = 'rp_submission_id';
+      let sid = safeGetLS(k);
+      if (!sid) {
+        sid = 'order_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+        safeSetLS(k, sid);
       }
-      
-      console.log('Starting form submission...');
+      return sid;
+    }
+    let submissionId = getSubmissionId();
+
+    async function onBuy(){
+      if (submissionInProgress || submissionCompleted) return;
+
       submissionInProgress = true;
       const btn = document.getElementById('buyBtn');
-      if (btn){ btn.setAttribute('aria-busy', 'true'); btn.disabled = true; }
+      if (btn){ btn.setAttribute('aria-busy','true'); btn.disabled = true; }
 
-      // Generate submission ID for deduplication
-      if (!submissionId) {
-        submissionId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        console.log('Generated submission ID:', submissionId);
-      }
-
-      const payload = buildPayload();
       const d = loadData();
       const p = compute(d);
-      
-      // Timestamp last order immediately
-      safeSetLS('rp_last_order_ts', Date.now());
 
-      // Submit immediately with beacon for reliability
-      const submitPromise = postToSheets(payload, { useBeacon: true });
-      
-      // Mark form as submitted to prevent duplicates
-      formAlreadySubmitted = true;
-      
-      // Track conversion when purchase is made
+      // Track "purchase" right away
       if (typeof gtag === 'function') {
-        gtag('event', 'conversion', {
-          'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
-          'value': p.total,
-          'currency': 'USD'
-        });
+        try {
+          gtag('event', 'conversion', { 'send_to':'AW-17346642053/djvHCNG48f4aEIWBw89A', 'value': p.total, 'currency':'USD' });
+          gtag('event', 'purchase', {
+            transaction_id: submissionId,
+            value: p.total,
+            currency: 'USD',
+            items: [{
+              item_id: 'subscription',
+              item_name: d.blendName || 'Your Daily Roast',
+              item_category: 'coffee_subscription',
+              price: p.pricePerCup,
+              quantity: p.billedServings
+          }]
+          });
+        } catch {}
       }
 
-      // Wait for submission to complete before navigating
-      submitPromise.then(() => {
-        console.log('Form submission completed successfully, navigating to thanks page');
-        
-        // Mark submission as completed
-        submissionCompleted = true;
+      try {
+        await postToSheets(buildPayload());
+        markSubmitted();
+        gtagNavigate('thanks.html', { value: p.total, currency: 'USD', transaction_id: submissionId });
+      } catch (err) {
         submissionInProgress = false;
-        
-        // Navigate to thanks page
-        gtagNavigate('thanks.html', {
-          value: p.total,
-          currency: 'USD',
-          transaction_id: Date.now().toString(),
-          items: [{
-            item_id: 'subscription',
-            item_name: d.blendName || 'Your Daily Roast',
-            item_category: 'coffee_subscription',
-            price: p.pricePerCup,
-            quantity: p.billedServings
-          }]
-        });
-      }).catch((error) => {
-        console.error('Form submission failed:', error);
-        
-        // Reset submission state on failure
-        submissionInProgress = false;
-        submissionCompleted = false;
-        formAlreadySubmitted = false;
-        
-        // Re-enable button
-        const btn = document.getElementById('buyBtn');
-        if (btn){ 
-          btn.removeAttribute('aria-busy'); 
-          btn.disabled = false; 
-        }
-        
-        // Show error message to user
+        if (btn){ btn.removeAttribute('aria-busy'); btn.disabled = false; }
         alert('Order submission failed. Please try again.');
-      });
+        console.error(err);
+      }
+    }
+    
+    function markSubmitted() {
+      submissionCompleted = true;
+      submissionInProgress = false;
+      safeSetLS('rp_submitted_ok', '1');
     }
 
     function bindHandlers(d, p){
@@ -1204,12 +1169,6 @@
       if (robustSubmissionSetup) return;
       robustSubmissionSetup = true;
       
-      // Generate submission ID if not already generated
-      if (!submissionId) {
-        submissionId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        console.log('Generated submission ID for robust submission:', submissionId);
-      }
-      
       const payload = buildPayload();
       
       // Handle page visibility change (user switching tabs, minimizing, etc.)
@@ -1217,7 +1176,7 @@
         if (document.visibilityState === 'hidden' && !submissionCompleted && !submissionInProgress && !formAlreadySubmitted) {
           // User is leaving the page, submit immediately only if not already submitted
           console.log('Visibility change - submitting form as user is leaving page');
-          postToSheets(payload, { useBeacon: true }).catch(err => console.error('Visibility change submission failed:', err));
+          postToSheets(payload).catch(err => console.error('Visibility change submission failed:', err));
         }
       });
 
@@ -1229,7 +1188,7 @@
         if (!submissionCompleted && !submissionInProgress && !formAlreadySubmitted) {
           // Final attempt to submit only if not already submitted
           console.log('Page hide - submitting form as user is navigating away');
-          postToSheets(payload, { useBeacon: true });
+          postToSheets(payload);
         }
       });
 
@@ -1238,7 +1197,7 @@
         if (!submissionCompleted && !submissionInProgress && !formAlreadySubmitted) {
           // Last chance submission only if not already submitted
           console.log('Unload - final form submission attempt');
-          postToSheets(payload, { useBeacon: true });
+          postToSheets(payload);
         }
       });
     }
@@ -1260,9 +1219,11 @@
         });
         
         // Clear any localStorage that might indicate unsaved changes
+        // BUT DO NOT clear rp_quiz or rp_submission_id - these are needed for submission
         try {
           localStorage.removeItem('quizAnswers');
           localStorage.removeItem('quizCurrentStep');
+          // Keep rp_quiz and rp_submission_id for reliable submission
         } catch (e) {}
       }
       
@@ -1386,8 +1347,8 @@
       const now = Date.now();
       
       // If there was a recent order attempt (within last 30 seconds) but no completion
-      // AND no form has been submitted yet AND no submission ID exists
-      if (lastOrderTs && (now - lastOrderTs) < 30000 && !formAlreadySubmitted && !submissionCompleted && !submissionId) {
+      // AND no form has been submitted yet
+      if (lastOrderTs && (now - lastOrderTs) < 30000 && !formAlreadySubmitted && !submissionCompleted) {
         const payload = buildPayload();
         console.log('Handling pending submission from previous session');
         // Submit in background to ensure it goes through
@@ -1413,7 +1374,7 @@
       
       // Test the submission
       const payload = buildPayload();
-      postToSheets(payload, { useBeacon: false }).then(() => {
+      postToSheets(payload).then(() => {
         console.log('Test submission successful');
         alert('Test submission successful!');
       }).catch(err => {

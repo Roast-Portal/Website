@@ -77,6 +77,15 @@
       if(name){ greet.textContent = `Thank you, ${name}`; }
       // Optionally add a little personalization to the message
       // Keep the body message neutral; only personalize the greeting badge.
+      
+      // Clean up submission data after successful completion
+      try {
+        localStorage.removeItem('rp_submission_id');
+        // Optional: clear rp_quiz if you don't want "Review order" to work
+        // localStorage.removeItem('rp_quiz');
+      } catch (e) {
+        console.log('Cleanup failed:', e);
+      }
     })();
   </script>
 </body>
