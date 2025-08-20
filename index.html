@@ -40,6 +40,13 @@
   <meta name="description" content="Your blend, your routine. Personalized coffee, pre‑measured and ground for your brewer."/>
   <style>
     :root {
+      /* Font system - Only 4 variations */
+      --font-primary: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-weight-regular: 400;
+      --font-weight-bold: 700;
+      
+      /* Colors */
       --bg-primary: #FBFBFD;
       --bg-secondary: #F5F5F7;
       --text-primary: #1D1D1F;
@@ -47,7 +54,10 @@
       --accent-blue: #0071E3;
       --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
     }
-    html.lock-scroll, body.lock-scroll { overflow: hidden; }
+    html, body { 
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
     
     * {
       box-sizing: border-box;
@@ -55,12 +65,9 @@
       padding: 0;
     }
     
-    html {
-      scroll-behavior: smooth;
-    }
-    
     body {
-      font-family: 'Kanit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: var(--font-primary);
+      font-weight: var(--font-weight-regular);
       background: linear-gradient(180deg, 
         #FFFFFF 0%, 
         #FBFBFD 20%, 
@@ -183,6 +190,7 @@
     iframe + iframe {
       margin-top: 0;
     }
+
     
     /* Footer Styles */
     .site-footer {
@@ -272,7 +280,7 @@
   </style>
 </head>
 <body>
-  <iframe id="hero-frame" src="hero.html" title="Hero Section" loading="eager"></iframe>
+  <iframe id="hero-frame" src="new-hero.html" title="Hero Section" loading="eager"></iframe>
 
   <div class="section-divider"></div>
 
@@ -285,7 +293,7 @@
     transform: translate(-50%, -50%);
     text-align: center;
     z-index: 1000;
-    font-family: 'Kanit', sans-serif;
+    font-family: var(--font-primary);
     color: var(--text-primary);
   ">
     <div style="
@@ -300,6 +308,7 @@
     <p style="margin: 0; font-size: 16px; font-weight: 500;">Loading your personalized experience...</p>
   </div>
   
+
   <iframe id="product-frame" src="product-section.html" title="Product Section"></iframe>
   
   <div class="section-divider"></div>
@@ -330,17 +339,18 @@
   </footer>
 
   <script>
-    // Lock outer page scroll until hero signals it finished initial animation
-    document.documentElement.classList.add('lock-scroll');
-    document.body.classList.add('lock-scroll');
+    // Enable smooth scrolling between iframes
+    function enableSmoothScrolling() {
+      document.documentElement.style.scrollBehavior = 'smooth';
+      document.body.style.scrollBehavior = 'smooth';
+    }
+
+
 
     function alignHero() {
       const hero = document.getElementById('hero-frame');
       if (!hero) return;
-      try { hero.scrollIntoView({ behavior: 'auto', block: 'start' }); } catch (_) {}
-      // Align again after potential layout/height adjustments
-      setTimeout(() => { try { hero.scrollIntoView({ behavior: 'auto', block: 'start' }); } catch (_) {} }, 50);
-      setTimeout(() => { try { hero.scrollIntoView({ behavior: 'auto', block: 'start' }); } catch (_) {} }, 250);
+      try { hero.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
     }
 
     // Track iframe loading to prevent flash of unstyled content
@@ -399,11 +409,8 @@
       // Check when iframe loads
       iframe.onload = () => {
         checkHeight();
-        // Release scroll as soon as hero reports layout
-        if (iframe.id === 'hero-frame') {
-          document.documentElement.classList.remove('lock-scroll');
-          document.body.classList.remove('lock-scroll');
-        }
+        // Enable smooth scrolling when iframes load
+        enableSmoothScrolling();
         // Check again after content might have rendered
         setTimeout(checkHeight, 100);
         setTimeout(checkHeight, 300);
@@ -435,17 +442,15 @@
     // Listen for hero readiness and align requests
     window.addEventListener('message', (event) => {
       if (event.data && event.data.type === 'hero-ready') {
-        document.documentElement.classList.remove('lock-scroll');
-        document.body.classList.remove('lock-scroll');
+        enableSmoothScrolling();
       }
       if (event.data && event.data.type === 'hero-align') {
         // Snap hero fully into view while animation is active
         alignHero();
       }
       if (event.data && event.data.type === 'hero-complete') {
-        // Ensure outer page can scroll freely once hero completes
-        document.documentElement.style.overflow = '';
-        document.body.style.overflow = '';
+        // Ensure smooth scrolling is enabled
+        enableSmoothScrolling();
       }
     });
 
@@ -509,8 +514,12 @@
         console.log('Fallback: showing content after timeout');
         document.body.classList.remove('loading');
         document.body.classList.add('loaded');
+        enableSmoothScrolling();
       }
     }, 3000);
+    
+    // Enable smooth scrolling immediately
+    enableSmoothScrolling();
     
     // Handle iframe navigation to ensure signup links work
     // Note: This is now handled in the resizeIframe function above

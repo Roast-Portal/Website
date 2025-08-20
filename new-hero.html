@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roast Portal - Personalized Coffee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Font system - Only 4 variations */
+      --font-primary: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-weight-regular: 400;
+      --font-weight-bold: 700;
+      
+      /* Colors */
+      --bg-primary: #FBFBFD;
+      --bg-secondary: #F5F5F7;
+      --text-primary: #1D1D1F;
+      --text-secondary: #6E6E73;
+      --text-tertiary: #86868B;
+      --accent-blue: #0071E3;
+      --accent-green: #34C759;
+      --accent-purple: #BF4FDB;
+      --accent-orange: #F56300;
+      --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-medium: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-heavy: 0 12px 40px rgba(0,0,0,0.12);
+      --pouch-width: 340px;
+      --pouch-height: 460px;
+    }
+
+    /* Complete pouch extreme styles */
+    .pouch-extreme{
+      --pouch-w: var(--pouch-width); 
+      --pouch-h: var(--pouch-height);
+      --pouch-min: min(var(--pouch-w), var(--pouch-h));
+      --bag-bg: #0a0a0a;
+      --bag-radius-frac: 0.0375;
+      --pouch-border-frac: 0.003;
+      --pouch-border-color: rgba(0, 0, 0, 0.1);
+      --label-bg: #FDFEFE;
+      --label-radius-frac: 0.055;
+      --label-top-frac: 0.88;
+      --label-pad-frac: 0.04;
+      --label-gradient: linear-gradient(135deg, rgba(245, 248, 252, 0.65) 0%, rgba(252, 254, 255, 0.45) 50%, rgba(248, 250, 252, 0.4) 100%);
+      --label-gradient-opacity: 0.85;
+      --ink1: hsla(210, 42%, 88%, 0.25);
+      --ink2: hsla(200, 40%, 90%, 0.22);
+      --ink3: hsla(180, 38%, 92%, 0.20);
+      --notch-amp: 1;
+      --text-size-frac-default: .05;
+    }
+    
+    .pouch-extreme.pouch-container{ 
+      position:relative; 
+      inline-size:var(--pouch-w); 
+      block-size:var(--pouch-h); 
+      container-type:inline-size;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      width: var(--pouch-width);
+      height: var(--pouch-height);
+    }
+    
+    .pouch-extreme .pouch{ 
+      position:absolute; 
+      inset:0; 
+      background:var(--bag-bg);
+      border-radius: calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min));
+      overflow:hidden; 
+      isolation:isolate; 
+      box-shadow: 0 12px 28px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10); 
+    }
+    
+    .pouch-extreme .pouch::after{ 
+      content:""; 
+      position:absolute; 
+      inset:0; 
+      z-index:3; 
+      pointer-events:none; 
+      border-radius: inherit; 
+      clip-path: inherit; 
+      box-shadow: inset 0 0 0 calc(var(--pouch-border-frac) * var(--pouch-min)) var(--pouch-border-color); 
+    }
+    
+    .pouch-extreme .pouch::before{ 
+      content:""; 
+      position:absolute; 
+      inset:0; 
+      opacity:.10; 
+      border-radius: inherit; 
+      clip-path: inherit; 
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E"); 
+    }
+    
+    .pouch-extreme .pouch{
+      --rT: calc(var(--bag-radius-frac) * 100cqw);
+      --rB: calc(var(--bag-radius-frac) * 80cqw);
+      --t1: var(--rT); --t2: calc(var(--rT)*.6); --t3: calc(var(--rT)*.4); --t4: calc(var(--rT)*.2);
+      --b1: var(--rB); --b2: calc(var(--rB)*.6); --b3: calc(var(--rB)*.4); --b4: calc(var(--rB)*.2);
+      --nx: var(--notch-amp); --nox: calc(4cqw * var(--nx));
+      clip-path: polygon(0 var(--t1), var(--t4) var(--t2), var(--t3) var(--t3), var(--t2) var(--t4), var(--t1) 0,
+                         calc(100% - var(--t1)) 0, calc(100% - var(--t2)) var(--t4), calc(100% - var(--t3)) var(--t3), calc(100% - var(--t4)) var(--t2), 100% var(--t1),
+                         100% calc(var(--t1) + 4cqw), calc(100% - var(--nox)) calc(var(--t1) + 6cqw), 100% calc(var(--t1) + 8cqw),
+                         100% calc(100% - var(--b1)), calc(100% - var(--b4)) calc(100% - var(--b2)), calc(100% - var(--b3)) calc(100% - var(--b3)), calc(100% - var(--b2)) calc(100% - var(--b4)), calc(100% - var(--b1)) 100%,
+                         var(--b1) 100%, var(--b2) calc(100% - var(--b4)), var(--b3) calc(100% - var(--b3)), var(--b4) calc(100% - var(--b2)), 0 calc(100% - var(--b1)),
+                         0 calc(var(--t1) + 8cqw), var(--nox) calc(var(--t1) + 6cqw), 0 calc(var(--t1) + 4cqw),
+                         0 var(--t1)); 
+    }
+    
+    .pouch-extreme .top-seal{ 
+      position:absolute; 
+      inset-inline:0; 
+      inset-block-start:0; 
+      height:10cqw; 
+      background-color:var(--bag-bg); 
+      border-bottom:1px solid rgba(220,225,230,0.32);
+      background-image: repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0 1px, rgba(0,0,0,0.08) 1px 2px, transparent 2px 3px),
+                        linear-gradient(0deg, rgba(0,0,0,0.28) 0, transparent 50%),
+                        radial-gradient(100% 50% at 50% 0%, rgba(255,255,255,0.06) 0, transparent 70%); 
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.38), inset 0 1px 0 rgba(220,225,230,0.22); 
+      clip-path: inherit; 
+    }
+    
+    .pouch-extreme .pouch-label{ 
+      --pad: calc(var(--label-pad-frac) * var(--pouch-min)); 
+      position:absolute; 
+      left:var(--pad); 
+      right:var(--pad); 
+      bottom:var(--pad); 
+      top: calc(100% - (var(--label-top-frac) * 100%));
+      background:var(--label-bg); 
+      border-radius: calc(var(--label-radius-frac) * var(--pouch-min)); 
+      padding:32px 28px 24px 28px; 
+      overflow:hidden; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: space-between;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.08); 
+      border: 1px solid rgba(0,0,0,0.04); 
+    }
+    
+    .pouch-extreme .pouch-label::before{ 
+      content:""; 
+      position:absolute; 
+      inset:0; 
+      border-radius:inherit; 
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%),
+        var(--label-gradient-custom, var(--label-gradient)),
+        linear-gradient(135deg, var(--ink1) 0%, var(--ink2) 50%, var(--ink3) 100%);
+      opacity: calc(var(--label-gradient-opacity) * 0.7);
+    }
+    
+    /* Custom gradient labels with visible colors */
+    .morning-blend .pouch-label {
+      --label-gradient-custom: linear-gradient(135deg, rgba(255, 107, 53, 0.5) 0%, rgba(255, 154, 0, 0.35) 50%, rgba(255, 206, 84, 0.3) 100%);
+    }
+    
+    .dark-roast .pouch-label {
+      --label-gradient-custom: linear-gradient(135deg, rgba(139, 69, 19, 0.5) 0%, rgba(101, 67, 33, 0.4) 50%, rgba(184, 134, 11, 0.3) 100%);
+    }
+    
+    .light-roast .pouch-label {
+      --label-gradient-custom: linear-gradient(135deg, rgba(147, 112, 219, 0.5) 0%, rgba(186, 85, 211, 0.35) 50%, rgba(218, 112, 214, 0.3) 100%);
+    }
+    
+    .espresso-blend .pouch-label {
+      --label-gradient-custom: linear-gradient(135deg, rgba(220, 20, 60, 0.5) 0%, rgba(255, 69, 0, 0.35) 50%, rgba(255, 140, 0, 0.3) 100%);
+    }
+    
+    .decaf-blend .pouch-label {
+      --label-gradient-custom: linear-gradient(135deg, rgba(70, 130, 180, 0.5) 0%, rgba(100, 149, 237, 0.35) 50%, rgba(135, 206, 235, 0.3) 100%);
+    }
+    
+    .pouch-extreme .pouch-label::after{ 
+      content:""; 
+      position:absolute; 
+      inset:0; 
+      border-radius:inherit; 
+      opacity: 0.03; 
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E"); 
+    }
+    
+    /* Add elegant coffee bean pattern to fill label */
+    .pouch-extreme .label-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.06;
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: inherit;
+    }
+    
+    .pouch-extreme .label-pattern::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background-image: 
+        radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,0.015) 40.5%, rgba(0,0,0,0.015) 45%, transparent 45.5%);
+      background-size: 60px 60px;
+      background-position: 0 0;
+    }
+    
+    /* Add elegant gradient overlay to labels */
+    .pouch-extreme .pouch-label::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at center, transparent 30%, rgba(255,255,255,0.05) 70%),
+        linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 50%, rgba(0,0,0,0.03) 100%);
+      border-radius: inherit;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+    }
+    
+    .pouch-extreme .shape-layer, .pouch-extreme .text-layer{ 
+      position:absolute; 
+      inset:0;
+    }
+    
+    .pouch-extreme .shape-layer{ 
+      width:100%; 
+      height:100%; 
+      opacity: 1; 
+      z-index: 1; 
+      display: block; 
+    }
+    
+    .pouch-extreme .shape-layer polygon,
+    .pouch-extreme .shape-layer line,
+    .pouch-extreme .shape-layer polyline,
+    .pouch-extreme .shape-layer path {
+      fill: none;
+      stroke: rgba(255,255,255,0.12);
+      stroke-width: 0.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    
+    .pouch-extreme .text-layer{ 
+      z-index: 2; 
+    }
+    
+    .pouch-extreme .text-block{ 
+      position:absolute; 
+      font-size: calc(var(--text-size-frac, .05) * var(--pouch-min)); 
+    }
+    
+    /* Elegant text styles for labels */
+    .pouch-extreme .text-block:first-child {
+      /* Name at top */
+      opacity: 0.7;
+    }
+    
+    .pouch-extreme .text-block:nth-child(2) {
+      /* Main title */
+      text-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .pouch-extreme .text-block:last-child {
+      /* Flavor notes */
+      opacity: 0.8;
+    }
+    
+    .pouch-extreme .label-badge { 
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-primary);
+      font-weight: var(--font-weight-regular);
+      background: #0B0C0B;
+      color: white;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Hero container */
+    .hero-wrapper {
+      background: #0B0C0B;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      padding: 3rem 0;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .hero-container {
+      max-width: 1232px;
+      width: 100%;
+      padding: 3rem 2rem;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Content section */
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 600px;
+      padding-right: 4rem;
+    }
+
+    .hero-subtitle {
+      font-size: 0.875rem;
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-blue);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.2s forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: var(--font-weight-bold);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.4s forwards;
+    }
+
+        .hero-description {
+      font-size: 1.5rem;
+      line-height: 2rem;
+      font-weight: var(--font-weight-regular);
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.6s forwards;
+    }
+    
+    .subscription-details {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.7s forwards;
+    }
+    
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    
+    .detail-number {
+      font-size: 2.5rem;
+      font-weight: var(--font-weight-bold);
+      color: white;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    
+    .detail-text {
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1.3;
+    }
+
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.9s forwards;
+    }
+
+    .button {
+      padding: 1rem 3rem;
+      border-radius: 100px;
+      font-size: 1rem;
+      font-weight: var(--font-weight-regular);
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+      min-width: 186px;
+    }
+
+    .button.primary {
+      background: white;
+      color: #0B0C0B;
+    }
+
+    .button.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .button.secondary:hover {
+      background: white;
+      color: #0B0C0B;
+    }
+
+    .button-large {
+      font-size: 1.25rem;
+      padding: 1.25rem 3rem;
+      font-weight: var(--font-weight-bold);
+      letter-spacing: 0.05em;
+    }
+
+    /* Marquee section */
+    .marquee-section {
+      position: absolute;
+      right: -300px;
+      top: 0;
+      bottom: 0;
+      width: 60%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .gradient-overlay {
+      position: absolute;
+      z-index: 5;
+      width: 303px;
+      height: 100%;
+      left: 0;
+      background: linear-gradient(to right, 
+        rgb(11, 12, 11), 
+        rgba(11, 12, 11, 0.5), 
+        rgba(11, 12, 11, 0.333), 
+        rgba(11, 12, 11, 0)
+      );
+    }
+
+    .marquee-container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .marquee-track {
+      display: flex;
+      animation: scroll 40s linear infinite;
+      height: 100%;
+      align-items: center;
+      will-change: transform;
+    }
+
+    .marquee-content {
+      display: flex;
+      gap: 40px;
+      flex-shrink: 0;
+      min-width: max-content;
+    }
+
+    .pouch-item {
+      width: 340px;
+      height: 460px;
+      flex-shrink: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Ensure pouch container has relative positioning */
+    .pouch-extreme {
+      position: relative;
+    }
+
+    /* Add subtle outline to pouches */
+    .pouch-item .pouch-extreme .pouch {
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 0 40px rgba(255, 255, 255, 0.05);
+    }
+
+    /* Seamless infinite scroll */
+    @keyframes scroll {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        /* 5 pouches × 340px + 4 gaps × 40px = 1700px + 160px = 1860px */
+        transform: translateX(-1860px);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .marquee-section {
+        right: -400px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .hero-container {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-content {
+        padding-right: 0;
+        margin-bottom: 3rem;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .marquee-section {
+        position: relative;
+        right: auto;
+        width: 100%;
+        height: 400px;
+        margin: 0 -2rem;
+      }
+
+      .gradient-overlay {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .hero-description {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+      }
+      
+      .subscription-details {
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .detail-number {
+        font-size: 2rem;
+      }
+      
+      .detail-text {
+        font-size: 0.75rem;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .pouch-item {
+        width: 280px;
+        height: 380px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero-wrapper">
+    <div class="hero-container">
+      <!-- Left side content -->
+      <div class="hero-content">
+        <span class="hero-subtitle">YOUR PERSONALIZED COFFEE SUBSCRIPTION</span>
+        <h1 class="hero-title">COFFEE MADE<br>JUST FOR YOU</h1>
+        <p class="hero-description">
+          Subscribe and get coffee tailored to your taste. Pick your price, tell us your flavor preferences and brewing equipment. We'll deliver 15 single-serve bags of freshly ground coffee, each one precisely dosed with minerals for optimal extraction.
+        </p>
+        <div class="subscription-details">
+          <div class="detail-item">
+            <span class="detail-number">15</span>
+            <span class="detail-text">Bags Every<br>2 Weeks</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-number">You</span>
+            <span class="detail-text">Pick The<br>Price</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-number">100%</span>
+            <span class="detail-text">Personalized<br>For You</span>
+          </div>
+        </div>
+        <div class="hero-buttons">
+          <a href="quiz.html" class="button primary button-large">Subscribe Now</a>
+        </div>
+
+      </div>
+      
+      <!-- Right side marquee -->
+      <div class="marquee-section">
+        <div class="gradient-overlay"></div>
+        <div class="marquee-container">
+          <div class="marquee-track">
+            <!-- First set of pouches -->
+            <div class="marquee-content" aria-hidden="true">
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container morning-blend">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art morning design -->
+                        <polygon points="120,180 200,120 280,160 260,240 140,260 120,180"/>
+                        <polygon points="280,160 360,140 380,220 340,280 260,240 280,160"/>
+                        <line x1="260" y1="240" x2="280" y2="160"/>
+                        <polygon points="680,100 780,80 820,180 760,260 660,200 680,100"/>
+                        <polygon points="760,260 820,180 880,240 840,340 740,320 760,260"/>
+                        <line x1="760" y1="260" x2="820" y2="180"/>
+                        <polygon points="140,400 240,380 280,480 200,520 100,460 140,400"/>
+                        <polygon points="280,480 380,460 420,540 340,600 240,560 280,480"/>
+                        <line x1="240" y1="380" x2="280" y2="480"/>
+                        <line x1="280" y1="480" x2="380" y2="460"/>
+                        <polygon points="520,320 620,300 660,400 580,460 480,420 520,320"/>
+                        <polygon points="660,400 760,420 780,520 700,580 600,540 660,400"/>
+                        <line x1="580" y1="460" x2="660" y2="400"/>
+                        <polygon points="180,660 280,640 320,740 240,800 140,760 180,660"/>
+                        <polygon points="440,680 540,660 580,760 500,820 400,780 440,680"/>
+                        <polygon points="720,680 820,700 840,800 760,860 660,820 720,680"/>
+                        <line x1="140" y1="260" x2="140" y2="400"/>
+                        <line x1="340" y1="280" x2="340" y2="600"/>
+                        <line x1="660" y1="200" x2="660" y2="400"/>
+                        <line x1="180" y1="660" x2="440" y2="680"/>
+                        <line x1="540" y1="660" x2="720" y2="680"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">Sarah's Perfect Cup</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">CITRUS<br>SYMPHONY</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Bright citrus awakening<br>Dark chocolate finish</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">CRAFTED FOR YOUR PALATE</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container dark-roast">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art dark roast design -->
+                        <line x1="100" y1="200" x2="900" y2="200"/>
+                        <line x1="100" y1="400" x2="900" y2="400"/>
+                        <line x1="100" y1="600" x2="900" y2="600"/>
+                        <line x1="100" y1="800" x2="900" y2="800"/>
+                        <line x1="200" y1="100" x2="200" y2="900"/>
+                        <line x1="400" y1="100" x2="400" y2="900"/>
+                        <line x1="600" y1="100" x2="600" y2="900"/>
+                        <line x1="800" y1="100" x2="800" y2="900"/>
+                        <polygon points="300,300 500,300 500,500 300,500 300,300"/>
+                        <polygon points="500,500 700,500 700,700 500,700 500,500"/>
+                        <line x1="300" y1="300" x2="500" y2="500"/>
+                        <line x1="500" y1="300" x2="700" y2="500"/>
+                        <line x1="300" y1="500" x2="500" y2="700"/>
+                        <line x1="500" y1="500" x2="700" y2="700"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">James's Signature Roast</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">VELVET<br>THUNDER</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Rich cocoa intensity<br>Smooth oak undertones</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">YOUR DAILY MASTERPIECE</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container light-roast">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art light roast design -->
+                        <circle cx="300" cy="300" r="200" fill="none"/>
+                        <circle cx="700" cy="300" r="200" fill="none"/>
+                        <circle cx="500" cy="600" r="200" fill="none"/>
+                        <line x1="300" y1="100" x2="700" y2="100"/>
+                        <line x1="500" y1="300" x2="500" y2="800"/>
+                        <polygon points="500,200 600,400 400,400 500,200"/>
+                        <polygon points="500,600 600,800 400,800 500,600"/>
+                        <line x1="200" y1="500" x2="800" y2="500"/>
+                        <polyline points="100,700 300,600 500,700 700,600 900,700"/>
+                        <polyline points="100,300 300,400 500,300 700,400 900,300"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">Maya's Artisan Blend</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">WILD<br>ORCHID</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Wild berry sweetness<br>Delicate floral notes</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">EXCLUSIVELY YOURS</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container espresso-blend">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art espresso design -->
+                        <polygon points="500,100 700,400 500,700 300,400 500,100"/>
+                        <polygon points="500,300 600,450 500,600 400,450 500,300"/>
+                        <line x1="500" y1="100" x2="500" y2="700"/>
+                        <line x1="300" y1="400" x2="700" y2="400"/>
+                        <circle cx="500" cy="400" r="300" fill="none"/>
+                        <circle cx="500" cy="400" r="150" fill="none"/>
+                        <polyline points="200,200 500,100 800,200"/>
+                        <polyline points="200,600 500,700 800,600"/>
+                        <line x1="100" y1="400" x2="200" y2="400"/>
+                        <line x1="800" y1="400" x2="900" y2="400"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">Alex's Reserve</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">LIQUID<br>GOLD</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Bold spice complexity<br>Golden caramel sweetness</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">PRECISELY TAILORED</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container decaf-blend">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art decaf design -->
+                        <path d="M 200 500 Q 500 200 800 500 Q 500 800 200 500" fill="none"/>
+                        <path d="M 300 500 Q 500 300 700 500 Q 500 700 300 500" fill="none"/>
+                        <circle cx="200" cy="200" r="100" fill="none"/>
+                        <circle cx="800" cy="200" r="100" fill="none"/>
+                        <circle cx="200" cy="800" r="100" fill="none"/>
+                        <circle cx="800" cy="800" r="100" fill="none"/>
+                        <line x1="200" y1="200" x2="800" y2="800"/>
+                        <line x1="800" y1="200" x2="200" y2="800"/>
+                        <polygon points="500,350 550,450 500,550 450,450 500,350"/>
+                        <polyline points="100,500 200,400 300,500 400,400 500,500 600,400 700,500 800,400 900,500"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">Elena's Collection</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">MIDNIGHT<br>VELVET</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Creamy vanilla waves<br>Toasted hazelnut luxury</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">UNIQUELY CRAFTED</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+            
+            <!-- Duplicate set for seamless loop -->
+            <div class="marquee-content">
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container morning-blend">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art morning design -->
+                        <polygon points="120,180 200,120 280,160 260,240 140,260 120,180"/>
+                        <polygon points="280,160 360,140 380,220 340,280 260,240 280,160"/>
+                        <line x1="260" y1="240" x2="280" y2="160"/>
+                        <polygon points="680,100 780,80 820,180 760,260 660,200 680,100"/>
+                        <polygon points="760,260 820,180 880,240 840,340 740,320 760,260"/>
+                        <line x1="760" y1="260" x2="820" y2="180"/>
+                        <polygon points="140,400 240,380 280,480 200,520 100,460 140,400"/>
+                        <polygon points="280,480 380,460 420,540 340,600 240,560 280,480"/>
+                        <line x1="240" y1="380" x2="280" y2="480"/>
+                        <line x1="280" y1="480" x2="380" y2="460"/>
+                        <polygon points="520,320 620,300 660,400 580,460 480,420 520,320"/>
+                        <polygon points="660,400 760,420 780,520 700,580 600,540 660,400"/>
+                        <line x1="580" y1="460" x2="660" y2="400"/>
+                        <polygon points="180,660 280,640 320,740 240,800 140,760 180,660"/>
+                        <polygon points="440,680 540,660 580,760 500,820 400,780 440,680"/>
+                        <polygon points="720,680 820,700 840,800 760,860 660,820 720,680"/>
+                        <line x1="140" y1="260" x2="140" y2="400"/>
+                        <line x1="340" y1="280" x2="340" y2="600"/>
+                        <line x1="660" y1="200" x2="660" y2="400"/>
+                        <line x1="180" y1="660" x2="440" y2="680"/>
+                        <line x1="540" y1="660" x2="720" y2="680"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">Sarah's Perfect Cup</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">CITRUS<br>SYMPHONY</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Bright citrus awakening<br>Dark chocolate finish</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">CRAFTED FOR YOUR PALATE</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container dark-roast">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art dark roast design -->
+                        <line x1="100" y1="200" x2="900" y2="200"/>
+                        <line x1="100" y1="400" x2="900" y2="400"/>
+                        <line x1="100" y1="600" x2="900" y2="600"/>
+                        <line x1="100" y1="800" x2="900" y2="800"/>
+                        <line x1="200" y1="100" x2="200" y2="900"/>
+                        <line x1="400" y1="100" x2="400" y2="900"/>
+                        <line x1="600" y1="100" x2="600" y2="900"/>
+                        <line x1="800" y1="100" x2="800" y2="900"/>
+                        <polygon points="300,300 500,300 500,500 300,500 300,300"/>
+                        <polygon points="500,500 700,500 700,700 500,700 500,500"/>
+                        <line x1="300" y1="300" x2="500" y2="500"/>
+                        <line x1="500" y1="300" x2="700" y2="500"/>
+                        <line x1="300" y1="500" x2="500" y2="700"/>
+                        <line x1="500" y1="500" x2="700" y2="700"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">James's Signature Roast</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">VELVET<br>THUNDER</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Rich cocoa intensity<br>Smooth oak undertones</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">YOUR DAILY MASTERPIECE</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container light-roast">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art light roast design -->
+                        <circle cx="300" cy="300" r="200" fill="none"/>
+                        <circle cx="700" cy="300" r="200" fill="none"/>
+                        <circle cx="500" cy="600" r="200" fill="none"/>
+                        <line x1="300" y1="100" x2="700" y2="100"/>
+                        <line x1="500" y1="300" x2="500" y2="800"/>
+                        <polygon points="500,200 600,400 400,400 500,200"/>
+                        <polygon points="500,600 600,800 400,800 500,600"/>
+                        <line x1="200" y1="500" x2="800" y2="500"/>
+                        <polyline points="100,700 300,600 500,700 700,600 900,700"/>
+                        <polyline points="100,300 300,400 500,300 700,400 900,300"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">Maya's Artisan Blend</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">WILD<br>ORCHID</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Wild berry sweetness<br>Delicate floral notes</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">EXCLUSIVELY YOURS</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container espresso-blend">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art espresso design -->
+                        <polygon points="500,100 700,400 500,700 300,400 500,100"/>
+                        <polygon points="500,300 600,450 500,600 400,450 500,300"/>
+                        <line x1="500" y1="100" x2="500" y2="700"/>
+                        <line x1="300" y1="400" x2="700" y2="400"/>
+                        <circle cx="500" cy="400" r="300" fill="none"/>
+                        <circle cx="500" cy="400" r="150" fill="none"/>
+                        <polyline points="200,200 500,100 800,200"/>
+                        <polyline points="200,600 500,700 800,600"/>
+                        <line x1="100" y1="400" x2="200" y2="400"/>
+                        <line x1="800" y1="400" x2="900" y2="400"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">Alex's Reserve</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">LIQUID<br>GOLD</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Bold spice complexity<br>Golden caramel sweetness</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">PRECISELY TAILORED</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container decaf-blend">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art decaf design -->
+                        <path d="M 200 500 Q 500 200 800 500 Q 500 800 200 500" fill="none"/>
+                        <path d="M 300 500 Q 500 300 700 500 Q 500 700 300 500" fill="none"/>
+                        <circle cx="200" cy="200" r="100" fill="none"/>
+                        <circle cx="800" cy="200" r="100" fill="none"/>
+                        <circle cx="200" cy="800" r="100" fill="none"/>
+                        <circle cx="800" cy="800" r="100" fill="none"/>
+                        <line x1="200" y1="200" x2="800" y2="800"/>
+                        <line x1="800" y1="200" x2="200" y2="800"/>
+                        <polygon points="500,350 550,450 500,550 450,450 500,350"/>
+                        <polyline points="100,500 200,400 300,500 400,400 500,500 600,400 700,500 800,400 900,500"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">Elena's Collection</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">MIDNIGHT<br>VELVET</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Creamy vanilla waves<br>Toasted hazelnut luxury</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">UNIQUELY CRAFTED</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+            
+            <!-- Third duplicate set for extra smooth loop -->
+            <div class="marquee-content" aria-hidden="true">
+              <div class="pouch-item">
+                <div class="pouch-extreme pouch-container morning-blend">
+                  <div class="pouch">
+                    <div class="top-seal"></div>
+                    <div class="pouch-label">
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <!-- Subtle line art morning design -->
+                        <polygon points="120,180 200,120 280,160 260,240 140,260 120,180"/>
+                        <polygon points="280,160 360,140 380,220 340,280 260,240 280,160"/>
+                        <line x1="260" y1="240" x2="280" y2="160"/>
+                        <polygon points="680,100 780,80 820,180 760,260 660,200 680,100"/>
+                        <polygon points="760,260 820,180 880,240 840,340 740,320 760,260"/>
+                        <line x1="760" y1="260" x2="820" y2="180"/>
+                        <polygon points="140,400 240,380 280,480 200,520 100,460 140,400"/>
+                        <polygon points="280,480 380,460 420,540 340,600 240,560 280,480"/>
+                        <line x1="240" y1="380" x2="280" y2="480"/>
+                        <line x1="280" y1="480" x2="380" y2="460"/>
+                        <polygon points="520,320 620,300 660,400 580,460 480,420 520,320"/>
+                        <polygon points="660,400 760,420 780,520 700,580 600,540 660,400"/>
+                        <line x1="580" y1="460" x2="660" y2="400"/>
+                        <polygon points="180,660 280,640 320,740 240,800 140,760 180,660"/>
+                        <polygon points="440,680 540,660 580,760 500,820 400,780 440,680"/>
+                        <polygon points="720,680 820,700 840,800 760,860 660,820 720,680"/>
+                        <line x1="140" y1="260" x2="140" y2="400"/>
+                        <line x1="340" y1="280" x2="340" y2="600"/>
+                        <line x1="660" y1="200" x2="660" y2="400"/>
+                        <line x1="180" y1="660" x2="440" y2="680"/>
+                        <line x1="540" y1="660" x2="720" y2="680"/>
+                      </svg>
+                    </div>
+                    <div class="label-pattern"></div>
+                    <div class="text-layer">
+                      <div class="text-block" style="--text-size-frac: 0.024; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.15em; text-transform: uppercase;">Sarah's Perfect Cup</div>
+                      <div class="text-block" style="--text-size-frac: 0.095; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #1C1C20; font-weight: var(--font-weight-bold); line-height: 1.05; width: calc(100% - 36px); letter-spacing: -0.02em;">CITRUS<br>SYMPHONY</div>
+                      <div class="text-block" style="--text-size-frac: 0.034; bottom: 25%; left: 50%; transform: translateX(-50%); text-align: center; color: #48484A; font-weight: var(--font-weight-regular); width: calc(100% - 44px); line-height: 1.4;">Bright citrus awakening<br>Dark chocolate finish</div>
+                      <div class="text-block" style="--text-size-frac: 0.022; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; color: #86868B; font-weight: var(--font-weight-regular); letter-spacing: 0.08em;">CRAFTED FOR YOUR PALATE</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

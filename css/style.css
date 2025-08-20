@@ -5,26 +5,26 @@
   box-sizing: border-box;
 }
 
-html, body {
-  margin: 0;
-  height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: #ffffff;
-  color: #1a1a1a;
-  line-height: 1.6;
-  overscroll-behavior: none;
-}
-
-h1, h2, h3 {
-  margin: 0;
-  font-weight: 600;
-}
-
-p {
-  margin: 0 0 1rem 0;
-}
-
 :root {
+  /* ===== FONT SYSTEM - Only 4 Variations ===== */
+  /* Primary font stack */
+  --font-primary: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  
+  /* Monospace font for technical content */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  
+  /* Font weights - only 2 variations */
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  
+  /* The 4 font variations:
+     1. Body text: var(--font-primary) + var(--font-weight-regular)
+     2. Headings/emphasis: var(--font-primary) + var(--font-weight-bold)
+     3. Technical/code: var(--font-mono) + var(--font-weight-regular)
+     4. Technical emphasis: var(--font-mono) + var(--font-weight-bold)
+  */
+  
+  /* Box dimensions */
   --base-unit: calc(100svh / 2.5 * 0.7); /* Box = 70svh so 10svh top + 20svh bottom fit within viewport */
   --box-depth: var(--base-unit);
   --box-width: calc(var(--base-unit) * 1.25);
@@ -35,6 +35,26 @@ p {
   /* --- New, Simplified Positioning Variables --- */
   --card-margin-bottom: calc(var(--box-height) * 0.765); /* Desired space from the box's bottom edge (5%) */
   --card-margin-front: calc(var(--box-depth) * 0.001); /* Desired space from the box's front edge (5%) */
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular);
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.6;
+  overscroll-behavior: none;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+p {
+  margin: 0 0 1rem 0;
 }
 
 .scene {

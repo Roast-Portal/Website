@@ -41,6 +41,7 @@
     }
   </script>
 
+  <link rel="stylesheet" href="css/font-system.css">
   <style>
     :root{
       --bg-primary:#FBFBFD;
@@ -83,7 +84,8 @@
     html{ scroll-behavior:smooth; }
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
+      font-family: var(--font-primary);
+      font-weight: var(--font-weight-regular);
       background:var(--bg-primary);
       color:var(--text-primary);
       -webkit-font-smoothing:antialiased;
@@ -108,7 +110,7 @@
       border-bottom:1px solid var(--border-light);
       padding-top: calc(var(--safe-top));
     }
-    .brand{ font-weight:700; font-size:18px; letter-spacing:.2px; }
+    .brand{ font-weight: var(--font-weight-bold); font-size:18px; letter-spacing:.2px; }
     .exit-link{
       display:inline-flex; align-items:center; gap:8px;
       padding:10px 14px; border-radius:999px; text-decoration:none;
@@ -148,7 +150,7 @@
       to{ opacity:1; transform: translateY(0); }
     }
     .question-title{
-      font-size: clamp(22px, 4.5vw, 32px); line-height:1.2; margin:0 0 10px; font-weight:700;
+      font-size: clamp(22px, 4.5vw, 32px); line-height:1.2; margin:0 0 10px; font-weight: var(--font-weight-bold);
     }
     .question-subtitle{
       margin:0 0 22px; color:var(--text-secondary); font-size:15px;
@@ -167,7 +169,7 @@
       display:block; width:100%;
       border:1px solid var(--border-light); background:#fff; color:#000;
       background:var(--bg-secondary); color:var(--text-primary);
-      border-radius: var(--radius); padding:16px; font-size:16px; font-weight:600;
+      border-radius: var(--radius); padding:16px; font-size:16px; font-weight: var(--font-weight-bold);
       box-shadow: var(--shadow); cursor:pointer; text-align:center;
       min-height: 52px;
       transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
@@ -185,7 +187,7 @@
 
     /* Sliders */
     .flavor-grid{ display:grid; grid-template-columns:1fr; gap:22px; }
-    .flavor-slider-group label{ display:block; font-weight:700; margin:0 0 10px; }
+    .flavor-slider-group label{ display:block; font-weight: var(--font-weight-bold); margin:0 0 10px; }
     .slider-wrap{ position:relative; padding-top: 32px; }
     
     /* Mobile optimization for flavor sliders */
@@ -270,7 +272,7 @@
       display:flex; gap:12px; justify-content:space-between; align-items:center;
     }
     .nav-btn{
-      flex:1; padding:14px 18px; border-radius:999px; font-weight:700; font-size:16px; cursor:pointer;
+      flex:1; padding:14px 18px; border-radius:999px; font-weight: var(--font-weight-bold); font-size:16px; cursor:pointer;
       border:1px solid var(--border-light); background:var(--bg-secondary); color:var(--text-primary); min-height:52px;
       transition: transform .15s ease, box-shadow .15s ease;
     }

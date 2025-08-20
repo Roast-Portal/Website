@@ -55,6 +55,13 @@
       .pouch-outline .inner{ stroke: rgba(255,255,255,0.72); }
     }
     :root {
+      /* Font system - Only 4 variations */
+      --font-primary: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-weight-regular: 400;
+      --font-weight-bold: 700;
+      
+      /* Colors */
       --bg-primary: #FBFBFD;
       --bg-secondary: #F5F5F7;
       --text-primary: #1D1D1F;
@@ -70,7 +77,7 @@
       --shadow-lg: 0 0 1px 0 rgba(0, 0, 0, 0.07), 0 12px 24px -8px rgba(0, 0, 0, 0.12);
       --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
       --radius-lg: 20px;
-      --pouch-width: 300px;
+      --pouch-width: 260px;
       --pouch-height: calc(var(--pouch-width) * 1.335);
       --pouch-thickness: 38px; /* ~1cm at 96dpi */
     }
@@ -164,7 +171,8 @@
      * { box-sizing: border-box; margin: 0; padding: 0; }
      
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: var(--font-primary);
+      font-weight: var(--font-weight-regular);
       background: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.6;
@@ -175,7 +183,7 @@
     .container {
       max-width: 1080px;
       margin: 0 auto;
-      padding: 80px 40px 40px;
+      padding: 40px 40px 20px;
     }
     
     @media (max-width: 920px) {
@@ -292,19 +300,19 @@
     
     /* Pouches Section */
     .pouches-section {
-      margin-bottom: 40px;
+      margin-bottom: 20px;
     }
 
     /* Mini CTA under pouches */
     .pouch-cta {
       text-align: center;
-      margin: 32px 0 0;
+      margin: 20px 0 0;
     }
     .pouch-cta .cta-note {
       margin-bottom: 16px;
       font-size: 14px;
       color: var(--text-tertiary);
-      font-weight: 400;
+      font-weight: var(--font-weight-regular);
       line-height: 1.4;
       max-width: 600px;
       margin-left: auto;
@@ -315,7 +323,7 @@
     .pouches-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
+      gap: 20px;
       align-items: start;
     }
     
@@ -330,15 +338,15 @@
     
     .pouch-info {
       text-align: center;
-      margin-top: 40px;
+      margin-top: 20px;
       max-width: 320px;
     }
     
     .pouch-info p {
-      font-size: 16px;
+      font-size: 14px;
       color: var(--text-secondary);
-      line-height: 1.5;
-      font-weight: 400;
+      line-height: 1.4;
+      font-weight: var(--font-weight-regular);
       letter-spacing: -0.01em;
     }
     
@@ -349,7 +357,7 @@
       gap: 6px;
       color: var(--accent-blue);
       font-size: 14px;
-      font-weight: 600;
+      font-weight: var(--font-weight-bold);
       text-decoration: none;
       margin-top: 12px;
       transition: gap 0.2s ease;
@@ -373,7 +381,7 @@
       margin-top: 12px;
       font-size: 14px;
       color: var(--accent-blue);
-      font-weight: 500;
+      font-weight: var(--font-weight-regular);
       opacity: 0.8;
       transition: opacity 0.2s ease;
     }
@@ -406,7 +414,7 @@
     /* Pouch Stack */
     .pouch-stack {
       position: relative;
-      height: calc(var(--pouch-height) + 80px);
+      height: calc(var(--pouch-height) + 40px);
       perspective: 1400px;
       width: 100%;
       max-width: var(--pouch-width);
@@ -734,7 +742,7 @@
       background: rgba(0,0,0,0.06);
       color: #1d1d1f;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: var(--font-weight-bold);
       letter-spacing: 0.03em;
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
     }
@@ -742,7 +750,7 @@
     /* Old pouch text styles - Commented out
     .pouch-label h4 {
       font-size: 13px;
-      font-weight: 600;
+      font-weight: var(--font-weight-bold);
       letter-spacing: 0.08em;
       text-transform: uppercase;
       text-shadow: none;
@@ -755,7 +763,7 @@
       position: relative;
       z-index: 1;
       font-size: 24px;
-      font-weight: 700;
+      font-weight: var(--font-weight-bold);
       color: #0a0a0a;
       text-align: center;
       margin: auto 0;
@@ -803,7 +811,7 @@
       position: absolute;
       left: 0;
       color: var(--accent-green);
-      font-weight: 700;
+      font-weight: var(--font-weight-bold);
     }
     
     /* Interactive Elements */
@@ -841,7 +849,7 @@
     
     .cta-section h3 {
       font-size: 48px;
-      font-weight: 600;
+      font-weight: var(--font-weight-bold);
       margin-bottom: 24px;
     }
     
@@ -861,7 +869,7 @@
       padding: 16px 32px;
       border-radius: 980px;
       font-size: 17px;
-      font-weight: 500;
+      font-weight: var(--font-weight-regular);
       text-decoration: none;
       transition: all 0.2s ease;
     }
@@ -898,7 +906,7 @@
     
     .comparison-item h4 {
       font-size: 24px;
-      font-weight: 600;
+      font-weight: var(--font-weight-bold);
       margin-bottom: 24px;
     }
     
@@ -920,8 +928,8 @@
     /* Header Section Styles */
     .header-section {
       text-align: center;
-      margin-bottom: 60px;
-      padding: 40px 0;
+      margin-bottom: 30px;
+      padding: 20px 0 10px 0;
       position: relative;
       overflow: hidden;
       display: block !important;
@@ -930,36 +938,27 @@
     }
     
     .header-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(0, 113, 227, 0.08) 0%, transparent 70%);
-      border-radius: 50%;
-      z-index: -1;
+      display: none; /* Hidden to save space */
     }
     
     .main-title {
-      font-size: clamp(36px, 6vw, 56px);
-      font-weight: 700;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: var(--font-weight-bold);
       color: var(--text-primary);
-      margin-bottom: 24px;
+      margin-bottom: 12px;
       line-height: 1.1;
       letter-spacing: -0.02em;
     }
     
     .main-subtitle {
-      font-size: clamp(18px, 3vw, 22px);
+      font-size: clamp(16px, 2.5vw, 20px);
       color: var(--text-secondary);
-      margin-bottom: 40px;
+      margin-bottom: 20px;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
-      line-height: 1.5;
-      font-weight: 400;
+      line-height: 1.4;
+      font-weight: var(--font-weight-regular);
     }
     
     .header-features {
@@ -967,7 +966,7 @@
       justify-content: center;
       gap: 40px;
       flex-wrap: wrap;
-      margin-top: 32px;
+      margin-top: 16px;
     }
     
     .feature-item {
@@ -994,7 +993,7 @@
     
     .feature-text {
       font-size: 16px;
-      font-weight: 600;
+      font-weight: var(--font-weight-bold);
       color: var(--text-primary);
       white-space: nowrap;
     }
@@ -1013,7 +1012,7 @@
       /* Mobile header adjustments */
       .header-section {
         margin-bottom: 40px;
-        padding: 24px 0;
+        padding: 48px 0 24px 0;
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
@@ -1186,7 +1185,7 @@
     .analysis-item .label {
       font-size: 12px;
       color: var(--text-secondary);
-      font-weight: 500;
+      font-weight: var(--font-weight-regular);
       letter-spacing: 0.01em;
       text-transform: uppercase;
     }
@@ -1194,7 +1193,7 @@
     .analysis-item .value {
       font-size: 18px;
       color: var(--text-primary);
-      font-weight: 600;
+      font-weight: var(--font-weight-bold);
       line-height: 1.2;
     }
     
@@ -1220,7 +1219,7 @@
       /* Small mobile header adjustments */
       .header-section {
         margin-bottom: 32px;
-        padding: 20px 0;
+        padding: 32px 0 20px 0;
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
@@ -1324,7 +1323,6 @@
 
       <!-- Under‑pouches CTA -->
       <div class="pouch-cta">
-        <p class="cta-note">Get premium coffee tailored to your taste. We'll grind it for your method and deliver it at peak freshness.</p>
         <a href="quiz.html" class="btn-primary" data-nav="signup" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
       </div>
       
@@ -1457,9 +1455,9 @@
               </div>
               
               <div class="text-layer">
-                <div class="text-block label-badge" data-size-frac="0.020" style="--text-size-frac: 0.025; top: 15%; left: 28px; transform: none; color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 0.08em; background: rgba(0,0,0,0.75); padding: 12px 20px; border-radius: 24px; white-space: nowrap;">${data.badge}</div>
-                <div class="text-block label-tagline" data-size-frac="0.072" style="--text-size-frac: 0.125; top: 48%; left: 28px; transform: none; color: rgb(28, 28, 32); font-weight: 700; line-height: 1.1; text-align: left; width: calc(100% - 56px); white-space: normal; max-width: none;">${data.tagline}</div>
-                <div class="text-block label-description" data-size-frac="0.042" style="--text-size-frac: 0.042; top: 73%; left: 28px; transform: none; color: rgb(72, 72, 74); font-weight: 400; line-height: 1.4; text-align: left; width: calc(100% - 56px); white-space: normal; max-width: none;">${data.description.replace(/\n\n/g, '<br><br>')}</div>
+                <div class="text-block label-badge" data-size-frac="0.020" style="--text-size-frac: 0.025; top: 15%; left: 28px; transform: none; color: rgb(255, 255, 255); font-weight: var(--font-weight-bold); text-transform: uppercase; line-height: 1; letter-spacing: 0.08em; background: rgba(0,0,0,0.75); padding: 12px 20px; border-radius: 24px; white-space: nowrap;">${data.badge}</div>
+                <div class="text-block label-tagline" data-size-frac="0.072" style="--text-size-frac: 0.125; top: 48%; left: 28px; transform: none; color: rgb(28, 28, 32); font-weight: var(--font-weight-bold); line-height: 1.1; text-align: left; width: calc(100% - 56px); white-space: normal; max-width: none;">${data.tagline}</div>
+                <div class="text-block label-description" data-size-frac="0.042" style="--text-size-frac: 0.042; top: 73%; left: 28px; transform: none; color: rgb(72, 72, 74); font-weight: var(--font-weight-regular); line-height: 1.4; text-align: left; width: calc(100% - 56px); white-space: normal; max-width: none;">${data.description.replace(/\n\n/g, '<br><br>')}</div>
               </div>
             </div>
           </div>
