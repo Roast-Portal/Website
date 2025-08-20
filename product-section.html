@@ -94,7 +94,15 @@
       --notch-amp: 1;
       --text-size-frac-default: .05;
     }
-    .pouch-extreme.pouch-container{ position:relative; inline-size:var(--pouch-w); block-size:var(--pouch-h); container-type:inline-size }
+    .pouch-extreme.pouch-container{ 
+      position:relative; 
+      inline-size:var(--pouch-w); 
+      block-size:var(--pouch-h); 
+      container-type:inline-size;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
     .pouch-extreme .pouch{ position:absolute; inset:0; background:var(--bag-bg);
       border-radius: calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min)) calc(var(--bag-radius-frac) * .8 * var(--pouch-min));
       overflow:hidden; isolation:isolate; box-shadow: 0 12px 28px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10); }
@@ -1046,7 +1054,10 @@
       .comparison { grid-template-columns: 1fr; }
 
       /* Scale pouch to viewport while keeping ratio */
-      :root { --pouch-height: calc(var(--pouch-width) * 1.335); }
+      :root { 
+        --pouch-height: calc(var(--pouch-width) * 1.335); 
+        --pouch-width: 280px; /* Fixed width for mobile to ensure visibility */
+      }
 
       /* Better mobile positioning */
       .pouch-stack { 
@@ -1055,30 +1066,38 @@
         position: relative;
         left: 0;
         right: 0;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        min-height: 200px !important;
       }
       .pouch-stack .stack-card { 
-        opacity: 1; 
+        opacity: 1 !important; 
         pointer-events: none;
         top: 50% !important;
+        display: block !important;
+        visibility: visible !important;
       }
 
       /* Center pouches better on mobile */
       .stack-area { 
-        display: flex; 
+        display: flex !important; 
         flex-direction: column;
         align-items: center;
         justify-content: center;
         padding: 20px 0;
         width: 100%;
-        overflow: hidden;
+        overflow: visible !important;
+        min-height: 300px !important;
       }
       .stack-area .pouch-stack { 
         margin-bottom: 20px;
-        display: flex;
+        display: block !important;
         justify-content: center;
         width: 100%;
-        max-width: calc(var(--pouch-width) + 120px); /* Responsive width based on viewport */
+        max-width: 400px !important; /* Fixed max width for mobile */
         padding: 0 20px; /* Responsive padding */
+        min-height: 300px !important;
       }
       
       /* Hide controls on mobile for cleaner look */
@@ -1461,6 +1480,11 @@
         console.log('CSS Variables - pouch-height:', getComputedStyle(document.documentElement).getPropertyValue('--pouch-height'));
         console.log('Window dimensions:', window.innerWidth, 'x', window.innerHeight);
         
+        // Mobile detection
+        const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        console.log('Mobile device detected:', isMobile);
+        console.log('User agent:', navigator.userAgent);
+        
         // Initialize stacks: render 5 pouches per stack and position like checkout fan
         Object.keys(stackData).forEach(stackId => {
           const stack = document.getElementById(stackId);
@@ -1481,36 +1505,50 @@
           console.log(`Created ${count} pouches for ${stackId}`);
           console.log(`Stack HTML content:`, stack.innerHTML.substring(0, 200) + '...');
           
-          const cardEls = Array.from(stack.querySelectorAll('.stack-card'));
+                    const cardEls = Array.from(stack.querySelectorAll('.stack-card'));
           console.log(`Found ${cardEls.length} stack cards in ${stackId}`);
-        cardEls.forEach((card, i) => {
-          const z = 15 - i;
-          const dx = i * 12;                 // horizontal stagger
-          const dy = -i * 8;                 // vertical stagger
-          const scale = 1 - i * 0.015;       // subtle depth scaling
-          if (i > 0) card.classList.add('mini');
-          card.style.zIndex = String(z);
           
-          // Responsive stack positioning based on viewport width
-          const viewportWidth = window.innerWidth;
-          const totalSpread = (count - 1) * 12; // Total horizontal spread of all cards
-          const centerOffset = totalSpread / 2;  // Half the spread to center the stack
-          const adjustedDx = dx - centerOffset;  // Adjust each card position
-          
-          // Dynamic edge buffer based on screen size
-          let edgeBuffer;
-          if (viewportWidth <= 640) {
-            edgeBuffer = 8; // Small mobile - tighter spacing
-          } else if (viewportWidth <= 768) {
-            edgeBuffer = 12; // Medium mobile - moderate spacing
-          } else {
-            edgeBuffer = 15; // Larger screens - comfortable spacing
+          // Mobile-specific adjustments
+          if (isMobile) {
+            console.log(`Applying mobile adjustments to ${stackId}`);
+            // Ensure pouches are visible on mobile
+            cardEls.forEach((card, i) => {
+              card.style.display = 'block';
+              card.style.visibility = 'visible';
+              card.style.opacity = '1';
+              card.style.minHeight = '200px';
+              card.style.minWidth = '200px';
+            });
           }
           
-          const finalDx = adjustedDx + edgeBuffer;
-          
-          card.style.transform = `translate(-50%, -50%) translate(${finalDx}px, ${dy}px) scale(${scale})`;
-        });
+          cardEls.forEach((card, i) => {
+            const z = 15 - i;
+            const dx = i * 12;                 // horizontal stagger
+            const dy = -i * 8;                 // vertical stagger
+            const scale = 1 - i * 0.015;       // subtle depth scaling
+            if (i > 0) card.classList.add('mini');
+            card.style.zIndex = String(z);
+            
+            // Responsive stack positioning based on viewport width
+            const viewportWidth = window.innerWidth;
+            const totalSpread = (count - 1) * 12; // Total horizontal spread of all cards
+            const centerOffset = totalSpread / 2;  // Half the spread to center the stack
+            const adjustedDx = dx - centerOffset;  // Adjust each card position
+            
+            // Dynamic edge buffer based on screen size
+            let edgeBuffer;
+            if (viewportWidth <= 640) {
+              edgeBuffer = 8; // Small mobile - tighter spacing
+            } else if (viewportWidth <= 768) {
+              edgeBuffer = 12; // Medium mobile - moderate spacing
+            } else {
+              edgeBuffer = 15; // Larger screens - comfortable spacing
+            }
+            
+            const finalDx = adjustedDx + edgeBuffer;
+            
+            card.style.transform = `translate(-50%, -50%) translate(${finalDx}px, ${dy}px) scale(${scale})`;
+          });
         // Removed calls to old outline functions
       });
       
