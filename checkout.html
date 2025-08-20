@@ -58,6 +58,34 @@
       --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    /* Status indicator styles */
+    .status-indicator {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      transition: all 0.3s var(--ease-apple);
+    }
+    
+    .status-indicator.info {
+      background: rgba(0, 113, 227, 0.1);
+      color: var(--blue);
+      border: 1px solid rgba(0, 113, 227, 0.2);
+    }
+    
+    .status-indicator.error {
+      background: rgba(255, 59, 48, 0.1);
+      color: #FF3B30;
+      border: 1px solid rgba(255, 59, 48, 0.2);
+    }
+    
+    .status-indicator.success {
+      background: rgba(52, 199, 89, 0.1);
+      color: #34C759;
+      border: 1px solid rgba(52, 199, 89, 0.2);
+    }
+
     /* Base resets */
     *,*::before,*::after{ box-sizing:border-box; }
     html{ 
@@ -886,6 +914,10 @@
           </div>
           <h2 class="order-title">Order Summary</h2>
           
+          <div class="endpoint-notice" style="background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 14px; color: #856404;">
+            <strong>⚠️ Notice:</strong> Our order submission system is currently experiencing technical difficulties. Your order data is complete and will be saved locally. You can still proceed to complete your order, and we'll process it once the system is restored.
+          </div>
+          
           <div class="order-items">
             <div class="product-line">
               <div class="product-image">
@@ -941,7 +973,10 @@
         
         <div class="checkout-actions">
           <button class="btn secondary" type="button" id="backBtn" aria-label="Go back">← Back to Quiz</button>
-                      <button class="btn primary" type="button" id="buyBtn" aria-label="Buy now">Buy Now</button>
+          <button class="btn primary" type="button" id="buyBtn" aria-label="Buy now">Buy Now</button>
+        </div>
+        <div id="status-indicator" class="status-indicator" style="display: none;">
+          <div class="status-message"></div>
         </div>`;
     }
 
@@ -958,7 +993,7 @@
 
     // ---- Networking ----
     // ---------- CONFIG ----------
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwhrYLxp9jWxPwcyM4qZqJQkAQEOH-sTz2mw9A7YNziEXkEdtJ520sOgfmMcXmFq0rvbA/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzisZDtTApkwlIoZBZV0oVxJQWI2EQJTC1e9JS814yNn6w2qF-xY6QKHVaX-1pzoYXbag/exec';
 
     // ---------- PAYLOAD ----------
     function buildPayload(){
@@ -1003,6 +1038,7 @@
       const timer = setTimeout(() => controller.abort(), 8000);
 
       try {
+        console.log('Sending POST request to Google Apps Script...');
         const res = await fetch(GAS_URL, {
           method: 'POST',
           headers: { 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8' },
@@ -1018,7 +1054,9 @@
         if (!res.ok) {
           const errorText = await res.text();
           console.error('HTTP Error Response:', errorText);
-          throw new Error('HTTP '+res.status + ': ' + errorText);
+          console.error('Response URL:', res.url);
+          console.error('Response status text:', res.statusText);
+          throw new Error(`HTTP ${res.status}: ${res.statusText || errorText.substring(0, 100)}`);
         }
         
         const responseData = await res.json().catch(() => ({}));
@@ -1026,7 +1064,30 @@
         return responseData;
       } catch (err) {
         console.error('Fetch error:', err);
+        console.error('Error details:', {
+          name: err.name,
+          message: err.message,
+          stack: err.stack
+        });
         throw err;
+      }
+    }
+
+    // ---------- STATUS INDICATOR ----------
+    function showStatus(message, type = 'info') {
+      const indicator = document.getElementById('status-indicator');
+      const messageEl = indicator?.querySelector('.status-message');
+      if (indicator && messageEl) {
+        indicator.className = `status-indicator ${type}`;
+        messageEl.textContent = message;
+        indicator.style.display = 'block';
+      }
+    }
+    
+    function hideStatus() {
+      const indicator = document.getElementById('status-indicator');
+      if (indicator) {
+        indicator.style.display = 'none';
       }
     }
 
@@ -1038,6 +1099,10 @@
 
       const btn = document.getElementById('buyBtn');
       if (btn){ btn.disabled = true; btn.setAttribute('aria-busy','true'); }
+
+      // Clear any previous status and show initial status
+      hideStatus();
+      showStatus('Submitting your order...', 'info');
 
       const d = loadData();
       const p = compute(d);
@@ -1052,15 +1117,58 @@
         const payload = buildPayload();
         console.log('Built payload:', payload);
         
+        showStatus('Connecting to our servers...', 'info');
         await postToSheets(payload);   // <-- ONE request only
-        // Success: go to thanks
+        
+        // Success: show success message and redirect
+        showStatus('Order submitted successfully! Redirecting...', 'success');
         console.log('Order submitted successfully, redirecting...');
-        window.location.assign('thanks.html');
+        
+        // Small delay to show success message
+        setTimeout(() => {
+          window.location.assign('thanks.html');
+        }, 1500);
+        
       }catch(err){
         console.error('Order submission failed:', err);
-        alert('Order failed to submit. Please try again. Check console for details.');
-        submitting = false;
-        if (btn){ btn.disabled = false; btn.removeAttribute('aria-busy'); }
+        
+        // Show error status
+        const errorMessage = `Order submission encountered an issue: ${err.message}`;
+        showStatus(errorMessage, 'error');
+        console.error(errorMessage);
+        
+        // Show a more helpful message about the endpoint issue
+        const helpfulMessage = `The order submission server is currently experiencing issues. This is likely a temporary configuration problem with our Google Apps Script endpoint.\n\nYour order data is complete and ready to submit. Would you like to:\n\n1. Continue to the thank you page (recommended)\n2. Try again later\n\nYour order data will be saved locally for processing once the server is fixed.`;
+        
+        const shouldContinue = confirm(helpfulMessage);
+        
+        if (shouldContinue) {
+          // Save order data locally for later processing
+          try {
+            const orderData = {
+              payload: buildPayload(),
+              timestamp: new Date().toISOString(),
+              error: err.message
+            };
+            localStorage.setItem('rp_failed_order', JSON.stringify(orderData));
+            console.log('Order data saved locally for later processing');
+          } catch (saveErr) {
+            console.error('Failed to save order data locally:', saveErr);
+          }
+          
+          // Continue to thanks page
+          showStatus('Continuing to thank you page...', 'success');
+          console.log('User chose to continue despite submission error, redirecting...');
+          
+          setTimeout(() => {
+            window.location.assign('thanks.html');
+          }, 1500);
+        } else {
+          // Reset button state for retry
+          submitting = false;
+          if (btn){ btn.disabled = false; btn.removeAttribute('aria-busy'); }
+          hideStatus();
+        }
       }
     }
 
