@@ -228,14 +228,24 @@
         user-select: none;
       }
       
-      /* Force pointer events on mobile */
-      .pouch-stack * {
-        pointer-events: none;
-      }
-      
-      .pouch-stack {
-        pointer-events: auto;
-      }
+          /* Force pointer events on mobile */
+    .pouch-stack * {
+      pointer-events: none;
+    }
+    
+    .pouch-stack {
+      pointer-events: auto;
+    }
+    
+    /* Ensure no iframe or embedded content can interfere */
+    iframe {
+      display: none !important;
+    }
+    
+    /* Prevent any embedded content from loading */
+    embed, object {
+      display: none !important;
+    }
       
       /* Ensure stack is centered on small screens */
       .stack-area .pouch-stack {
@@ -1516,21 +1526,42 @@
             });
           }
           
-          // Simple, direct navigation that works on all devices
+          // Force complete page replacement to ensure quiz loads in new tab
           console.log('Navigating to quiz.html...');
           
-          // Use the most reliable navigation method
+          // Prevent any default behaviors that might interfere
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Clear the entire page content to force a fresh load
+          document.body.innerHTML = '<div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">Loading quiz...</div>';
+          
+          // Use multiple aggressive navigation methods
           try {
-            // Force navigation to quiz page
-            window.location.href = 'quiz.html';
+            // Method 1: Force replace the entire page
+            window.location.replace('quiz.html');
           } catch (e) {
-            console.error('Navigation failed:', e);
-            // Fallback - create and click a link
-            const link = document.createElement('a');
-            link.href = 'quiz.html';
-            link.target = '_self';
-            document.body.appendChild(link);
-            link.click();
+            console.error('Replace failed:', e);
+            try {
+              // Method 2: Force href change
+              window.location.href = 'quiz.html';
+            } catch (e2) {
+              console.error('Href failed:', e2);
+              try {
+                // Method 3: Create a link with target="_top" to break out of any frames
+                const link = document.createElement('a');
+                link.href = 'quiz.html';
+                link.target = '_top';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              } catch (e3) {
+                console.error('Link click failed:', e3);
+                // Method 4: Last resort - force reload with new URL
+                window.location = 'quiz.html';
+              }
+            }
           }
           
           // Remove click feedback after a short delay
@@ -1600,6 +1631,30 @@
       } else {
         console.error('Header section not found!');
       }
+      
+      // Prevent any iframe or embedded content from loading
+      const iframes = document.querySelectorAll('iframe');
+      iframes.forEach(iframe => {
+        console.log('Removing iframe:', iframe);
+        iframe.remove();
+      });
+      
+      // Monitor for any new iframes being added
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeName === 'IFRAME') {
+              console.log('Preventing iframe from loading:', node);
+              node.remove();
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
       
       // Responsive repositioning on window resize
       function updateStackPositions() {
