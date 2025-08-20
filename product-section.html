@@ -1533,29 +1533,41 @@
           // Clear the entire page content to force a fresh load
           document.body.innerHTML = '<div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">Loading quiz...</div>';
           
-          // Use multiple aggressive navigation methods
+          // Break out of iframe and load quiz in entire browser tab
+          console.log('Window top:', window.top);
+          console.log('Window self:', window.self);
+          console.log('Parent window:', window.parent);
+          console.log('Is in iframe:', window.top !== window.self);
+          
           try {
-            // Method 1: Force replace the entire page
-            window.location.replace('quiz.html');
+            // Method 1: Break out of iframe to parent window
+            if (window.top !== window.self) {
+              console.log('Breaking out of iframe to parent window');
+              window.top.location.href = 'quiz.html';
+            } else {
+              // Method 2: Direct navigation if not in iframe
+              console.log('Not in iframe, using direct navigation');
+              window.location.replace('quiz.html');
+            }
           } catch (e) {
-            console.error('Replace failed:', e);
+            console.error('Top navigation failed:', e);
             try {
-              // Method 2: Force href change
-              window.location.href = 'quiz.html';
+              // Method 3: Try to break out with target="_top" link
+              const link = document.createElement('a');
+              link.href = 'quiz.html';
+              link.target = '_top';
+              link.rel = 'noopener noreferrer';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
             } catch (e2) {
-              console.error('Href failed:', e2);
+              console.error('Link click failed:', e2);
+              // Method 4: Last resort - try to access parent window
               try {
-                // Method 3: Create a link with target="_top" to break out of any frames
-                const link = document.createElement('a');
-                link.href = 'quiz.html';
-                link.target = '_top';
-                link.rel = 'noopener noreferrer';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                parent.location.href = 'quiz.html';
               } catch (e3) {
-                console.error('Link click failed:', e3);
-                // Method 4: Last resort - force reload with new URL
+                console.error('Parent navigation failed:', e3);
+                // Method 5: Force reload entire page
                 window.location = 'quiz.html';
               }
             }
