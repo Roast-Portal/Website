@@ -900,6 +900,9 @@
       padding: 40px 0;
       position: relative;
       overflow: hidden;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
     }
     
     .header-section::before {
@@ -987,6 +990,19 @@
       .header-section {
         margin-bottom: 40px;
         padding: 24px 0;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+      
+      .main-title {
+        font-size: 32px;
+        margin-bottom: 20px;
+      }
+      
+      .main-subtitle {
+        font-size: 18px;
+        margin-bottom: 32px;
       }
       
       .header-features {
@@ -1164,6 +1180,25 @@
       
       .analysis-item .value {
         font-size: 16px;
+      }
+      
+      /* Small mobile header adjustments */
+      .header-section {
+        margin-bottom: 32px;
+        padding: 20px 0;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+      
+      .main-title {
+        font-size: 28px;
+        margin-bottom: 16px;
+      }
+      
+      .main-subtitle {
+        font-size: 16px;
+        margin-bottom: 24px;
       }
     }
     
@@ -1475,52 +1510,21 @@
             });
           }
           
-          // Check if we're on mobile and use simpler navigation
-          const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+          // Simple, direct navigation that works on all devices
+          console.log('Navigating to quiz.html...');
           
-          if (isMobile) {
-            // Simple navigation for mobile devices
-            console.log('Mobile device detected, using simple navigation');
-            console.log('User agent:', navigator.userAgent);
-            console.log('Window width:', window.innerWidth);
-            
-            // For mobile, try to navigate immediately without delay
-            try {
-              console.log('Attempting immediate navigation to quiz.html...');
-              // Try the most direct method first
-              if (window.location.replace) {
-                window.location.replace('quiz.html');
-              } else {
-                window.location.href = 'quiz.html';
-              }
-            } catch (e) {
-              console.error('Navigation failed:', e);
-              // Last resort - create a link and click it
-              const link = document.createElement('a');
-              link.href = 'quiz.html';
-              link.style.display = 'none';
-              document.body.appendChild(link);
-              link.click();
-            }
-          } else {
-            // Use the same fancy route transition as the CTA button for desktop
-            const x = e.clientX || (window.innerWidth/2);
-            const y = e.clientY || (window.innerHeight/2);
-            const overlay = document.createElement('div');
-            overlay.className = 'route-overlay';
-            overlay.style.setProperty('--x', x + 'px');
-            overlay.style.setProperty('--y', y + 'px');
-            overlay.style.setProperty('--R', maxRadiusFrom(x,y) + 'px');
-            document.body.appendChild(overlay);
-            requestAnimationFrame(()=>{
-              overlay.classList.add('expand');
-              // pass coordinates to next page for reverse reveal
-              try{ sessionStorage.setItem('route_from', JSON.stringify({x,y})); }catch{}
-            });
-            setTimeout(() => { 
-              // Force navigation to quiz page - use replace to avoid any caching issues
-              window.location.replace('quiz.html');
-            }, 420);
+          // Use the most reliable navigation method
+          try {
+            // Force navigation to quiz page
+            window.location.href = 'quiz.html';
+          } catch (e) {
+            console.error('Navigation failed:', e);
+            // Fallback - create and click a link
+            const link = document.createElement('a');
+            link.href = 'quiz.html';
+            link.target = '_self';
+            document.body.appendChild(link);
+            link.click();
           }
           
           // Remove click feedback after a short delay
@@ -1567,7 +1571,7 @@
       });
       
       // Header animation on page load
-      const headerElements = document.querySelectorAll('.main-title, .main-subtitle, .feature-item');
+      const headerElements = document.querySelectorAll('.main-title, .main-subtitle');
       headerElements.forEach((el, index) => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
@@ -1578,6 +1582,18 @@
           el.style.transform = 'translateY(0)';
         }, 200 + (index * 100));
       });
+      
+      // Ensure header is always visible on mobile
+      const headerSection = document.querySelector('.header-section');
+      if (headerSection) {
+        console.log('Header section found:', headerSection);
+        // Force visibility
+        headerSection.style.display = 'block';
+        headerSection.style.visibility = 'visible';
+        headerSection.style.opacity = '1';
+      } else {
+        console.error('Header section not found!');
+      }
       
       // Responsive repositioning on window resize
       function updateStackPositions() {
