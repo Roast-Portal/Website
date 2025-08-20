@@ -111,7 +111,7 @@ Your Google Apps Script provides enterprise-level functionality:
 
 The quiz is configured to submit to:
 ```
-https://script.google.com/macros/s/AKfycbwSbx0Aj6FBwXXxAY1xNPfHz8etSqEnlzuw97041FMt5dwroOUS0dfFjKPCvk0K396bZQ/exec
+https://script.google.com/macros/s/AKfycbxsrZdpCIxAku1sarNVFioaDq6B0wd4D9PWsfZGcZxMJ11TXdSm0WsF4I2bs-UrEuvk8g/exec
 ```
 
 ### Google Apps Script Setup
