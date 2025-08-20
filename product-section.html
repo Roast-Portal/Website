@@ -222,6 +222,19 @@
       .pouch-stack {
         min-height: 44px; /* Minimum touch target size */
         touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(0, 113, 227, 0.2);
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      
+      /* Force pointer events on mobile */
+      .pouch-stack * {
+        pointer-events: none;
+      }
+      
+      .pouch-stack {
+        pointer-events: auto;
       }
       
       /* Ensure stack is centered on small screens */
@@ -1201,20 +1214,6 @@
       <div class="header-section">
         <h1 class="main-title">Daily Coffee Packs</h1>
         <p class="main-subtitle">Premium coffee delivered fresh, ground to your preference, and tailored to your taste</p>
-        <div class="header-features">
-          <div class="feature-item">
-            <span class="feature-icon">☕</span>
-            <span class="feature-text">Fresh roasted daily</span>
-          </div>
-          <div class="feature-item">
-            <span class="feature-icon">🎯</span>
-            <span class="feature-text">Personalized blends</span>
-          </div>
-          <div class="feature-item">
-            <span class="feature-icon">🚚</span>
-            <span class="feature-text">Free shipping</span>
-          </div>
-        </div>
       </div>
 
       <!-- Three Pouches Section (minimal) -->
@@ -1457,8 +1456,15 @@
         stack.setAttribute('aria-label', 'Start your coffee journey - take the taste preference quiz');
         
         const handleClick = (e) => {
+          // Prevent any default behaviors that might interfere
+          e.preventDefault();
+          e.stopPropagation();
+          
           // Add visual feedback
           stack.classList.add('clicking');
+          
+          // Debug logging
+          console.log('Pouch stack clicked, navigating to quiz...');
           
           // Track conversion when redirecting to quiz
           if (typeof gtag === 'function') {
@@ -1469,21 +1475,53 @@
             });
           }
           
-          // Use the same fancy route transition as the CTA button
-          const x = e.clientX || (window.innerWidth/2);
-          const y = e.clientY || (window.innerHeight/2);
-          const overlay = document.createElement('div');
-          overlay.className = 'route-overlay';
-          overlay.style.setProperty('--x', x + 'px');
-          overlay.style.setProperty('--y', y + 'px');
-          overlay.style.setProperty('--R', maxRadiusFrom(x,y) + 'px');
-          document.body.appendChild(overlay);
-          requestAnimationFrame(()=>{
-            overlay.classList.add('expand');
-            // pass coordinates to next page for reverse reveal
-            try{ sessionStorage.setItem('route_from', JSON.stringify({x,y})); }catch{}
-          });
-          setTimeout(() => { window.location.href = 'quiz.html'; }, 420);
+          // Check if we're on mobile and use simpler navigation
+          const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+          
+          if (isMobile) {
+            // Simple navigation for mobile devices
+            console.log('Mobile device detected, using simple navigation');
+            console.log('User agent:', navigator.userAgent);
+            console.log('Window width:', window.innerWidth);
+            
+            // For mobile, try to navigate immediately without delay
+            try {
+              console.log('Attempting immediate navigation to quiz.html...');
+              // Try the most direct method first
+              if (window.location.replace) {
+                window.location.replace('quiz.html');
+              } else {
+                window.location.href = 'quiz.html';
+              }
+            } catch (e) {
+              console.error('Navigation failed:', e);
+              // Last resort - create a link and click it
+              const link = document.createElement('a');
+              link.href = 'quiz.html';
+              link.style.display = 'none';
+              document.body.appendChild(link);
+              link.click();
+            }
+          } else {
+            // Use the same fancy route transition as the CTA button for desktop
+            const x = e.clientX || (window.innerWidth/2);
+            const y = e.clientY || (window.innerHeight/2);
+            const overlay = document.createElement('div');
+            overlay.className = 'route-overlay';
+            overlay.style.setProperty('--x', x + 'px');
+            overlay.style.setProperty('--y', y + 'px');
+            overlay.style.setProperty('--R', maxRadiusFrom(x,y) + 'px');
+            document.body.appendChild(overlay);
+            requestAnimationFrame(()=>{
+              overlay.classList.add('expand');
+              // pass coordinates to next page for reverse reveal
+              try{ sessionStorage.setItem('route_from', JSON.stringify({x,y})); }catch{}
+            });
+            setTimeout(() => { 
+              // Force navigation to quiz page - use replace to avoid any caching issues
+              window.location.replace('quiz.html');
+            }, 420);
+          }
           
           // Remove click feedback after a short delay
           setTimeout(() => {
