@@ -7,7 +7,7 @@ echo "Testing Quiz Submission to Google Apps Script..."
 echo "================================================"
 
 # Google Script URL from checkout.html (where quiz submissions are actually sent)
-GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbxsrZdpCIxAku1sarNVFioaDq6B0wd4D9PWsfZGcZxMJ11TXdSm0WsF4I2bs-UrEuvk8g/exec"
+GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbwhrYLxp9jWxPwcyM4qZqJQkAQEOH-sTz2mw9A7YNziEXkEdtJ520sOgfmMcXmFq0rvbA/exec"
 
 echo "Target URL: $GOOGLE_SCRIPT_URL"
 echo ""
