@@ -392,6 +392,12 @@
       transform: scale(0.98);
     }
     
+    /* Add click feedback for pouch stacks */
+    .pouch-stack.clicking {
+      transform: scale(0.95);
+      filter: brightness(0.9);
+    }
+    
     .pouch-stack:focus-visible {
       outline: 2px solid var(--accent-blue);
       outline-offset: 4px;
@@ -1258,12 +1264,13 @@
   
   <script>
     // Fancy in-page route transition to signup
+    function maxRadiusFrom(x, y){
+      const w = window.innerWidth, h = window.innerHeight;
+      const dx = Math.max(x, w - x), dy = Math.max(y, h - y);
+      return Math.hypot(dx, dy) + 20;
+    }
+    
     (function(){
-      function maxRadiusFrom(x, y){
-        const w = window.innerWidth, h = window.innerHeight;
-        const dx = Math.max(x, w - x), dy = Math.max(y, h - y);
-        return Math.hypot(dx, dy) + 20;
-      }
       document.addEventListener('click', (e)=>{
         const link = e.target.closest('a[data-nav="signup"]');
         if(!link) return;
@@ -1449,7 +1456,10 @@
         stack.setAttribute('role', 'button');
         stack.setAttribute('aria-label', 'Start your coffee journey - take the taste preference quiz');
         
-        const handleClick = () => {
+        const handleClick = (e) => {
+          // Add visual feedback
+          stack.classList.add('clicking');
+          
           // Track conversion when redirecting to quiz
           if (typeof gtag === 'function') {
             gtag('event', 'conversion', {
@@ -1458,8 +1468,27 @@
               'currency': 'USD'
             });
           }
-          // Navigate to quiz
-          window.location.href = 'quiz.html';
+          
+          // Use the same fancy route transition as the CTA button
+          const x = e.clientX || (window.innerWidth/2);
+          const y = e.clientY || (window.innerHeight/2);
+          const overlay = document.createElement('div');
+          overlay.className = 'route-overlay';
+          overlay.style.setProperty('--x', x + 'px');
+          overlay.style.setProperty('--y', y + 'px');
+          overlay.style.setProperty('--R', maxRadiusFrom(x,y) + 'px');
+          document.body.appendChild(overlay);
+          requestAnimationFrame(()=>{
+            overlay.classList.add('expand');
+            // pass coordinates to next page for reverse reveal
+            try{ sessionStorage.setItem('route_from', JSON.stringify({x,y})); }catch{}
+          });
+          setTimeout(() => { window.location.href = 'quiz.html'; }, 420);
+          
+          // Remove click feedback after a short delay
+          setTimeout(() => {
+            stack.classList.remove('clicking');
+          }, 150);
         };
         
         stack.addEventListener('click', handleClick);
