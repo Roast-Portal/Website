@@ -188,6 +188,18 @@
         max-width: calc(var(--pouch-width) + 100px); /* Responsive width for small screens */
       }
       
+      /* Mobile click hint adjustments */
+      .click-hint {
+        font-size: 13px;
+        margin-top: 10px;
+      }
+      
+      /* Ensure pouch stacks are easily tappable on mobile */
+      .pouch-stack {
+        min-height: 44px; /* Minimum touch target size */
+        touch-action: manipulation;
+      }
+      
       /* Ensure stack is centered on small screens */
       .stack-area .pouch-stack {
         margin-left: auto;
@@ -300,6 +312,20 @@
     .micro-cta:hover::after {
       transform: translateX(2px);
     }
+    
+    /* Click hint styling */
+    .click-hint {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--accent-blue);
+      font-weight: 500;
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+    }
+    
+    .pouch-stack:hover + .pouch-info .click-hint {
+      opacity: 1;
+    }
 
     /* Elevated surface container (Android/Apple-style cards) */
     .surface {
@@ -329,6 +355,44 @@
       perspective: 1400px;
       width: 100%;
       max-width: var(--pouch-width);
+      transition: transform 0.3s ease, filter 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .pouch-stack:hover {
+      transform: scale(1.02);
+      filter: brightness(1.05);
+    }
+    
+    .pouch-stack:active {
+      transform: scale(0.98);
+    }
+    
+    .pouch-stack:focus-visible {
+      outline: 2px solid var(--accent-blue);
+      outline-offset: 4px;
+      border-radius: 20px;
+    }
+    
+    /* Add subtle pulse animation to indicate interactivity */
+    .pouch-stack::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(0, 113, 227, 0.1) 0%, transparent 70%);
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      border-radius: 20px;
+    }
+    
+    .pouch-stack:hover::after {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
     }
     
     .stack-card {
@@ -1011,6 +1075,7 @@
             </div>
             <div class="pouch-info">
               <p>Crafted exclusively for your palate, each blend evolves with your feedback to keep getting better.</p>
+              <div class="click-hint">Tap to start your coffee journey →</div>
             </div>
           </div>
           <div class="pouch-column">
@@ -1019,6 +1084,7 @@
             </div>
             <div class="pouch-info">
               <p>We prepare your coffee like a barista would—precisely ground, perfectly measured, and sealed to preserve every note.</p>
+              <div class="click-hint">Tap to start your coffee journey →</div>
             </div>
           </div>
           <div class="pouch-column">
@@ -1027,6 +1093,7 @@
             </div>
             <div class="pouch-info">
               <p>Expand your coffee horizons with a special extra bag chosen to surprise and delight your taste buds.</p>
+              <div class="click-hint">Tap to start your coffee journey →</div>
             </div>
           </div>
         </div>
@@ -1230,7 +1297,36 @@
         // Removed calls to old outline functions
       });
       
-      // Disable card flip and pointer interactions
+      // Make pouch stacks clickable to navigate to quiz
+      document.querySelectorAll('.pouch-stack').forEach(stack => {
+        stack.style.cursor = 'pointer';
+        stack.setAttribute('tabindex', '0');
+        stack.setAttribute('role', 'button');
+        stack.setAttribute('aria-label', 'Start your coffee journey - take the taste preference quiz');
+        
+        const handleClick = () => {
+          // Track conversion when redirecting to quiz
+          if (typeof gtag === 'function') {
+            gtag('event', 'conversion', {
+              'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+              'value': 0.0,
+              'currency': 'USD'
+            });
+          }
+          // Navigate to quiz
+          window.location.href = 'quiz.html';
+        };
+        
+        stack.addEventListener('click', handleClick);
+        stack.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleClick();
+          }
+        });
+      });
+      
+      // Keep individual cards non-interactive but make the stack container clickable
       document.querySelectorAll('.stack-card').forEach(card => {
         card.style.pointerEvents = 'none';
       });
