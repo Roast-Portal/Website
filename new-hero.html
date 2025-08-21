@@ -476,6 +476,8 @@
       margin-bottom: 2.5rem;
       opacity: 0;
       animation: fadeInUp 0.8s ease-out 0.7s forwards;
+      justify-content: center;
+      flex-wrap: wrap;
     }
     
     .detail-item {
@@ -483,6 +485,7 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
+      flex: 0 0 auto;
     }
     
     .detail-number {
@@ -711,7 +714,10 @@
         right: auto;
         width: 100%;
         height: 400px;
-        margin: 0 -2rem;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
       .gradient-overlay {
@@ -731,28 +737,40 @@
         padding: 40px 20px;
         gap: 40px;
         align-items: center;
+        justify-content: center;
       }
       
       .hero-content {
         width: 100%;
         max-width: 100%;
         text-align: center;
+        display: flex;
+        flex-direction: column;
         align-items: center;
         padding: 0;
       }
       
       .hero-title {
         font-size: 2rem;
+        text-align: center;
       }
 
       .hero-description {
         font-size: 1.125rem;
         line-height: 1.75rem;
+        text-align: center;
       }
       
       .subscription-details {
         gap: 1.5rem;
         margin-bottom: 2rem;
+        justify-content: center;
+        width: 100%;
+      }
+      
+      .detail-item {
+        text-align: center;
+        align-items: center;
       }
       
       .detail-number {
@@ -761,6 +779,23 @@
       
       .detail-text {
         font-size: 0.75rem;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+      }
+
+      /* Better marquee centering on mobile */
+      .marquee-section {
+        margin: 0 auto;
+        justify-content: center;
+      }
+
+      .marquee-container {
+        justify-content: center;
+        align-items: center;
       }
 
       /* Reduce animation intensity on mobile for better performance */
@@ -790,14 +825,44 @@
         animation-duration: 60s;
         opacity: 0.3;
       }
+
+      .hero-container {
+        padding: 30px 15px;
+        gap: 30px;
+      }
+
+      .hero-title {
+        font-size: 1.75rem;
+      }
+
+      .hero-description {
+        font-size: 1rem;
+        line-height: 1.6rem;
+      }
+
+      .subscription-details {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .detail-number {
+        font-size: 1.75rem;
+      }
+
+      .detail-text {
+        font-size: 0.7rem;
+      }
     }
 
+    @media (max-width: 768px) {
       .hero-buttons {
         flex-direction: column;
         width: 100%;
         max-width: 300px;
         margin: 0 auto;
       }
+    }
 
       .button {
         width: 100%;
