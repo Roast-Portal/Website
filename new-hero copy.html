@@ -321,13 +321,6 @@
       box-sizing: border-box;
     }
 
-    html, body {
-      overflow-x: hidden;
-      overflow-y: visible !important;
-      height: auto !important;
-      position: relative;
-    }
-    
     body {
       font-family: var(--font-primary);
       font-weight: var(--font-weight-regular);
@@ -336,8 +329,7 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      margin: 0;
-      padding: 0;
+      overflow-x: hidden;
     }
 
     /* Hero container */
@@ -348,7 +340,6 @@
       justify-content: center;
       padding: 3rem 0;
       min-height: 100vh;
-      min-height: 100dvh; /* Dynamic viewport height for mobile */
       position: relative;
     }
 
@@ -616,8 +607,6 @@
     @media (max-width: 768px) {
       .hero-wrapper {
         padding: 20px 0;
-        min-height: auto;
-        height: auto;
       }
       
       .hero-container {
@@ -1190,31 +1179,5 @@
       </div>
     </div>
   </div>
-  <script>
-    // Handle iframe sizing on mobile
-    if (window.self !== window.top) {
-      // We're in an iframe
-      function sendHeight() {
-        const height = document.documentElement.scrollHeight;
-        window.parent.postMessage({ type: 'heroHeight', height: height }, '*');
-      }
-      
-      // Send height on load and resize
-      window.addEventListener('load', sendHeight);
-      window.addEventListener('resize', sendHeight);
-      
-      // Also send height after content loads
-      setTimeout(sendHeight, 100);
-      setTimeout(sendHeight, 500);
-      
-      // Disable body scroll when in iframe on mobile
-      if (window.innerWidth <= 768) {
-        document.body.style.overflow = 'visible';
-        document.body.style.height = 'auto';
-        document.documentElement.style.overflow = 'visible';
-        document.documentElement.style.height = 'auto';
-      }
-    }
-  </script>
 </body>
 </html>

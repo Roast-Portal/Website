@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-5LTTX2TGVQ');
+    gtag('config', 'AW-17346642053');
+  </script>
+  
+  <!-- Event snippet for Submit lead form (1) conversion page -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+        'value': 0.0,
+        'currency': 'USD',
+        'event_callback': callback
+      });
+      return false;
+    }
+  </script>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roast Portal</title>
+  <link rel="icon" type="image/svg+xml" href="images/bean-favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/font-system.css">
+  <style>
+    :root {
+      --bg-primary: #FBFBFD;
+      --bg-secondary: #F5F5F7;
+      --text-primary: #1D1D1F;
+      --text-secondary: #6E6E73;
+      --accent-blue: #0071E3;
+      --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      
+      background: linear-gradient(180deg, 
+        #FFFFFF 0%, 
+        #FBFBFD 20%, 
+        #F8F9FB 50%, 
+        #FBFBFD 80%, 
+        #FFFFFF 100%
+      );
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+    }
+    
+    /* Header Styles */
+    .site-header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid #E5E5E7;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+    
+    .header-logo img {
+      height: 2rem;
+      width: auto;
+    }
+    
+    .header-login {
+      color: var(--text-primary);
+      font-weight: var(--font-weight-bold);
+      text-decoration: none;
+      transition: color var(--ease-apple);
+    }
+    
+    .header-login:hover {
+      color: var(--accent-blue);
+    }
+    
+    /* Main Content Styles */
+    .main-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: var(--font-weight-bold);
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+    }
+    
+    .content-text {
+      font-size: 1.125rem;
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Footer Styles */
+    .site-footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid #E5E5E7;
+      padding: 2rem 0;
+      margin-top: 2rem;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .footer-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      transition: transform var(--ease-apple);
+      font-weight: var(--font-weight-bold);
+      color: var(--text-primary);
+    }
+    
+    .footer-logo:hover {
+      transform: scale(1.05);
+    }
+    
+    .logo-text {
+      font-size: 1.125rem;
+      font-weight: var(--font-weight-bold);
+      color: var(--accent-blue);
+      letter-spacing: 0.025em;
+    }
+    
+    .footer-copyright {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      text-align: center;
+      margin: 0;
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .footer-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color var(--ease-apple);
+    }
+    
+    .footer-link:hover {
+      color: var(--text-primary);
+    }
+    
+    /* Responsive adjustments */
+    @media (min-width: 768px) {
+      .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .footer-section {
+        align-items: flex-start;
+      }
+      
+      .footer-links {
+        justify-content: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-content">
+      <a href="index.html" class="header-logo"><img src="images/bean-favicon.svg" alt="Roast Portal logo"></a>
+      <a href="login.html" class="header-login">Login</a>
+    </div>
+  </header>
+  <main class="main-content">
+    <h1 class="page-title">Privacy Policy</h1>
+    <p class="content-text">We value your privacy and only collect data necessary to personalize your coffee experience.</p>
+    <p class="content-text">Your information will never be shared with third parties without your consent.</p>
+    <p class="content-text">Contact support@roastportal.com for any privacy-related questions.</p>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <a href="index.html" class="footer-logo" aria-label="Roast Portal Home">
+          <span class="logo-text">Roast Portal</span>
+        </a>
+        <p class="footer-copyright">© 2025 Roast Portal. All rights reserved.</p>
+      </div>
+      <div class="footer-section">
+        <div class="footer-links">
+          <a href="terms.html" class="footer-link">Terms</a>
+          <a href="privacy.html" class="footer-link">Privacy</a>
+          <a href="contact.html" class="footer-link">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
