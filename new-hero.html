@@ -1,9 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-5LTTX2TGVQ');
+    gtag('config', 'AW-17346642053');
+  </script>
+  
+  <!-- Event snippet for Submit lead form (1) conversion page -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+        'value': 0.0,
+        'currency': 'USD',
+        'event_callback': callback
+      });
+      return false;
+    }
+  </script>
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roast Portal - Personalized Coffee</title>
+  <title>Roast Portal - Personalized Coffee Subscription | Fresh Coffee Delivered Biweekly</title>
+  <meta name="description" content="Subscribe to coffee made just for you. Pick your price, get 15 freshly ground coffee bags delivered every two weeks. Each bag is precisely dosed with minerals for optimal extraction.">
+  <meta name="keywords" content="coffee subscription, personalized coffee, fresh coffee delivery, ground coffee, single serve coffee, coffee bags">
+  <meta name="author" content="Roast Portal">
+  <meta property="og:title" content="Roast Portal - Your Personalized Coffee Subscription">
+  <meta property="og:description" content="Coffee made just for you. 15 bags delivered biweekly, ground for your brewing method.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roastportal.com">
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Roast Portal - Personalized Coffee Subscription">
+  <meta property="twitter:description" content="Coffee made just for you. 15 bags delivered biweekly.">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -745,7 +785,7 @@
           </div>
         </div>
         <div class="hero-buttons">
-          <a href="quiz.html" class="button primary button-large">Subscribe Now</a>
+          <a href="quiz.html" class="button primary button-large" onclick="return gtag_report_conversion('quiz.html');">Subscribe Now</a>
         </div>
 
       </div>
