@@ -140,36 +140,16 @@
       transition: opacity 0.3s ease-in;
     }
     
-    /* CRITICAL: Fix iframe scrolling issues */
+    /* Base iframe display (no internal scroll suppression) */
     iframe {
       width: 100%;
       border: none;
       display: block;
       background: transparent;
-      /* CRITICAL: Prevent iframe from interfering with parent scrolling */
-      pointer-events: auto;
-      /* CRITICAL: Remove iframe scroll behavior */
-      overflow: hidden;
-      /* CRITICAL: Ensure iframe doesn't capture scroll events */
-      overscroll-behavior: none;
-      /* CRITICAL: Make iframe non-interactive for scrolling */
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      /* CRITICAL: Set fixed heights for each section */
-      height: 100vh;
-      /* CRITICAL: Prevent iframe from scrolling */
-      scrolling: no;
     }
     
-    /* CRITICAL: Allow iframe content to be interactive but not for scrolling */
-    iframe {
-      /* Allow clicks and interactions within iframe content */
-      pointer-events: auto;
-      /* But prevent scroll capture */
-      overflow: hidden;
-    }
+    /* Allow iframe content to be interactive */
+    iframe { pointer-events: auto; }
     
     /* Make the hero iframe fill the viewport and not animate on load */
     #hero-frame {
@@ -183,38 +163,12 @@
       overflow: hidden;
     }
     
-    /* CRITICAL: Set specific heights for each section */
-    #product-frame {
-      height: 100vh;
-      min-height: 100vh;
-      max-height: 100vh;
-    }
+    /* Other iframes auto-size via JS */
+    #product-frame {}
+    #people-frame {}
+    #production-frame {}
     
-    #people-frame {
-      height: 100vh;
-      min-height: 100vh;
-      max-height: 100vh;
-    }
-    
-    #production-frame {
-      height: 100vh;
-      min-height: 100vh;
-      max-height: 100vh;
-    }
-    
-    /* CRITICAL: Ensure iframes don't create scroll contexts */
-    iframe {
-      /* Force iframe to not handle scrolling */
-      scrolling: no;
-      /* Ensure iframe content doesn't interfere */
-      frameborder: 0;
-      /* Remove any scroll bars */
-      overflow: hidden;
-      /* CRITICAL: Force fixed height */
-      height: 100vh !important;
-      min-height: 100vh !important;
-      max-height: 100vh !important;
-    }
+    /* Do not override iframe height via CSS; JS sets height dynamically */
     
     /* Critical mobile fixes for iPhone scrolling */
     @media (max-width: 768px) {
