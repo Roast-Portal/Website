@@ -40,13 +40,10 @@
   <meta name="description" content="Your blend, your routine. Personalized coffee, pre‑measured and ground for your brewer."/>
   <style>
     :root {
-      /* Font system - Only 4 variations */
       --font-primary: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --font-weight-regular: 400;
       --font-weight-bold: 700;
-      
-      /* Colors */
       --bg-primary: #FBFBFD;
       --bg-secondary: #F5F5F7;
       --text-primary: #1D1D1F;
@@ -54,278 +51,67 @@
       --accent-blue: #0071E3;
       --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
-    /* CRITICAL: Ensure parent page handles all scrolling */
+
     html, body { 
       scroll-behavior: smooth;
       overflow-x: hidden;
-      /* Remove any scroll interference */
-      overscroll-behavior: none;
-      /* Ensure proper scroll context */
       position: relative;
-      height: auto;
       min-height: 100vh;
     }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: var(--font-primary);
       font-weight: var(--font-weight-regular);
-      background: linear-gradient(180deg, 
-        #FFFFFF 0%, 
-        #FBFBFD 20%, 
-        #F8F9FB 50%, 
-        #FBFBFD 80%, 
-        #FFFFFF 100%
-      );
+      background: linear-gradient(180deg, #FFFFFF 0%, #FBFBFD 20%, #F8F9FB 50%, #FBFBFD 80%, #FFFFFF 100%);
       color: var(--text-primary);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      /* CRITICAL: Ensure body can scroll */
       overflow-y: auto;
       overflow-x: hidden;
-      position: relative;
-    }
-    
-    /* Loading state to prevent flash of unstyled content */
-    .loading {
-      opacity: 0;
-      transition: opacity 0.3s ease-in;
-    }
-    
-    .loaded {
-      opacity: 1;
-    }
-    
-    /* Hide iframes completely during loading to prevent content jumping */
-    .loading iframe {
-      opacity: 0;
-      visibility: hidden;
-      height: 0 !important;
-      overflow: hidden;
-    }
-    
-    .loaded iframe {
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 0.3s ease-in;
-    }
-    
-    /* Spinner animation */
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    /* Hide loading indicator when content is ready */
-    .loaded #loading-indicator {
-      display: none;
-    }
-    
-    /* Hide footer during loading to prevent it from appearing first */
-    .loading .site-footer {
-      opacity: 0;
-      visibility: hidden;
-    }
-    
-    .loaded .site-footer {
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 0.3s ease-in;
-    }
-    
-    /* Base iframe display (no internal scroll suppression) */
-    iframe {
-      width: 100%;
-      border: none;
-      display: block;
-      background: transparent;
-    }
-    
-    /* Allow iframe content to be interactive */
-    iframe { pointer-events: auto; }
-    
-    /* Make the hero iframe fill the viewport and not animate on load */
-    #hero-frame {
-      height: 100vh;
-      display: block;
-      opacity: 1;
-      transform: none;
-      transition: none;
-      /* CRITICAL: Prevent hero iframe from interfering with parent scroll */
-      overscroll-behavior: none;
-      overflow: hidden;
-    }
-    
-    /* Other iframes auto-size via JS */
-    #product-frame {}
-    #people-frame {}
-    #production-frame {}
-    
-    /* Do not override iframe height via CSS; JS sets height dynamically */
-    
-    /* Critical mobile fixes for iPhone scrolling */
-    @media (max-width: 768px) {
-      html, body {
-        overflow-x: hidden !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        height: auto !important;
-        position: relative !important;
-        /* CRITICAL: Ensure mobile scrolling works */
-        overscroll-behavior: none;
-      }
-      
-      #hero-frame {
-        height: 90vh !important;
-        max-height: 800px !important;
-        position: relative !important;
-        overflow: hidden !important;
-      }
-      
-      /* Ensure content after hero is reachable */
-      #product-frame, #people-frame, #production-frame {
-        position: relative !important;
-        z-index: 1;
-      }
-    }
-    
-    /* Remove section dividers for continuous flow */
-    .section-divider {
-      display: none;
-    }
-    
-    /* Quick, snappy entrance animations */
-    iframe {
-      width: 100%;
-      border: none;
-      display: block;
-      background: transparent;
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-    
-    /* Add subtle entrance effect that feels immediate */
-    iframe {
-      animation: quickEntrance 0.3s ease-out;
-    }
-    
-    @keyframes quickEntrance {
-      0% {
-        opacity: 0.8;
-        transform: translateY(8px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
-    /* Prevent initial nudge by removing margin collapsing/body shifts */
+    .loading { opacity: 0; transition: opacity 0.3s ease-in; }
+    .loaded  { opacity: 1; }
+
+    .loading iframe { opacity: 0; visibility: hidden; height: 0 !important; overflow: hidden; }
+    .loaded iframe  { opacity: 1; visibility: visible; transition: opacity 0.3s ease-in; }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .loaded #loading-indicator { display: none; }
+    .loading .site-footer { opacity: 0; visibility: hidden; }
+    .loaded .site-footer  { opacity: 1; visibility: visible; transition: opacity 0.3s ease-in; }
+
+    iframe { width: 100%; border: none; display: block; background: transparent; }
+    #hero-frame { height: 100vh; display: block; opacity: 1; transform: none; transition: none; }
+
+    .section-divider { display: none; }
+
+    iframe { animation: quickEntrance 0.3s ease-out; }
+    @keyframes quickEntrance { 0% { opacity: 0.8; transform: translateY(8px);} 100% { opacity: 1; transform: translateY(0);} }
+
     html, body { overflow-anchor: none; }
-    
-    /* Stagger the quick animations for visual flow */
     #product-frame { animation-delay: 0s; }
-    #people-frame { animation-delay: 0.05s; }
+    #people-frame  { animation-delay: 0.05s; }
     #production-frame { animation-delay: 0.1s; }
-    
-    /* Ensure iframes flow seamlessly */
-    iframe + iframe {
-      margin-top: 0;
-    }
+    iframe + iframe { margin-top: 0; }
 
-    
-    /* Footer Styles */
-    .site-footer {
-      background: var(--bg-secondary);
-      border-top: 1px solid #E5E5E7;
-      padding: 2rem 0;
-      margin-top: 2rem;
-    }
-    
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    
-    .footer-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-    }
-    
-    .footer-logo {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      transition: transform var(--ease-apple);
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-    
-    .footer-logo:hover {
-      transform: scale(1.05);
-    }
-    
-    .logo-text {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--accent-blue);
-      letter-spacing: 0.025em;
-    }
-    
-    .footeropyright {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      text-align: center;
-      margin: 0;
-    }
-    
-    .footer-links {
-      display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    
-    .footer-link {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: color var(--ease-apple);
-    }
-    
-    .footer-link:hover {
-      color: var(--text-primary);
-    }
-    
-    /* Responsive adjustments */
+    .site-footer { background: var(--bg-secondary); border-top: 1px solid #E5E5E7; padding: 2rem 0; margin-top: 2rem; }
+    .footer-content { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .footer-section { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    .footer-logo { display: flex; align-items: center; text-decoration: none; transition: transform var(--ease-apple); font-weight: 600; color: var(--text-primary); }
+    .footer-logo:hover { transform: scale(1.05); }
+    .logo-text { font-size: 1.125rem; font-weight: 600; color: var(--accent-blue); letter-spacing: 0.025em; }
+    .footeropyright { color: var(--text-secondary); font-size: 0.875rem; text-align: center; margin: 0; }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+    .footer-link { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color var(--ease-apple); }
+    .footer-link:hover { color: var(--text-primary); }
     @media (min-width: 768px) {
-      .footer-content {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-      
-      .footer-section {
-        align-items: flex-start;
-      }
-      
-      .footer-links {
-        justify-content: flex-end;
-      }
+      .footer-content { flex-direction: row; justify-content: space-between; align-items: center; }
+      .footer-section { align-items: flex-start; }
+      .footer-links { justify-content: flex-end; }
     }
   </style>
 </head>
@@ -335,40 +121,17 @@
   <div class="section-divider"></div>
  
   <!-- Loading indicator -->
-  <div id="loading-indicator" style="
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    z-index: 1000;
-    font-family: var(--font-primary);
-    color: var(--text-primary);
-  ">
-    <div style="
-      width: 40px;
-      height: 40px;
-      border: 3px solid var(--bg-secondary);
-      border-top: 3px solid var(--accent-blue);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 16px;
-    "></div>
+  <div id="loading-indicator" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 1000; font-family: var(--font-primary); color: var(--text-primary);">
+    <div style="width: 40px; height: 40px; border: 3px solid var(--bg-secondary); border-top: 3px solid var(--accent-blue); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
     <p style="margin: 0; font-size: 16px; font-weight: 500;">Loading your personalized experience...</p>
   </div>
-  
 
   <iframe id="product-frame" src="product-section.html" title="Product Section"></iframe>
-  
   <div class="section-divider"></div>
-  
   <iframe id="people-frame" src="people.html" title="People Reviews"></iframe>
-  
   <div class="section-divider"></div>
-  
   <iframe id="production-frame" src="production.html" title="Production Process"></iframe>
 
-  <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-content">
       <div class="footer-section">
@@ -388,129 +151,129 @@
   </footer>
 
   <script>
-    // Enable smooth scrolling between iframes
+    // Enable smooth scrolling without blocking native behavior
     function enableSmoothScrolling() {
       document.documentElement.style.scrollBehavior = 'smooth';
       document.body.style.scrollBehavior = 'smooth';
-      // CRITICAL: Ensure parent page handles all scrolling
-      document.documentElement.style.overscrollBehavior = 'none';
-      document.body.style.overscrollBehavior = 'none';
-      // CRITICAL: Ensure body can scroll
+      // Do not force overscroll-behavior; let the browser handle it
       document.body.style.overflowY = 'auto';
       document.body.style.overflowX = 'hidden';
     }
 
-    // Simplified: do not intercept or inject scroll handling into iframes
-    function handleIframeScroll(iframe) {
-      // no-op
+    // Robust auto-height: inject a size reporter inside each iframe
+    function setupIframeAutoHeight(iframe) {
+      const inject = () => {
+        try {
+          const doc = iframe.contentDocument || iframe.contentWindow.document;
+          if (!doc) return;
+          const script = doc.createElement('script');
+          script.type = 'text/javascript';
+          script.text = `(() => {
+            const postSize = () => {
+              try {
+                const h = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight, document.documentElement.offsetHeight);
+                parent.postMessage({ type: 'iframe-size', id: '${iframe.id}', height: h }, '*');
+              } catch (_) {}
+            };
+            const ro = new ResizeObserver(postSize);
+            try { ro.observe(document.documentElement); } catch(_) {}
+            try { ro.observe(document.body); } catch(_) {}
+            window.addEventListener('load', postSize);
+            window.addEventListener('resize', postSize);
+            setTimeout(postSize, 0);
+            setTimeout(postSize, 100);
+            setTimeout(postSize, 300);
+          })();`;
+          doc.head.appendChild(script);
+        } catch (_) {
+          // Fallback: try parent-side sizing
+          requestParentHeight(iframe);
+        }
+      };
+      iframe.addEventListener('load', inject);
+      // If already loaded
+      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') inject();
     }
 
-    function alignHero() {
-      const hero = document.getElementById('hero-frame');
-      if (!hero) return;
-      try { hero.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
+    function requestParentHeight(iframe) {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        const height = Math.max(
+          doc.body.scrollHeight,
+          doc.body.offsetHeight,
+          doc.documentElement.clientHeight,
+          doc.documentElement.scrollHeight,
+          doc.documentElement.offsetHeight
+        );
+        if (height > 0) iframe.style.height = height + 'px';
+      } catch (_) {}
     }
 
-    // Track iframe loading to prevent flash of unstyled content
+    // Parent handler: apply heights sent by iframes
+    window.addEventListener('message', (event) => {
+      if (!event || !event.data) return;
+      if (event.data.type === 'iframe-size' && event.data.id && event.data.height) {
+        const el = document.getElementById(event.data.id);
+        if (el) el.style.height = Math.max(0, Number(event.data.height)) + 'px';
+      }
+    });
+
+    // Resize all on orientation change or resize
+    ['orientationchange', 'resize'].forEach(evt => {
+      window.addEventListener(evt, () => {
+        document.querySelectorAll('iframe').forEach((iframe) => {
+          // Ask child to re-post size by triggering load-sized observers via message
+          try { iframe.contentWindow && iframe.contentWindow.dispatchEvent(new Event('resize')); } catch(_) {}
+          // And parent-side fallback
+          requestParentHeight(iframe);
+        });
+      });
+    });
+
+    // Loading flow
     let loadedIframes = 0;
     const totalIframes = 3;
-    
     function showContentWhenReady() {
       loadedIframes++;
       if (loadedIframes >= totalIframes) {
-        // All iframes loaded, show the page
         document.body.classList.remove('loading');
         document.body.classList.add('loaded');
-        
-        // Hide loading indicator
-        const loadingIndicator = document.getElementById('loading-indicator');
-        if (loadingIndicator) {
-          loadingIndicator.style.display = 'none';
-        }
-        
-        // Ensure proper scroll behavior
         enableSmoothScrolling();
-        window.scrollTo(0, 0);
       }
     }
-    
-    // Auto-resize iframes based on content
-    function resizeIframe(iframe) {
-      const checkHeight = () => {
-        try {
-          if (iframe.id === 'hero-frame') {
-            iframe.style.height = '100vh';
-            return;
-          }
-          const doc = iframe.contentDocument || iframe.contentWindow.document;
-          const height = Math.max(
-            doc.body.scrollHeight,
-            doc.body.offsetHeight,
-            doc.documentElement.clientHeight,
-            doc.documentElement.scrollHeight,
-            doc.documentElement.offsetHeight
-          );
-          if (height > 0) iframe.style.height = height + 'px';
-        } catch (e) {
-          if (iframe.id === 'hero-frame') iframe.style.height = '100vh';
-          if (iframe.id === 'product-frame') iframe.style.height = '2200px';
-          if (iframe.id === 'people-frame') iframe.style.height = '2000px';
-          if (iframe.id === 'production-frame') iframe.style.height = '4200px';
-        }
-      };
-      
-      iframe.onload = () => {
-        checkHeight();
-        enableSmoothScrolling();
-        setTimeout(checkHeight, 0);
-        setTimeout(checkHeight, 100);
-        showContentWhenReady();
-        
-        try {
-          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-          iframeDoc.addEventListener('click', (e) => {
-            const link = e.target.closest('a[href*="quiz.html"]');
-            if (link) {
-              e.preventDefault();
-              window.location.href = link.href;
-            }
-          });
-        } catch (e) {}
-      };
-      
-      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
-        checkHeight();
-        showContentWhenReady();
-      }
-      
-      checkHeight();
-    }
-    
-    // Listen for hero readiness
-    window.addEventListener('message', (event) => {
-      if (event.data && event.data.type === 'hero-ready') enableSmoothScrolling();
-      if (event.data && event.data.type === 'hero-complete') enableSmoothScrolling();
-    });
 
-    // Apply to all iframes
-    document.querySelectorAll('iframe').forEach(resizeIframe);
-    
-    // Observe iframes for load animation
+    function wireIframe(iframe) {
+      if (iframe.id === 'hero-frame') {
+        iframe.style.height = '100vh';
+      }
+      setupIframeAutoHeight(iframe);
+      iframe.onload = () => {
+        // Ensure auto-height kicks in after content render
+        setTimeout(() => requestParentHeight(iframe), 0);
+        setTimeout(() => requestParentHeight(iframe), 150);
+        showContentWhenReady();
+      };
+      // If already loaded
+      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+        requestParentHeight(iframe);
+        showContentWhenReady();
+      }
+    }
+
+    document.querySelectorAll('iframe').forEach(wireIframe);
+
+    // Minimal observer for entrance effect
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('loaded');
-          if (entry.target && entry.target.id === 'product-frame') {
-            const hero = document.getElementById('hero-frame');
-            try { hero && hero.contentWindow && hero.contentWindow.postMessage({ type: 'hide-arrow' }, '*'); } catch (_) {}
-          }
           enableSmoothScrolling();
         }
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
     document.querySelectorAll('iframe').forEach(iframe => observer.observe(iframe));
 
-    // Debug
+    // Fallback timeout
     setTimeout(() => {
       if (document.body.classList.contains('loading')) {
         document.body.classList.remove('loading');
@@ -522,10 +285,9 @@
     enableSmoothScrolling();
   </script>
   <script>
-    // iOS specific fixes
+    // iOS specific minor helpers
     if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
       document.body.style.webkitOverflowScrolling = 'touch';
-      document.body.style.position = 'relative';
     }
   </script>
 </body>
