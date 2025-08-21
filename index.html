@@ -146,6 +146,30 @@
       overscroll-behavior: none;
     }
     
+    /* Critical mobile fixes for iPhone scrolling */
+    @media (max-width: 768px) {
+      html, body {
+        overflow-x: hidden !important;
+        overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch !important;
+        height: auto !important;
+        position: relative !important;
+      }
+      
+      #hero-frame {
+        height: 90vh !important;
+        max-height: 800px !important;
+        position: relative !important;
+        overflow: hidden !important;
+      }
+      
+      /* Ensure content after hero is reachable */
+      #product-frame, #people-frame, #production-frame {
+        position: relative !important;
+        z-index: 1;
+      }
+    }
+    
     /* Remove section dividers for continuous flow */
     .section-divider {
       display: none;
@@ -631,6 +655,36 @@
         window.location.href = event.data.href;
       }
     });
+  </script>
+  <script>
+    // Handle iframe height messages for mobile
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'heroHeight') {
+        const heroFrame = document.getElementById('hero-frame');
+        if (window.innerWidth <= 768) {
+          heroFrame.style.height = Math.min(event.data.height, window.innerHeight * 0.9) + 'px';
+        }
+      }
+    });
+    
+    // iOS specific fixes
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      // Force body to be scrollable
+      document.body.style.webkitOverflowScrolling = 'touch';
+      document.body.style.position = 'relative';
+      
+      // Ensure viewport is properly set
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      }
+      
+      // Add a small delay to ensure layout is complete
+      setTimeout(() => {
+        window.scrollTo(0, 1);
+        window.scrollTo(0, 0);
+      }, 100);
+    }
   </script>
 </body>
 </html>
