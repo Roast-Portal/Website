@@ -92,20 +92,6 @@
       opacity: 1;
     }
     
-    /* Hide iframes completely during loading to prevent content jumping */
-    .loading iframe {
-      opacity: 0;
-      visibility: hidden;
-      height: 0 !important;
-      overflow: hidden;
-    }
-    
-    .loaded iframe {
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 0.3s ease-in;
-    }
-    
     /* Spinner animation */
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -128,66 +114,14 @@
       visibility: visible;
       transition: opacity 0.3s ease-in;
     }
-    
-    iframe {
-      width: 100%;
-      border: none;
-      display: block;
-      background: transparent;
-    }
-    
-    /* Make the hero iframe fill the viewport and not animate on load */
-    #hero-frame {
-      height: 100svh;
-      display: block;
-      opacity: 1;
-      transform: none;
-      transition: none;
-      overscroll-behavior: none;
-    }
-    
-    /* Critical mobile fixes for iPhone scrolling */
-    @media (max-width: 768px) {
-      html, body {
-        overflow-x: hidden !important;
-        overflow-y: scroll !important;
-        -webkit-overflow-scrolling: touch !important;
-        height: auto !important;
-        position: relative !important;
-      }
-      
-      #hero-frame {
-        height: 90vh !important;
-        max-height: 800px !important;
-        position: relative !important;
-        overflow: hidden !important;
-      }
-      
-      /* Ensure content after hero is reachable */
-      #product-frame, #people-frame, #production-frame {
-        position: relative !important;
-        z-index: 1;
-      }
-    }
-    
+
     /* Remove section dividers for continuous flow */
     .section-divider {
       display: none;
     }
     
-    /* Quick, snappy entrance animations */
-    iframe {
-      width: 100%;
-      border: none;
-      display: block;
-      background: transparent;
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-    
-    /* Add subtle entrance effect that feels immediate */
-    iframe {
+    /* Quick, snappy entrance animations for sections */
+    section {
       animation: quickEntrance 0.3s ease-out;
     }
     
@@ -206,12 +140,12 @@
     html, body { overflow-anchor: none; }
     
     /* Stagger the quick animations for visual flow */
-    #product-frame { animation-delay: 0s; }
-    #people-frame { animation-delay: 0.05s; }
-    #production-frame { animation-delay: 0.1s; }
+    #product-section { animation-delay: 0s; }
+    #people-section { animation-delay: 0.05s; }
+    #production-section { animation-delay: 0.1s; }
     
-    /* Ensure iframes flow seamlessly */
-    iframe + iframe {
+    /* Ensure sections flow seamlessly */
+    section + section {
       margin-top: 0;
     }
 
@@ -303,11 +237,6 @@
     }
   </style>
 </head>
-<body>
-  <iframe id="hero-frame" src="new-hero.html" title="Hero Section" loading="eager"></iframe>
-
-  <div class="section-divider"></div>
-
 <body class="loading">
   <!-- Loading indicator -->
   <div id="loading-indicator" style="
@@ -331,17 +260,126 @@
     "></div>
     <p style="margin: 0; font-size: 16px; font-weight: 500;">Loading your personalized experience...</p>
   </div>
-  
 
-  <iframe id="product-frame" src="product-section.html" title="Product Section"></iframe>
-  
-  <div class="section-divider"></div>
-  
-  <iframe id="people-frame" src="people.html" title="People Reviews"></iframe>
-  
-  <div class="section-divider"></div>
-  
-  <iframe id="production-frame" src="production.html" title="Production Process"></iframe>
+  <!-- Hero Section -->
+  <section id="hero-section" class="hero-section">
+    <div class="scene">
+      <div class="scene-headroom"></div>
+      <div class="box">
+        <div class="face front matte-black"></div>
+        <div class="face back light-gray-interior"></div>
+        <div class="face right">
+          <div class="right-wall-top light-gray-interior"></div>
+          <div class="right-wall-middle"></div>
+          <div class="right-wall-bottom"></div>
+        </div>
+        <div class="face left light-gray-interior"></div>
+        <div class="face top light-gray-interior"></div>
+        <div class="face bottom light-gray-interior"></div>
+        
+        <div class="card-wrapper">
+          <div class="card card1">
+            <div class="pouch-boxcard4 pouch-container">
+              <div class="pouch">
+                <div class="text-layer">
+                  <div class="t-0">Instructions</div>
+                  <div class="t-1">1. Open the pouch\n2. Pour contents into your brewer\n3. Enjoy perfect coffee</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="scene-footroom"></div>
+      <div class="scroll-hint">
+        <span>Scroll to explore</span>
+        <div class="arrow">↓</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Section -->
+  <section id="product-section" class="product-section">
+    <div class="container">
+      <h2>Your Personalized Coffee Experience</h2>
+      <p>Discover how our expert baristas create the perfect blend just for you.</p>
+      
+      <div class="product-grid">
+        <div class="product-card">
+          <h3>Custom Blends</h3>
+          <p>Every bag is crafted based on your preferences and brewing method.</p>
+        </div>
+        <div class="product-card">
+          <h3>Pre-Measured</h3>
+          <p>Perfect portions every time, no more guessing or waste.</p>
+        </div>
+        <div class="product-card">
+          <h3>Fresh Ground</h3>
+          <p>Ground to order for maximum flavor and aroma.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- People Reviews Section -->
+  <section id="people-section" class="people-section">
+    <div class="container">
+      <h2>What Our Customers Say</h2>
+      <p>Join thousands of coffee lovers who've found their perfect cup.</p>
+      
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-content">
+            <p>"Finally, coffee that tastes exactly how I like it. The personalization is incredible!"</p>
+            <div class="reviewer">- Sarah M.</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-content">
+            <p>"I've never had coffee this good at home. It's like having a barista in my kitchen."</p>
+            <div class="reviewer">- Mike R.</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-content">
+            <p>"The convenience and quality are unmatched. I'm never going back to store-bought coffee."</p>
+            <div class="reviewer">- Lisa T.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Production Process Section -->
+  <section id="production-section" class="production-section">
+    <div class="container">
+      <h2>How We Create Your Perfect Coffee</h2>
+      <p>From bean selection to your doorstep, every step is optimized for your taste.</p>
+      
+      <div class="process-grid">
+        <div class="process-step">
+          <div class="step-number">1</div>
+          <h3>Bean Selection</h3>
+          <p>We source the finest beans from around the world, selecting based on your flavor preferences.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">2</div>
+          <h3>Custom Roasting</h3>
+          <p>Our master roasters adjust the roast profile to match your preferred strength and flavor notes.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">3</div>
+          <h3>Precise Grinding</h3>
+          <p>Ground to the perfect size for your brewing method, ensuring optimal extraction.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">4</div>
+          <h3>Fresh Delivery</h3>
+          <p>Packaged immediately and shipped to arrive at peak freshness.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Footer -->
   <footer class="site-footer">
@@ -363,7 +401,7 @@
   </footer>
 
   <script>
-    // Enable smooth scrolling between iframes
+    // Enable smooth scrolling for continuous page
     function enableSmoothScrolling() {
       document.documentElement.style.scrollBehavior = 'smooth';
       document.body.style.scrollBehavior = 'smooth';
@@ -372,185 +410,39 @@
       document.body.style.overscrollBehavior = 'auto';
     }
 
-    // Improved iframe scroll handling
-    function handleIframeScroll(iframe) {
-      // Prevent iframe scroll interference
-      iframe.style.pointerEvents = 'auto';
-      iframe.style.overflow = 'visible';
+    // Show content when page loads
+    function showContent() {
+      document.body.classList.remove('loading');
+      document.body.classList.add('loaded');
       
-      // Ensure iframe doesn't capture scroll events
-      try {
-        iframe.addEventListener('load', () => {
-          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-          if (iframeDoc) {
-            // Prevent iframe from interfering with parent scrolling
-            iframeDoc.documentElement.style.overscrollBehavior = 'none';
-            iframeDoc.body.style.overscrollBehavior = 'none';
-          }
-        });
-      } catch (e) {
-        // Cross-origin restriction
+      // Hide loading indicator
+      const loadingIndicator = document.getElementById('loading-indicator');
+      if (loadingIndicator) {
+        loadingIndicator.style.display = 'none';
+      }
+      
+      // Enable smooth scrolling
+      enableSmoothScrolling();
+    }
+
+    // Smooth scroll to sections
+    function smoothScrollToSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
 
-    function alignHero() {
-      const hero = document.getElementById('hero-frame');
-      if (!hero) return;
-      try { hero.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
-    }
-
-    // Track iframe loading to prevent flash of unstyled content
-    let loadedIframes = 0;
-    const totalIframes = 3;
-    
-    function showContentWhenReady() {
-      loadedIframes++;
-      console.log(`Iframe loaded: ${loadedIframes}/${totalIframes}`);
-      if (loadedIframes >= totalIframes) {
-        // All iframes loaded, show the page
-        document.body.classList.remove('loading');
-        document.body.classList.add('loaded');
-        console.log('All iframes loaded, showing content');
-        
-        // Hide loading indicator
-        const loadingIndicator = document.getElementById('loading-indicator');
-        if (loadingIndicator) {
-          loadingIndicator.style.display = 'none';
-        }
-        
-        // Ensure proper scroll behavior
-        enableSmoothScrolling();
-      }
-    }
-    
-    // Auto-resize iframes based on content
-    function resizeIframe(iframe) {
-      const checkHeight = () => {
-        try {
-          // Keep hero fixed to viewport height; skip auto-resize
-          if (iframe.id === 'hero-frame') {
-            iframe.style.height = '100vh';
-            return;
-          }
-          const doc = iframe.contentDocument || iframe.contentWindow.document;
-          const height = Math.max(
-            doc.body.scrollHeight,
-            doc.body.offsetHeight,
-            doc.documentElement.clientHeight,
-            doc.documentElement.scrollHeight,
-            doc.documentElement.offsetHeight
-          );
-          
-          if (height > 0) {
-            iframe.style.height = height + 'px';
-            console.log(`Resized ${iframe.id} to ${height}px`);
-          }
-        } catch (e) {
-          console.log(`Could not auto-resize ${iframe.id}, using fallback`);
-          // Fallback heights
-          if (iframe.id === 'hero-frame') iframe.style.height = '100vh';
-          if (iframe.id === 'product-frame') iframe.style.height = '2200px';
-          if (iframe.id === 'people-frame') iframe.style.height = '2000px';
-          if (iframe.id === 'production-frame') iframe.style.height = '4200px';
-        }
-      };
-      
-      // Check when iframe loads
-      iframe.onload = () => {
-        checkHeight();
-        // Enable smooth scrolling when iframes load
-        enableSmoothScrolling();
-        // Handle iframe scroll behavior
-        handleIframeScroll(iframe);
-        // Check again after content might have rendered
-        setTimeout(checkHeight, 100);
-        setTimeout(checkHeight, 300);
-        // Mark this iframe as loaded
-        showContentWhenReady();
-        
-        // Handle iframe navigation to ensure signup links work
-        try {
-          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-          iframeDoc.addEventListener('click', (e) => {
-            const link = e.target.closest('a[href*="quiz.html"]');
-            if (link) {
-              e.preventDefault();
-              window.location.href = link.href;
-            }
-          });
-        } catch (e) {
-          // Cross-origin restriction, links will work normally
-        }
-      };
-      
-      // Also check if already loaded
-      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
-        checkHeight();
-        showContentWhenReady();
-      }
-    }
-    
-    // Listen for hero readiness and align requests
-    window.addEventListener('message', (event) => {
-      if (event.data && event.data.type === 'hero-ready') {
-        enableSmoothScrolling();
-      }
-      if (event.data && event.data.type === 'hero-align') {
-        // Snap hero fully into view while animation is active
-        alignHero();
-      }
-      if (event.data && event.data.type === 'hero-complete') {
-        // Ensure smooth scrolling is enabled
-        enableSmoothScrolling();
-      }
-      if (event.data && event.data.type === 'hero-pin-active') {
-        // Hero is pinned, ensure parent can still scroll
-        console.log('Hero pin active - ensuring parent scroll works');
-      }
-      if (event.data && event.data.type === 'hero-pin-inactive') {
-        // Hero is no longer pinned, normal scrolling resumes
-        console.log('Hero pin inactive - normal scrolling resumed');
-      }
-    });
-
-    // Apply to all iframes
-    document.querySelectorAll('iframe').forEach(resizeIframe);
-    
-    // Improved Intersection Observer for scroll animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Add loaded class when iframe comes into view
-          entry.target.classList.add('loaded');
-          // If product section is entering view, tell hero to hide its arrow
-          if (entry.target && entry.target.id === 'product-frame') {
-            const hero = document.getElementById('hero-frame');
-            try { hero && hero.contentWindow && hero.contentWindow.postMessage({ type: 'hide-arrow' }, '*'); } catch (_) {}
-          }
-          // Ensure smooth scrolling is enabled
-          enableSmoothScrolling();
-        }
-      });
-    }, {
-      threshold: 0.1, // Lower threshold for better detection
-      rootMargin: '0px 0px -10% 0px' // Start detection slightly before section enters
-    });
-    
-    // Observe all iframes (hero won't animate due to CSS override)
-    document.querySelectorAll('iframe').forEach(iframe => {
-      observer.observe(iframe);
-    });
-    
     // Add smooth scroll navigation between sections
     function enableSectionNavigation() {
       // Add keyboard navigation support
       document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowDown' || e.key === 'PageDown') {
           e.preventDefault();
-          smoothScrollToNextSection();
+          scrollToNextSection();
         } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
           e.preventDefault();
-          smoothScrollToPreviousSection();
+          scrollToPreviousSection();
         }
       });
       
@@ -565,126 +457,95 @@
           setTimeout(() => { isScrolling = false; }, 100);
           
           if (delta > 0) {
-            smoothScrollToNextSection();
+            scrollToNextSection();
           } else {
-            smoothScrollToPreviousSection();
+            scrollToPreviousSection();
           }
         }
       }, { passive: true });
     }
     
-    function smoothScrollToNextSection() {
-      const iframes = Array.from(document.querySelectorAll('iframe'));
+    function scrollToNextSection() {
+      const sections = ['hero-section', 'product-section', 'people-section', 'production-section'];
       const currentScroll = window.scrollY;
       const viewportHeight = window.innerHeight;
       
-      for (let iframe of iframes) {
-        const rect = iframe.getBoundingClientRect();
-        if (rect.top > viewportHeight * 0.5) {
-          iframe.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          break;
+      for (let sectionId of sections) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top > viewportHeight * 0.5) {
+            smoothScrollToSection(sectionId);
+            break;
+          }
         }
       }
     }
     
-    function smoothScrollToPreviousSection() {
-      const iframes = Array.from(document.querySelectorAll('iframe')).reverse();
+    function scrollToPreviousSection() {
+      const sections = ['hero-section', 'product-section', 'people-section', 'production-section'].reverse();
       const currentScroll = window.scrollY;
       const viewportHeight = window.innerHeight;
       
-      for (let iframe of iframes) {
-        const rect = iframe.getBoundingClientRect();
-        if (rect.bottom < viewportHeight * 0.5) {
-          iframe.scrollIntoView({ behavior: 'smooth', block: 'end' });
-          break;
+      for (let sectionId of sections) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          if (rect.bottom < viewportHeight * 0.5) {
+            smoothScrollToSection(sectionId);
+            break;
+          }
         }
       }
     }
 
-    // Handle iframe navigation to ensure signup links work
-    document.querySelectorAll('iframe').forEach(iframe => {
-      iframe.addEventListener('load', () => {
-        
-        // Handle navigation for already loaded iframes
-        try {
-          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-          iframeDoc.addEventListener('click', (e) => {
-            const link = e.target.closest('a[href*="quiz.html"]');
-            if (link) {
-              e.preventDefault();
-              window.location.href = link.href;
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add loaded class when section comes into view
+          entry.target.classList.add('loaded');
+          
+          // If product section is entering view, hide hero arrow
+          if (entry.target.id === 'product-section') {
+            const scrollHint = document.querySelector('.scroll-hint');
+            if (scrollHint) {
+              scrollHint.style.opacity = '0';
             }
-          });
-        } catch (e) {
-          // Cross-origin restriction, links will work normally
+          }
         }
       });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -10% 0px'
     });
     
-    // Apply to all iframes
-    document.querySelectorAll('iframe').forEach(resizeIframe);
-    
-    // Debug: Check initial state
-    console.log('Initial body classes:', document.body.className);
-    console.log('Total iframes found:', document.querySelectorAll('iframe').length);
-    
-    // Fallback: show content after 3 seconds even if iframes haven't loaded
+    // Observe all sections
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        observer.observe(section);
+      });
+      
+      // Show content immediately
+      showContent();
+      
+      // Enable section navigation
+      enableSectionNavigation();
+    });
+
+    // Fallback: show content after a short delay
     setTimeout(() => {
       if (document.body.classList.contains('loading')) {
-        console.log('Fallback: showing content after timeout');
-        document.body.classList.remove('loading');
-        document.body.classList.add('loaded');
-        enableSmoothScrolling();
+        showContent();
       }
-    }, 3000);
-    
+    }, 1000);
+
     // Enable smooth scrolling immediately
     enableSmoothScrolling();
     
     // Enable section navigation
     enableSectionNavigation();
-    
-    // Handle iframe navigation to ensure signup links work
-    // Note: This is now handled in the resizeIframe function above
-    
-    // Listen for postMessage from iframes for navigation
-    window.addEventListener('message', (event) => {
-      // In production, you should check event.origin
-      if (event.data && event.data.type === 'navigate' && event.data.href) {
-        // Navigate to the requested URL
-        window.location.href = event.data.href;
-      }
-    });
-  </script>
-  <script>
-    // Handle iframe height messages for mobile
-    window.addEventListener('message', (event) => {
-      if (event.data && event.data.type === 'heroHeight') {
-        const heroFrame = document.getElementById('hero-frame');
-        if (window.innerWidth <= 768) {
-          heroFrame.style.height = Math.min(event.data.height, window.innerHeight * 0.9) + 'px';
-        }
-      }
-    });
-    
-    // iOS specific fixes
-    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-      // Force body to be scrollable
-      document.body.style.webkitOverflowScrolling = 'touch';
-      document.body.style.position = 'relative';
-      
-      // Ensure viewport is properly set
-      const viewport = document.querySelector('meta[name="viewport"]');
-      if (viewport) {
-        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-      }
-      
-      // Add a small delay to ensure layout is complete
-      setTimeout(() => {
-        window.scrollTo(0, 1);
-        window.scrollTo(0, 0);
-      }, 100);
-    }
   </script>
 </body>
 </html>
