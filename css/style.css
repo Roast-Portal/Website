@@ -117,30 +117,54 @@ iframe::-webkit-scrollbar {
   display: none;
 }
 
-/* Fix section dividers */
-.section-divider {
-  height: 0;
-  margin: 0;
-  padding: 0;
-  /* Remove any scroll interference */
-  pointer-events: none;
-  /* Ensure no height contribution */
-  min-height: 0;
-  max-height: 0;
+/* CRITICAL: Ensure iframe content doesn't overflow */
+iframe {
+  /* Force content to fit within bounds */
+  overflow: hidden !important;
+  /* Prevent any internal scrolling */
+  scrolling: no;
+  /* Ensure proper sizing */
+  width: 100% !important;
+  height: 100vh !important;
 }
 
-/* Ensure proper body scroll when content is loaded */
-body.loaded {
-  /* Remove any scroll locking */
-  overflow: visible;
-  overflow-x: hidden;
-  /* Ensure proper height */
-  height: auto;
-  min-height: 100vh;
-  /* Remove any transform that might interfere with scrolling */
-  transform: none;
-  /* CRITICAL: Ensure body can scroll */
-  overflow-y: auto !important;
+/* CRITICAL: Set specific heights for each section */
+#hero-frame {
+  height: 100vh !important;
+  min-height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+#product-frame {
+  height: 100vh !important;
+  min-height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+#people-frame {
+  height: 100vh !important;
+  min-height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+#production-frame {
+  height: 100vh !important;
+  min-height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+/* CRITICAL: Ensure sections flow seamlessly */
+iframe + iframe {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* CRITICAL: Remove any section dividers */
+.section-divider {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* CRITICAL: Fix any potential scroll interference from GSAP */

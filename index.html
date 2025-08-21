@@ -147,7 +147,7 @@
       display: block;
       background: transparent;
       /* CRITICAL: Prevent iframe from interfering with parent scrolling */
-      pointer-events: none;
+      pointer-events: auto;
       /* CRITICAL: Remove iframe scroll behavior */
       overflow: hidden;
       /* CRITICAL: Ensure iframe doesn't capture scroll events */
@@ -157,6 +157,10 @@
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
+      /* CRITICAL: Set fixed heights for each section */
+      height: 100vh;
+      /* CRITICAL: Prevent iframe from scrolling */
+      scrolling: no;
     }
     
     /* CRITICAL: Allow iframe content to be interactive but not for scrolling */
@@ -179,6 +183,25 @@
       overflow: hidden;
     }
     
+    /* CRITICAL: Set specific heights for each section */
+    #product-frame {
+      height: 100vh;
+      min-height: 100vh;
+      max-height: 100vh;
+    }
+    
+    #people-frame {
+      height: 100vh;
+      min-height: 100vh;
+      max-height: 100vh;
+    }
+    
+    #production-frame {
+      height: 100vh;
+      min-height: 100vh;
+      max-height: 100vh;
+    }
+    
     /* CRITICAL: Ensure iframes don't create scroll contexts */
     iframe {
       /* Force iframe to not handle scrolling */
@@ -187,6 +210,10 @@
       frameborder: 0;
       /* Remove any scroll bars */
       overflow: hidden;
+      /* CRITICAL: Force fixed height */
+      height: 100vh !important;
+      min-height: 100vh !important;
+      max-height: 100vh !important;
     }
     
     /* Critical mobile fixes for iPhone scrolling */
@@ -426,6 +453,10 @@
       iframe.style.pointerEvents = 'auto';
       iframe.style.overflow = 'hidden';
       iframe.style.overscrollBehavior = 'none';
+      // CRITICAL: Force fixed height
+      iframe.style.height = '100vh';
+      iframe.style.minHeight = '100vh';
+      iframe.style.maxHeight = '100vh';
       
       // CRITICAL: Ensure iframe doesn't capture scroll events
       try {
@@ -440,6 +471,11 @@
             // CRITICAL: Remove any scroll behavior from iframe
             iframeDoc.documentElement.style.scrollBehavior = 'auto';
             iframeDoc.body.style.scrollBehavior = 'auto';
+            // CRITICAL: Force iframe content to fit within bounds
+            iframeDoc.documentElement.style.height = '100%';
+            iframeDoc.body.style.height = '100%';
+            iframeDoc.documentElement.style.overflow = 'hidden';
+            iframeDoc.body.style.overflow = 'hidden';
           }
         });
       } catch (e) {
@@ -484,31 +520,43 @@
     function resizeIframe(iframe) {
       const checkHeight = () => {
         try {
-          // Keep hero fixed to viewport height; skip auto-resize
+          // CRITICAL: Keep all sections at fixed viewport height
           if (iframe.id === 'hero-frame') {
             iframe.style.height = '100vh';
+            iframe.style.minHeight = '100vh';
+            iframe.style.maxHeight = '100vh';
             return;
           }
-          const doc = iframe.contentDocument || iframe.contentWindow.document;
-          const height = Math.max(
-            doc.body.scrollHeight,
-            doc.body.offsetHeight,
-            doc.documentElement.clientHeight,
-            doc.documentElement.scrollHeight,
-            doc.documentElement.offsetHeight
-          );
-          
-          if (height > 0) {
-            iframe.style.height = height + 'px';
-            console.log(`Resized ${iframe.id} to ${height}px`);
+          if (iframe.id === 'product-frame') {
+            iframe.style.height = '100vh';
+            iframe.style.minHeight = '100vh';
+            iframe.style.maxHeight = '100vh';
+            return;
           }
+          if (iframe.id === 'people-frame') {
+            iframe.style.height = '100vh';
+            iframe.style.minHeight = '100vh';
+            iframe.style.maxHeight = '100vh';
+            return;
+          }
+          if (iframe.id === 'production-frame') {
+            iframe.style.height = '100vh';
+            iframe.style.minHeight = '100vh';
+            iframe.style.maxHeight = '100vh';
+            return;
+          }
+          
+          // Fallback: set all iframes to viewport height
+          iframe.style.height = '100vh';
+          iframe.style.minHeight = '100vh';
+          iframe.style.maxHeight = '100vh';
+          
         } catch (e) {
-          console.log(`Could not auto-resize ${iframe.id}, using fallback`);
-          // Fallback heights
-          if (iframe.id === 'hero-frame') iframe.style.height = '100vh';
-          if (iframe.id === 'product-frame') iframe.style.height = '2200px';
-          if (iframe.id === 'people-frame') iframe.style.height = '2000px';
-          if (iframe.id === 'production-frame') iframe.style.height = '4200px';
+          console.log(`Could not set height for ${iframe.id}, using fallback`);
+          // CRITICAL: Force all iframes to viewport height
+          iframe.style.height = '100vh';
+          iframe.style.minHeight = '100vh';
+          iframe.style.maxHeight = '100vh';
         }
       };
       
@@ -519,9 +567,9 @@
         enableSmoothScrolling();
         // CRITICAL: Handle iframe scroll behavior to prevent interference
         handleIframeScroll(iframe);
-        // Check again after content might have rendered
+        // CRITICAL: Ensure height is set immediately
+        setTimeout(checkHeight, 0);
         setTimeout(checkHeight, 100);
-        setTimeout(checkHeight, 300);
         // Mark this iframe as loaded
         showContentWhenReady();
         
@@ -545,6 +593,9 @@
         checkHeight();
         showContentWhenReady();
       }
+      
+      // CRITICAL: Set height immediately
+      checkHeight();
     }
     
     // Listen for hero readiness and align requests
