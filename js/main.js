@@ -33,31 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     log('scene rect', rect(scene));
     log('box rect', rect(box));
 
-    // Block non-downward trackpad scrolling during the first pinned pass
-    let firstPassActive = true;
-    const blockNonDownWheel = (e) => {
-      const st = pinnedTl && pinnedTl.scrollTrigger;
-      if (!st || !firstPassActive) return;
-      if (st.progress >= 1) return;
-      const dx = e.deltaX || 0;
-      const dy = e.deltaY || 0;
-      // During first pass, allow natural vertical scrolling (down and up) to drive the timeline.
-      // Block lateral/hybrid gestures so they don't skip to the parent page.
-      if (Math.abs(dx) > 0) {
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-      if (dy === 0) {
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-      // dy != 0 and dx == 0 → let it pass (ScrollTrigger will scrub forward/backward normally)
-    };
-    let wheelBlockEnabled = false;
-const enableWheelBlock = () => { if (!wheelBlockEnabled) { window.addEventListener('wheel', blockNonDownWheel, { passive: false }); wheelBlockEnabled = true; } };
-    const disableWheelBlock = () => { if (wheelBlockEnabled) { window.removeEventListener('wheel', blockNonDownWheel, { passive: false }); wheelBlockEnabled = false; } };
+    // REMOVED: Problematic wheel event blocking that prevents normal scrolling
+    // This was causing scroll locking between sections
 
     // --- A SINGLE timeline for the entire pinned sequence ---
     // Ensure no residual scroll inside the iframe on init
@@ -73,7 +50,17 @@ const enableWheelBlock = () => { if (!wheelBlockEnabled) { window.addEventListen
         start: 'top top',
         pinSpacing: true, // preserve padding space
         end: `+=${animationScroll + pauseScroll + slideOutScroll + tiltScroll + finalPauseScroll}`,
-
+        // Add better scroll handling
+        onEnter: () => {
+          log('Hero pin entered');
+          // Ensure parent page can still scroll
+          try { parent && parent.postMessage({ type: 'hero-pin-active' }, '*'); } catch (e) {}
+        },
+        onLeave: () => {
+          log('Hero pin left');
+          // Signal that hero is no longer pinned
+          try { parent && parent.postMessage({ type: 'hero-pin-inactive' }, '*'); } catch (e) {}
+        }
       }
     });
 
@@ -89,15 +76,9 @@ const enableWheelBlock = () => { if (!wheelBlockEnabled) { window.addEventListen
       if (event.data && event.data.type === 'hide-arrow') fadeArrow();
     });
 
-    // Keep guard for entire first pass; remove only on complete
-    enableWheelBlock();
+    // REMOVED: Wheel blocking that was preventing normal scrolling
     pinnedTl.eventCallback('onComplete', () => {
-      firstPassActive = false;
-      disableWheelBlock();
-      try {
-        document.documentElement.style.overscrollBehavior = 'auto';
-        document.body.style.overscrollBehavior = 'auto';
-      } catch (_) {}
+      log('Hero animation complete');
       try { parent && parent.postMessage({ type: 'hero-complete' }, '*'); } catch (e) {}
     });
 

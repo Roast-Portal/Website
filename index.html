@@ -343,9 +343,31 @@
     function enableSmoothScrolling() {
       document.documentElement.style.scrollBehavior = 'smooth';
       document.body.style.scrollBehavior = 'smooth';
+      // Ensure no scroll interference
+      document.documentElement.style.overscrollBehavior = 'auto';
+      document.body.style.overscrollBehavior = 'auto';
     }
 
-
+    // Improved iframe scroll handling
+    function handleIframeScroll(iframe) {
+      // Prevent iframe scroll interference
+      iframe.style.pointerEvents = 'auto';
+      iframe.style.overflow = 'visible';
+      
+      // Ensure iframe doesn't capture scroll events
+      try {
+        iframe.addEventListener('load', () => {
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+          if (iframeDoc) {
+            // Prevent iframe from interfering with parent scrolling
+            iframeDoc.documentElement.style.overscrollBehavior = 'none';
+            iframeDoc.body.style.overscrollBehavior = 'none';
+          }
+        });
+      } catch (e) {
+        // Cross-origin restriction
+      }
+    }
 
     function alignHero() {
       const hero = document.getElementById('hero-frame');
@@ -371,6 +393,9 @@
         if (loadingIndicator) {
           loadingIndicator.style.display = 'none';
         }
+        
+        // Ensure proper scroll behavior
+        enableSmoothScrolling();
       }
     }
     
@@ -411,6 +436,8 @@
         checkHeight();
         // Enable smooth scrolling when iframes load
         enableSmoothScrolling();
+        // Handle iframe scroll behavior
+        handleIframeScroll(iframe);
         // Check again after content might have rendered
         setTimeout(checkHeight, 100);
         setTimeout(checkHeight, 300);
@@ -452,12 +479,20 @@
         // Ensure smooth scrolling is enabled
         enableSmoothScrolling();
       }
+      if (event.data && event.data.type === 'hero-pin-active') {
+        // Hero is pinned, ensure parent can still scroll
+        console.log('Hero pin active - ensuring parent scroll works');
+      }
+      if (event.data && event.data.type === 'hero-pin-inactive') {
+        // Hero is no longer pinned, normal scrolling resumes
+        console.log('Hero pin inactive - normal scrolling resumed');
+      }
     });
 
     // Apply to all iframes
     document.querySelectorAll('iframe').forEach(resizeIframe);
     
-    // Intersection Observer for scroll animations
+    // Improved Intersection Observer for scroll animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -468,12 +503,13 @@
             const hero = document.getElementById('hero-frame');
             try { hero && hero.contentWindow && hero.contentWindow.postMessage({ type: 'hide-arrow' }, '*'); } catch (_) {}
           }
-          // No scroll locking; hero handles its own pinning
+          // Ensure smooth scrolling is enabled
+          enableSmoothScrolling();
         }
       });
     }, {
-      threshold: 0.75,
-      rootMargin: '0px'
+      threshold: 0.1, // Lower threshold for better detection
+      rootMargin: '0px 0px -10% 0px' // Start detection slightly before section enters
     });
     
     // Observe all iframes (hero won't animate due to CSS override)
@@ -481,6 +517,66 @@
       observer.observe(iframe);
     });
     
+    // Add smooth scroll navigation between sections
+    function enableSectionNavigation() {
+      // Add keyboard navigation support
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+          e.preventDefault();
+          smoothScrollToNextSection();
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+          e.preventDefault();
+          smoothScrollToPreviousSection();
+        }
+      });
+      
+      // Add wheel event handling for better scroll control
+      let isScrolling = false;
+      document.addEventListener('wheel', (e) => {
+        if (isScrolling) return;
+        
+        const delta = e.deltaY;
+        if (Math.abs(delta) > 50) { // Threshold to prevent accidental scrolling
+          isScrolling = true;
+          setTimeout(() => { isScrolling = false; }, 100);
+          
+          if (delta > 0) {
+            smoothScrollToNextSection();
+          } else {
+            smoothScrollToPreviousSection();
+          }
+        }
+      }, { passive: true });
+    }
+    
+    function smoothScrollToNextSection() {
+      const iframes = Array.from(document.querySelectorAll('iframe'));
+      const currentScroll = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      
+      for (let iframe of iframes) {
+        const rect = iframe.getBoundingClientRect();
+        if (rect.top > viewportHeight * 0.5) {
+          iframe.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          break;
+        }
+      }
+    }
+    
+    function smoothScrollToPreviousSection() {
+      const iframes = Array.from(document.querySelectorAll('iframe')).reverse();
+      const currentScroll = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      
+      for (let iframe of iframes) {
+        const rect = iframe.getBoundingClientRect();
+        if (rect.bottom < viewportHeight * 0.5) {
+          iframe.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          break;
+        }
+      }
+    }
+
     // Handle iframe navigation to ensure signup links work
     document.querySelectorAll('iframe').forEach(iframe => {
       iframe.addEventListener('load', () => {
@@ -520,6 +616,9 @@
     
     // Enable smooth scrolling immediately
     enableSmoothScrolling();
+    
+    // Enable section navigation
+    enableSectionNavigation();
     
     // Handle iframe navigation to ensure signup links work
     // Note: This is now handled in the resizeIframe function above

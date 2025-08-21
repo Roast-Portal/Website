@@ -46,6 +46,97 @@ html, body {
   color: #1a1a1a;
   line-height: 1.6;
   overscroll-behavior: none;
+  /* Fix scrolling issues */
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  /* Ensure proper scroll context */
+  position: relative;
+}
+
+/* Fix iframe scrolling issues */
+iframe {
+  border: none;
+  display: block;
+  width: 100%;
+  /* Ensure iframes don't interfere with parent scrolling */
+  pointer-events: auto;
+  /* Prevent iframe scroll interference */
+  overflow: visible;
+}
+
+/* Ensure proper section spacing and scrolling */
+.section-divider {
+  height: 0;
+  margin: 0;
+  padding: 0;
+  /* Remove any scroll interference */
+  pointer-events: none;
+}
+
+/* Fix body scroll context */
+body.loaded {
+  /* Ensure proper scroll behavior when content is loaded */
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Remove any scroll locking */
+  position: relative;
+  height: auto;
+  min-height: 100vh;
+}
+
+/* Additional scroll fixes */
+html {
+  /* Ensure proper scroll context */
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  /* Prevent scroll interference */
+  overscroll-behavior: auto;
+}
+
+/* Fix iframe container scrolling */
+iframe {
+  /* Ensure iframes don't interfere with parent scrolling */
+  pointer-events: auto;
+  /* Prevent scroll capture */
+  overscroll-behavior: none;
+  /* Ensure proper display */
+  display: block;
+  border: none;
+  width: 100%;
+}
+
+/* Fix section dividers */
+.section-divider {
+  height: 0;
+  margin: 0;
+  padding: 0;
+  /* Remove any scroll interference */
+  pointer-events: none;
+  /* Ensure no height contribution */
+  min-height: 0;
+  max-height: 0;
+}
+
+/* Ensure proper body scroll when content is loaded */
+body.loaded {
+  /* Remove any scroll locking */
+  overflow: visible;
+  overflow-x: hidden;
+  /* Ensure proper height */
+  height: auto;
+  min-height: 100vh;
+  /* Remove any transform that might interfere with scrolling */
+  transform: none;
+}
+
+/* Fix any potential scroll interference from GSAP */
+.gsap-marker-scroller-start,
+.gsap-marker-scroller-end,
+.gsap-marker-start,
+.gsap-marker-end {
+  /* Ensure GSAP markers don't interfere with scrolling */
+  pointer-events: none;
+  user-select: none;
 }
 
 h1, h2, h3 {
