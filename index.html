@@ -436,25 +436,48 @@
         const parser = new DOMParser();
         const doc = parser.parseFromString(text, 'text/html');
         
-        // Get the content from the body of the fetched document
-        const content = doc.body.innerHTML;
-        
+        // --- Corrected Content Extraction ---
+        // Find the main content element in the fetched document.
+        // This is more robust than just grabbing the whole body.
+        const contentNode = doc.body.firstElementChild; 
+        if (!contentNode) {
+            console.error(`No content found in ${url}`);
+            return;
+        }
+
         const container = document.getElementById(containerId);
         if (container) {
-          container.innerHTML = content;
-          
-          // Execute any scripts that were loaded with the content
-          const scripts = doc.body.querySelectorAll('script');
-          scripts.forEach(oldScript => {
-            const newScript = document.createElement('script');
-            if (oldScript.src) {
-              newScript.src = oldScript.src;
-            } else {
-              newScript.textContent = oldScript.textContent;
-            }
-            document.body.appendChild(newScript);
-          });
+          // Append the extracted node directly.
+          container.appendChild(contentNode);
         }
+
+        // --- Corrected Dependency Handling ---
+        // 1. Load Stylesheets
+        const links = doc.head.querySelectorAll('link[rel="stylesheet"]');
+        links.forEach(link => {
+          const newLink = document.createElement('link');
+          newLink.rel = 'stylesheet';
+          newLink.href = new URL(link.getAttribute('href'), url).href;
+          document.head.appendChild(newLink);
+        });
+        
+        // 2. Load and Execute Scripts
+        const scripts = doc.querySelectorAll('script');
+        scripts.forEach(oldScript => {
+            if (oldScript.src) {
+                // For external scripts, create a new script tag and append it
+                const newScript = document.createElement('script');
+                // Resolve the src relative to the original file's URL
+                newScript.src = new URL(oldScript.src, url).href;
+                document.body.appendChild(newScript);
+            } else {
+                // For inline scripts, create a new script tag and copy the content
+                const newScript = document.createElement('script');
+                newScript.textContent = oldScript.textContent;
+                document.body.appendChild(newScript);
+            }
+        });
+
       } catch (error) {
         console.error(`Error loading section ${containerId}:`, error);
         const container = document.getElementById(containerId);
@@ -466,6 +489,7 @@
 
     async function loadAllSections() {
       const loadingIndicator = document.getElementById('loading-indicator');
+      document.body.style.opacity = 0; // Hide body until content is loaded
       loadingIndicator.style.display = 'block';
 
       await Promise.all([
@@ -476,14 +500,22 @@
       ]);
 
       loadingIndicator.style.display = 'none';
-      document.body.style.opacity = 1;
+      document.body.style.opacity = 1; // Show body now
+      // Re-trigger animations setup after all content is loaded
+      setupScrollAnimations();
     }
 
     document.addEventListener('DOMContentLoaded', loadAllSections);
 
     // --- Simple Scroll Animations ---
     function setupScrollAnimations() {
-      const sections = document.querySelectorAll('.band, .cta');
+      // Use a more specific selector to avoid grabbing everything
+      const sections = document.querySelectorAll('.band, .cta, .section, .hero-wrapper');
+      if (sections.length === 0) {
+          console.log("No sections found for scroll animation.");
+          return;
+      }
+
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -496,14 +528,15 @@
       });
 
       sections.forEach(section => {
+        section.classList.add('reveal'); // Ensure class for animation is present
         observer.observe(section);
       });
     }
 
-    // Call animations after a delay to ensure content is loaded
-    window.addEventListener('load', () => {
-        setTimeout(setupScrollAnimations, 100);
-    });
+    // This listener is no longer needed as we call the setup after loading
+    // window.addEventListener('load', () => {
+    //     setTimeout(setupScrollAnimations, 100);
+    // });
   </script>
   <script>
     // Handle iframe height messages for mobile
