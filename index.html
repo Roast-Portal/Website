@@ -437,8 +437,6 @@
         const doc = parser.parseFromString(text, 'text/html');
         
         // --- Corrected Content Extraction ---
-        // Find the main content element in the fetched document.
-        // This is more robust than just grabbing the whole body.
         const contentNode = doc.body.firstElementChild; 
         if (!contentNode) {
             console.error(`No content found in ${url}`);
@@ -447,12 +445,11 @@
 
         const container = document.getElementById(containerId);
         if (container) {
-          // Append the extracted node directly.
           container.appendChild(contentNode);
         }
 
         // --- Corrected Dependency Handling ---
-        // 1. Load Stylesheets
+        // 1) Load Stylesheets
         const links = doc.head.querySelectorAll('link[rel="stylesheet"]');
         links.forEach(link => {
           const newLink = document.createElement('link');
@@ -461,17 +458,20 @@
           document.head.appendChild(newLink);
         });
         
-        // 2. Load and Execute Scripts
+        // 1b) Load inline <style> blocks from section head
+        const inlineStyles = doc.head.querySelectorAll('style');
+        inlineStyles.forEach(styleEl => {
+          document.head.appendChild(styleEl.cloneNode(true));
+        });
+        
+        // 2) Load and Execute Scripts
         const scripts = doc.querySelectorAll('script');
         scripts.forEach(oldScript => {
             if (oldScript.src) {
-                // For external scripts, create a new script tag and append it
                 const newScript = document.createElement('script');
-                // Resolve the src relative to the original file's URL
                 newScript.src = new URL(oldScript.src, url).href;
                 document.body.appendChild(newScript);
-            } else {
-                // For inline scripts, create a new script tag and copy the content
+            } else if (oldScript.textContent && oldScript.textContent.trim().length) {
                 const newScript = document.createElement('script');
                 newScript.textContent = oldScript.textContent;
                 document.body.appendChild(newScript);
@@ -482,15 +482,28 @@
         console.error(`Error loading section ${containerId}:`, error);
         const container = document.getElementById(containerId);
         if (container) {
-          container.innerHTML = `<p style="text-align: center; color: red;">Failed to load section.</p>`;
+          container.innerHTML = `<p style=\"text-align:center; color:#b00020; background:#fff3f3; padding:12px; border-radius:8px;\">Failed to load section: ${containerId}. ${location.protocol === 'file:' ? 'Open this site via a local server (http://localhost) instead of file:// so fetch() can load local files.' : ''}</p>`;
         }
       }
     }
 
     async function loadAllSections() {
       const loadingIndicator = document.getElementById('loading-indicator');
-      document.body.style.opacity = 0; // Hide body until content is loaded
+      document.body.style.opacity = 0;
       loadingIndicator.style.display = 'block';
+
+      // If opened via file://, fetch() of local files is blocked by the browser.
+      if (location.protocol === 'file:') {
+        loadingIndicator.innerHTML = `
+          <div style="text-align:center">
+            <div style=\"width:40px;height:40px;border:3px solid var(--bg-secondary);border-top:3px solid var(--accent-blue);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;\"></div>
+            <p style=\"margin:0 0 8px; font-size:16px; font-weight:600;\">Run a local server to view this site</p>
+            <p style=\"margin:0; font-size:14px; color:#555;\">From a terminal:</p>
+            <pre style=\"text-align:left; display:inline-block; background:#f6f8fa; padding:8px 12px; border-radius:6px; margin-top:8px;\">python3 -m http.server 8000 --directory /Users/brosiah/Git/Website</pre>
+            <p style=\"margin-top:8px; font-size:14px;\">Then open <strong>http://localhost:8000/index.html</strong></p>
+          </div>`;
+        return; // Skip fetch calls when using file://
+      }
 
       await Promise.all([
         loadSection('new-hero.html', 'hero-container'),
@@ -500,8 +513,7 @@
       ]);
 
       loadingIndicator.style.display = 'none';
-      document.body.style.opacity = 1; // Show body now
-      // Re-trigger animations setup after all content is loaded
+      document.body.style.opacity = 1;
       setupScrollAnimations();
     }
 
@@ -509,34 +521,20 @@
 
     // --- Simple Scroll Animations ---
     function setupScrollAnimations() {
-      // Use a more specific selector to avoid grabbing everything
       const sections = document.querySelectorAll('.band, .cta, .section, .hero-wrapper');
-      if (sections.length === 0) {
-          console.log("No sections found for scroll animation.");
-          return;
-      }
+      if (sections.length === 0) return;
 
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('reveal-visible');
-          }
+          if (entry.isIntersecting) entry.target.classList.add('reveal-visible');
         });
-      }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-      });
+      }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
       sections.forEach(section => {
-        section.classList.add('reveal'); // Ensure class for animation is present
+        section.classList.add('reveal');
         observer.observe(section);
       });
     }
-
-    // This listener is no longer needed as we call the setup after loading
-    // window.addEventListener('load', () => {
-    //     setTimeout(setupScrollAnimations, 100);
-    // });
   </script>
   <script>
     // Handle iframe height messages for mobile
