@@ -476,6 +476,57 @@
             iframeDoc.body.style.height = '100%';
             iframeDoc.documentElement.style.overflow = 'hidden';
             iframeDoc.body.style.overflow = 'hidden';
+            // CRITICAL: Inject script to forward scroll intents to parent
+            try {
+              const forwardScript = iframeDoc.createElement('script');
+              forwardScript.type = 'text/javascript';
+              forwardScript.textContent = `(() => {
+                const post = (type, payload) => { try { parent.postMessage(Object.assign({ type }, payload), '*'); } catch(_){} };
+                // Wheel -> parent scroll
+                const onWheel = (e) => { e.preventDefault(); post('iframe-wheel', { deltaY: e.deltaY }); };
+                window.addEventListener('wheel', onWheel, { passive: false });
+                // Touch -> parent scroll
+                let lastY = null;
+                window.addEventListener('touchstart', (e) => { if (e.touches && e.touches.length) lastY = e.touches[0].clientY; }, { passive: true });
+                window.addEventListener('touchmove', (e) => {
+                  if (e.touches && e.touches.length && lastY != null) {
+                    const y = e.touches[0].clientY;
+                    const deltaY = lastY - y; // positive = scroll down
+                    post('iframe-wheel', { deltaY });
+                  }
+                  e.preventDefault();
+                }, { passive: false });
+                window.addEventListener('touchend', () => { lastY = null; }, { passive: true });
+                // Keyboard -> parent scroll
+                window.addEventListener('keydown', (e) => {
+                  const h = window.innerHeight || 600;
+                  const keyDelta = {
+                    ArrowDown: 80,
+                    ArrowUp: -80,
+                    PageDown: h * 0.9,
+                    PageUp: -h * 0.9,
+                    Space: h * 0.9,
+                    Home: -1e7,
+                    End: 1e7,
+                  };
+                  if (keyDelta[e.key] !== undefined) { e.preventDefault(); post('iframe-wheel', { deltaY: keyDelta[e.key] }); }
+                }, false);
+                // Ensure the iframe never becomes scrollable later
+                const lock = () => {
+                  try {
+                    document.documentElement.style.overflow = 'hidden';
+                    document.body.style.overflow = 'hidden';
+                    document.documentElement.style.height = '100%';
+                    document.body.style.height = '100%';
+                  } catch(_) {}
+                };
+                lock();
+                new MutationObserver(lock).observe(document.documentElement, { attributes: true, childList: true, subtree: true, attributeFilter: ['style', 'class'] });
+              })();`;
+              iframeDoc.head.appendChild(forwardScript);
+            } catch (err) {
+              console.warn('Failed to inject forwarder script into iframe:', iframe.id, err);
+            }
           }
         });
       } catch (e) {
@@ -792,6 +843,13 @@
       if (event.data && event.data.type === 'navigate' && event.data.href) {
         // Navigate to the requested URL
         window.location.href = event.data.href;
+      }
+      // CRITICAL: Scroll events forwarded from iframes
+      if (event.data && event.data.type === 'iframe-wheel') {
+        const deltaY = Number(event.data.deltaY) || 0;
+        // Natural smooth scroll of the parent
+        const target = Math.max(0, Math.min(document.body.scrollHeight - window.innerHeight, window.scrollY + deltaY));
+        window.scrollTo({ top: target, behavior: 'auto' });
       }
     });
   </script>
