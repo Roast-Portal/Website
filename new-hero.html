@@ -35,9 +35,9 @@
 
     /* Complete pouch extreme styles */
     .pouch-extreme{
-      --pouch-w: var(--pouch-width); 
-      --pouch-h: var(--pouch-height);
-      --pouch-min: min(var(--pouch-w), var(--pouch-h));
+      --pouch-w: 100%; 
+      --pouch-h: 100%;
+      --pouch-min: min(100cqw, 100cqh);
       --bag-bg: #0a0a0a;
       --bag-radius-frac: 0.0375;
       --pouch-border-frac: 0.003;
@@ -63,8 +63,8 @@
       display: block !important;
       visibility: visible !important;
       opacity: 1 !important;
-      width: var(--pouch-width);
-      height: var(--pouch-height);
+      width: 100%;
+      height: 100%;
     }
     
     .pouch-extreme .pouch{ 
@@ -465,6 +465,7 @@
 
     .marquee-track {
       display: flex;
+      gap: clamp(15px, 3vw, 40px);
       animation: scroll 40s linear infinite;
       height: 100%;
       align-items: center;
@@ -473,14 +474,14 @@
 
     .marquee-content {
       display: flex;
-      gap: 40px;
+      gap: clamp(15px, 3vw, 40px);
       flex-shrink: 0;
       min-width: max-content;
     }
 
     .pouch-item {
-      width: 340px;
-      height: 460px;
+      width: clamp(220px, 25vw, 340px);
+      height: calc(clamp(220px, 25vw, 340px) * 1.35);
       flex-shrink: 0;
       border-radius: 16px;
       overflow: hidden;
@@ -499,14 +500,21 @@
         0 0 40px rgba(255, 255, 255, 0.05);
     }
 
+    /* Calculate dynamic scroll distance */
+    .marquee-track {
+      --pouch-width: clamp(220px, 25vw, 340px);
+      --gap-width: clamp(15px, 3vw, 40px);
+      /* 5 pouches + 4 gaps within content + 1 gap between content blocks */
+      --scroll-distance: calc(5 * var(--pouch-width) + 5 * var(--gap-width));
+    }
+    
     /* Seamless infinite scroll */
     @keyframes scroll {
       from {
         transform: translateX(0);
       }
       to {
-        /* 5 pouches × 340px + 4 gaps × 40px = 1700px + 160px = 1860px */
-        transform: translateX(-1860px);
+        transform: translateX(calc(-1 * var(--scroll-distance)));
       }
     }
 
@@ -557,6 +565,25 @@
     }
 
     @media (max-width: 768px) {
+      .hero-wrapper {
+        padding: 20px 0;
+      }
+      
+      .hero-container {
+        flex-direction: column;
+        padding: 40px 20px;
+        gap: 40px;
+        align-items: center;
+      }
+      
+      .hero-content {
+        width: 100%;
+        max-width: 100%;
+        text-align: center;
+        align-items: center;
+        padding: 0;
+      }
+      
       .hero-title {
         font-size: 2rem;
       }
@@ -589,10 +616,106 @@
       .button {
         width: 100%;
       }
-
+      
+      /* Mobile carousel optimization */
+      .marquee-section {
+        position: relative;
+        right: auto;
+        width: 100vw;
+        margin-left: -20px;
+        margin-right: -20px;
+        height: 360px;
+        overflow: hidden;
+      }
+      
+      .marquee-wrapper {
+        padding: 0 10px;
+        mask-image: linear-gradient(
+          to right,
+          transparent 0%,
+          black 10px,
+          black calc(100% - 10px),
+          transparent 100%
+        );
+        -webkit-mask-image: linear-gradient(
+          to right,
+          transparent 0%,
+          black 10px,
+          black calc(100% - 10px),
+          transparent 100%
+        );
+      }
+      
+      /* Mobile uses responsive sizing from main styles */
+      
+      /* Speed up animation on mobile for better UX */
+      .marquee-track {
+        animation-duration: 35s;
+      }
+    }
+    
+    /* Small mobile optimization */
+    @media (max-width: 480px) {
+      .hero-container {
+        padding: 30px 15px;
+        gap: 30px;
+      }
+      
+      .hero-subtitle {
+        font-size: 11px;
+      }
+      
+      .hero-title {
+        font-size: 1.75rem;
+        line-height: 1.2;
+      }
+      
+      .hero-description {
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+      
+      .subscription-details {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .detail-item {
+        min-width: 80px;
+      }
+      
+      .detail-number {
+        font-size: 1.5rem;
+      }
+      
+      .detail-text {
+        font-size: 0.7rem;
+      }
+      
+      .button-large {
+        font-size: 1.125rem;
+        padding: 1rem 2rem;
+      }
+      
+      /* Optimize carousel for small screens */
+      .marquee-section {
+        height: 320px;
+        margin-left: -15px;
+        margin-right: -15px;
+      }
+      
+      /* Small mobile uses responsive gap from main styles */
+      
+      /* Faster animation on small screens */
+      .marquee-track {
+        animation-duration: 30s;
+      }
+      
+      /* Touch-friendly */
       .pouch-item {
-        width: 280px;
-        height: 380px;
+        touch-action: pan-y;
+        -webkit-tap-highlight-color: transparent;
       }
     }
   </style>
@@ -798,7 +921,6 @@
                   </div>
                 </div>
               </div>
-              
             </div>
             
             <!-- Duplicate set for seamless loop -->
@@ -967,7 +1089,6 @@
                   </div>
                 </div>
               </div>
-              
             </div>
             
             <!-- Third duplicate set for extra smooth loop -->
