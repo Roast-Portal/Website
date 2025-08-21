@@ -437,15 +437,17 @@
         const doc = parser.parseFromString(text, 'text/html');
         
         // --- Corrected Content Extraction ---
-        const contentNode = doc.body.firstElementChild; 
-        if (!contentNode) {
-            console.error(`No content found in ${url}`);
-            return;
-        }
-
         const container = document.getElementById(containerId);
         if (container) {
-          container.appendChild(contentNode);
+          const fragment = document.createDocumentFragment();
+          Array.from(doc.body.children).forEach(child => {
+            if (child.tagName && child.tagName.toLowerCase() === 'script') return;
+            fragment.appendChild(child);
+          });
+          if (!fragment.childNodes.length) {
+            console.warn(`No visible content nodes found in ${url}`);
+          }
+          container.appendChild(fragment);
         }
 
         // --- Corrected Dependency Handling ---
