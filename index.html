@@ -376,7 +376,12 @@
   </style>
 </head>
 <body>
-  <!-- Loading Indicator -->
+  <iframe id="hero-frame" src="new-hero.html" title="Hero Section" loading="eager"></iframe>
+
+  <div class="section-divider"></div>
+
+<body class="loading">
+  <!-- Loading indicator -->
   <div id="loading-indicator" style="
     position: fixed;
     top: 50%;
@@ -398,12 +403,17 @@
     "></div>
     <p style="margin: 0; font-size: 16px; font-weight: 500;">Loading your personalized experience...</p>
   </div>
+  
 
-  <!-- Section Placeholders -->
-  <div id="hero-container"></div>
-  <div id="product-container"></div>
-  <div id="people-container"></div>
-  <div id="production-container"></div>
+  <iframe id="product-frame" src="product-section.html" title="Product Section"></iframe>
+  
+  <div class="section-divider"></div>
+  
+  <iframe id="people-frame" src="people.html" title="People Reviews"></iframe>
+  
+  <div class="section-divider"></div>
+  
+  <iframe id="production-frame" src="production.html" title="Production Process"></iframe>
 
   <!-- Footer -->
   <footer class="site-footer">
@@ -425,118 +435,365 @@
   </footer>
 
   <script>
-    // --- Content Loading ---
-    async function loadSection(url, containerId) {
+    // Enable smooth scrolling between iframes
+    function enableSmoothScrolling() {
+      document.documentElement.style.scrollBehavior = 'smooth';
+      document.body.style.scrollBehavior = 'smooth';
+      // CRITICAL: Ensure parent page handles all scrolling
+      document.documentElement.style.overscrollBehavior = 'none';
+      document.body.style.overscrollBehavior = 'none';
+      // CRITICAL: Ensure body can scroll
+      document.body.style.overflowY = 'auto';
+      document.body.style.overflowX = 'hidden';
+    }
+
+    // CRITICAL: Improved iframe scroll handling - prevent interference
+    function handleIframeScroll(iframe) {
+      // CRITICAL: Prevent iframe from interfering with parent scrolling
+      iframe.style.pointerEvents = 'auto';
+      iframe.style.overflow = 'hidden';
+      iframe.style.overscrollBehavior = 'none';
+      // CRITICAL: Force fixed height
+      iframe.style.height = '100vh';
+      iframe.style.minHeight = '100vh';
+      iframe.style.maxHeight = '100vh';
+      
+      // CRITICAL: Ensure iframe doesn't capture scroll events
       try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Failed to load ${url}: ${response.statusText}`);
-        }
-        const text = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, 'text/html');
-        
-        // --- Corrected Content Extraction ---
-        const container = document.getElementById(containerId);
-        if (container) {
-          const fragment = document.createDocumentFragment();
-          Array.from(doc.body.children).forEach(child => {
-            if (child.tagName && child.tagName.toLowerCase() === 'script') return;
-            fragment.appendChild(child);
-          });
-          if (!fragment.childNodes.length) {
-            console.warn(`No visible content nodes found in ${url}`);
+        iframe.addEventListener('load', () => {
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+          if (iframeDoc) {
+            // CRITICAL: Prevent iframe from interfering with parent scrolling
+            iframeDoc.documentElement.style.overscrollBehavior = 'none';
+            iframeDoc.body.style.overscrollBehavior = 'none';
+            iframeDoc.documentElement.style.overflow = 'hidden';
+            iframeDoc.body.style.overflow = 'hidden';
+            // CRITICAL: Remove any scroll behavior from iframe
+            iframeDoc.documentElement.style.scrollBehavior = 'auto';
+            iframeDoc.body.style.scrollBehavior = 'auto';
+            // CRITICAL: Force iframe content to fit within bounds
+            iframeDoc.documentElement.style.height = '100%';
+            iframeDoc.body.style.height = '100%';
+            iframeDoc.documentElement.style.overflow = 'hidden';
+            iframeDoc.body.style.overflow = 'hidden';
           }
-          container.appendChild(fragment);
-        }
+        });
+      } catch (e) {
+        // Cross-origin restriction
+      }
+    }
 
-        // --- Corrected Dependency Handling ---
-        // 1) Load Stylesheets
-        const links = doc.head.querySelectorAll('link[rel="stylesheet"]');
-        links.forEach(link => {
-          const newLink = document.createElement('link');
-          newLink.rel = 'stylesheet';
-          newLink.href = new URL(link.getAttribute('href'), url).href;
-          document.head.appendChild(newLink);
-        });
+    function alignHero() {
+      const hero = document.getElementById('hero-frame');
+      if (!hero) return;
+      try { hero.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
+    }
+
+    // Track iframe loading to prevent flash of unstyled content
+    let loadedIframes = 0;
+    const totalIframes = 3;
+    
+    function showContentWhenReady() {
+      loadedIframes++;
+      console.log(`Iframe loaded: ${loadedIframes}/${totalIframes}`);
+      if (loadedIframes >= totalIframes) {
+        // All iframes loaded, show the page
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        console.log('All iframes loaded, showing content');
         
-        // 1b) Load inline <style> blocks from section head
-        const inlineStyles = doc.head.querySelectorAll('style');
-        inlineStyles.forEach(styleEl => {
-          document.head.appendChild(styleEl.cloneNode(true));
-        });
+        // Hide loading indicator
+        const loadingIndicator = document.getElementById('loading-indicator');
+        if (loadingIndicator) {
+          loadingIndicator.style.display = 'none';
+        }
         
-        // 2) Load and Execute Scripts
-        const scripts = doc.querySelectorAll('script');
-        scripts.forEach(oldScript => {
-            if (oldScript.src) {
-                const newScript = document.createElement('script');
-                newScript.src = new URL(oldScript.src, url).href;
-                document.body.appendChild(newScript);
-            } else if (oldScript.textContent && oldScript.textContent.trim().length) {
-                const newScript = document.createElement('script');
-                newScript.textContent = oldScript.textContent;
-                document.body.appendChild(newScript);
+        // CRITICAL: Ensure proper scroll behavior
+        enableSmoothScrolling();
+        
+        // CRITICAL: Force scroll to top to ensure proper behavior
+        window.scrollTo(0, 0);
+      }
+    }
+    
+    // CRITICAL: Auto-resize iframes based on content without scroll interference
+    function resizeIframe(iframe) {
+      const checkHeight = () => {
+        try {
+          // CRITICAL: Keep all sections at fixed viewport height
+          if (iframe.id === 'hero-frame') {
+            iframe.style.height = '100vh';
+            iframe.style.minHeight = '100vh';
+            iframe.style.maxHeight = '100vh';
+            return;
+          }
+          if (iframe.id === 'product-frame') {
+            iframe.style.height = '100vh';
+            iframe.style.minHeight = '100vh';
+            iframe.style.maxHeight = '100vh';
+            return;
+          }
+          if (iframe.id === 'people-frame') {
+            iframe.style.height = '100vh';
+            iframe.style.minHeight = '100vh';
+            iframe.style.maxHeight = '100vh';
+            return;
+          }
+          if (iframe.id === 'production-frame') {
+            iframe.style.height = '100vh';
+            iframe.style.minHeight = '100vh';
+            iframe.style.maxHeight = '100vh';
+            return;
+          }
+          
+          // Fallback: set all iframes to viewport height
+          iframe.style.height = '100vh';
+          iframe.style.minHeight = '100vh';
+          iframe.style.maxHeight = '100vh';
+          
+        } catch (e) {
+          console.log(`Could not set height for ${iframe.id}, using fallback`);
+          // CRITICAL: Force all iframes to viewport height
+          iframe.style.height = '100vh';
+          iframe.style.minHeight = '100vh';
+          iframe.style.maxHeight = '100vh';
+        }
+      };
+      
+      // Check when iframe loads
+      iframe.onload = () => {
+        checkHeight();
+        // CRITICAL: Enable smooth scrolling when iframes load
+        enableSmoothScrolling();
+        // CRITICAL: Handle iframe scroll behavior to prevent interference
+        handleIframeScroll(iframe);
+        // CRITICAL: Ensure height is set immediately
+        setTimeout(checkHeight, 0);
+        setTimeout(checkHeight, 100);
+        // Mark this iframe as loaded
+        showContentWhenReady();
+        
+        // Handle iframe navigation to ensure signup links work
+        try {
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+          iframeDoc.addEventListener('click', (e) => {
+            const link = e.target.closest('a[href*="quiz.html"]');
+            if (link) {
+              e.preventDefault();
+              window.location.href = link.href;
             }
-        });
+          });
+        } catch (e) {
+          // Cross-origin restriction, links will work normally
+        }
+      };
+      
+      // Also check if already loaded
+      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+        checkHeight();
+        showContentWhenReady();
+      }
+      
+      // CRITICAL: Set height immediately
+      checkHeight();
+    }
+    
+    // Listen for hero readiness and align requests
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'hero-ready') {
+        enableSmoothScrolling();
+      }
+      if (event.data && event.data.type === 'hero-align') {
+        // Snap hero fully into view while animation is active
+        alignHero();
+      }
+      if (event.data && event.data.type === 'hero-complete') {
+        // Ensure smooth scrolling is enabled
+        enableSmoothScrolling();
+      }
+      if (event.data && event.data.type === 'hero-pin-active') {
+        // Hero is pinned, ensure parent can still scroll
+        console.log('Hero pin active - ensuring parent scroll works');
+      }
+      if (event.data && event.data.type === 'hero-pin-inactive') {
+        // Hero is no longer pinned, normal scrolling resumes
+        console.log('Hero pin inactive - normal scrolling resumed');
+      }
+    });
 
-      } catch (error) {
-        console.error(`Error loading section ${containerId}:`, error);
-        const container = document.getElementById(containerId);
-        if (container) {
-          container.innerHTML = `<p style=\"text-align:center; color:#b00020; background:#fff3f3; padding:12px; border-radius:8px;\">Failed to load section: ${containerId}. ${location.protocol === 'file:' ? 'Open this site via a local server (http://localhost) instead of file:// so fetch() can load local files.' : ''}</p>`;
+    // Apply to all iframes
+    document.querySelectorAll('iframe').forEach(resizeIframe);
+    
+    // CRITICAL: Improved Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add loaded class when iframe comes into view
+          entry.target.classList.add('loaded');
+          // If product section is entering view, tell hero to hide its arrow
+          if (entry.target && entry.target.id === 'product-frame') {
+            const hero = document.getElementById('hero-frame');
+            try { hero && hero.contentWindow && hero.contentWindow.postMessage({ type: 'hide-arrow' }, '*'); } catch (_) {}
+          }
+          // CRITICAL: Ensure smooth scrolling is enabled
+          enableSmoothScrolling();
+        }
+      });
+    }, {
+      threshold: 0.1, // Lower threshold for better detection
+      rootMargin: '0px 0px -10% 0px' // Start detection slightly before section enters
+    });
+    
+    // Observe all iframes (hero won't animate due to CSS override)
+    document.querySelectorAll('iframe').forEach(iframe => {
+      observer.observe(iframe);
+    });
+    
+    // CRITICAL: Add smooth scroll navigation between sections
+    function enableSectionNavigation() {
+      // Add keyboard navigation support
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+          e.preventDefault();
+          smoothScrollToNextSection();
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+          e.preventDefault();
+          smoothScrollToPreviousSection();
+        }
+      });
+      
+      // CRITICAL: Add wheel event handling for better scroll control
+      let isScrolling = false;
+      document.addEventListener('wheel', (e) => {
+        // CRITICAL: Prevent iframe scroll interference
+        e.stopPropagation();
+        
+        if (isScrolling) return;
+        
+        const delta = e.deltaY;
+        if (Math.abs(delta) > 50) { // Threshold to prevent accidental scrolling
+          isScrolling = true;
+          setTimeout(() => { isScrolling = false; }, 100);
+          
+          if (delta > 0) {
+            smoothScrollToNextSection();
+          } else {
+            smoothScrollToPreviousSection();
+          }
+        }
+      }, { passive: false }); // CRITICAL: Allow preventDefault for scroll control
+    }
+    
+    function smoothScrollToNextSection() {
+      const iframes = Array.from(document.querySelectorAll('iframe'));
+      const currentScroll = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      
+      for (let iframe of iframes) {
+        const rect = iframe.getBoundingClientRect();
+        if (rect.top > viewportHeight * 0.5) {
+          iframe.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          break;
+        }
+      }
+    }
+    
+    function smoothScrollToPreviousSection() {
+      const iframes = Array.from(document.querySelectorAll('iframe')).reverse();
+      const currentScroll = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      
+      for (let iframe of iframes) {
+        const rect = iframe.getBoundingClientRect();
+        if (rect.bottom < viewportHeight * 0.5) {
+          iframe.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          break;
         }
       }
     }
 
-    async function loadAllSections() {
-      const loadingIndicator = document.getElementById('loading-indicator');
-      document.body.style.opacity = 0;
-      loadingIndicator.style.display = 'block';
-
-      // If opened via file://, fetch() of local files is blocked by the browser.
-      if (location.protocol === 'file:') {
-        loadingIndicator.innerHTML = `
-          <div style="text-align:center">
-            <div style=\"width:40px;height:40px;border:3px solid var(--bg-secondary);border-top:3px solid var(--accent-blue);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;\"></div>
-            <p style=\"margin:0 0 8px; font-size:16px; font-weight:600;\">Run a local server to view this site</p>
-            <p style=\"margin:0; font-size:14px; color:#555;\">From a terminal:</p>
-            <pre style=\"text-align:left; display:inline-block; background:#f6f8fa; padding:8px 12px; border-radius:6px; margin-top:8px;\">python3 -m http.server 8000 --directory /Users/brosiah/Git/Website</pre>
-            <p style=\"margin-top:8px; font-size:14px;\">Then open <strong>http://localhost:8000/index.html</strong></p>
-          </div>`;
-        return; // Skip fetch calls when using file://
-      }
-
-      await Promise.all([
-        loadSection('new-hero.html', 'hero-container'),
-        loadSection('product-section.html', 'product-container'),
-        loadSection('people.html', 'people-container'),
-        loadSection('production.html', 'production-container')
-      ]);
-
-      loadingIndicator.style.display = 'none';
-      document.body.style.opacity = 1;
-      setupScrollAnimations();
-    }
-
-    document.addEventListener('DOMContentLoaded', loadAllSections);
-
-    // --- Simple Scroll Animations ---
-    function setupScrollAnimations() {
-      const sections = document.querySelectorAll('.band, .cta, .section, .hero-wrapper');
-      if (sections.length === 0) return;
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add('reveal-visible');
-        });
-      }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-      sections.forEach(section => {
-        section.classList.add('reveal');
-        observer.observe(section);
+    // Handle iframe navigation to ensure signup links work
+    document.querySelectorAll('iframe').forEach(iframe => {
+      iframe.addEventListener('load', () => {
+        
+        // Handle navigation for already loaded iframes
+        try {
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+          iframeDoc.addEventListener('click', (e) => {
+            const link = e.target.closest('a[href*="quiz.html"]');
+            if (link) {
+              e.preventDefault();
+              window.location.href = link.href;
+            }
+          });
+        } catch (e) {
+          // Cross-origin restriction, links will work normally
+        }
       });
-    }
+    });
+    
+    // Apply to all iframes
+    document.querySelectorAll('iframe').forEach(resizeIframe);
+    
+    // Debug: Check initial state
+    console.log('Initial body classes:', document.body.className);
+    console.log('Total iframes found:', document.querySelectorAll('iframe').length);
+    
+    // Fallback: show content after 3 seconds even if iframes haven't loaded
+    setTimeout(() => {
+      if (document.body.classList.contains('loading')) {
+        console.log('Fallback: showing content after timeout');
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        enableSmoothScrolling();
+      }
+    }, 3000);
+    
+    // Enable smooth scrolling immediately
+    enableSmoothScrolling();
+    
+    // CRITICAL: Force initial scroll setup
+    document.body.style.overflowY = 'auto';
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overscrollBehavior = 'none';
+    
+    // Enable section navigation
+    enableSectionNavigation();
+    
+    // CRITICAL: Ensure iframes don't interfere with initial load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Force proper scroll setup
+      enableSmoothScrolling();
+      // Ensure body is scrollable
+      document.body.style.overflowY = 'auto';
+      document.body.style.overflowX = 'hidden';
+      // Force scroll to top
+      window.scrollTo(0, 0);
+    });
+    
+    // CRITICAL: Handle window load to ensure everything is ready
+    window.addEventListener('load', () => {
+      // Final scroll setup
+      enableSmoothScrolling();
+      // Ensure proper body overflow
+      document.body.style.overflowY = 'auto';
+      document.body.style.overflowX = 'hidden';
+      // Force scroll to top
+      window.scrollTo(0, 0);
+      console.log('Page fully loaded - scrolling should work now');
+    });
+    
+    // Handle iframe navigation to ensure signup links work
+    // Note: This is now handled in the resizeIframe function above
+    
+    // Listen for postMessage from iframes for navigation
+    window.addEventListener('message', (event) => {
+      // In production, you should check event.origin
+      if (event.data && event.data.type === 'navigate' && event.data.href) {
+        // Navigate to the requested URL
+        window.location.href = event.data.href;
+      }
+    });
   </script>
   <script>
     // Handle iframe height messages for mobile
