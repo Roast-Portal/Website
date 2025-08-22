@@ -13,12 +13,13 @@
     gtag('config', 'AW-17346642053');
   </script>
   
-  <!-- Event snippet for Submit lead form (1) conversion page -->
+  <!-- Event snippet for Submit lead form conversion page -->
   <script>
     function gtag_report_conversion(url) {
       var callback = function () {
         if (typeof(url) != 'undefined') {
-          window.location = url;
+          // Navigate the top-level window to break out of any iframes
+          window.top.location.href = url;
         }
       };
       gtag('event', 'conversion', {

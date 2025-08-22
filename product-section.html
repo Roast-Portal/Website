@@ -12,12 +12,13 @@
     gtag('config', 'AW-17346642053');
   </script>
   
-  <!-- Event snippet for Submit lead form (1) conversion page -->
+  <!-- Event snippet for Submit lead form conversion page -->
   <script>
     function gtag_report_conversion(url) {
       var callback = function () {
         if (typeof(url) != 'undefined') {
-          window.location = url;
+          // Navigate the top-level window to break out of any iframes
+          window.top.location.href = url;
         }
       };
       gtag('event', 'conversion', {
@@ -1550,7 +1551,7 @@
         // Removed calls to old outline functions
       });
       
-      // Make pouch stacks clickable to navigate to quiz
+                // Make pouch stacks clickable to navigate to quiz
       document.querySelectorAll('.pouch-stack').forEach(stack => {
         stack.style.cursor = 'pointer';
         stack.setAttribute('tabindex', '0');
@@ -1577,60 +1578,29 @@
             });
           }
           
-          // Force complete page replacement to ensure quiz loads in new tab
-          console.log('Navigating to quiz.html...');
-          
-          // Prevent any default behaviors that might interfere
-          e.preventDefault();
-          e.stopPropagation();
-          
-          // Clear the entire page content to force a fresh load
-          document.body.innerHTML = '<div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">Loading quiz...</div>';
-          
-          // Break out of iframe and load quiz in entire browser tab
-          console.log('Window top:', window.top);
-          console.log('Window self:', window.self);
-          console.log('Parent window:', window.parent);
-          console.log('Is in iframe:', window.top !== window.self);
-          
-          try {
-            // Method 1: Break out of iframe to parent window
-            if (window.top !== window.self) {
-              console.log('Breaking out of iframe to parent window');
-              window.top.location.href = 'quiz.html';
-            } else {
-              // Method 2: Direct navigation if not in iframe
-              console.log('Not in iframe, using direct navigation');
-              window.location.replace('quiz.html');
-            }
-          } catch (e) {
-            console.error('Top navigation failed:', e);
-            try {
-              // Method 3: Try to break out with target="_top" link
-              const link = document.createElement('a');
-              link.href = 'quiz.html';
-              link.target = '_top';
-              link.rel = 'noopener noreferrer';
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            } catch (e2) {
-              console.error('Link click failed:', e2);
-              // Method 4: Last resort - try to access parent window
-              try {
-                parent.location.href = 'quiz.html';
-              } catch (e3) {
-                console.error('Parent navigation failed:', e3);
-                // Method 5: Force reload entire page
-                window.location = 'quiz.html';
-              }
-            }
-          }
+          // Navigate to quiz as a separate page (don't redirect the entire main page)
+          console.log('Navigating to quiz.html as separate page...');
           
           // Remove click feedback after a short delay
           setTimeout(() => {
             stack.classList.remove('clicking');
           }, 150);
+          
+          // Navigate to quiz using the same pattern as other CTA buttons
+          // This ensures consistent behavior across all sections
+          if (window.top !== window.self) {
+            // If in iframe, use target="_top" to break out and navigate
+            const link = document.createElement('a');
+            link.href = 'quiz.html';
+            link.target = '_top';
+            link.rel = 'noopener noreferrer';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          } else {
+            // If not in iframe, navigate directly
+            window.location.href = 'quiz.html';
+          }
         };
         
         stack.addEventListener('click', handleClick);
