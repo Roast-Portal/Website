@@ -696,12 +696,62 @@
       nextBtn.disabled = !isStepValid();
     }
 
-    // Quiz submission is now handled by checkout page
-    // This prevents duplicate submissions and ensures complete data
+    // Submit quiz data to Google Apps Script
     async function submitQuizToGoogleScript(answers) {
-      // Quiz submission is now handled by checkout page
-      console.log('Quiz submission deferred to checkout page to prevent duplicates');
-      return;
+      const GAS_URL = 'https://script.google.com/macros/s/AKfycbzPAMu_-e7bZ6qXQRawEQqAfmSMy3HnAS31qeayNCATDCsUHdDuipldJf253-FsB7WUog/exec';
+      
+      try {
+        // Build payload for Google Apps Script
+        const payload = {
+          tab: 'Orders',
+          source: 'quiz_completion',
+          firstName: answers.firstName || '',
+          lastName: answers.lastName || '',
+          email: answers.email || '',
+          roastLevel: answers.roastLevel || '',
+          brewMethod: answers.brewMethod || '',
+          equipmentDetails: answers.equipmentDetails || '',
+          additions: Array.isArray(answers.additions) ? answers.additions.join(', ') : (answers.additions || ''),
+          priceRange: answers.priceRange || '',
+          cupsPerDay: answers.cupsPerDay || '',
+          personality: answers.personality || '',
+          tasteBalance: answers.tasteBalance || '',
+          flavorNutty: answers.flavorNutty || '',
+          flavorFruity: answers.flavorFruity || '',
+          flavorFloral: answers.flavorFloral || '',
+          flavorSmoky: answers.flavorSmoky || '',
+          blendName: answers.blendName || 'Your Daily Roast',
+          additionalNotes: answers.additionalNotes || '',
+          submission_id: 'quiz_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+          timestamp: new Date().toISOString(),
+          page_path: window.location.pathname,
+          referrer: document.referrer || '',
+          user_agent: navigator.userAgent
+        };
+
+        console.log('Submitting quiz data to Google Apps Script:', payload);
+        
+        const form = new URLSearchParams();
+        Object.entries(payload).forEach(([k,v]) => form.append(k, String(v ?? '')));
+        
+        const response = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+          body: form.toString(),
+          keepalive: true
+        });
+
+        if (response.ok) {
+          console.log('Quiz data submitted successfully to Google Apps Script');
+          return true;
+        } else {
+          console.error('Google Apps Script submission failed:', response.status, response.statusText);
+          return false;
+        }
+      } catch (error) {
+        console.error('Error submitting quiz data to Google Apps Script:', error);
+        return false;
+      }
     }
     
     // Submission ID generation moved to checkout page
@@ -713,7 +763,7 @@
     }
 
     // --- Navigation ---
-    nextBtn.addEventListener('click', ()=>{
+    nextBtn.addEventListener('click', async ()=>{
       console.log('Next button clicked, step:', currentStep + 1, 'of', quizData.length);
       
       // Prevent multiple clicks during submission
@@ -735,7 +785,7 @@
         saveProgress();
         renderStep(true);
       }else{
-        // Finalize
+        // Finalize and submit to Google Apps Script
         const payload = {
           answers,
           meta: {
@@ -745,12 +795,12 @@
           }
         };
         
-        // Store quiz data for checkout submission (don't submit yet)
+        // Store quiz data for checkout
         try{
           localStorage.setItem(storageKey, JSON.stringify(payload.answers));
-          // Save rp_quiz one more time before redirect
+          // Save rp_quiz for checkout page
           localStorage.setItem('rp_quiz', JSON.stringify(buildRpQuizPayload(answers)));
-          // Mark quiz as completed for checkout to submit
+          // Mark quiz as completed
           localStorage.setItem('quiz_completed', 'true');
         }catch(_){}
         
@@ -768,18 +818,33 @@
         console.log('Quiz completed, submission flags set - completed:', submissionCompleted, 'in progress:', submissionInProgress);
         
         // Show completion status
-        status.innerHTML = '<span style="color: #34A853;">Quiz completed! Redirecting to checkout...</span>';
+        status.innerHTML = '<span style="color: #34A853;">✓ Quiz completed! Submitting your data to Google Apps Script...</span>';
         
         // Disable the button to prevent further clicks
         nextBtn.disabled = true;
         console.log('Next button disabled to prevent further clicks');
         
+        // Submit to Google Apps Script
+        try {
+          const submissionSuccess = await submitQuizToGoogleScript(answers);
+          if (submissionSuccess) {
+            status.innerHTML = '<span style="color: #34A853;">✓ Quiz data submitted successfully! Redirecting to checkout...</span>';
+            console.log('Quiz data submitted to Google Apps Script successfully');
+          } else {
+            status.innerHTML = '<span style="color: #FF9500;">⚠ Quiz completed! Redirecting to checkout...</span>';
+            console.log('Quiz data submission failed, but continuing to checkout');
+          }
+        } catch (error) {
+          console.error('Error during Google Apps Script submission:', error);
+          status.innerHTML = '<span style="color: #FF9500;">⚠ Quiz completed! Redirecting to checkout...</span>';
+        }
+        
         // Small delay to show success message before redirect
         setTimeout(() => {
           console.log('Redirecting to checkout...');
-          // Redirect – checkout reads localStorage.rp_quiz
+          // Redirect to checkout page
           window.location.href = 'checkout.html';
-        }, 1500);
+        }, 2000);
       }
     });
 
