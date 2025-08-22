@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Navigation Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .test-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #0071E3;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin: 10px 10px 10px 0;
+      font-weight: 500;
+    }
+    .test-button:hover {
+      background: #0051A3;
+    }
+    .debug-info {
+      background: #f5f5f7;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-family: monospace;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quiz Navigation Test</h1>
+  
+  <div class="test-section">
+    <h2>Direct Navigation Test</h2>
+    <p>Test direct navigation to the quiz page:</p>
+    <a href="quiz.html" class="test-button">Go to Quiz (Direct Link)</a>
+    <a href="quiz.html" class="test-button" target="_top">Go to Quiz (target="_top")</a>
+  </div>
+  
+  <div class="test-section">
+    <h2>JavaScript Navigation Test</h2>
+    <p>Test JavaScript-based navigation:</p>
+    <button onclick="navigateToQuiz()" class="test-button">Go to Quiz (JavaScript)</button>
+    <button onclick="navigateToQuizTop()" class="test-button">Go to Quiz (window.top)</button>
+  </div>
+  
+  <div class="test-section">
+    <h2>Iframe Context Test</h2>
+    <p>Test iframe navigation behavior:</p>
+    <button onclick="testIframeNavigation()" class="test-button">Test Iframe Navigation</button>
+  </div>
+  
+  <div class="debug-info">
+    <h3>Debug Information:</h3>
+    <div id="debug-content">
+      <p><strong>User Agent:</strong> <span id="user-agent"></span></p>
+      <p><strong>Viewport:</strong> <span id="viewport"></span></p>
+      <p><strong>Window Location:</strong> <span id="location"></span></p>
+      <p><strong>In Iframe:</strong> <span id="iframe-status"></span></p>
+      <p><strong>Parent Window:</strong> <span id="parent-status"></span></p>
+    </div>
+  </div>
+
+  <script>
+    // Display debug information
+    document.getElementById('user-agent').textContent = navigator.userAgent;
+    document.getElementById('viewport').textContent = `${window.innerWidth} x ${window.innerHeight}`;
+    document.getElementById('location').textContent = window.location.href;
+    document.getElementById('iframe-status').textContent = window !== window.parent ? 'Yes' : 'No';
+    document.getElementById('parent-status').textContent = window !== window.top ? 'Yes' : 'No';
+    
+    function navigateToQuiz() {
+      console.log('Navigating to quiz via JavaScript...');
+      window.location.href = 'quiz.html';
+    }
+    
+    function navigateToQuizTop() {
+      console.log('Navigating to quiz via window.top...');
+      if (window.top !== window.self) {
+        window.top.location.href = 'quiz.html';
+      } else {
+        window.location.href = 'quiz.html';
+      }
+    }
+    
+    function testIframeNavigation() {
+      console.log('Testing iframe navigation...');
+      
+      // Test various navigation methods
+      try {
+        if (window.top !== window.self) {
+          console.log('In iframe, using window.top.location.href');
+          window.top.location.href = 'quiz.html';
+        } else if (window.parent !== window.self) {
+          console.log('In iframe, using window.parent.location.href');
+          window.parent.location.href = 'quiz.html';
+        } else {
+          console.log('Not in iframe, using window.location.href');
+          window.location.href = 'quiz.html';
+        }
+      } catch (error) {
+        console.error('Navigation error:', error);
+        alert('Navigation failed: ' + error.message);
+      }
+    }
+    
+    // Log page load
+    console.log('Quiz navigation test page loaded');
+    console.log('Current location:', window.location.href);
+    console.log('Parent window:', window.parent);
+    console.log('Top window:', window.top);
+  </script>
+</body>
+</html>
+
