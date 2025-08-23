@@ -240,16 +240,6 @@
       flex-wrap: wrap;
     }
     
-    /* When we have 3 buttons, adjust layout */
-    .checkout-actions:has(#resetOrderBtn) {
-      justify-content: space-between;
-    }
-    
-    .checkout-actions:has(#resetOrderBtn) .btn {
-      flex: 1;
-      min-width: 120px;
-    }
-
     .btn{
       appearance:none; -webkit-appearance:none;
       border:1px solid var(--border);
@@ -712,17 +702,6 @@
       .btn.secondary {
         order: 2;
       }
-      
-      /* Handle three-button layout on mobile */
-      .checkout-actions:has(#resetOrderBtn) {
-        flex-direction: column;
-        gap: 8px;
-      }
-      
-      .checkout-actions:has(#resetOrderBtn) .btn {
-        order: unset;
-        width: 100%;
-      }
     }
 
     @media(max-width: 480px){
@@ -957,10 +936,10 @@
       // Check if order is already completed
       const orderCompleted = isOrderCompleted();
       const sameSession = isSameSession();
-      const buyButtonText = orderCompleted ? 'Order Completed' : 'Complete Order';
+      const buyButtonText = orderCompleted ? 'Order Completed' : 'Buy Now';
       const buyButtonDisabled = orderCompleted ? 'disabled' : '';
       const buyButtonClass = orderCompleted ? 'btn completed' : 'btn primary';
-      const buyButtonAriaLabel = orderCompleted ? 'Order already completed' : 'Complete order';
+      const buyButtonAriaLabel = orderCompleted ? 'Order already completed' : 'Buy now';
       
       // Different messages based on session
       let completionMessage = '';
@@ -1042,7 +1021,6 @@
         <div class="checkout-actions">
           <button class="btn secondary" type="button" id="backBtn" aria-label="Go back">← Back to Quiz</button>
           <button class="btn ${buyButtonClass}" type="button" id="buyBtn" ${buyButtonDisabled} aria-label="${buyButtonAriaLabel}">${buyButtonText}</button>
-          ${orderCompleted ? '<button class="btn secondary" type="button" id="resetOrderBtn" aria-label="Reset order to start over">Reset Order</button>' : ''}
         </div>
         <div id="status-indicator" class="status-indicator" style="display: none;">
           <div class="status-message"></div>
@@ -1063,6 +1041,82 @@
     // ---- Order Completion ----
     // Quiz data is already submitted to Google Apps Script in the quiz
     // This section handles order completion and redirect
+
+    // ---------- GOOGLE ANALYTICS TRACKING ----------
+    function trackEvent(eventName, parameters = {}) {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', eventName, {
+            ...parameters,
+            page_title: document.title,
+            page_location: window.location.href,
+            timestamp: Date.now()
+          });
+        }
+      } catch (error) {
+        console.error('Google Analytics tracking error:', error);
+      }
+    }
+    
+    function trackPageView() {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'page_view', {
+            page_title: 'Checkout Page',
+            page_location: window.location.href,
+            custom_parameter: 'checkout_page'
+          });
+        }
+      } catch (error) {
+        console.error('Google Analytics page view tracking error:', error);
+      }
+    }
+    
+    function trackOrderReview() {
+      const d = loadData();
+      trackEvent('begin_checkout', {
+        currency: 'USD',
+        value: compute(d).total,
+        items: [{
+          item_id: 'coffee_subscription',
+          item_name: d.blendName || 'Your Daily Roast',
+          item_category: 'Coffee Subscription',
+          price: compute(d).subtotal,
+          quantity: 15
+        }],
+        custom_parameter: 'order_review'
+      });
+    }
+    
+    function trackButtonClick(buttonName, buttonLocation) {
+      trackEvent('button_click', {
+        button_name: buttonName,
+        button_location: buttonLocation,
+        custom_parameter: 'checkout_interaction'
+      });
+    }
+    
+    function trackOrderCompletion(success = true, errorMessage = '') {
+      const d = loadData();
+      const p = compute(d);
+      
+      trackEvent('purchase', {
+        transaction_id: 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        value: p.total,
+        currency: 'USD',
+        tax: p.tax,
+        shipping: p.shipping,
+        items: [{
+          item_id: 'coffee_subscription',
+          item_name: d.blendName || 'Your Daily Roast',
+          item_category: 'Coffee Subscription',
+          price: p.subtotal,
+          quantity: 15
+        }],
+        custom_parameter: success ? 'order_success' : 'order_error',
+        error_message: errorMessage
+      });
+    }
 
     // ---------- STATUS INDICATOR ----------
     function showStatus(message, type = 'info') {
@@ -1135,6 +1189,9 @@
       const btn = document.getElementById('buyBtn');
       if (btn){ btn.disabled = true; btn.setAttribute('aria-busy','true'); }
 
+      // Track button click
+      trackButtonClick('Buy Now', 'checkout_page');
+
       // Clear any previous status and show initial status
       hideStatus();
       showStatus('Completing your order...', 'info');
@@ -1145,8 +1202,8 @@
       console.log('Quiz data loaded:', d);
       console.log('Computed pricing:', p);
 
-      // Optional: ad/analytics event (won't block)
-      try { gtag('event','conversion',{ send_to:'AW-17346642053/djvHCNG48f4aEIWBw89A', value:p.total, currency:'USD' }); } catch{}
+      // Track order completion attempt
+      trackOrderCompletion(true);
 
       try{
         // Quiz data was already submitted to Google Apps Script in the quiz
@@ -1167,6 +1224,9 @@
         
       }catch(err){
         console.error('Order completion failed:', err);
+        
+        // Track order completion error
+        trackOrderCompletion(false, err.message);
         
         // Show error status
         const errorMessage = `Order completion encountered an issue: ${err.message}`;
@@ -1189,7 +1249,6 @@
     function bindHandlers(d, p){
       const buy = document.getElementById('buyBtn');
       const back = document.getElementById('backBtn');
-      const resetOrderBtn = document.getElementById('resetOrderBtn');
       
       // Check if order was already completed
       if (isOrderCompleted()) {
@@ -1200,21 +1259,26 @@
         // Order not completed - bind normal click handler
         if (buy) buy.addEventListener('click', onCompleteOrder);
       }
-
-      if (resetOrderBtn) {
-        resetOrderBtn.addEventListener('click', () => {
-          resetOrderState();
-          showStatus('Order reset. Please start over.', 'info');
-          console.log('Order reset.');
-          render(); // Re-render to show the reset state
+      
+      // Track back button click
+      if (back) {
+        back.addEventListener('click', () => {
+          trackButtonClick('Back to Quiz', 'checkout_page');
+          if (history.length) {
+            history.back();
+          } else {
+            window.location.assign('index.html');
+          }
         });
       }
-      
-      if (back) back.addEventListener('click', () => history.length ? history.back() : window.location.assign('index.html'));
     }
 
     // Initial render
     render();
+    
+    // Track page view and order review
+    trackPageView();
+    trackOrderReview();
   })();
   </script>
 </body>

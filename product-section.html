@@ -1324,7 +1324,7 @@
 
       <!-- Under‑pouches CTA -->
       <div class="pouch-cta">
-        <a href="quiz.html" class="btn-primary" data-nav="signup" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
+        <a href="quiz.html" class="btn-primary" data-nav="signup" onclick="return gtag_report_conversion('quiz.html');" data-tracking="subscribe_cta">Subscribe now</a>
       </div>
       
 
@@ -1563,6 +1563,14 @@
           e.preventDefault();
           e.stopPropagation();
           
+          // Track pouch stack click
+          if (typeof gtag === 'function') {
+            gtag('event', 'pouch_stack_click', {
+              stack_id: stack.id,
+              custom_parameter: 'product_interaction'
+            });
+          }
+          
           // Add visual feedback
           stack.classList.add('clicking');
           
@@ -1736,6 +1744,15 @@
       document.querySelectorAll('[data-nav="signup"]').forEach(el=>{
         el.addEventListener('click', (e)=>{
           e.preventDefault();
+          
+          // Track Subscribe Now button click
+          if (typeof gtag === 'function') {
+            gtag('event', 'subscribe_cta_click', {
+              button_location: 'product_section',
+              custom_parameter: 'main_cta'
+            });
+          }
+          
           document.body.classList.add('fade-out');
           // Track conversion when redirecting to quiz
         if (typeof gtag === 'function') {

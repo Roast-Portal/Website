@@ -662,6 +662,76 @@
     // Quiz submissions are sent to: https://script.google.com/macros/s/AKfycbzPAMu_-e7bZ6qXQRawEQqAfmSMy3HnAS31qeayNCATDCsUHdDuipldJf253-FsB7WUog/exec
     // This script handles quiz data collection and can be configured to send emails, store in Google Sheets, etc.
     
+    // --- Google Analytics Tracking ---
+    function trackQuizEvent(eventName, parameters = {}) {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', eventName, {
+            ...parameters,
+            page_title: document.title,
+            page_location: window.location.href,
+            timestamp: Date.now()
+          });
+        }
+      } catch (error) {
+        console.error('Google Analytics tracking error:', error);
+      }
+    }
+    
+    function trackQuestionView(questionId, questionTitle, stepNumber) {
+      trackQuizEvent('question_view', {
+        question_id: questionId,
+        question_title: questionTitle,
+        step_number: stepNumber,
+        total_steps: quizData.length,
+        custom_parameter: 'quiz_progress'
+      });
+    }
+    
+    function trackAnswerSelection(questionId, answer, stepNumber) {
+      trackQuizEvent('answer_selection', {
+        question_id: questionId,
+        answer: answer,
+        step_number: stepNumber,
+        total_steps: quizData.length,
+        custom_parameter: 'quiz_interaction'
+      });
+    }
+    
+    function trackButtonClick(buttonName, buttonLocation, stepNumber) {
+      trackQuizEvent('button_click', {
+        button_name: buttonName,
+        button_location: buttonLocation,
+        step_number: stepNumber,
+        total_steps: quizData.length,
+        custom_parameter: 'quiz_navigation'
+      });
+    }
+    
+    function trackQuizProgress(stepNumber, totalSteps) {
+      const progress = Math.round((stepNumber / totalSteps) * 100);
+      trackQuizEvent('quiz_progress', {
+        step_number: stepNumber,
+        total_steps: totalSteps,
+        progress_percentage: progress,
+        custom_parameter: 'quiz_milestone'
+      });
+    }
+    
+    function trackQuizStart() {
+      trackQuizEvent('quiz_start', {
+        custom_parameter: 'quiz_begin'
+      });
+    }
+    
+    function trackQuizCompletion(answers) {
+      trackQuizEvent('quiz_completion', {
+        total_questions: quizData.length,
+        questions_answered: Object.keys(answers).length,
+        custom_parameter: 'quiz_finished'
+      });
+    }
+    
     // --- Utilities ---
     const storageKey = 'quizAnswers';
     const stepKey = 'quizCurrentStep';
@@ -769,6 +839,9 @@
       quizContent.innerHTML = '';
       hasAttemptedSubmit = false;
 
+      // Track question view
+      trackQuestionView(step.id, step.title, currentStep + 1);
+
       const stepEl = document.createElement('section');
       stepEl.className = 'quiz-step';
       stepEl.setAttribute('role','group');
@@ -804,6 +877,8 @@
             answers[step.id] = opt;
             saveProgress();
             updateNav();
+            // Track answer selection
+            trackAnswerSelection(step.id, opt, currentStep + 1);
             safeGtag('event','quiz_answer',{ step_id: step.id, answer: opt });
           });
 
@@ -833,8 +908,14 @@
 
           input.addEventListener('change', ()=>{
             if(!answers[step.id]) answers[step.id] = [];
-            if(input.checked) { if(!answers[step.id].includes(opt)) answers[step.id].push(opt); }
-            else { answers[step.id] = answers[step.id].filter(v => v !== opt); }
+            if(input.checked) { 
+              if(!answers[step.id].includes(opt)) answers[step.id].push(opt); 
+              // Track answer selection
+              trackAnswerSelection(step.id, opt, currentStep + 1);
+            }
+            else { 
+              answers[step.id] = answers[step.id].filter(v => v !== opt); 
+            }
             saveProgress();
             updateNav();
           });
@@ -875,6 +956,8 @@
           slider.addEventListener('input', ()=>{
             answers[f.id] = slider.value;
             saveProgress();
+            // Track slider adjustment
+            trackAnswerSelection(step.id, `${f.id}:${slider.value}`, currentStep + 1);
           });
         });
         answersWrap.appendChild(grid);
@@ -915,6 +998,8 @@
           answers[step.id] = Number(slider.value);
           positionBubble();
           saveProgress();
+          // Track slider adjustment
+          trackAnswerSelection(step.id, `price:${slider.value}`, currentStep + 1);
         });
         window.addEventListener('resize', positionBubble, { passive:true });
 
@@ -935,6 +1020,11 @@
           answers[step.id] = input.value;
         saveProgress();
           updateNav();
+          // Track text input (debounced to avoid too many events)
+          clearTimeout(input._trackingTimeout);
+          input._trackingTimeout = setTimeout(() => {
+            trackAnswerSelection(step.id, `text_input:${input.value.length}chars`, currentStep + 1);
+          }, 1000);
         });
         answersWrap.appendChild(input);
       }
@@ -946,6 +1036,11 @@
         texta.addEventListener('input', ()=>{
           answers[step.id] = texta.value;
           saveProgress();
+          // Track textarea input (debounced to avoid too many events)
+          clearTimeout(texta._trackingTimeout);
+          texta._trackingTimeout = setTimeout(() => {
+            trackAnswerSelection(step.id, `textarea_input:${texta.value.length}chars`, currentStep + 1);
+          }, 1000);
         });
         answersWrap.appendChild(texta);
       }
@@ -970,6 +1065,11 @@
             answers[inp.id] = inp.value;
             saveProgress();
             updateNav();
+            // Track contact form input (debounced to avoid too many events)
+            clearTimeout(inp._trackingTimeout);
+            inp._trackingTimeout = setTimeout(() => {
+              trackAnswerSelection('contact_form', `${inp.id}:${inp.value.length}chars`, currentStep + 1);
+            }, 1000);
           });
         });
 
@@ -1103,6 +1203,9 @@
     nextBtn.addEventListener('click', async ()=>{
       console.log('Next button clicked, step:', currentStep + 1, 'of', quizData.length);
       
+      // Track button click
+      trackButtonClick('Next', 'quiz_navigation', currentStep + 1);
+      
       // Prevent multiple clicks during submission
       if (submissionInProgress || submissionCompleted) {
         console.log('Submission in progress or completed, ignoring click...');
@@ -1116,12 +1219,18 @@
       hasAttemptedSubmit = true;
       if(!isStepValid()) return;
       if(currentStep < quizData.length - 1){
+        // Track progress milestone
+        trackQuizProgress(currentStep + 1, quizData.length);
+        
         // Reset submission in progress for next step
         submissionInProgress = false;
         currentStep++;
         saveProgress();
         renderStep(true);
       }else{
+        // Track quiz completion
+        trackQuizCompletion(answers);
+        
         // Finalize and submit to Google Apps Script
         const payload = {
           answers,
@@ -1186,6 +1295,9 @@
     });
 
     prevBtn.addEventListener('click', ()=>{
+      // Track button click
+      trackButtonClick('Back', 'quiz_navigation', currentStep + 1);
+      
       if(currentStep > 0){
         // Go to previous quiz question
         currentStep--;
@@ -1225,10 +1337,38 @@
     });
 
     resetBtn.addEventListener('click', ()=>{
+      // Track reset button click
+      trackQuizEvent('quiz_reset', {
+        step_number: currentStep + 1,
+        total_steps: quizData.length,
+        custom_parameter: 'quiz_reset'
+      });
+      
       if(confirm('Reset your quiz and clear saved answers?')) resetProgress();
     });
 
-    // --- Init ---
+    // Track exit link clicks
+    document.addEventListener('click', (e) => {
+      const exitLink = e.target.closest('.exit-link');
+      if (exitLink) {
+        trackQuizEvent('quiz_exit', {
+          step_number: currentStep + 1,
+          total_steps: quizData.length,
+          custom_parameter: 'quiz_abandoned'
+        });
+      }
+    });
+    
+    // Track quiz abandonment (when user leaves the page)
+    window.addEventListener('beforeunload', () => {
+      trackQuizEvent('quiz_abandonment', {
+        step_number: currentStep + 1,
+        total_steps: quizData.length,
+        custom_parameter: 'page_unload'
+      });
+    });
+    
+    // Initial render
     loadProgress();
     
     // Check if quiz was already submitted today
@@ -1257,6 +1397,11 @@
       
       // Add click event listener to begin button
       beginBtn.addEventListener('click', function() {
+        // Track begin button click
+        trackQuizEvent('subscription_intro_begin', {
+          custom_parameter: 'intro_start'
+        });
+        
         // Add loading state to button
         beginBtn.classList.add('loading');
         beginBtn.querySelector('.btn-text').textContent = 'Starting...';
@@ -1283,6 +1428,9 @@
     
     // Start the intro animation
     handleSubscriptionIntro();
+    
+    // Track quiz start
+    trackQuizStart();
     
     renderStep();
   </script>
