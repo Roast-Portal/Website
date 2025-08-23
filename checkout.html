@@ -236,6 +236,18 @@
       padding-top: 24px;
       border-top: 1px solid var(--border);
       margin-top: 32px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    /* When we have 3 buttons, adjust layout */
+    .checkout-actions:has(#resetOrderBtn) {
+      justify-content: space-between;
+    }
+    
+    .checkout-actions:has(#resetOrderBtn) .btn {
+      flex: 1;
+      min-width: 120px;
     }
 
     .btn{
@@ -266,9 +278,35 @@
       border-color: var(--border);
     }
     
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    
+    .btn:disabled:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    
+    /* Completed order button styling */
+    .btn.completed {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border-color: var(--border);
+      cursor: not-allowed;
+    }
+    
+    .btn.completed:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    
     @media (hover:hover){
       .btn.primary:hover{ box-shadow:0 10px 25px rgba(0,113,227,.35); }
       .btn.secondary:hover{ background: var(--bg-secondary); }
+      .btn.completed:hover{ background: var(--bg-secondary); }
     }
 
     /* Product line layout */
@@ -674,6 +712,17 @@
       .btn.secondary {
         order: 2;
       }
+      
+      /* Handle three-button layout on mobile */
+      .checkout-actions:has(#resetOrderBtn) {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .checkout-actions:has(#resetOrderBtn) .btn {
+        order: unset;
+        width: 100%;
+      }
     }
 
     @media(max-width: 480px){
@@ -905,8 +954,27 @@
         if (handle){ badgeText = /s$/i.test(handle) ? `${handle}' Blend` : `${handle}'s Blend`; }
       }
 
+      // Check if order is already completed
+      const orderCompleted = isOrderCompleted();
+      const sameSession = isSameSession();
+      const buyButtonText = orderCompleted ? 'Order Completed' : 'Complete Order';
+      const buyButtonDisabled = orderCompleted ? 'disabled' : '';
+      const buyButtonClass = orderCompleted ? 'btn completed' : 'btn primary';
+      const buyButtonAriaLabel = orderCompleted ? 'Order already completed' : 'Complete order';
+      
+      // Different messages based on session
+      let completionMessage = '';
+      if (orderCompleted) {
+        if (sameSession) {
+          completionMessage = '✓ Your order has been completed in this session!';
+        } else {
+          completionMessage = '✓ Your order was completed previously.';
+        }
+      }
+
       return `
         <div class="checkout-content">
+          ${orderCompleted ? `<div class="status-indicator success" style="display: block; margin-bottom: 20px;"><div class="status-message">${completionMessage}</div></div>` : ''}
           <div class="subscription-badge">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 1C11.866 1 15 4.134 15 8C15 11.866 11.866 15 8 15C4.134 15 1 11.866 1 8C1 4.134 4.134 1 8 1Z" stroke="currentColor" stroke-width="1.5"/>
@@ -925,7 +993,7 @@
               <div class="pouch">
                 <div class="top-seal"></div>
                 <div class="pouch-label">
-                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Shape layer"><rect x="397.807373046875" y="263.5442199707031" width="200" height="200" rx="3.200347071234561" ry="12" data-corner="12" fill="#ffffff80" data-shape="square" data-rot="0" data-scalex="3.7495933200054137" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(3.74959, 1);"></rect><circle cx="977.3275756835938" cy="24.153820037841797" r="110" fill="rgba(16, 234, 81, 1)" data-shape="circle" data-rot="0" data-scalex="1.27809" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(1.27809, 1);"></circle><polygon points="504.1848449707031,645.3689880371094 614.1848449707031,875.3689880371094 394.1848449707031,875.3689880371094" fill="rgba(0, 0, 0, 1)" data-shape="triangle" data-rot="0" data-scalex="5" data-scaley="2.165829465350702" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(5, 2.16583);"></polygon></svg>
+                      <svg class="shape-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Shape layer"><rect x="397.807373046875" y="263.5442199707031" width="200" height="200" rx="3.200347071234561" ry="12" data-corner="12" fill="#ffffff80" data-shape="square" data-rot="0" data-scalex="3.7495933200054137" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(3.74959, 1);"></rect><circle cx="977.3275756835938" cy="24.153820037841797" r="110" fill="rgba(16, 234, 81, 1)" data-shape="circle" data-rot="0" data-scalex="1.27809" data-scaley="1" style="cursor: pointer; transform-box: fill-box; transform-origin: center center; transform: rotate(0deg) scale(5, 2.16583);"></polygon></svg>
                     </div>
                     
                     <div class="text-layer">
@@ -973,7 +1041,8 @@
         
         <div class="checkout-actions">
           <button class="btn secondary" type="button" id="backBtn" aria-label="Go back">← Back to Quiz</button>
-          <button class="btn primary" type="button" id="buyBtn" aria-label="Complete order">Complete Order</button>
+          <button class="btn ${buyButtonClass}" type="button" id="buyBtn" ${buyButtonDisabled} aria-label="${buyButtonAriaLabel}">${buyButtonText}</button>
+          ${orderCompleted ? '<button class="btn secondary" type="button" id="resetOrderBtn" aria-label="Reset order to start over">Reset Order</button>' : ''}
         </div>
         <div id="status-indicator" class="status-indicator" style="display: none;">
           <div class="status-message"></div>
@@ -1013,6 +1082,50 @@
       }
     }
 
+    // ---------- ORDER STATE MANAGEMENT ----------
+    function isOrderCompleted() {
+      try {
+        return localStorage.getItem('order_completed') === 'true';
+      } catch {
+        return false;
+      }
+    }
+    
+    function markOrderCompleted() {
+      try {
+        localStorage.setItem('order_completed', 'true');
+        // Also store timestamp for potential future use
+        localStorage.setItem('order_completed_at', Date.now().toString());
+        // Store session ID to prevent multiple submissions in same session
+        localStorage.setItem('order_session_id', Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9));
+      } catch {}
+    }
+    
+    function resetOrderState() {
+      try {
+        localStorage.removeItem('order_completed');
+        localStorage.removeItem('order_completed_at');
+        localStorage.removeItem('order_session_id');
+      } catch {}
+    }
+    
+    function isSameSession() {
+      try {
+        const sessionId = localStorage.getItem('order_session_id');
+        const completedAt = localStorage.getItem('order_completed_at');
+        if (!sessionId || !completedAt) return false;
+        
+        // Check if completed within last 5 minutes (same session)
+        const completedTime = parseInt(completedAt);
+        const currentTime = Date.now();
+        const fiveMinutes = 5 * 60 * 1000;
+        
+        return (currentTime - completedTime) < fiveMinutes;
+      } catch {
+        return false;
+      }
+    }
+
     // ---------- COMPLETE ORDER CLICK ----------
     let submitting = false;
     async function onCompleteOrder(){
@@ -1040,6 +1153,9 @@
         // This is just for order completion tracking
         console.log('Quiz data already submitted to Google Apps Script, proceeding to thank you page');
         
+        // Mark order as completed to prevent future submissions
+        markOrderCompleted();
+        
         // Success: show success message and redirect
         showStatus('Order completed successfully! Redirecting...', 'success');
         console.log('Order completed successfully, redirecting...');
@@ -1061,6 +1177,9 @@
         showStatus('Continuing to thank you page...', 'success');
         console.log('Continuing to thank you page despite error...');
         
+        // Mark order as completed even if there was an error
+        markOrderCompleted();
+        
         setTimeout(() => {
           window.location.assign('thanks.html');
         }, 1500);
@@ -1070,7 +1189,27 @@
     function bindHandlers(d, p){
       const buy = document.getElementById('buyBtn');
       const back = document.getElementById('backBtn');
-      if (buy) buy.addEventListener('click', onCompleteOrder);
+      const resetOrderBtn = document.getElementById('resetOrderBtn');
+      
+      // Check if order was already completed
+      if (isOrderCompleted()) {
+        // Order already completed - button is already disabled in template
+        // No need to add event listeners or show additional status
+        console.log('Order already completed, button disabled');
+      } else {
+        // Order not completed - bind normal click handler
+        if (buy) buy.addEventListener('click', onCompleteOrder);
+      }
+
+      if (resetOrderBtn) {
+        resetOrderBtn.addEventListener('click', () => {
+          resetOrderState();
+          showStatus('Order reset. Please start over.', 'info');
+          console.log('Order reset.');
+          render(); // Re-render to show the reset state
+        });
+      }
+      
       if (back) back.addEventListener('click', () => history.length ? history.back() : window.location.assign('index.html'));
     }
 
