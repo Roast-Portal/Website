@@ -1139,7 +1139,19 @@
     // ---------- ORDER STATE MANAGEMENT ----------
     function isOrderCompleted() {
       try {
-        return localStorage.getItem('order_completed') === 'true';
+        // Only consider order completed if it was completed from this checkout page
+        // Not from the quiz completion
+        const orderCompletedAt = localStorage.getItem('order_completed_at');
+        const orderCompletedFromCheckout = localStorage.getItem('order_completed_from_checkout');
+        
+        // If order was completed from checkout page, show completed state
+        if (orderCompletedAt && orderCompletedFromCheckout === 'true') {
+          return true;
+        }
+        
+        // If order was completed from quiz, don't show completed state yet
+        // User still needs to complete purchase on checkout page
+        return false;
       } catch {
         return false;
       }
@@ -1150,6 +1162,8 @@
         localStorage.setItem('order_completed', 'true');
         // Also store timestamp for potential future use
         localStorage.setItem('order_completed_at', Date.now().toString());
+        // Mark that order was completed from checkout page
+        localStorage.setItem('order_completed_from_checkout', 'true');
         // Store session ID to prevent multiple submissions in same session
         localStorage.setItem('order_session_id', Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9));
       } catch {}
@@ -1159,6 +1173,7 @@
       try {
         localStorage.removeItem('order_completed');
         localStorage.removeItem('order_completed_at');
+        localStorage.removeItem('order_completed_from_checkout');
         localStorage.removeItem('order_session_id');
       } catch {}
     }
@@ -1275,6 +1290,13 @@
 
     // Initial render
     render();
+    
+    // Clear quiz completion state when landing on checkout page
+    // This allows users to complete their purchase
+    try {
+      // Remove quiz completion flag so user can see Buy Now button
+      localStorage.removeItem('quiz_completed');
+    } catch {}
     
     // Track page view and order review
     trackPageView();
