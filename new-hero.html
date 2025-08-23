@@ -353,6 +353,45 @@
       position: relative;
     }
 
+    /* Animated gradient background */
+    .hero-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(88, 86, 214, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(120, 119, 198, 0.12) 0%, transparent 50%);
+      animation: gradientMove 20s ease-in-out infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Subtle moving gradient animation */
+    @keyframes gradientMove {
+      0%, 100% {
+        background: 
+          radial-gradient(circle at 20% 50%, rgba(88, 86, 214, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 40% 80%, rgba(120, 119, 198, 0.12) 0%, transparent 50%);
+      }
+      33% {
+        background: 
+          radial-gradient(circle at 80% 50%, rgba(88, 86, 214, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 20% 80%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 60% 20%, rgba(120, 119, 198, 0.12) 0%, transparent 50%);
+      }
+      66% {
+        background: 
+          radial-gradient(circle at 40% 20%, rgba(88, 86, 214, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 60% 60%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(120, 119, 198, 0.12) 0%, transparent 50%);
+      }
+    }
+
     .hero-container {
       max-width: 1232px;
       width: 100%;
@@ -360,6 +399,7 @@
       display: flex;
       align-items: center;
       position: relative;
+      z-index: 2; /* Ensure content is above the gradient */
     }
 
     /* Content section */
@@ -490,11 +530,12 @@
       width: 60%;
       height: 100%;
       pointer-events: none;
+      z-index: 3; /* Ensure marquee is above gradient */
     }
 
     .gradient-overlay {
       position: absolute;
-      z-index: 5;
+      z-index: 4;
       width: 303px;
       height: 100%;
       left: 0;
