@@ -936,7 +936,7 @@
       // Check if order is already completed
       const orderCompleted = isOrderCompleted();
       const sameSession = isSameSession();
-      const buyButtonText = orderCompleted ? 'Order Completed' : 'Buy Now';
+      const buyButtonText = orderCompleted ? 'Order Completed' : 'Start My Subscription';
       const buyButtonDisabled = orderCompleted ? 'disabled' : '';
       const buyButtonClass = orderCompleted ? 'btn completed' : 'btn primary';
       const buyButtonAriaLabel = orderCompleted ? 'Order already completed' : 'Buy now';
@@ -1018,6 +1018,16 @@
           </div>
         </div>
         
+        <div class="subscription-details">
+          <h2>Subscription Details</h2>
+          <ul>
+            <li><strong>What you get:</strong> 15 single-serve coffee pouches, delivered every 2 weeks.</li>
+            <li><strong>Billing:</strong> You'll be billed ${$$(p.total)} every 14 days.</li>
+            <li><strong>Flexibility:</strong> You can pause, cancel, or change your subscription at any time.</li>
+            <li><strong>Satisfaction Guaranteed:</strong> If you don't love your coffee, we'll send you a new blend for free.</li>
+          </ul>
+        </div>
+
         <div class="checkout-actions">
           <button class="btn secondary" type="button" id="backBtn" aria-label="Go back">← Back to Quiz</button>
           <button class="btn ${buyButtonClass}" type="button" id="buyBtn" ${buyButtonDisabled} aria-label="${buyButtonAriaLabel}">${buyButtonText}</button>
@@ -1247,17 +1257,6 @@
         const errorMessage = `Order completion encountered an issue: ${err.message}`;
         showStatus(errorMessage, 'error');
         console.error(errorMessage);
-        
-        // Continue to thanks page anyway since quiz data was already submitted
-        showStatus('Continuing to thank you page...', 'success');
-        console.log('Continuing to thank you page despite error...');
-        
-        // Mark order as completed even if there was an error
-        markOrderCompleted();
-        
-        setTimeout(() => {
-          window.location.assign('thanks.html');
-        }, 1500);
       }
     }
 

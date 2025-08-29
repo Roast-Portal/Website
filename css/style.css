@@ -222,21 +222,6 @@ p {
   perspective: calc(100vw + 100vh);
   position: relative;
   z-index: 10000;
-  background: linear-gradient(-45deg, #f5f7fa 0%, #c3cfe2 25%, #e8f4f8 50%, #f0f2f5 75%, #f5f7fa 100%);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
 }
 
 /* Explicit 10vh inset around the box */

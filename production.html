@@ -52,14 +52,15 @@
 
   <style>
     :root{
-      --bg-primary:#FBFBFD;
-      --bg-secondary:#F5F5F7;
+      --bg-primary:#FDF8F3;
+      --bg-secondary:#F0F7FF;
       --text-primary:#1D1D1F;
       --text-secondary:#6E6E73;
       --accent:#0071E3;
+      --accent-yellow:#FFD700;
       --radius-xl:28px;
       --radius-lg:20px;
-      --card-shadow:0 2px 18px rgba(0,0,0,.05),0 10px 26px rgba(0,0,0,.04);
+      --card-shadow:0 4px 20px rgba(0,0,0,0.08);
       --ease-apple:cubic-bezier(.4,0,.2,1);
       --font-sans: var(--font-primary);
       --overlap: clamp(14px, 3vw, 32px);
@@ -73,7 +74,7 @@
     *{ box-sizing:border-box; margin:0; padding:0; }
     body{
       font-family: var(--font-sans);
-      background: transparent;
+      background: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
@@ -124,8 +125,13 @@
     }
     .hero .eyebrow{
       font-size: 12px; font-weight: var(--font-weight-bold); letter-spacing: .06em; text-transform: uppercase;
-      color: var(--text-secondary);
+      color: var(--accent);
       word-spacing: 0.05em;
+      background: rgba(0, 113, 227, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 16px;
     }
     .hero h1{
       font-size: clamp(32px, 6vw, 56px);
@@ -133,11 +139,19 @@
       letter-spacing: -0.005em;
       margin: 8px 0 12px;
       font-weight: var(--font-weight-bold);
+      background: linear-gradient(135deg, var(--text-primary) 0%, #4A4A4A 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .hero h1 em{
       font-style: italic;
       font-weight: var(--font-weight-bold);
       letter-spacing: 0;
+      background: linear-gradient(135deg, var(--accent) 0%, #0056B3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .hero p{
       color: var(--text-secondary);
@@ -169,9 +183,10 @@
       border-radius: var(--img-br);
       padding: clamp(14px, 2.2vw, 22px);
       background: linear-gradient(140deg, #fff 0%, #f7f8fb 60%, #eef2ff 100%);
-      box-shadow: 0 1px 0 rgba(0,0,0,.02), 0 12px 28px rgba(37,63,116,.08);
+      box-shadow: 0 8px 32px rgba(37,63,116,0.12), 0 2px 8px rgba(0,0,0,0.08);
       overflow: hidden; /* Prevent content from expanding container */
       max-width: 100%;
+      border: 1px solid rgba(0,0,0,0.04);
     }
     .image-plate img{
       width:100%; height:auto; display:block; border-radius: calc(var(--img-br) - 6px);
@@ -188,17 +203,30 @@
       padding: clamp(24px, 3.2vw, 32px);
       position: relative;
       z-index: 10;
+      transition: transform 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
     }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+    
     .eyebrow{
       font-size: 12px; font-weight: var(--font-weight-bold); letter-spacing:.06em; text-transform: uppercase;
-      color: var(--text-secondary);
+      color: var(--accent);
       word-spacing: 0.05em;
+      background: rgba(0, 113, 227, 0.08);
+      padding: 6px 12px;
+      border-radius: 16px;
+      display: inline-block;
+      margin-bottom: 12px;
     }
     .band h3{
       font-size: clamp(22px, 3.6vw, 32px);
       line-height: 1.2; letter-spacing: -0.005em; margin: 6px 0 8px;
+      color: var(--text-primary);
     }
-    .band p{ color: var(--text-secondary); font-size: 16px; }
+    .band p{ color: var(--text-secondary); font-size: 16px; line-height: 1.65; }
 
     /* ---------- Mini inline nav ---------- */
     .mini-nav{ display:flex; gap:14px; justify-content:center; align-items:center; margin:-6px 0 22px; color: var(--text-secondary); }
@@ -381,6 +409,8 @@
       .code-box, .result-grid { transition: none !important; }
     }
 
+
+
     /* --- Blend Builder Styles --- */
     .blend-builder {
       width: 100%;
@@ -410,7 +440,7 @@
       max-height: 480px;
     }
     
-          @media (max-width: 920px) {
+    @media (max-width: 920px) {
       .blend-builder {
         border-radius: 0 !important;
         min-height: 340px;
@@ -853,7 +883,12 @@
     .gallery .stack{ display:grid; grid-template-rows: 1fr 1fr; gap:16px; }
     .gallery .tile{
       position:relative; border-radius: var(--img-br); overflow:hidden;
-      box-shadow: 0 12px 28px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.06);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
+    }
+    .gallery .tile:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.16), 0 4px 12px rgba(0,0,0,0.12);
     }
     .gallery img{ width:100%; height:100%; object-fit:cover; display:block; }
 
@@ -981,35 +1016,177 @@
     }
 
     /* ---------- CTA ---------- */
-    .cta{ text-align:center; margin: 40px 0 0; padding: 0; }
-    .cta h4{ font-size: clamp(22px, 3.4vw, 30px); margin-bottom: 10px; }
-    .cta p{ color: var(--text-secondary); max-width: 700px; margin: 0 auto 18px; }
+    .cta{ 
+      text-align:center; 
+      margin: 60px 0 0; 
+      padding: 60px 40px;
+      background: linear-gradient(135deg, rgba(240, 247, 255, 0.5) 0%, rgba(253, 248, 243, 0.5) 100%);
+      border-radius: var(--radius-xl);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(0, 113, 227, 0.05) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .cta-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .cta h4{ 
+      font-size: clamp(28px, 4vw, 36px); 
+      margin-bottom: 16px; 
+      background: linear-gradient(135deg, var(--text-primary) 0%, #4A4A4A 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: var(--font-weight-bold);
+    }
+    
+    .cta p{ 
+      color: var(--text-secondary); 
+      max-width: 700px; 
+      margin: 0 auto 24px; 
+      line-height: 1.6; 
+      font-size: clamp(16px, 2vw, 18px);
+    }
+    
+    .cta-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    
+    .cta-guarantee {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 0;
+      opacity: 0.8;
+    }
     
     @media (max-width: 920px) {
       .cta { 
-        margin: 40px 0 0; 
+        margin: 40px 0 0;
+        padding: 48px 32px;
+      }
+      .cta-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+      .cta-actions > * {
+        width: 100%;
+        max-width: 320px;
       }
     }
     
     @media (max-width: 640px) {
       .cta { 
-        margin: 32px 0 0; 
+        margin: 32px 0 0;
+        padding: 36px 24px;
+        border-radius: 20px;
       }
     }
     .btn-primary{
       display: inline-block;
-      background: #0071E3;
+      background: linear-gradient(135deg, var(--accent) 0%, #0056B3 100%);
       color: white;
       padding: 16px 32px;
       border-radius: 980px;
       font-size: 17px;
-      font-weight: var(--font-weight-regular);
+      font-weight: var(--font-weight-bold);
       text-decoration: none;
-      transition: all 0.2s ease;
+      transition: all 0.3s var(--ease-apple);
+      box-shadow: 0 4px 16px rgba(0,113,227,0.2);
+      border: none;
+      position: relative;
+      overflow: hidden;
     }
+    
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+    
     .btn-primary:hover{ 
       transform: translateY(-2px); 
-      box-shadow: 0 8px 24px rgba(0,113,227,0.3); 
+      box-shadow: 0 8px 32px rgba(0,113,227,0.4); 
+    }
+    
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 16px rgba(0,113,227,0.3);
+    }
+    
+    /* Secondary Button */
+    .btn-secondary {
+      display: inline-block;
+      background: transparent;
+      color: var(--accent);
+      padding: 16px 32px;
+      border-radius: 980px;
+      font-size: 17px;
+      font-weight: var(--font-weight-bold);
+      text-decoration: none;
+      transition: all 0.3s var(--ease-apple);
+      border: 2px solid var(--accent);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-secondary::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: var(--accent);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn-secondary:hover {
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,113,227,0.2);
+    }
+    
+    .btn-secondary:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+    
+    .btn-secondary span {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .btn-secondary:active {
+      transform: translateY(0);
     }
     
     /* Micro CTAs */
@@ -1022,13 +1199,20 @@
       font-weight: var(--font-weight-bold);
       text-decoration: none;
       margin-top: 16px;
-      transition: gap 0.2s ease, transform 0.2s ease;
+      transition: gap 0.3s var(--ease-apple), transform 0.3s var(--ease-apple), color 0.3s var(--ease-apple);
       cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 20px;
+      background: rgba(0, 113, 227, 0.05);
+      border: 1px solid rgba(0, 113, 227, 0.1);
     }
     
     .micro-cta:hover {
       gap: 10px;
       transform: translateX(2px);
+      background: rgba(0, 113, 227, 0.1);
+      border-color: rgba(0, 113, 227, 0.2);
+      color: #0056B3;
     }
     
     .micro-cta:active {
@@ -1053,6 +1237,137 @@
     /* Smooth image loading */
     img {
       background-color: #f5f5f5;
+      transition: opacity 0.3s var(--ease-apple);
+    }
+    
+    /* Enhanced section spacing and visual hierarchy */
+    .band {
+      position: relative;
+    }
+    
+    .band::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.3;
+    }
+    
+    /* Enhanced card styling */
+    .card {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-yellow), var(--accent));
+      opacity: 0;
+      transition: opacity 0.3s var(--ease-apple);
+    }
+    
+    .card:hover::before {
+      opacity: 1;
+    }
+    
+    /* Enhanced image plate styling */
+    .image-plate {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .image-plate::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.6s var(--ease-apple);
+      pointer-events: none;
+    }
+    
+    .image-plate:hover::after {
+      transform: translateX(100%);
+    }
+    
+    /* Enhanced typography */
+    .band h3 {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    
+    .band h3::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 1px;
+    }
+    
+    /* Enhanced eyebrow styling */
+    .eyebrow {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .eyebrow::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,113,227,0.1), transparent);
+      transition: left 0.6s var(--ease-apple);
+    }
+    
+    .eyebrow:hover::before {
+      left: 100%;
+    }
+    
+    /* Secondary CTA Styling */
+    .secondary-cta {
+      margin: 40px 0;
+      padding: 48px 40px;
+      background: linear-gradient(135deg, #fff 0%, rgba(240, 247, 255, 0.8) 100%);
+      border: 1px solid rgba(0, 113, 227, 0.1);
+    }
+    
+    .secondary-cta::before {
+      background: radial-gradient(circle at 50% 50%, rgba(0, 113, 227, 0.08) 0%, transparent 60%);
+    }
+    
+    .secondary-cta h4 {
+      font-size: clamp(24px, 3.5vw, 32px);
+    }
+    
+    @media (max-width: 920px) {
+      .secondary-cta {
+        margin: 32px 0;
+        padding: 40px 28px;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .secondary-cta {
+        margin: 24px 0;
+        padding: 32px 20px;
+      }
     }
   </style>
 </head>
@@ -1083,6 +1398,7 @@
         <div class="eyebrow">Method Mastery</div>
         <h3 id="brew-lab-h">Your dripper. Your recipe. Perfected.</h3>
         <p>Whether you use a V60 or a Chemex, we calibrate recipes for your exact setup. Each box includes 15 pre-dosed cups, with every dose weighed and ground for your equipment so brews land in the ideal window. You also get clear, dripper-specific instructions that work even without specialized gear.</p>
+        <a href="quiz.html" class="micro-cta" onclick="return gtag_report_conversion('quiz.html');">Get your perfect recipe →</a>
       </div>
     </section>
 
@@ -1096,10 +1412,11 @@
           </picture>
         </figure>
       </div>
-            <div class="content card">
+      <div class="content card">
         <div class="eyebrow">Craft Roasting</div>
         <h3 id="loring-h">Watch your blend come to life</h3>
         <p>See the magic happen—our Loring roaster transforms green coffee into your perfect cup. With real-time curve monitoring and locked profiles, every batch delivers the exact sweetness and clarity you love. Consistency you can taste, batch after batch.</p>
+        <a href="quiz.html" class="micro-cta" onclick="return gtag_report_conversion('quiz.html');">Start your roast journey →</a>
       </div>
     </section>
 
@@ -1161,6 +1478,7 @@
         <div class="eyebrow">Smart Blending</div>
         <h3 id="blend-h">Your feedback drives every blend decision</h3>
         <p>Love it stronger? Prefer less acidity? Just tell us. Our AI synthesizer learns from every rating, comment, and brewing note you share. Watch as your blend evolves box by box—getting closer to perfection with each delivery. It's like having a personal roaster who actually listens.</p>
+        <a href="quiz.html" class="micro-cta" onclick="return gtag_report_conversion('quiz.html');">Create your custom blend →</a>
       </div>
     </section>
 
@@ -1178,6 +1496,7 @@
         <div class="eyebrow">Water Chemistry</div>
         <h3 id="minerals-h">Pre-mineralized for perfect extraction</h3>
         <p>Bad water ruins great coffee. That's why we pre-integrate the exact minerals your blend needs. Just add distilled water and unlock flavors you've been missing—vibrant sweetness, clean finish, zero bitterness. It's chemistry made simple.</p>
+        <a href="quiz.html" class="micro-cta" onclick="return gtag_report_conversion('quiz.html');">Experience perfect water →</a>
       </div>
     </section>
 
@@ -1326,17 +1645,24 @@ plt.show()
         <div class="eyebrow">Machine Learning</div>
         <h3 id="ai-h">Your coffee gets smarter with every cup</h3>
         <p>See the code that powers your perfect brew. Our algorithms analyze grind size, extraction time, and your feedback to optimize every parameter. Like having a data scientist and barista working together—constantly fine-tuning your morning ritual.</p>
+        <a href="quiz.html" class="micro-cta" onclick="return gtag_report_conversion('quiz.html');">Start smart brewing →</a>
       </div>
     </section>
 
 
 
-    <!-- CTA -->
-    <section class="cta reveal">
-      <h4>Stop settling for mediocre coffee</h4>
-      <p>Join thousands of coffee lovers. Subscribe to receive 15 personalized coffee pouches delivered to your door.</p>
-      <a class="btn-primary" href="quiz.html" data-nav="signup" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
+    <!-- Secondary CTA -->
+    <section class="cta secondary-cta reveal" data-step="2">
+      <div class="cta-content">
+        <h4>Treat Yourself to Perfect Coffee</h4>
+        <p>We make champion-level coffee at your home, with your equipment. Tell us what you like and we'll handle the precision.</p>
+        <div class="cta-actions">
+          <a class="btn-primary" href="quiz.html" onclick="return gtag_report_conversion('quiz.html');">Get Started — Tell Us What You Like</a>
+        </div>
+      </div>
     </section>
+
+
   </main>
 
   <script>

@@ -114,6 +114,229 @@
       .footer-section { align-items: flex-start; }
       .footer-links { justify-content: flex-end; }
     }
+
+    /* --- Apple-like Product Scroll Story --- */
+    .product-scroll-story {
+      position: relative;
+    }
+
+    /* Natural Scroll Flow */
+    .product-scroll-story .snap {
+      /* Remove forced scroll-snap */
+    }
+    .product-scroll-story section.panel {
+      position: relative; 
+      min-height: auto;
+      padding: 30px 20px;
+      display: block;
+    }
+
+    /* Subtle dotted backdrop */
+    .product-scroll-story .backdrop::before {
+      content: ""; 
+      position: absolute; 
+      inset: 0; 
+      pointer-events: none; 
+      opacity: .5;
+      background: radial-gradient(circle at 30% 20%, rgba(0,113,227,.05), transparent 40%),
+                  radial-gradient(circle at 70% 80%, rgba(0,113,227,.05), transparent 40%),
+                  url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="p" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1" fill="%23000" opacity="0.06"/></pattern></defs><rect width="100" height="100" fill="url(%23p)"/></svg>');
+      background-blend-mode: normal;
+    }
+
+    /* Simplified image display */
+    .product-scroll-story .stage-wrap {
+      position: relative;
+      height: auto;
+      display: block;
+      margin: 40px 0;
+    }
+    .product-scroll-story .stage {
+      position: relative; 
+      display: block;
+      text-align: center;
+    }
+    .product-scroll-story .stage img { 
+      width: min(80vw, 600px); 
+      height: auto; 
+      border-radius: 20px; 
+      box-shadow: 0 8px 24px rgba(0,0,0,.12); 
+      margin-bottom: 30px;
+    }
+
+    /* Simple feature layout */
+    .product-scroll-story .rail {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .product-scroll-story .rail {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      align-items: start;
+    }
+    .product-scroll-story .step {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 0;
+      margin-bottom: 0;
+    }
+    
+    .product-scroll-story .feature-image {
+      text-align: center;
+    }
+    .product-scroll-story .feature-image img {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    }
+    
+    .product-scroll-story .card {
+      background: none;
+      padding: 0;
+      box-shadow: none;
+      border: none;
+    }
+    .product-scroll-story .card h2 {
+      font-weight: var(--font-weight-bold); 
+      font-size: clamp(24px, 3.5vw, 32px); 
+      line-height: 1.1; 
+      letter-spacing: -.02em; 
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .product-scroll-story .card p {
+      font-weight: var(--font-weight-regular); 
+      color: var(--text-secondary); 
+      font-size: clamp(14px, 1.8vw, 16px);
+      line-height: 1.4;
+    }
+
+    /* Hero */
+    .product-scroll-story .hero {
+      text-align: center; 
+      background: linear-gradient(135deg,#fff 0%, #F8F9FB 100%);
+      padding: 40px 20px;
+    }
+    .product-scroll-story .hero h1 {
+      font-size: clamp(32px, 5vw, 48px); 
+      font-weight: var(--font-weight-bold); 
+      letter-spacing: -.03em; 
+      line-height: 1.04; 
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+    .product-scroll-story .hero p {
+      font-size: clamp(14px, 2vw, 18px); 
+      color: var(--text-secondary); 
+      max-width: 600px; 
+      margin: 0 auto;
+    }
+
+    /* CTA band */
+    .product-scroll-story .cta {
+      text-align: center; 
+      background: linear-gradient(135deg,var(--accent-blue),#15B392); 
+      color: #fff; 
+      padding: 40px 20px;
+    }
+    .product-scroll-story .cta h3 {
+      font-size: clamp(20px, 3vw, 28px); 
+      margin-bottom: 8px;
+    }
+    .product-scroll-story .cta p {
+      font-size: clamp(14px, 1.8vw, 16px); 
+      opacity: .95; 
+      max-width: 500px; 
+      margin: 0 auto 20px;
+    }
+    .product-scroll-story .btn {
+      display: inline-block; 
+      background: #fff; 
+      color: var(--accent-blue); 
+      padding: 16px 28px; 
+      border-radius: 999px; 
+      font-weight: var(--font-weight-bold); 
+      text-decoration: none; 
+      border: 2px solid rgba(255,255,255,.35); 
+      box-shadow: 0 10px 26px rgba(0,0,0,.16); 
+      transition: transform .3s var(--ease-apple), box-shadow .3s var(--ease-apple);
+    }
+    .product-scroll-story .btn:hover {
+      transform: translateY(-3px); 
+      box-shadow: 0 16px 34px rgba(0,0,0,.22);
+    }
+
+    /* Progress dots */
+    .product-scroll-story .dots {
+      position: fixed; 
+      right: 18px; 
+      top: 50%; 
+      transform: translateY(-50%); 
+      display: flex; 
+      flex-direction: column; 
+      gap: 10px; 
+      z-index: 30;
+    }
+    .product-scroll-story .dot {
+      width: 8px; 
+      height: 8px; 
+      border-radius: 50%; 
+      background: #cbd5e1; 
+      transition: all .3s var(--ease-apple);
+    }
+    .product-scroll-story .dot.active {
+      background: var(--accent-blue); 
+      transform: scale(1.4);
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+      .product-scroll-story .rail {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 0;
+      }
+      .product-scroll-story .step {
+        gap: 16px;
+      }
+      .product-scroll-story .hero {
+        padding: 30px 20px;
+      }
+      .product-scroll-story .cta {
+        padding: 30px 20px;
+      }
+      .product-scroll-story section.panel {
+        padding: 20px;
+      }
+      .product-scroll-story .feature-image {
+        margin: 0 -20px;
+      }
+      .product-scroll-story .feature-image img {
+        max-width: none;
+        width: 100vw;
+        height: 40vh;
+        object-fit: cover;
+        border-radius: 0;
+      }
+      .product-scroll-story .card {
+        padding: 0 20px;
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .product-scroll-story .stage img {
+        transition: none;
+      }
+      .product-scroll-story .btn {
+        transition: none;
+      }
+    }
   </style>
 </head>
 <body class="loading">
@@ -127,7 +350,64 @@
     <p style="margin: 0; font-size: 16px; font-weight: 500;">Loading your personalized experience...</p>
   </div>
 
-  <iframe id="product-frame" src="product-section.html" title="Product Section"></iframe>
+  <!-- Product Section - Apple-Style Scroll Story -->
+  <section id="product-section" class="product-scroll-story">
+
+
+    <main class="snap" id="product-scroller">
+      <!-- Intro / Hero -->
+      <section class="panel hero backdrop" data-step="0">
+        <div>
+                    <h1>You tell us your preferences, we ship your personalized coffee.</h1>
+        </div>
+      </section>
+
+      <!-- Product Features -->
+      <section class="panel" aria-label="product story" data-step="1">
+        <div class="rail">
+          <!-- Step 1 -->
+          <div class="step step-1">
+            <div class="feature-image">
+              <img src="images/DSC02215-HDR.jpg" alt="AI personalization">
+            </div>
+            <article class="card">
+              <h2>We Learn What You Love</h2>
+              <p>Our AI synthesizes your preferences and feedback to curate your personalized coffee experience. Every two weeks, we ship 15 single-serve pre-dosed bags tailored to your evolving taste—each one gets you closer to your ideal cup.</p>
+            </article>
+          </div>
+          <!-- Step 2 -->
+          <div class="step step-2">
+            <div class="feature-image">
+              <img src="images/DSC02218-HDR.jpg" alt="Precision grinding">
+            </div>
+            <article class="card">
+              <h2>Prepared Perfect for Your Brewer</h2>
+              <p>Using state-of-the-art equipment, precise measurements, and advanced data models, we prepare each blend specifically for <em>your</em> brewing method. Whether you use pour-over, drip coffee maker, press, or cold brew—we calibrate every detail so your cup extracts perfectly with your setup.</p>
+            </article>
+          </div>
+          <!-- Step 3 -->
+          <div class="step step-3">
+            <div class="feature-image">
+              <img src="images/DSC02260-HDR-2.jpg" alt="15 ready-to-brew bags">
+            </div>
+            <article class="card">
+              <h2>Champion-Level Coffee</h2>
+              <p>We analyze each coffee and <em>your</em> preferences to create the perfect water chemistry. Each blend is enhanced with precise minerals so you can use distilled water and get flawless extraction every time.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Call to action -->
+      <section class="panel cta" data-step="2">
+        <div>
+          <h3>Treat Yourself to Perfect Coffee</h3>
+          <p>We make champion-level coffee at your home, with your equipment. Tell us what you like and we'll handle the precision.</p>
+          <a class="btn" href="quiz.html" onclick="return gtag_report_conversion('quiz.html');">Get Started — Tell Us What You Like</a>
+        </div>
+      </section>
+    </main>
+  </section>
   <div class="section-divider"></div>
   <iframe id="people-frame" src="people.html" title="People Reviews"></iframe>
   <div class="section-divider"></div>
@@ -143,9 +423,11 @@
       </div>
       <div class="footer-section">
         <div class="footer-links">
+          <a href="products.html" class="footer-link">Products</a>
           <a href="terms.html" class="footer-link">Terms</a>
           <a href="privacy.html" class="footer-link">Privacy</a>
           <a href="contact.html" class="footer-link">Contact</a>
+          <a href="sourcing.html" class="footer-link">Sourcing</a>
         </div>
       </div>
     </div>
@@ -246,17 +528,22 @@
     function wireIframe(iframe) {
       if (iframe.id === 'hero-frame') {
         iframe.style.height = '100vh';
+      } else {
+        setupIframeAutoHeight(iframe);
       }
-      setupIframeAutoHeight(iframe);
       iframe.onload = () => {
-        // Ensure auto-height kicks in after content render
-        setTimeout(() => requestParentHeight(iframe), 0);
-        setTimeout(() => requestParentHeight(iframe), 150);
+        // Ensure auto-height kicks in for non-hero frames
+        if (iframe.id !== 'hero-frame') {
+          setTimeout(() => requestParentHeight(iframe), 0);
+          setTimeout(() => requestParentHeight(iframe), 150);
+        }
         showContentWhenReady();
       };
       // If already loaded
       if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
-        requestParentHeight(iframe);
+        if (iframe.id !== 'hero-frame') {
+          requestParentHeight(iframe);
+        }
         showContentWhenReady();
       }
     }
@@ -284,6 +571,20 @@
     }, 3000);
 
     enableSmoothScrolling();
+
+    // Simple product section interactions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add subtle hover effects to images
+      const featureImages = document.querySelectorAll('.product-scroll-story .feature-image img');
+      featureImages.forEach(img => {
+        img.addEventListener('mouseenter', () => {
+          img.style.transform = 'scale(1.02)';
+        });
+        img.addEventListener('mouseleave', () => {
+          img.style.transform = 'scale(1)';
+        });
+      });
+    });
   </script>
   <script>
     // iOS specific minor helpers
