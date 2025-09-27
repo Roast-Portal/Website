@@ -1,0 +1,287 @@
+/* ==========================================================================
+   Base Styles - Any Brew Goonies-Inspired Landing Page
+   ========================================================================== */
+
+/* CSS Custom Properties */
+:root {
+  /* Light, Clean Color Palette inspired by Izze design */
+  --color-primary: #2C5F2D;           /* Forest Green - like Izze */
+  --color-secondary: #97BC62;         /* Light Green - like Izze */
+  --color-accent: #F7F7F7;            /* Light Gray - clean background */
+  --color-accent-2: #E8E8E8;          /* Medium Light Gray */
+  --color-accent-3: #D0D0D0;          /* Medium Gray */
+  --color-success: #2C5F2D;           /* Forest Green */
+  --color-warning: #FF8C00;           /* Orange accent */
+  --color-text: #1A1A1A;              /* Dark text for readability */
+  --color-text-light: #4A4A4A;        /* Medium Gray text */
+  --color-text-muted: #6B6B6B;        /* Muted Gray text */
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-cream: #FFFFFF;             /* Clean white background */
+  --color-coffee-light: #F8F9FA;      /* Very light gray background */
+  
+  /* Adventure-specific colors */
+  --treasure-gold: var(--color-primary);
+  --cave-dark: var(--color-accent);
+  --parchment: var(--color-text);
+  --stone: var(--color-accent-3);
+  --shadow: var(--color-accent-2);
+  
+  /* Legacy colors for compatibility */
+  --ink: var(--color-text);
+  --cream: var(--color-cream);
+  --glass: rgba(255,255,255,.1);
+  --berry: var(--color-secondary);
+  --cacao: var(--color-accent-2);
+  --copper: var(--color-accent);
+  --mint: var(--color-success);
+  
+  /* Typography - Kanit font family */
+  --font-family: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-family-display: 'Kanit', sans-serif;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Spacing */
+  --space-xs: 0.75rem;   /* 12px */
+  --space-sm: 1.25rem;   /* 20px */
+  --space-md: 2rem;      /* 32px */
+  --space-lg: 2.5rem;    /* 40px */
+  --space-xl: 3.5rem;    /* 56px */
+  --space-2xl: 5rem;     /* 80px */
+  --space-3xl: 7rem;     /* 112px */
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+  --shadow-xl: 0 16px 32px rgba(0,0,0,0.6);
+  --shadow-glow: 0 0 20px rgba(255, 215, 0, 0.3);
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.3s ease-out;
+  --transition-slow: 0.5s ease-out;
+}
+
+/* Reset and Base Styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.7;
+  color: var(--color-text);
+  background-color: var(--color-cream);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.1;
+  font-weight: var(--font-weight-bold);
+}
+
+h2 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: var(--font-weight-bold);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: var(--font-weight-bold);
+}
+
+p {
+  margin-bottom: var(--space-md);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--treasure-gold);
+}
+
+/* Focus Styles */
+:focus-visible {
+  outline: 2px solid var(--treasure-gold);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Selection */
+::selection {
+  background-color: var(--treasure-gold);
+  color: var(--color-black);
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Lists */
+ul, ol {
+  list-style: none;
+}
+
+/* Buttons */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Form Elements */
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Utility Classes */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-md);
+  }
+}
+
+/* Content Visibility for Performance */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Adventure-themed animations */
+@keyframes treasureGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+  }
+}
+
+@keyframes cavePulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes portalSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
