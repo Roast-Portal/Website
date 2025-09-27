@@ -251,7 +251,7 @@ class CoffeeAdventure {
   initStackedZOrder(container) {
     const cards = container.querySelectorAll('.instruction-card');
     cards.forEach((card, index) => {
-      card.style.zIndex = String(index + 10); // later cards on top by default (but below headers)
+      card.style.zIndex = String(index + 5); // later cards on top by default (but below headers)
     });
   }
 
@@ -260,25 +260,39 @@ class CoffeeAdventure {
     if (cards.length === 0) return;
 
     const TOP_OFFSET = 120; // px from top to consider a card "stuck"
+    const BOTTOM_OFFSET = 200; // px from bottom to ensure card doesn't go below footer
 
     const onScroll = () => {
       // Reset z-indices to ascending order (but below headers)
       cards.forEach((card, index) => {
-        card.style.zIndex = String(index + 10);
+        card.style.zIndex = String(index + 5);
       });
+
+      // Get viewport height and footer position
+      const viewportHeight = window.innerHeight;
+      const footer = document.querySelector('.footer');
+      const footerTop = footer ? footer.getBoundingClientRect().top : viewportHeight;
+      
+      // Calculate bottom boundary (footer top - bottom offset)
+      const bottomBoundary = Math.max(viewportHeight - BOTTOM_OFFSET, footerTop - BOTTOM_OFFSET);
 
       // Determine current active (stuck) card and the incoming one
       let activeIndex = -1;
       for (let i = 0; i < cards.length; i++) {
         const rect = cards[i].getBoundingClientRect();
-        if (rect.top <= TOP_OFFSET) activeIndex = i; else break;
+        // Check if card is within the allowed range (above TOP_OFFSET and above bottom boundary)
+        if (rect.top <= TOP_OFFSET && rect.bottom <= bottomBoundary) {
+          activeIndex = i;
+        } else {
+          break;
+        }
       }
 
       const incomingIndex = Math.min(activeIndex + 1, cards.length - 1);
 
       // Boost incoming card to always render above the stuck one (but below headers)
       if (incomingIndex >= 0) {
-        cards[incomingIndex].style.zIndex = '45';
+        cards[incomingIndex].style.zIndex = '15';
       }
 
       // Optionally nudge the stuck one smaller to keep the next fully visible
