@@ -252,6 +252,8 @@ class CoffeeAdventure {
     const cards = container.querySelectorAll('.instruction-card');
     cards.forEach((card, index) => {
       card.style.zIndex = String(index + 5); // later cards on top by default (but below headers)
+      // Ensure transform is preserved for centering
+      card.style.transform = 'translateY(-50%)';
     });
   }
 
@@ -259,8 +261,21 @@ class CoffeeAdventure {
     const cards = Array.from(container.querySelectorAll('.instruction-card'));
     if (cards.length === 0) return;
 
-    const TOP_OFFSET = 120; // px from top to consider a card "stuck"
-    const BOTTOM_OFFSET = 200; // px from bottom to ensure card doesn't go below footer
+    // Dynamic header height calculation
+    const getHeaderHeight = () => {
+      const nav = document.querySelector('.nav');
+      const sectionHeader = document.querySelector('.section-header');
+      const navHeight = nav ? nav.getBoundingClientRect().height : 0;
+      const sectionHeight = sectionHeader ? sectionHeader.getBoundingClientRect().height : 0;
+      return navHeight + sectionHeight + 20; // Add 20px buffer
+    };
+
+    const getCardHeightOffset = () => {
+      // Responsive card height offset
+      if (window.innerWidth <= 480) return 100; // Small mobile
+      if (window.innerWidth <= 768) return 120; // Mobile
+      return 150; // Desktop
+    };
 
     const onScroll = () => {
       // Reset z-indices to ascending order (but below headers)
@@ -268,21 +283,33 @@ class CoffeeAdventure {
         card.style.zIndex = String(index + 5);
       });
 
-      // Get viewport height and footer position
+      // Get dynamic measurements
       const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
+      const headerHeight = getHeaderHeight();
+      const cardHeightOffset = getCardHeightOffset();
+      
+      // Get footer position
       const footer = document.querySelector('.footer');
       const footerTop = footer ? footer.getBoundingClientRect().top : viewportHeight;
       
-      // Calculate bottom boundary to ensure card doesn't go below footer
-      // Use the smaller of: (viewport - offset) or (footer top - offset)
-      const bottomBoundary = Math.min(viewportHeight - BOTTOM_OFFSET, footerTop - BOTTOM_OFFSET);
+      // Calculate boundaries for centered cards (below header)
+      const topBoundary = headerHeight + cardHeightOffset; // Below header + card space
+      const bottomBoundary = viewportHeight - cardHeightOffset; // Minimum space from bottom
+      const footerBoundary = footerTop - cardHeightOffset; // Footer clearance
 
       // Determine current active (stuck) card and the incoming one
       let activeIndex = -1;
       for (let i = 0; i < cards.length; i++) {
         const rect = cards[i].getBoundingClientRect();
-        // Check if card is within the allowed range (above TOP_OFFSET and above bottom boundary)
-        if (rect.top <= TOP_OFFSET && rect.bottom <= bottomBoundary) {
+        const cardCenter = rect.top + (rect.height / 2);
+        
+        // Check if card center is within the allowed range
+        // and not going below footer when footer is visible
+        const withinTopBottom = cardCenter >= topBoundary && cardCenter <= bottomBoundary;
+        const aboveFooter = footerTop > viewportHeight || cardCenter <= footerBoundary;
+        
+        if (withinTopBottom && aboveFooter) {
           activeIndex = i;
         } else {
           break;
@@ -299,14 +326,15 @@ class CoffeeAdventure {
       // Optionally nudge the stuck one smaller to keep the next fully visible
       cards.forEach((card, index) => {
         if (index <= activeIndex) {
-          card.style.transform = 'scale(0.98)';
+          card.style.transform = 'translateY(-50%) scale(0.98)';
         } else {
-          card.style.transform = '';
+          card.style.transform = 'translateY(-50%)';
         }
       });
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true }); // Recalculate on resize
     onScroll();
   }
 

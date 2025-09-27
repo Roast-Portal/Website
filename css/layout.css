@@ -442,12 +442,26 @@ body.theme-cta {
 
 .stacked-mode .instruction-card {
   position: sticky;
-  top: calc(80px + var(--space-lg));
-  bottom: 200px; /* Prevent card from going below footer */
+  top: calc(50vh + 80px); /* Center vertically but below header - desktop */
+  transform: translateY(-50%); /* Center the card itself */
+  bottom: auto; /* Remove bottom constraint for centering */
   margin: 0 auto var(--space-xl);
-  transform-origin: center top;
+  transform-origin: center center;
   /* Ensure incoming card can be seen fully above */
   background: rgba(255, 255, 255, 0.98);
+}
+
+/* Mobile responsive positioning */
+@media (max-width: 768px) {
+  .stacked-mode .instruction-card {
+    top: calc(50vh + 60px); /* Smaller header offset on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .stacked-mode .instruction-card {
+    top: calc(50vh + 40px); /* Even smaller header offset on small mobile */
+  }
 }
 
 .stacked-mode .instruction-card:nth-child(1) { z-index: 5; }
