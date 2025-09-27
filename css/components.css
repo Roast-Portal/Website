@@ -362,15 +362,15 @@
 
 /* Testimonials */
 .testimonial-card {
-  background: var(--color-cream);
-  padding: var(--space-2xl);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  background: rgba(255, 255, 255, 0.95);
+  padding: var(--space-xl);
+  border-radius: var(--radius-xl);
   text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: none;
   transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
-  border: 2px solid transparent;
 }
 
 .testimonial-card::before {
@@ -380,19 +380,18 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--treasure-gold), #FFA500);
-  transform: scaleX(0);
-  transition: transform var(--transition-normal);
+  background: linear-gradient(90deg, var(--color-primary), #FFA500);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
 }
 
 .testimonial-card:hover::before {
-  transform: scaleX(1);
+  opacity: 1;
 }
 
 .testimonial-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  border-color: var(--treasure-gold);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
 }
 
 /* Removed stars styling - no longer needed */
@@ -459,7 +458,6 @@
   .adventure-card,
   .crew-member,
   .testimonial-card {
-    box-shadow: none;
     border: 1px solid #ccc;
   }
 }
