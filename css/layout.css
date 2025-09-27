@@ -1194,6 +1194,7 @@ body.theme-cta {
 .portal-button-container {
   position: relative;
   display: inline-block;
+  z-index: 10;
 }
 
 .btn--portal {
@@ -1211,6 +1212,8 @@ body.theme-cta {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   border: none;
   text-transform: none;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .btn--portal::before {
@@ -1552,7 +1555,7 @@ html, body {
 
 .final-cta__content {
   position: relative;
-  z-index: 2;
+  z-index: 5;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
