@@ -273,8 +273,9 @@ class CoffeeAdventure {
       const footer = document.querySelector('.footer');
       const footerTop = footer ? footer.getBoundingClientRect().top : viewportHeight;
       
-      // Calculate bottom boundary (footer top - bottom offset)
-      const bottomBoundary = Math.max(viewportHeight - BOTTOM_OFFSET, footerTop - BOTTOM_OFFSET);
+      // Calculate bottom boundary to ensure card doesn't go below footer
+      // Use the smaller of: (viewport - offset) or (footer top - offset)
+      const bottomBoundary = Math.min(viewportHeight - BOTTOM_OFFSET, footerTop - BOTTOM_OFFSET);
 
       // Determine current active (stuck) card and the incoming one
       let activeIndex = -1;

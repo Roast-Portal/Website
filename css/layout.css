@@ -443,6 +443,7 @@ body.theme-cta {
 .stacked-mode .instruction-card {
   position: sticky;
   top: calc(80px + var(--space-lg));
+  bottom: 200px; /* Prevent card from going below footer */
   margin: 0 auto var(--space-xl);
   transform-origin: center top;
   /* Ensure incoming card can be seen fully above */
