@@ -68,22 +68,7 @@
   box-shadow: 0 8px 20px rgba(44, 95, 45, 0.2);
 }
 
-.btn--portal {
-  background: #2c3e50;
-  color: #ffffff;
-  box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
-  font-weight: bold;
-  position: relative;
-  z-index: 10;
-  pointer-events: auto;
-}
-
-.btn--portal:hover {
-  background: #34495e;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
-  color: #ffffff;
-}
+/* Portal button styles moved to layout.css to avoid conflicts */
 
 .btn--wide {
   padding: var(--space-sm) var(--space-xl);
