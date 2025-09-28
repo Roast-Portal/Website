@@ -15,7 +15,7 @@
   transition: all var(--transition-normal);
   cursor: pointer;
   border: 2px solid transparent;
-  min-height: 40px;
+  min-height: 48px;
   position: relative;
   overflow: hidden;
   text-transform: uppercase;
@@ -49,8 +49,8 @@
 .btn--primary:hover {
   background: var(--color-secondary);
   border-color: var(--color-secondary);
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(44, 95, 45, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(44, 95, 45, 0.25);
   color: var(--color-white);
 }
 
@@ -64,8 +64,8 @@
   background: rgba(44, 95, 45, 0.1);
   border-color: var(--color-secondary);
   color: var(--color-secondary);
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(44, 95, 45, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(44, 95, 45, 0.15);
 }
 
 /* Portal button styles moved to layout.css to avoid conflicts */
@@ -76,9 +76,10 @@
 }
 
 .btn--large {
-  padding: var(--space-md) var(--space-xl);
+  padding: var(--space-lg) var(--space-2xl);
   font-size: 1.1rem;
   min-height: 56px;
+  font-weight: var(--font-weight-bold);
 }
 
 @media (max-width: 768px) {
@@ -123,8 +124,8 @@
 }
 
 .adventure-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
   border-color: var(--treasure-gold);
 }
 
@@ -218,8 +219,8 @@
 }
 
 .crew-member:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
   border-color: var(--treasure-gold);
 }
 
@@ -413,8 +414,16 @@
 /* Focus States for Interactive Elements */
 .btn:focus-visible,
 .adventure-card:focus-visible,
-.crew-member:focus-visible {
-  outline: 2px solid var(--treasure-gold);
+.crew-member:focus-visible,
+.instruction-card:focus-visible,
+.testimonial-card:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-md);
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--color-primary);
   outline-offset: 2px;
 }
 
