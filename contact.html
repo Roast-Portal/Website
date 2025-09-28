@@ -274,6 +274,41 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* FAQ Section Styles */
+    .faq-section {
+      background: #f8f9fa;
+      padding: 4rem 0;
+      margin-top: 2rem;
+    }
+
+    .faq-item {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .faq-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .faq-question {
+      color: var(--color-primary);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .faq-answer {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -358,6 +393,43 @@
           <button type="submit" id="submitBtn" class="form-button">Send Message</button>
           <p id="formStatus" class="page-subtitle" style="display:none;margin-top:1rem;"></p>
         </form>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section" id="faq">
+      <div class="main-content">
+        <h2 class="page-title">Frequently Asked Questions</h2>
+        
+        <div class="faq-item">
+          <h3 class="faq-question">How does Any Brew work?</h3>
+          <p class="faq-answer">Any Brew uses AI to create personalized coffee blends based on your taste preferences. Simply take our quiz, and we'll craft a custom blend just for you.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">What's included in my subscription?</h3>
+          <p class="faq-answer">Each delivery includes 15 pre-dosed cups of your personalized blend, complete with brewing instructions tailored to your equipment.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">How often will I receive deliveries?</h3>
+          <p class="faq-answer">We deliver fresh coffee every two weeks, ensuring you always have the perfect cup ready to brew.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">Can I change my preferences?</h3>
+          <p class="faq-answer">Absolutely! Your blend evolves based on your feedback. Rate each cup and tell us what you'd like to adjust.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">What if I don't like my blend?</h3>
+          <p class="faq-answer">We're confident you'll love it, but if you're not satisfied, we'll work with you to perfect your blend or provide a full refund.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">Do you ship internationally?</h3>
+          <p class="faq-answer">Currently, we ship within the United States. International shipping is coming soon!</p>
+        </div>
       </div>
     </div>
   </main>
