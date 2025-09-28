@@ -610,13 +610,29 @@ body.theme-cta {
 
 .team-slide {
   position: sticky;
-  top: calc(80px + var(--space-lg));
+  top: calc(50vh + 80px); /* Center vertically but below header - desktop */
+  transform: translateY(-50%); /* Center the card itself */
+  bottom: auto; /* Remove bottom constraint for centering */
   margin: 0 auto var(--space-xl);
   background: rgba(255, 255, 255, 0.95);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   opacity: 1;
   z-index: 10;
+  transform-origin: center center;
+}
+
+/* Mobile responsive positioning for team slides */
+@media (max-width: 768px) {
+  .team-slide {
+    top: calc(50vh + 60px); /* Smaller header offset on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .team-slide {
+    top: calc(50vh + 40px); /* Even smaller header offset on small mobile */
+  }
 }
 
 .team-slide:nth-child(1) { z-index: 10; }
