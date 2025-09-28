@@ -794,12 +794,12 @@
     ];
 
     const quizContent = document.querySelector('.quiz-content');
-    const progressBar = $('#progress-bar');
-    const progressText = $('#progress-text');
-    const status = $('#status');
-    const prevBtn = $('#prev-btn');
-    const nextBtn = $('#next-btn');
-    const resetBtn = $('#reset-btn');
+    const progressBar = document.querySelector('#progress-bar');
+    const progressText = document.querySelector('#progress-text');
+    const status = document.querySelector('#status');
+    const prevBtn = document.querySelector('#prev-btn');
+    const nextBtn = document.querySelector('#next-btn');
+    const resetBtn = document.querySelector('#reset-btn');
 
     let currentStep = 0;
     let answers = {};
@@ -1103,8 +1103,12 @@
 
     function updateProgress(){
       const pct = Math.round((currentStep/quizData.length)*100);
-      progressBar.style.width = pct + '%';
-      progressText.innerHTML = `<span></span><span></span>`;
+      if (progressBar) {
+        progressBar.style.width = pct + '%';
+      }
+      if (progressText) {
+        progressText.innerHTML = `<span>Step ${currentStep + 1}</span><span>${pct}%</span>`;
+      }
     }
 
     function isStepValid(){
@@ -1126,15 +1130,19 @@
 
     function updateNav(){
       // On first question, back button should go to previous page
-      if (currentStep === 0) {
-        prevBtn.disabled = false;
-        prevBtn.textContent = 'Back';
-      } else {
-        prevBtn.disabled = false;
-        prevBtn.textContent = 'Back';
+      if (prevBtn) {
+        if (currentStep === 0) {
+          prevBtn.disabled = false;
+          prevBtn.textContent = 'Back';
+        } else {
+          prevBtn.disabled = false;
+          prevBtn.textContent = 'Back';
+        }
       }
-      nextBtn.textContent = (currentStep === quizData.length-1) ? 'Submit' : 'Next';
-      nextBtn.disabled = !isStepValid();
+      if (nextBtn) {
+        nextBtn.textContent = (currentStep === quizData.length-1) ? 'Submit' : 'Next';
+        nextBtn.disabled = !isStepValid();
+      }
     }
 
     // Submit quiz data to Google Apps Script
@@ -1204,7 +1212,8 @@
     }
 
     // --- Navigation ---
-    nextBtn.addEventListener('click', async ()=>{
+    if (nextBtn) {
+      nextBtn.addEventListener('click', async ()=>{
       console.log('Next button clicked, step:', currentStep + 1, 'of', quizData.length);
       
       // Track button click
@@ -1296,9 +1305,11 @@
           window.location.href = 'checkout.html';
         }, 2000);
       }
-    });
+      });
+    }
 
-    prevBtn.addEventListener('click', ()=>{
+    if (prevBtn) {
+      prevBtn.addEventListener('click', ()=>{
       // Track button click
       trackButtonClick('Back', 'quiz_navigation', currentStep + 1);
       
@@ -1316,7 +1327,8 @@
           window.location.href = 'index.html';
         }
       }
-    });
+      });
+    }
 
     // Keyboard shortcuts - consolidated to prevent multiple submissions
     document.addEventListener('keydown', (e)=>{
@@ -1324,23 +1336,24 @@
       const inField = ['INPUT','TEXTAREA'].includes(tag);
       
       // Arrow keys for navigation (when not in input fields)
-      if(e.key === 'ArrowRight' && !inField){ 
+      if(e.key === 'ArrowRight' && !inField && nextBtn){ 
         e.preventDefault(); 
         if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); 
       }
-      if(e.key === 'ArrowLeft' && !inField){ 
+      if(e.key === 'ArrowLeft' && !inField && prevBtn){ 
         e.preventDefault(); 
         if(!prevBtn.disabled) prevBtn.click(); 
       }
       
       // Enter/Return key acts as Next button (always, including in text fields)
-      if(e.key === 'Enter' || e.key === 'Return'){ 
+      if((e.key === 'Enter' || e.key === 'Return') && nextBtn){ 
         e.preventDefault(); 
         if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); 
       }
     });
 
-    resetBtn.addEventListener('click', ()=>{
+    if (resetBtn) {
+      resetBtn.addEventListener('click', ()=>{
       // Track reset button click
       trackQuizEvent('quiz_reset', {
         step_number: currentStep + 1,
@@ -1349,7 +1362,8 @@
       });
       
       if(confirm('Reset your quiz and clear saved answers?')) resetProgress();
-    });
+      });
+    }
 
     // Track exit link clicks
     document.addEventListener('click', (e) => {
