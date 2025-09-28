@@ -63,40 +63,8 @@
       --safe-top: env(safe-area-inset-top, 0px);
     }
 
-    /* Subscription Process Animation Styles */
-    .subscription-intro {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        linear-gradient(135deg, #FBFBFD 0%, #F5F5F7 100%),
-        radial-gradient(circle at 20% 80%, rgba(0, 113, 227, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(0, 113, 227, 0.03) 0%, transparent 50%);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 1;
-      transition: opacity 0.8s var(--ease);
-    }
+    /* Subscription Process Animation Styles - removed */
 
-    .subscription-intro.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .intro-content {
-      text-align: center;
-      max-width: 600px;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(20px);
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
 
     .intro-logo {
       font-size: 2rem;
@@ -593,43 +561,7 @@
   </style>
 </head>
 <body>
-  <!-- Subscription Process Introduction Animation -->
-  <div class="subscription-intro" id="subscription-intro">
-    <div class="intro-content">
-      <div class="intro-logo">☕ Roast Portal</div>
-      <h1 class="intro-title">Your Personalized Coffee Journey</h1>
-      
-      <div class="process-steps">
-        <div class="process-step">
-          <div class="step-number">1</div>
-          <div class="step-text">Answer a few questions about your taste</div>
-        </div>
-        <div class="process-step">
-          <div class="step-number">2</div>
-          <div class="step-text">Subscribe to your personalized blend</div>
-        </div>
-        <div class="process-step">
-          <div class="step-number">3</div>
-          <div class="step-text">Let AI build your custom coffee profile</div>
-        </div>
-        <div class="process-step">
-          <div class="step-number">4</div>
-          <div class="step-text">Give feedback on your blend</div>
-        </div>
-        <div class="process-step">
-          <div class="step-number">5</div>
-          <div class="step-text">Get your improved blend, repeat!</div>
-        </div>
-      </div>
-      
-      <p class="intro-subtitle">Ready to discover your perfect blend?</p>
-      
-      <button class="begin-btn" id="begin-btn">
-        <span class="btn-text">Begin Now</span>
-        <span class="btn-icon">→</span>
-      </button>
-    </div>
-  </div>
+  <!-- Intro section removed - quiz loads directly -->
 
   <a class="sr-only" href="#quiz-content">Skip to quiz</a>
 
@@ -1397,55 +1329,13 @@
       console.log('Quiz already submitted today, preventing duplicate submissions');
     }
     
-    // Handle subscription intro animation
-    function handleSubscriptionIntro() {
-      const introElement = document.getElementById('subscription-intro');
-      const beginBtn = document.getElementById('begin-btn');
-      
-      if (!introElement || !beginBtn) return;
-      
-      // Check if user has already seen the intro in this session
-      if (sessionStorage.getItem('quiz_intro_shown')) {
-        introElement.remove();
-        return;
-      }
-      
-      // Mark intro as shown for this session
-      sessionStorage.setItem('quiz_intro_shown', 'true');
-      
-      // Add click event listener to begin button
-      beginBtn.addEventListener('click', function() {
-        // Track begin button click
-        trackQuizEvent('subscription_intro_begin', {
-          custom_parameter: 'intro_start'
-        });
-        
-        // Add loading state to button
-        beginBtn.classList.add('loading');
-        beginBtn.querySelector('.btn-text').textContent = 'Starting...';
-        
-        // Fade out intro after button click
-        setTimeout(() => {
-          introElement.classList.add('fade-out');
-          
-          // Show quiz container
-          const quizContainer = document.querySelector('.quiz-container');
-          if (quizContainer) {
-            quizContainer.classList.add('show');
-          }
-          
-          // Remove intro element after fade out animation completes
-          setTimeout(() => {
-            if (introElement.parentNode) {
-              introElement.parentNode.removeChild(introElement);
-            }
-          }, 800); // Match the CSS transition duration
-        }, 300); // Small delay to show loading state
-      });
-    }
+    // Intro animation removed - quiz loads directly
     
-    // Start the intro animation
-    handleSubscriptionIntro();
+    // Show quiz container immediately
+    const quizContainer = document.querySelector('.quiz-container');
+    if (quizContainer) {
+      quizContainer.classList.add('show');
+    }
     
     // Track quiz start
     trackQuizStart();
