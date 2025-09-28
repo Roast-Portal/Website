@@ -1575,26 +1575,7 @@ html, body {
   line-height: 1.6;
 }
 
-/* Final CTA Section */
-.final-cta {
-  background: #ffffff;
-  color: var(--color-black);
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  padding: var(--space-2xl) 0;
-}
-
-.final-cta::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
-  z-index: 1;
-}
+/* Final CTA Section - duplicate definition removed */
 
 .final-cta__content {
   position: relative;
