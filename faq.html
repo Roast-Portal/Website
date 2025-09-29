@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frequently Asked Questions - Roast Portal</title>
+  <meta name="description" content="Find answers to common questions about Any Brew™ coffee subscription, shipping, customization, and more." />
+  <link rel="icon" type="image/svg+xml" href="images/bean-favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/clean.css">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5LTTX2TGVQ');
+    gtag('config', 'AW-17346642053');
+  </script>
+  
+  <!-- Event snippet for Submit lead form (1) conversion page -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+        'value': 0.0,
+        'currency': 'USD',
+        'event_callback': callback
+      });
+      return false;
+    }
+  </script>
+  
+  <style>
+    /* FAQ page specific styles */
+    
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    
+    .faq-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .faq-category {
+      margin-bottom: 3rem;
+    }
+    
+    .faq-category h2 {
+      color: var(--accent-blue);
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      border-bottom: 2px solid var(--accent-blue);
+      padding-bottom: 0.5rem;
+    }
+    
+    .faq-item {
+      margin-bottom: 1rem;
+      border: 1px solid #e5e5e7;
+      border-radius: 8px;
+      overflow: hidden;
+      background: white;
+    }
+    
+    .faq-question {
+      background: var(--bg-secondary);
+      padding: 1.25rem;
+      margin: 0;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      transition: background-color 0.2s ease;
+      border: none;
+      width: 100%;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .faq-question:hover {
+      background: #e8e8ea;
+    }
+    
+    .faq-question.active {
+      background: var(--accent-blue);
+      color: white;
+    }
+    
+    .faq-icon {
+      font-size: 1.2rem;
+      transition: transform 0.2s ease;
+    }
+    
+    .faq-question.active .faq-icon {
+      transform: rotate(45deg);
+    }
+    
+    .faq-answer {
+      padding: 0 1.25rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      background: white;
+    }
+    
+    .faq-answer.active {
+      padding: 1.25rem;
+      max-height: 500px;
+    }
+    
+    .faq-answer p {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+    
+    .faq-answer p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .faq-answer ul {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+    }
+    
+    .faq-answer li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .cta-section {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 2rem;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+    }
+    
+    .cta-section h3 {
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+    
+    .cta-section p {
+      margin-bottom: 2rem;
+      color: var(--text-secondary);
+    }
+    
+    @media (max-width: 768px) {
+      .faq-container {
+        padding: 1rem 0.5rem;
+      }
+      
+      .faq-question {
+        padding: 1rem;
+        font-size: 1rem;
+      }
+      
+      .faq-answer.active {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container">
+      <div class="nav-content">
+        <a class="logo" href="index.html">ROAST PORTAL</a>
+        <nav class="nav-links">
+          <a class="btn btn--ghost" href="login.html">Login</a>
+          <a class="btn btn--primary" href="javascript:void(0)" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
+        </nav>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="faq-container">
+    <div class="faq-header">
+      <h1>Frequently Asked Questions</h1>
+      <p>Everything you need to know about Any Brew™ and your coffee subscription</p>
+    </div>
+
+    <div class="faq-category">
+      <h2>About Any Brew™</h2>
+      
+      <div class="faq-item">
+        <button class="faq-question">
+          What is Any Brew™?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Any Brew™ is a personalized coffee extract that adapts to your taste preferences. It's designed to make any coffee drink you want - hot coffee, iced coffee, lattes, cold brew - all from one concentrated formula that's customized just for you.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          How does the personalization work?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Our coffee experts use your quiz responses to create a unique formula that matches your taste preferences. We consider factors like:</p>
+          <ul>
+            <li>Your preferred roast level (light, medium, dark)</li>
+            <li>Brew method preferences</li>
+            <li>Flavor profile preferences (nutty, fruity, floral, smoky)</li>
+            <li>How you like to drink your coffee (black, with milk, etc.)</li>
+            <li>Your feedback on each batch</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          What makes Any Brew™ different from regular coffee?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Any Brew™ is a concentrated coffee extract, not ground coffee beans. This means:</p>
+          <ul>
+            <li>It's already extracted and ready to use</li>
+            <li>You can make any coffee drink instantly</li>
+            <li>No brewing equipment needed</li>
+            <li>Consistent taste every time</li>
+            <li>It gets better with your feedback</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-category">
+      <h2>Subscription & Orders</h2>
+      
+      <div class="faq-item">
+        <button class="faq-question">
+          How does the subscription work?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Your subscription includes:</p>
+          <ul>
+            <li>Two-week supply of Any Brew™ (15 bottles)</li>
+            <li>Automatic delivery every two weeks</li>
+            <li>Personalized formula that evolves with your feedback</li>
+            <li>Easy pause, skip, or cancel options</li>
+            <li>Free shipping on all orders</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          Can I pause or skip my subscription?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Yes! You can easily manage your subscription through your account dashboard. You can:</p>
+          <ul>
+            <li>Pause your subscription for up to 3 months</li>
+            <li>Skip your next delivery</li>
+            <li>Change your delivery frequency</li>
+            <li>Cancel anytime with no penalties</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          How much does it cost?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Your two-week subscription is $42.95, which includes:</p>
+          <ul>
+            <li>15 bottles of Any Brew™ (enough for 2 weeks)</li>
+            <li>Free shipping</li>
+            <li>Personalized formula updates</li>
+            <li>Access to our coffee experts</li>
+          </ul>
+          <p>That's less than $3 per day for perfectly personalized coffee!</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          Can I change my preferences after I start?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Absolutely! We encourage you to provide feedback on each batch. You can:</p>
+          <ul>
+            <li>Rate each delivery in your account</li>
+            <li>Leave detailed feedback about taste preferences</li>
+            <li>Request specific adjustments</li>
+            <li>Retake the quiz anytime to update your profile</li>
+          </ul>
+          <p>Your formula will evolve based on your feedback to ensure you always love your coffee.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-category">
+      <h2>Shipping & Delivery</h2>
+      
+      <div class="faq-item">
+        <button class="faq-question">
+          How long does shipping take?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>We ship within 1-2 business days of your order, and delivery typically takes 3-5 business days. You'll receive tracking information once your order ships.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          Do you ship internationally?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Currently, we only ship within the United States. International shipping is coming soon! Sign up for our newsletter to be notified when we expand internationally.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          What if my package is damaged or lost?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>We'll replace any damaged or lost packages at no cost to you. Simply contact our support team with your order number and we'll send a replacement immediately.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-category">
+      <h2>Using Any Brew™</h2>
+      
+      <div class="faq-item">
+        <button class="faq-question">
+          How do I use Any Brew™?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>It's incredibly simple:</p>
+          <ul>
+            <li><strong>Hot Coffee:</strong> Mix 1 bottle with hot water</li>
+            <li><strong>Iced Coffee:</strong> Mix 1 bottle with cold water and ice</li>
+            <li><strong>Latte:</strong> Mix 1 bottle with milk (hot or cold)</li>
+            <li><strong>Cold Brew:</strong> Mix 1 bottle with cold water and let steep</li>
+          </ul>
+          <p>Each bottle makes one perfect cup of coffee!</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          How should I store Any Brew™?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Store your Any Brew™ bottles in a cool, dry place. They don't need refrigeration and will stay fresh for up to 6 months. Keep them away from direct sunlight and extreme temperatures.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          Can I adjust the strength?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Yes! You can easily adjust the strength by using more or less water. For stronger coffee, use less water. For milder coffee, use more water. The beauty of Any Brew™ is that it's completely customizable to your taste.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-category">
+      <h2>Account & Support</h2>
+      
+      <div class="faq-item">
+        <button class="faq-question">
+          How do I create an account?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Creating an account is easy! Simply complete the taste preference quiz and provide your contact information. Your account will be created automatically, and you'll receive login credentials via email.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          How do I contact customer support?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>We're here to help! You can reach us:</p>
+          <ul>
+            <li>Email: support@roastportal.com</li>
+            <li>Phone: 1-800-ROAST-01 (1-800-762-7801)</li>
+            <li>Live chat: Available on our website</li>
+            <li>Response time: Within 24 hours</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          What if I'm not satisfied with my coffee?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>We stand behind our product with a 100% satisfaction guarantee. If you're not completely happy with your Any Brew™, we'll:</p>
+          <ul>
+            <li>Refund your order in full</li>
+            <li>Adjust your formula based on your feedback</li>
+            <li>Work with you to find the perfect taste</li>
+          </ul>
+          <p>Your satisfaction is our priority!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h3>Still have questions?</h3>
+      <p>Our coffee experts are here to help you find the perfect cup.</p>
+      <a href="contact.html" class="btn btn--primary">Contact Us</a>
+      <a href="javascript:void(0)" class="btn btn--ghost" onclick="return gtag_report_conversion('quiz.html');">Start Your Quiz</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <a class="logo" href="index.html">Any Brew<sup>™</sup><br><span class="logo-brand">by ROAST PORTAL</span></a>
+        <nav class="footer-links">
+          <a href="faq.html">FAQ</a>
+          <a href="contact.html">Contact</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="javascript:void(0)" class="btn btn--primary" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // FAQ page tracking
+    function trackPageView() {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'page_view', {
+            page_title: document.title,
+            page_location: window.location.href,
+            page_path: window.location.pathname,
+            custom_parameter: 'faq_page'
+          });
+        }
+      } catch (error) {
+        console.error('Page view tracking error:', error);
+      }
+    }
+
+    // Track FAQ interactions
+    function trackFAQInteraction(question, action) {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'faq_interaction', {
+            question: question,
+            action: action, // 'expand', 'collapse'
+            page_title: document.title,
+            timestamp: Date.now()
+          });
+        }
+      } catch (error) {
+        console.error('FAQ interaction tracking error:', error);
+      }
+    }
+
+    // Initialize tracking
+    document.addEventListener('DOMContentLoaded', function() {
+      trackPageView();
+      
+      // FAQ accordion functionality
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      
+      faqQuestions.forEach(question => {
+        question.addEventListener('click', () => {
+          const answer = question.nextElementSibling;
+          const isActive = question.classList.contains('active');
+          
+          // Close all other FAQs
+          faqQuestions.forEach(q => {
+            q.classList.remove('active');
+            q.nextElementSibling.classList.remove('active');
+          });
+          
+          // Toggle current FAQ
+          if (!isActive) {
+            question.classList.add('active');
+            answer.classList.add('active');
+            
+            // Track FAQ expansion
+            const questionText = question.textContent.replace('+', '').trim();
+            trackFAQInteraction(questionText, 'expand');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
