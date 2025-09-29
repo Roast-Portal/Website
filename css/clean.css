@@ -114,6 +114,7 @@ p {
   background: #1a1a1a;
   margin: 3px 0;
   transition: 0.3s;
+  transform-origin: center;
 }
 
 /* Buttons */
@@ -615,6 +616,31 @@ sup {
 
   .nav-toggle {
     display: flex;
+  }
+
+  .nav-links.nav-open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .nav-toggle-open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .nav-toggle-open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-toggle-open span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
   }
 
   .hero__ctas {
