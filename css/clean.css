@@ -1,19 +1,5 @@
 /* Clean Modern CSS - Inspired by izze.com */
 
-/* CSS Variables for consistent theming */
-:root {
-  --bg-primary: #FBFBFD;
-  --bg-secondary: #F5F5F7;
-  --text-primary: #1D1D1F;
-  --text-secondary: #6E6E73;
-  --accent-blue: #0071E3;
-  --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-}
-
 /* Reset and base styles */
 * {
   margin: 0;
@@ -24,8 +10,8 @@
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.6;
-  color: var(--text-primary);
-  background: var(--bg-primary);
+  color: #1a1a1a;
+  background: #ffffff;
 }
 
 /* Typography */
@@ -677,8 +663,7 @@ sup {
   .hero-content {
     text-align: center;
     max-width: 100%;
-    margin-top: 0.5rem;
-    padding-top: 1rem;
+    margin-top: -25rem;
   }
 
   .drink-instructions {
