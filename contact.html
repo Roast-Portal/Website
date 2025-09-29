@@ -453,6 +453,149 @@
   </footer>
   
   <script>
+    // --- COMPREHENSIVE CONTACT PAGE TRACKING ---
+    
+    // Track page view and contact form start
+    function trackPageView() {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'page_view', {
+            page_title: document.title,
+            page_location: window.location.href,
+            page_path: window.location.pathname,
+            custom_parameter: 'contact_page'
+          });
+          // Track contact form start
+          gtag('event', 'contact_form_start', {
+            page_title: document.title,
+            page_location: window.location.href
+          });
+        }
+      } catch (error) {
+        console.error('Page view tracking error:', error);
+      }
+    }
+    
+    // Track form field interactions
+    function trackFormInteraction(fieldName, fieldType, action, value = '') {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'form_interaction', {
+            field_name: fieldName,
+            field_type: fieldType,
+            action: action, // 'focus', 'blur', 'change', 'input'
+            field_value: value.substring(0, 50), // Truncate for privacy
+            page_title: document.title,
+            timestamp: Date.now()
+          });
+        }
+      } catch (error) {
+        console.error('Form interaction tracking error:', error);
+      }
+    }
+    
+    // Track form validation errors
+    function trackValidationError(fieldName, errorType, errorMessage) {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'validation_error', {
+            field_name: fieldName,
+            error_type: errorType,
+            error_message: errorMessage,
+            page_title: document.title,
+            timestamp: Date.now()
+          });
+        }
+      } catch (error) {
+        console.error('Validation error tracking error:', error);
+      }
+    }
+    
+    // Track form submission attempts
+    function trackFormSubmission(attemptNumber, success = false, errorMessage = '') {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'form_submission', {
+            attempt_number: attemptNumber,
+            success: success,
+            error_message: errorMessage,
+            page_title: document.title,
+            timestamp: Date.now()
+          });
+        }
+      } catch (error) {
+        console.error('Form submission tracking error:', error);
+      }
+    }
+    
+    // Track FAQ interactions
+    function trackFAQInteraction(question, action) {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'faq_interaction', {
+            question: question,
+            action: action, // 'expand', 'collapse'
+            page_title: document.title,
+            timestamp: Date.now()
+          });
+        }
+      } catch (error) {
+        console.error('FAQ interaction tracking error:', error);
+      }
+    }
+    
+    // Track time on page
+    let contactStartTime = Date.now();
+    function trackTimeOnPage() {
+      const timeOnPage = Math.round((Date.now() - contactStartTime) / 1000);
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'time_on_page', {
+            time_seconds: timeOnPage,
+            page_title: document.title,
+            page_location: window.location.href
+          });
+        }
+      } catch (error) {
+        console.error('Time on page tracking error:', error);
+      }
+    }
+    
+    // Initialize tracking
+    document.addEventListener('DOMContentLoaded', function() {
+      trackPageView();
+      
+      // Track time on page every 30 seconds
+      setInterval(trackTimeOnPage, 30000);
+      
+      // Track form field interactions
+      document.querySelectorAll('input, textarea, select').forEach(field => {
+        field.addEventListener('focus', () => {
+          trackFormInteraction(field.name, field.type, 'focus', field.value);
+        });
+        
+        field.addEventListener('blur', () => {
+          trackFormInteraction(field.name, field.type, 'blur', field.value);
+        });
+        
+        field.addEventListener('change', () => {
+          trackFormInteraction(field.name, field.type, 'change', field.value);
+        });
+        
+        field.addEventListener('input', () => {
+          trackFormInteraction(field.name, field.type, 'input', field.value);
+        });
+      });
+      
+      // Track FAQ interactions
+      document.querySelectorAll('.faq-question').forEach(question => {
+        question.addEventListener('click', () => {
+          const isExpanded = question.parentElement.classList.contains('active');
+          trackFAQInteraction(question.textContent.trim(), isExpanded ? 'collapse' : 'expand');
+        });
+      });
+    });
+    
     // Populate tracking fields
     (function initHiddenFields(){
       const qs = new URLSearchParams(location.search);
