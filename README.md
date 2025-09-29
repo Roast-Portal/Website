@@ -1,30 +1,42 @@
-# Roast Portal Landing Page
+# Any Brew Goonies - Clean Version
 
-This simple static site showcases the Roast Portal quiz. The quiz will cycle through questions one by one, then post the results to a Google Sheet via an Apps Script endpoint.
+A clean, modern version of the Any Brew landing page inspired by izze.com's design philosophy.
 
-## Connect to Google Sheets
+## Features
 
-1. Create a new Google Apps Script bound to a Google Sheet.
-2. Add a function to accept `POST` requests and write the form fields to the sheet. A basic example is below:
+- **Clean Design**: Minimal, modern interface with lots of white space
+- **Simple Animations**: Subtle fade-in effects instead of complex scroll animations
+- **Responsive**: Works beautifully on all device sizes
+- **Fast Loading**: Optimized CSS and minimal JavaScript
+- **Accessible**: Clean typography and good contrast ratios
 
-   ```javascript
-   const SHEET_ID = '1XRqX513iVGKK1pGqkc3YxuF0csrj8I8PpbdWoXO9lkw';
-   const TAB_NAME = 'FormResponses';
+## File Structure
 
-   function doPost(e) {
-     const ss = SpreadsheetApp.openById(SHEET_ID);
-     const sheet = ss.getSheetByName(TAB_NAME) || ss.getSheets()[0];
-     const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-     const params = e.parameter;
-     const newRow = headers.map(h => params[h] || '');
-     newRow.unshift(new Date());
-     sheet.appendRow(newRow);
-     return ContentService.createTextOutput(JSON.stringify({status: 'OK'}))
-       .setMimeType(ContentService.MimeType.JSON);
-   }
-   ```
+```
+any-brew-goonies-clean/
+├── index.html          # Main HTML file
+├── css/
+│   └── clean.css       # All styles in one organized file
+├── img/                # All images from original
+└── README.md           # This file
+```
 
-3. Deploy the script as a web app and copy the deployment URL.
-4. In `index.html`, update the `SHEET_URL` constant with your deployment URL.
+## Design Philosophy
 
-Once deployed, submissions from the quiz will append rows to your sheet.
+- **Typography**: Uses Inter font for clean, readable text
+- **Colors**: Minimal palette - black, white, and orange accent
+- **Layout**: Grid-based responsive design
+- **Interactions**: Subtle hover effects and simple transitions
+- **Content**: All original copy preserved exactly
+
+## Usage
+
+Simply open `index.html` in a web browser. No build process required.
+
+## Differences from Original
+
+- Removed complex scroll animations
+- Simplified layout and interactions
+- Consolidated all CSS into one file
+- Added simple fade-in animations
+- Cleaner, more modern visual design

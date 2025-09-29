@@ -3,64 +3,33 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Roast Portal — Your Portal to Perfect Coffee</title>
-  <meta name="description" content="Subscribe to receive Any Brew and start making the best version of any coffee drink you have ever tasted. Personalized coffee extract that adapts to your taste.">
+  <title>ROAST PORTAL — Your Portal to Perfect Coffee</title>
+  <meta name="description" content="Subscribe to receive Any Brew<sup>™</sup> and start making the best version of any coffee drink you have ever tasted. Personalized coffee extract that adapts to your taste.">
   <link rel="icon" type="image/png" href="assets/img/favicon.png">
 
   <!-- OpenGraph -->
-  <meta property="og:title" content="Roast Portal — Your Portal to Perfect Coffee">
-  <meta property="og:description" content="Subscribe to receive Any Brew and start making the best version of any coffee drink you have ever tasted.">
+  <meta property="og:title" content="ROAST PORTAL — Your Portal to Perfect Coffee">
+  <meta property="og:description" content="Subscribe to receive Any Brew<sup>™</sup> and start making the best version of any coffee drink you have ever tasted.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://roastportal.com">
   
   <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/motion.css">
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-5LTTX2TGVQ');
-    gtag('config', 'AW-17346642053');
-  </script>
-  
-  <!-- Event snippet for Submit lead form (1) conversion page -->
-  <script>
-    function gtag_report_conversion(url) {
-      var callback = function () {
-        if (typeof(url) != 'undefined') {
-          window.location = url;
-        }
-      };
-      gtag('event', 'conversion', {
-        'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
-        'value': 0.0,
-        'currency': 'USD',
-        'event_callback': callback
-      });
-      return false;
-    }
-  </script>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/clean.css">
   
   <!-- JSON-LD Product Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "Any Brew",
+    "name": "Any Brew<sup>™</sup>",
     "description": "Personalized coffee extract that adapts to your taste and evolves with your feedback",
     "brand": {
       "@type": "Brand",
-      "name": "Any Brew"
+      "name": "Any Brew<sup>™</sup>"
     },
     "offers": {
       "@type": "Offer",
@@ -70,193 +39,217 @@
   }
   </script>
 </head>
-<body id="top">
+<body>
   <!-- Navigation -->
-  <header class="nav" id="nav">
-    <a class="logo" href="#top">Roast Portal</a>
-    <nav class="nav-links">
-      <a class="btn btn--ghost" href="login.html">Login</a>
-      <a class="btn btn--primary" href="quiz.html" onclick="return gtag_report_conversion('quiz.html');">Subscribe Now</a>
-    </nav>
-    <button class="nav-toggle" aria-label="Toggle navigation">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+  <header class="nav">
+    <div class="container">
+      <div class="nav-content">
+        <a class="logo" href="#top">ROAST PORTAL</a>
+        <nav class="nav-links">
+          <a class="btn btn--ghost" href="#login">Login</a>
+          <a class="btn btn--primary" href="#subscribe">Subscribe now</a>
+        </nav>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
   </header>
 
   <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero__overlay"></div>
-    <div class="hero__content">
-      <div class="hero__text">
-        <h1 class="hero__title">Your portal to perfect coffee</h1>
-        <h2 class="hero__subtitle">Subscribe to receive Any Brew and start making the best version of any coffee drink you have ever tasted.</h2>
+  <section class="hero" id="top">
+    <div class="container">
+      <div class="hero-content fade-in">
+        <h1>Your portal to perfect coffee</h1>
+        <h2 class="hero__subtitle">Subscribe to receive Any Brew<sup>™</sup> and start making the best version of any coffee drink you have ever tasted.</h2>
         <div class="hero__ctas">
           <a class="btn btn--primary" href="#make-any-drink">Learn more</a>
-          <a class="btn btn--ghost" href="quiz.html" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
+          <a class="btn btn--ghost" href="#subscribe">Subscribe now</a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Make Any Coffee Drink Section -->
-  <section id="make-any-drink" class="make-any-drink snap-section">
+  <section id="make-any-drink" class="section make-any-drink">
     <div class="container">
-      <div class="section-header animate-fade-up text-shimmer">
+      <div class="section-header">
         <h2 class="section-title">Make any coffee drink</h2>
       </div>
       
       <div class="drink-instructions">
-        <div class="instruction-card animate-slide-left stagger-1">
+        <div class="instruction-card fade-in">
           <div class="card-image">
-            <img src="img/hot coffee.jpeg" alt="Hot coffee cup" />
+            <img src="img/hot_square.png" alt="Hot coffee cup" />
           </div>
           <h3>Feeling like a hot coffee?</h3>
-          <p>Add Any Brew to a cup of hot water</p>
+          <p>Any Brew<sup>™</sup> + hot water = hot coffee</p>
         </div>
         
-        <div class="instruction-card animate-slide-right stagger-2">
+        <div class="instruction-card fade-in">
           <div class="card-image">
-            <img src="img/iced coffee.jpg" alt="Iced coffee cup" />
+            <img src="img/iced_square.png" alt="Iced coffee cup" />
           </div>
           <h3>Do you want an iced coffee or cold brew?</h3>
-          <p>Just add Any Brew to a cup of ice water</p>
+          <p>Any Brew<sup>™</sup> + ice water = ice coffee</p>
         </div>
         
-        <div class="instruction-card animate-slide-left stagger-3">
+        <div class="instruction-card fade-in">
           <div class="card-image">
-            <img src="img/iced latte .jpg" alt="Latte cup" />
+            <img src="img/latte_square.png" alt="Latte cup" />
           </div>
           <h3>Want iced or hot lattes?</h3>
-          <p>Make iced or hot lattes by using milk instead</p>
+          <p>Any Brew<sup>™</sup> + milk = latte</p>
         </div>
         
-        <div class="instruction-card highlight animate-scale stagger-4">
-          <div class="card-image">
-            <img src="img/any drink.jpg" alt="Any Brew bottle" />
-          </div>
-          <h3>Make all of your favorite coffee drinks with Any Brew at home or on the run</h3>
+        <div class="any-drink-text fade-in">
+          <h3>Make all of your favorite coffee drinks with Any Brew<sup>™</sup> at home or on the run</h3>
         </div>
       </div>
     </div>
   </section>
 
-    <!-- Enjoy Perfect Coffee Section -->
-    <section class="enjoy-perfect-coffee snap-section">
-      <div class="container">
-        <div class="section-header animate-fade-up text-shimmer">
-          <h2 class="section-title">Enjoy perfect coffee</h2>
-          <p class="section-subtitle">We go to extreme lengths to make your final cup of coffee be the best you have ever tasted. Our coffee experts tune and adapt your Any Brew formula to be specific to you. Any feedback you give is used to refine your next bottle of Any Brew.</p>
+  <!-- Enjoy Perfect Coffee Section -->
+  <section class="section enjoy-perfect-coffee">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Enjoy perfect coffee</h2>
+      </div>
+      
+      <div class="why-cards">
+        <div class="why-card fade-in">
+          <div class="card-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.98C19.47 12.66 19.5 12.34 19.5 12C19.5 11.66 19.47 11.34 19.43 11.02L21.54 9.37C21.73 9.22 21.78 8.95 21.66 8.73L19.66 5.27C19.54 5.05 19.27 4.96 19.05 5.05L16.56 6.05C16.04 5.65 15.48 5.32 14.87 5.07L14.49 2.42C14.46 2.18 14.25 2 14 2H10C9.75 2 9.54 2.18 9.51 2.42L9.13 5.07C8.52 5.32 7.96 5.66 7.44 6.05L4.95 5.05C4.73 4.96 4.46 5.05 4.34 5.27L2.34 8.73C2.22 8.95 2.27 9.22 2.46 9.37L4.57 11.02C4.53 11.34 4.5 11.67 4.5 12C4.5 12.33 4.53 12.66 4.57 12.98L2.46 14.63C2.27 14.78 2.22 15.05 2.34 15.27L4.34 18.73C4.46 18.95 4.73 19.03 4.95 18.95L7.44 17.94C7.96 18.34 8.52 18.68 9.13 18.93L9.51 21.58C9.54 21.82 9.75 22 10 22H14C14.25 22 14.46 21.82 14.49 21.58L14.87 18.93C15.48 18.68 16.04 18.34 16.56 17.94L19.05 18.95C19.27 19.03 19.54 18.95 19.66 18.73L21.66 15.27C21.78 15.05 21.73 14.78 21.54 14.63L19.43 12.98Z" fill="#1a1a1a"/>
+            </svg>
+          </div>
+          <h3>Coffee personalized to you</h3>
         </div>
         
-        <div class="cta-container animate-fade-up">
-          <a class="btn btn--primary" href="quiz.html" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
+        <div class="why-card fade-in">
+          <div class="card-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 6L18.29 8.29L13.41 13.17L9.41 9.17L2 16.59L3.41 18L9.41 12L13.41 16L19.71 9.71L22 12V6H16Z" fill="#1a1a1a"/>
+            </svg>
+          </div>
+          <h3>It gets better over time</h3>
+        </div>
+        
+        <div class="why-card fade-in">
+          <div class="card-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" fill="#1a1a1a"/>
+            </svg>
+          </div>
+          <h3>Made by experts</h3>
         </div>
       </div>
-    </section>
+      
+      <div class="any-drink-text fade-in">
+        <h3>We go to extreme lengths to make your final cup of coffee be the best you have ever tasted. Our coffee experts tune and adapt your Any Brew<sup>™</sup> formula to be specific to you. Any feedback you give is used to refine your next bottle of Any Brew<sup>™</sup>.</h3>
+      </div>
+    </div>
+  </section>
 
   <!-- Built by People Section -->
-  <section class="built-by-people snap-section">
+  <section class="section built-by-people">
     <div class="container">
-      <div class="section-header animate-fade-up text-shimmer">
+      <div class="section-header">
         <h2 class="section-title">Built by people obsessed with the perfect drink</h2>
       </div>
       
-      <div class="bold-animation">
-        <span data-text="Any">Any</span> <span data-text="Brew">Brew</span> <span data-text="was">was</span> <span data-text="created">created</span> <span data-text="by">by</span> <span data-text="a">a</span> <span data-text="team">team</span> <span data-text="of">of</span> <span data-text="coffee">coffee</span> <span data-text="shop">shop</span> <span data-text="owners,">owners,</span> <span data-text="coffee">coffee</span> <span data-text="roasters,">roasters,</span> <span data-text="baristas,">baristas,</span> <span data-text="data">data</span> <span data-text="scientists,">scientists,</span> <span data-text="and">and</span> <span data-text="engineers">engineers</span> <span data-text="who">who</span> <span data-text="are">are</span> <span data-text="united">united</span> <span data-text="by">by</span> <span data-text="one">one</span> <span data-text="mission:">mission:</span> <span data-text="to">to</span> <span data-text="make">make</span> <span data-text="the">the</span> <span data-text="perfect">perfect</span> <span data-text="cup">cup</span> <span data-text="of">of</span> <span data-text="coffee.">coffee.</span> <span data-text="But,">But,</span> <span data-text="the">the</span> <span data-text="perfect">perfect</span> <span data-text="cup">cup</span> <span data-text="of">of</span> <span data-text="coffee">coffee</span> <span data-text="is">is</span> <span data-text="different">different</span> <span data-text="for">for</span> <span data-text="each">each</span> <span data-text="person,">person,</span> <span data-text="so">so</span> <span data-text="we">we</span> <span data-text="invented">invented</span> <span data-text="a">a</span> <span data-text="new">new</span> <span data-text="production">production</span> <span data-text="process">process</span> <span data-text="where">where</span> <span data-text="we">we</span> <span data-text="craft">craft</span> <span data-text="every">every</span> <span data-text="bottle">bottle</span> <span data-text="of">of</span> <span data-text="Any">Any</span> <span data-text="Brew">Brew</span> <span data-text="to">to</span> <span data-text="be">be</span> <span data-text="unique">unique</span> <span data-text="based">based</span> <span data-text="on">on</span> <span data-text="each">each</span> <span data-text="customer's">customer's</span> <span data-text="preferences">preferences</span> <span data-text="and">and</span> <span data-text="feedback.">feedback.</span> <span data-text="The">The</span> <span data-text="result?">result?</span> <span data-text="The">The</span> <span data-text="best">best</span> <span data-text="coffee">coffee</span> <span data-text="you">you</span> <span data-text="have">have</span> <span data-text="ever">ever</span> <span data-text="tasted">tasted</span> <span data-text="because">because</span> <span data-text="we">we</span> <span data-text="made">made</span> <span data-text="it">it</span> <span data-text="just">just</span> <span data-text="for">for</span> <span data-text="you.">you.</span>
-      </div>
       
-      <div class="team-slideshow animate-fade-up">
-        <div class="slideshow-container animate-scale">
-          <div class="team-slide active">
-            <div class="slide-content">
-              <div class="member-image animate-slide-left">
-                <img src="img/coffee shop owner .png" alt="Coffee shop owner behind the counter" />
-              </div>
-              <div class="member-info animate-slide-right">
-                <h3 class="member-role">Coffee Shop Owners</h3>
-                <p class="member-quote">Decades of experience serving customers and understanding what makes the perfect cup. They know the difference between good coffee and great coffee, and bring that expertise to every bottle of Any Brew.</p>
-              </div>
+      <div class="team-slideshow">
+        <div class="team-slide active">
+          <div class="slide-content">
+            <div class="member-image">
+              <img src="img/coffee shop owner .png" alt="Coffee shop owner behind the counter" />
+            </div>
+            <div class="member-info">
+              <h3 class="member-role">Coffee Shop Owners</h3>
+              <p class="member-quote">Decades of experience serving customers and understanding what makes the perfect cup. They know the difference between good coffee and great coffee, and bring that expertise to every bottle of Any Brew<sup>™</sup>.</p>
             </div>
           </div>
-          
-          <div class="team-slide">
-            <div class="slide-content">
-              <div class="member-image animate-slide-left">
-                <img src="img/expert barista.jpeg" alt="Expert barista preparing espresso" />
-              </div>
-              <div class="member-info animate-slide-right">
-                <h3 class="member-role">Expert Baristas</h3>
-                <p class="member-quote">Masters of the craft who understand the subtle nuances that transform good coffee into exceptional coffee. They bring years of precision and artistry to ensure every bottle meets the highest standards.</p>
-              </div>
+        </div>
+        
+        <div class="team-slide">
+          <div class="slide-content">
+            <div class="member-image">
+              <img src="img/expert barista.jpeg" alt="Expert barista preparing espresso" />
+            </div>
+            <div class="member-info">
+              <h3 class="member-role">Expert Baristas</h3>
+              <p class="member-quote">Masters of the craft who understand the subtle nuances that transform good coffee into exceptional coffee. They bring years of precision and artistry to ensure every bottle meets the highest standards.</p>
             </div>
           </div>
-          
-          <div class="team-slide">
-            <div class="slide-content">
-              <div class="member-image animate-slide-left">
-                <img src="img/data scientist.webp" alt="Data scientist analyzing coffee data" />
-              </div>
-              <div class="member-info animate-slide-right">
-                <h3 class="member-role">Data Scientists</h3>
-                <p class="member-quote">Using advanced analytics to understand taste preferences and optimize your personal coffee formula. They transform your feedback into data-driven improvements that make each bottle better than the last.</p>
-              </div>
+        </div>
+        
+        <div class="team-slide">
+          <div class="slide-content">
+            <div class="member-image">
+              <img src="img/data scientist.webp" alt="Data scientist analyzing coffee data" />
+            </div>
+            <div class="member-info">
+              <h3 class="member-role">Data<br>Scientists</h3>
+              <p class="member-quote">Using advanced analytics to understand taste preferences and optimize your personal coffee formula. They transform your feedback into data-driven improvements that make each bottle better than the last.</p>
             </div>
           </div>
-          
-          <div class="team-slide">
-            <div class="slide-content">
-              <div class="member-image animate-slide-left">
-                <img src="img/master coffee roaster.jpeg" alt="Master coffee roaster at work" />
-              </div>
-              <div class="member-info animate-slide-right">
-                <h3 class="member-role">Master Roasters</h3>
-                <p class="member-quote">Crafting the perfect roast profiles that bring out the best in every bean. With decades of experience, they know exactly how to unlock the complex flavors that make each cup of Any Brew exceptional.</p>
-              </div>
+        </div>
+        
+        <div class="team-slide">
+          <div class="slide-content">
+            <div class="member-image">
+              <img src="img/master coffee roaster.jpeg" alt="Master coffee roaster at work" />
+            </div>
+            <div class="member-info">
+              <h3 class="member-role">Master Roasters</h3>
+              <p class="member-quote">Crafting the perfect roast profiles that bring out the best in every bean. With decades of experience, they know exactly how to unlock the complex flavors that make each cup of Any Brew<sup>™</sup> exceptional.</p>
             </div>
           </div>
         </div>
       </div>
       
-      <div class="mission-statement animate-fade-up">
-        <p>Join us on our mission to build a different world of coffee.</p>
-        <div class="mission-cta">
-          <a href="quiz.html" class="btn btn--primary" onclick="return gtag_report_conversion('quiz.html');">Subscribe Now</a>
-        </div>
+      <div class="any-drink-text fade-in">
+        <h3>Any Brew<sup>™</sup> was created by a team of coffee shop owners, coffee roasters, baristas, data scientists, and engineers who are united by one mission: to make the perfect cup of coffee. But, the perfect cup of coffee is different for each person, so we invented a new production process where we craft every bottle of Any Brew<sup>™</sup> to be unique based on each customer's preferences and feedback. The result? The best coffee you have ever tasted because we made it just for you.</h3>
       </div>
     </div>
   </section>
 
   <!-- Customer Validation Section -->
-  <section class="customer-validation snap-section">
+  <section class="section customer-validation">
     <div class="container">
-      <div class="section-header animate-fade-up text-shimmer">
+      <div class="section-header">
         <h2 class="section-title">What coffee lovers say</h2>
       </div>
       
       <div class="testimonials">
-        <div class="testimonial-card animate-fade-up stagger-1">
+        <div class="testimonial-card fade-in">
           <div class="testimonial-content">
             <p>"This isn't just better coffee, it's the best coffee I've ever had. For the first time, my morning cup and my afternoon iced coffee taste perfectly consistent with what I want. I used to think bitterness and inconsistency were normal. Any Brew showed me what coffee is supposed to taste like."</p>
+            <div class="testimonial-author">- Sarah M.</div>
           </div>
         </div>
         
-        <div class="testimonial-card animate-fade-up stagger-2">
+        <div class="testimonial-card fade-in">
           <div class="testimonial-content">
             <p>"Coffee used to be fuel. I needed it to wake up and had to doctor it up with tons of sugar. Any Brew is easy to drink straight and it's become a highlight of my day."</p>
+            <div class="testimonial-author">- Michael R.</div>
           </div>
         </div>
         
-        <div class="testimonial-card animate-fade-up stagger-3">
+        <div class="testimonial-card fade-in">
           <div class="testimonial-content">
             <p>"I was really impressed how Any Brew took my feedback and made a new version for me that I liked even better."</p>
+            <div class="testimonial-author">- Jennifer L.</div>
           </div>
         </div>
         
-        <div class="testimonial-card animate-fade-up stagger-4">
+        <div class="testimonial-card fade-in">
           <div class="testimonial-content">
             <p>"It feels like I suddenly have the world's best barista making coffee for me each morning."</p>
+            <div class="testimonial-author">- David K.</div>
           </div>
         </div>
       </div>
@@ -264,13 +257,13 @@
   </section>
 
   <!-- Final CTA Section -->
-  <section class="final-cta snap-section">
+  <section class="section final-cta">
     <div class="container">
-      <div class="cta-content animate-fade-up text-shimmer">
-        <h2 class="cta-headline">Subscribe now to receive your first two week order of Any Brew.</h2>
+      <div class="cta-content">
+        <h2 class="cta-headline">Subscribe now to receive your first two week order of Any Brew<sup>™</sup></h2>
         <h3 class="cta-subhead">Your portal to perfect coffee</h3>
         <div class="portal-button-container">
-          <a class="btn btn--portal" href="quiz.html" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
+          <a class="btn btn--portal" href="quiz.html">Subscribe now</a>
         </div>
       </div>
     </div>
@@ -278,17 +271,58 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <a class="logo" href="#top">Roast Portal</a>
-      <nav class="footer-links">
-        <a href="contact.html">Contact</a>
-        <a href="contact.html#faq">FAQ</a>
-        <a href="terms.html">Terms</a>
-        <a href="quiz.html" class="btn btn--primary" onclick="return gtag_report_conversion('quiz.html');">Subscribe Now</a>
-      </nav>
+    <div class="container">
+      <div class="footer-content">
+        <a class="logo" href="#top">Any Brew<sup>™</sup><br><span class="logo-brand">by ROAST PORTAL</span></a>
+        <nav class="footer-links">
+          <a href="#faq">FAQ</a>
+          <a href="#terms">Terms</a>
+          <a href="#subscribe" class="btn btn--primary">Subscribe now</a>
+        </nav>
+      </div>
+    </div>
   </footer>
 
-  <!-- Scripts -->
-  <script src="js/app.js" defer></script>
-  <script src="js/motion.js" defer></script>
+  <script>
+    // Simple fade-in animation on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationDelay = Math.random() * 0.3 + 's';
+          entry.target.classList.add('fade-in');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all elements with fade-in class
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Simple team slideshow
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.team-slide');
+    
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    // Auto-advance slideshow every 5 seconds
+    if (slides.length > 1) {
+      setInterval(nextSlide, 5000);
+    }
+  </script>
 </body>
 </html>
