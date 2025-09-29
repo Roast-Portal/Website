@@ -11,7 +11,7 @@
   <title>Roast Portal — Taste Preference Quiz</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
@@ -41,10 +41,14 @@
     }
   </script>
 
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/clean.css">
+  <link rel="stylesheet" href="css/font-system.css">
   <style>
-    /* Quiz-specific variables */
+    :root{
+      --bg-primary:#FBFBFD;
+      --bg-secondary:#F5F5F7;
+      --text-primary:#1D1D1F;
+      --text-secondary:#6E6E73;
+      --accent-blue:#0071E3;
       --border-light:rgba(0,0,0,0.12);
       --radius:14px;
       --header-h:60px;
@@ -55,8 +59,40 @@
       --safe-top: env(safe-area-inset-top, 0px);
     }
 
-    /* Subscription Process Animation Styles - removed */
+    /* Subscription Process Animation Styles */
+    .subscription-intro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        linear-gradient(135deg, #FBFBFD 0%, #F5F5F7 100%),
+        radial-gradient(circle at 20% 80%, rgba(0, 113, 227, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 113, 227, 0.03) 0%, transparent 50%);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      transition: opacity 0.8s var(--ease);
+    }
 
+    .subscription-intro.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .intro-content {
+      text-align: center;
+      max-width: 600px;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
 
     .intro-logo {
       font-size: 2rem;
@@ -553,7 +589,43 @@
   </style>
 </head>
 <body>
-  <!-- Intro section removed - quiz loads directly -->
+  <!-- Subscription Process Introduction Animation -->
+  <div class="subscription-intro" id="subscription-intro">
+    <div class="intro-content">
+      <div class="intro-logo">☕ Roast Portal</div>
+      <h1 class="intro-title">Your Personalized Coffee Journey</h1>
+      
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-number">1</div>
+          <div class="step-text">Answer a few questions about your taste</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">2</div>
+          <div class="step-text">Subscribe to your personalized blend</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">3</div>
+          <div class="step-text">Let AI build your custom coffee profile</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">4</div>
+          <div class="step-text">Give feedback on your blend</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">5</div>
+          <div class="step-text">Get your improved blend, repeat!</div>
+        </div>
+      </div>
+      
+      <p class="intro-subtitle">Ready to discover your perfect blend?</p>
+      
+      <button class="begin-btn" id="begin-btn">
+        <span class="btn-text">Begin Now</span>
+        <span class="btn-icon">→</span>
+      </button>
+    </div>
+  </div>
 
   <a class="sr-only" href="#quiz-content">Skip to quiz</a>
 
@@ -590,105 +662,7 @@
     // Quiz submissions are sent to: https://script.google.com/macros/s/AKfycbzPAMu_-e7bZ6qXQRawEQqAfmSMy3HnAS31qeayNCATDCsUHdDuipldJf253-FsB7WUog/exec
     // This script handles quiz data collection and can be configured to send emails, store in Google Sheets, etc.
     
-    // --- COMPREHENSIVE QUIZ TRACKING SYSTEM ---
-    
-    // Track page view and quiz start
-    function trackPageView() {
-      try {
-        if (typeof gtag === 'function') {
-          gtag('event', 'page_view', {
-            page_title: document.title,
-            page_location: window.location.href,
-            page_path: window.location.pathname,
-            custom_parameter: 'quiz_page'
-          });
-          // Track quiz start
-          gtag('event', 'quiz_start', {
-            quiz_type: 'coffee_preference',
-            page_title: document.title,
-            page_location: window.location.href
-          });
-        }
-      } catch (error) {
-        console.error('Page view tracking error:', error);
-      }
-    }
-    
-    // Track time spent on each question
-    let questionStartTime = Date.now();
-    function trackQuestionTime(questionId, stepNumber) {
-      const timeSpent = Math.round((Date.now() - questionStartTime) / 1000);
-      try {
-        if (typeof gtag === 'function') {
-          gtag('event', 'question_time', {
-            question_id: questionId,
-            step_number: stepNumber,
-            time_seconds: timeSpent,
-            page_title: document.title
-          });
-        }
-      } catch (error) {
-        console.error('Question time tracking error:', error);
-      }
-      questionStartTime = Date.now(); // Reset for next question
-    }
-    
-    // Track form field interactions
-    function trackFormInteraction(fieldName, fieldType, action) {
-      try {
-        if (typeof gtag === 'function') {
-          gtag('event', 'form_interaction', {
-            field_name: fieldName,
-            field_type: fieldType,
-            action: action, // 'focus', 'blur', 'change', 'input'
-            page_title: document.title,
-            timestamp: Date.now()
-          });
-        }
-      } catch (error) {
-        console.error('Form interaction tracking error:', error);
-      }
-    }
-    
-    // Track quiz abandonment
-    let quizAbandoned = false;
-    function trackQuizAbandonment() {
-      if (!quizAbandoned) {
-        quizAbandoned = true;
-        try {
-          if (typeof gtag === 'function') {
-            gtag('event', 'quiz_abandonment', {
-              current_step: currentStep + 1,
-              total_steps: quizData.length,
-              completion_percentage: Math.round(((currentStep + 1) / quizData.length) * 100),
-              page_title: document.title,
-              time_on_quiz: Math.round((Date.now() - quizStartTime) / 1000)
-            });
-          }
-        } catch (error) {
-          console.error('Quiz abandonment tracking error:', error);
-        }
-      }
-    }
-    
-    // Track quiz errors
-    function trackQuizError(errorType, errorMessage, stepNumber) {
-      try {
-        if (typeof gtag === 'function') {
-          gtag('event', 'quiz_error', {
-            error_type: errorType,
-            error_message: errorMessage,
-            step_number: stepNumber,
-            page_title: document.title,
-            timestamp: Date.now()
-          });
-        }
-      } catch (error) {
-        console.error('Quiz error tracking error:', error);
-      }
-    }
-    
-    // Enhanced quiz event tracking
+    // --- Google Analytics Tracking ---
     function trackQuizEvent(eventName, parameters = {}) {
       try {
         if (typeof gtag === 'function') {
@@ -816,12 +790,12 @@
     ];
 
     const quizContent = document.querySelector('.quiz-content');
-    const progressBar = document.querySelector('#progress-bar');
-    const progressText = document.querySelector('#progress-text');
-    const status = document.querySelector('#status');
-    const prevBtn = document.querySelector('#prev-btn');
-    const nextBtn = document.querySelector('#next-btn');
-    const resetBtn = document.querySelector('#reset-btn');
+    const progressBar = $('#progress-bar');
+    const progressText = $('#progress-text');
+    const status = $('#status');
+    const prevBtn = $('#prev-btn');
+    const nextBtn = $('#next-btn');
+    const resetBtn = $('#reset-btn');
 
     let currentStep = 0;
     let answers = {};
@@ -1125,12 +1099,8 @@
 
     function updateProgress(){
       const pct = Math.round((currentStep/quizData.length)*100);
-      if (progressBar) {
-        progressBar.style.width = pct + '%';
-      }
-      if (progressText) {
-        progressText.innerHTML = `<span>Step ${currentStep + 1}</span><span>${pct}%</span>`;
-      }
+      progressBar.style.width = pct + '%';
+      progressText.innerHTML = `<span></span><span></span>`;
     }
 
     function isStepValid(){
@@ -1152,19 +1122,15 @@
 
     function updateNav(){
       // On first question, back button should go to previous page
-      if (prevBtn) {
-        if (currentStep === 0) {
-          prevBtn.disabled = false;
-          prevBtn.textContent = 'Back';
-        } else {
-          prevBtn.disabled = false;
-          prevBtn.textContent = 'Back';
-        }
+      if (currentStep === 0) {
+        prevBtn.disabled = false;
+        prevBtn.textContent = 'Back';
+      } else {
+        prevBtn.disabled = false;
+        prevBtn.textContent = 'Back';
       }
-      if (nextBtn) {
-        nextBtn.textContent = (currentStep === quizData.length-1) ? 'Submit' : 'Next';
-        nextBtn.disabled = !isStepValid();
-      }
+      nextBtn.textContent = (currentStep === quizData.length-1) ? 'Submit' : 'Next';
+      nextBtn.disabled = !isStepValid();
     }
 
     // Submit quiz data to Google Apps Script
@@ -1234,8 +1200,7 @@
     }
 
     // --- Navigation ---
-    if (nextBtn) {
-      nextBtn.addEventListener('click', async ()=>{
+    nextBtn.addEventListener('click', async ()=>{
       console.log('Next button clicked, step:', currentStep + 1, 'of', quizData.length);
       
       // Track button click
@@ -1327,11 +1292,9 @@
           window.location.href = 'checkout.html';
         }, 2000);
       }
-      });
-    }
+    });
 
-    if (prevBtn) {
-      prevBtn.addEventListener('click', ()=>{
+    prevBtn.addEventListener('click', ()=>{
       // Track button click
       trackButtonClick('Back', 'quiz_navigation', currentStep + 1);
       
@@ -1349,8 +1312,7 @@
           window.location.href = 'index.html';
         }
       }
-      });
-    }
+    });
 
     // Keyboard shortcuts - consolidated to prevent multiple submissions
     document.addEventListener('keydown', (e)=>{
@@ -1358,24 +1320,23 @@
       const inField = ['INPUT','TEXTAREA'].includes(tag);
       
       // Arrow keys for navigation (when not in input fields)
-      if(e.key === 'ArrowRight' && !inField && nextBtn){ 
+      if(e.key === 'ArrowRight' && !inField){ 
         e.preventDefault(); 
         if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); 
       }
-      if(e.key === 'ArrowLeft' && !inField && prevBtn){ 
+      if(e.key === 'ArrowLeft' && !inField){ 
         e.preventDefault(); 
         if(!prevBtn.disabled) prevBtn.click(); 
       }
       
       // Enter/Return key acts as Next button (always, including in text fields)
-      if((e.key === 'Enter' || e.key === 'Return') && nextBtn){ 
+      if(e.key === 'Enter' || e.key === 'Return'){ 
         e.preventDefault(); 
         if(!nextBtn.disabled && !submissionInProgress && !submissionCompleted) nextBtn.click(); 
       }
     });
 
-    if (resetBtn) {
-      resetBtn.addEventListener('click', ()=>{
+    resetBtn.addEventListener('click', ()=>{
       // Track reset button click
       trackQuizEvent('quiz_reset', {
         step_number: currentStep + 1,
@@ -1384,8 +1345,7 @@
       });
       
       if(confirm('Reset your quiz and clear saved answers?')) resetProgress();
-      });
-    }
+    });
 
     // Track exit link clicks
     document.addEventListener('click', (e) => {
@@ -1419,13 +1379,55 @@
       console.log('Quiz already submitted today, preventing duplicate submissions');
     }
     
-    // Intro animation removed - quiz loads directly
-    
-    // Show quiz container immediately
-    const quizContainer = document.querySelector('.quiz-container');
-    if (quizContainer) {
-      quizContainer.classList.add('show');
+    // Handle subscription intro animation
+    function handleSubscriptionIntro() {
+      const introElement = document.getElementById('subscription-intro');
+      const beginBtn = document.getElementById('begin-btn');
+      
+      if (!introElement || !beginBtn) return;
+      
+      // Check if user has already seen the intro in this session
+      if (sessionStorage.getItem('quiz_intro_shown')) {
+        introElement.remove();
+        return;
+      }
+      
+      // Mark intro as shown for this session
+      sessionStorage.setItem('quiz_intro_shown', 'true');
+      
+      // Add click event listener to begin button
+      beginBtn.addEventListener('click', function() {
+        // Track begin button click
+        trackQuizEvent('subscription_intro_begin', {
+          custom_parameter: 'intro_start'
+        });
+        
+        // Add loading state to button
+        beginBtn.classList.add('loading');
+        beginBtn.querySelector('.btn-text').textContent = 'Starting...';
+        
+        // Fade out intro after button click
+        setTimeout(() => {
+          introElement.classList.add('fade-out');
+          
+          // Show quiz container
+          const quizContainer = document.querySelector('.quiz-container');
+          if (quizContainer) {
+            quizContainer.classList.add('show');
+          }
+          
+          // Remove intro element after fade out animation completes
+          setTimeout(() => {
+            if (introElement.parentNode) {
+              introElement.parentNode.removeChild(introElement);
+            }
+          }, 800); // Match the CSS transition duration
+        }, 300); // Small delay to show loading state
+      });
     }
+    
+    // Start the intro animation
+    handleSubscriptionIntro();
     
     // Track quiz start
     trackQuizStart();
