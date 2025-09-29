@@ -384,26 +384,21 @@
     }
     :focus-visible{ outline: var(--focus); outline-offset: 2px; border-radius: 8px; }
 
-    /* Layout */
-    .quiz-header{
-      position:fixed; top:0; left:0; right:0; height:var(--header-h);
-      display:flex; align-items:center; justify-content:space-between;
-      padding:0 16px; z-index:100;
-      background: color-mix(in oklab, var(--bg-primary) 80%, transparent);
+    /* Layout - Updated for new header */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(251, 251, 253, 0.8);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border-bottom:1px solid var(--border-light);
-      padding-top: calc(var(--safe-top));
-    }
-    .brand{ font-weight: var(--font-weight-bold); font-size:18px; letter-spacing:.2px; }
-    .exit-link{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:10px 14px; border-radius:999px; text-decoration:none;
-      border:1px solid var(--border-light); color:var(--text-primary); background:var(--bg-secondary);
+      border-bottom: 1px solid var(--border-light);
     }
 
     .progress-wrap{
-      position:fixed; top:calc(var(--header-h) + var(--safe-top));
+      position:fixed; top:60px;
       left:0; right:0; z-index:90;
     }
     .progress-rail{ height:4px; background:var(--bg-secondary); }
@@ -414,14 +409,14 @@
 
     .quiz-container{
       max-width:720px; margin:0 auto;
-      padding: calc(var(--header-h) + 36px + var(--safe-top)) 16px 120px;
+      padding: calc(60px + 36px) 16px 120px;
       min-height:100dvh;
     }
     .quiz-content{ min-height: 52dvh; display:flex; align-items:center; }
     
     /* Mobile height optimization */
     @media (max-width: 619px) {
-      .quiz-container { padding: calc(var(--header-h) + 16px + var(--safe-top)) 16px 120px; }
+      .quiz-container { padding: calc(60px + 16px) 16px 120px; }
       .quiz-content { min-height: 35dvh; }
     }
     .quiz-step{
@@ -629,12 +624,21 @@
 
   <a class="sr-only" href="#quiz-content">Skip to quiz</a>
 
-  <header class="quiz-header" role="banner">
-    <div class="brand" aria-label="Roast Portal">Roast Portal</div>
-    <div>
-      <button id="reset-btn" class="linklike" aria-describedby="reset-help">Reset</button>
-      <span id="reset-help" class="sr-only">Clears saved answers and restarts the quiz</span>
-      <a href="index.html" class="exit-link" aria-label="Return to main page">Back to Main</a>
+  <!-- Navigation -->
+  <header class="nav">
+    <div class="container">
+      <div class="nav-content">
+        <a class="logo" href="index.html">ROAST PORTAL</a>
+        <nav class="nav-links">
+          <a class="btn btn--ghost" href="login.html">Login</a>
+          <a class="btn btn--primary" href="javascript:void(0)" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
+        </nav>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -649,7 +653,10 @@
 
   <main id="quiz-content" class="quiz-container" role="main">
     <div class="quiz-content" aria-live="polite"></div>
-    <div class="toolbar" aria-live="polite" id="status"></div>
+    <div class="toolbar" aria-live="polite" id="status">
+      <button id="reset-btn" class="linklike" aria-describedby="reset-help">Reset Quiz</button>
+      <span id="reset-help" class="sr-only">Clears saved answers and restarts the quiz</span>
+    </div>
   </main>
 
   <nav class="quiz-nav" aria-label="Quiz navigation">
@@ -1431,6 +1438,17 @@
     
     // Track quiz start
     trackQuizStart();
+    
+    // Mobile navigation toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('nav-open');
+        navToggle.classList.toggle('nav-toggle-open');
+      });
+    }
     
     renderStep();
   </script>

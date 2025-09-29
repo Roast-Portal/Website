@@ -797,6 +797,24 @@
   </style>
 </head>
 <body>
+  <!-- Navigation -->
+  <header class="nav">
+    <div class="container">
+      <div class="nav-content">
+        <a class="logo" href="index.html">ROAST PORTAL</a>
+        <nav class="nav-links">
+          <a class="btn btn--ghost" href="login.html">Login</a>
+          <a class="btn btn--primary" href="javascript:void(0)" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
+        </nav>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
   <div class="container">
     <main class="surface" role="main" aria-labelledby="page-title">
       <h1 id="page-title">Checkout</h1>
@@ -1419,6 +1437,17 @@
     // Track page view and order review
     trackPageView();
     trackOrderReview();
+    
+    // Mobile navigation toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('nav-open');
+        navToggle.classList.toggle('nav-toggle-open');
+      });
+    }
   })();
   </script>
 </body>
