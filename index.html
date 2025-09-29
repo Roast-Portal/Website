@@ -14,8 +14,37 @@
   <meta property="og:url" content="https://roastportal.com">
   
   <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LTTX2TGVQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5LTTX2TGVQ');
+    gtag('config', 'AW-17346642053');
+  </script>
+  
+  <!-- Google Ads Conversion Tracking -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17346642053/djvHCNG48f4aEIWBw89A',
+        'value': 0.0,
+        'currency': 'USD',
+        'event_callback': callback
+      });
+      return false;
+    }
+  </script>
   
   <!-- Stylesheet -->
   <link rel="stylesheet" href="css/clean.css">
@@ -47,7 +76,7 @@
         <a class="logo" href="#top">ROAST PORTAL</a>
         <nav class="nav-links">
           <a class="btn btn--ghost" href="#login">Login</a>
-          <a class="btn btn--primary" href="#subscribe">Subscribe now</a>
+          <a class="btn btn--primary" href="javascript:void(0)" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
         </nav>
         <button class="nav-toggle" aria-label="Toggle navigation">
           <span></span>
@@ -66,7 +95,7 @@
         <h2 class="hero__subtitle">Subscribe to receive Any Brew<sup>™</sup> and start making the best version of any coffee drink you have ever tasted.</h2>
         <div class="hero__ctas">
           <a class="btn btn--primary" href="#make-any-drink">Learn more</a>
-          <a class="btn btn--ghost" href="#subscribe">Subscribe now</a>
+          <a class="btn btn--ghost" href="javascript:void(0)" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
         </div>
       </div>
     </div>
@@ -263,7 +292,7 @@
         <h2 class="cta-headline">Subscribe now to receive your first two week order of Any Brew<sup>™</sup></h2>
         <h3 class="cta-subhead">Your portal to perfect coffee</h3>
         <div class="portal-button-container">
-          <a class="btn btn--portal" href="quiz.html">Subscribe now</a>
+          <a class="btn btn--portal" href="javascript:void(0)" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
         </div>
       </div>
     </div>
@@ -277,7 +306,7 @@
         <nav class="footer-links">
           <a href="#faq">FAQ</a>
           <a href="#terms">Terms</a>
-          <a href="#subscribe" class="btn btn--primary">Subscribe now</a>
+          <a href="javascript:void(0)" class="btn btn--primary" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
         </nav>
       </div>
     </div>
