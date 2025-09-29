@@ -651,19 +651,20 @@ sup {
     padding-top: 60px;
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .hero .container {
     padding: 0 2rem;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    padding-top: 4rem;
   }
   
   .hero-content {
     text-align: center;
     max-width: 100%;
-    margin-top: -5rem;
+    margin-top: 0;
   }
 
   .drink-instructions {
