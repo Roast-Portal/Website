@@ -714,16 +714,29 @@
         console.log('Updating pricing and product details...');
         updatePricing(quizData);
         updateProductDetails(quizData);
+        // Ensure button price is updated after everything else
+        updateButtonPrice(quizData);
       } else {
         console.log('No quiz data found, using default pricing');
         // Use default pricing if no quiz data
         const defaultData = { priceRange: 'Any Brew™ - $3.50 per drink' };
         updatePricing(defaultData);
         updateProductDetails(defaultData);
+        updateButtonPrice(defaultData);
       }
       
       // Bind buy now button
       document.getElementById('buy-now-btn').addEventListener('click', handleBuyNow);
+    }
+
+    // Update button price separately
+    function updateButtonPrice(quizData) {
+      const btnPrice = document.getElementById('btn-price');
+      if (btnPrice) {
+        const pricing = calculatePricing(quizData);
+        btnPrice.textContent = `$${pricing.total}`;
+        console.log('Updated button price to:', btnPrice.textContent);
+      }
     }
 
     // Update product details based on quiz data
@@ -774,10 +787,7 @@
       }
       productDetails.textContent = orderDetails;
       
-      // Update button price - calculate directly to ensure accuracy
-      const pricing = calculatePricing(quizData);
-      btnPrice.textContent = `$${pricing.total}`;
-      console.log('Updated button price to:', btnPrice.textContent);
+      // Button price is updated separately in updateButtonPrice function
     }
 
     // Initialize when page loads
