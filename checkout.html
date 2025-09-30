@@ -597,13 +597,20 @@
 
     // Calculate pricing based on selected tier
     function calculatePricing(quizData) {
+      console.log('Quiz data for pricing:', quizData);
       const priceRange = quizData.priceRange || '';
+      console.log('Price range from quiz:', priceRange);
+      
       let pricePerDrink = 3.50; // Default to Any Brew™
 
       if (priceRange.includes('$4.50')) {
         pricePerDrink = 4.50;
+        console.log('Selected Premium tier: $4.50 per drink');
       } else if (priceRange.includes('$5.50')) {
         pricePerDrink = 5.50;
+        console.log('Selected Deluxe tier: $5.50 per drink');
+      } else {
+        console.log('Using default tier: $3.50 per drink');
       }
 
       const drinksPerBottle = 7; // Each bottle makes 7 drinks
@@ -614,6 +621,15 @@
       const shipping = 4.95;
       const tax = subtotal * 0.08;
       const total = subtotal + shipping + tax;
+
+      console.log('Pricing calculation:', {
+        pricePerDrink,
+        totalDrinks,
+        subtotal,
+        shipping,
+        tax,
+        total
+      });
 
       return {
         pricePerDrink,
@@ -690,10 +706,20 @@
 
     // Initialize checkout
     function initCheckout() {
+      console.log('Initializing checkout...');
       const quizData = loadQuizData();
+      console.log('Loaded quiz data:', quizData);
+      
       if (quizData) {
+        console.log('Updating pricing and product details...');
         updatePricing(quizData);
         updateProductDetails(quizData);
+      } else {
+        console.log('No quiz data found, using default pricing');
+        // Use default pricing if no quiz data
+        const defaultData = { priceRange: 'Any Brew™ - $3.50 per drink' };
+        updatePricing(defaultData);
+        updateProductDetails(defaultData);
       }
       
       // Bind buy now button
@@ -752,7 +778,7 @@
       const totalElement = document.getElementById('total');
       if (totalElement && totalElement.textContent !== '$0.00') {
         btnPrice.textContent = totalElement.textContent;
-      } else {
+          } else {
         // Fallback: calculate the price directly
         const pricing = calculatePricing(quizData);
         btnPrice.textContent = `$${pricing.total}`;
