@@ -555,7 +555,7 @@
 
         <div class="checkout-actions">
           <a href="quiz.html" class="btn btn-secondary">← Back to Quiz</a>
-          <button type="button" class="btn btn-primary btn-large" id="buy-now-btn">
+          <button type="button" class="btn btn-primary btn-large" id="buy-now-btn" onclick="handleBuyNow(event)">
             <span class="btn-text">Buy Now</span>
             <span class="btn-price" id="btn-price">$0.00</span>
           </button>
@@ -737,16 +737,7 @@
         updateProductDetails(defaultData);
       }
       
-      // Bind buy now button
-      const buyBtn = document.getElementById('buy-now-btn');
-      console.log('Buy button found:', buyBtn);
-      
-      if (buyBtn) {
-        buyBtn.addEventListener('click', handleBuyNow);
-        console.log('Buy button event listener added');
-      } else {
-        console.error('Buy button not found!');
-      }
+      // Button uses onclick attribute, no need to bind here
     }
 
     // Update product details based on quiz data
