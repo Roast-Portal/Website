@@ -1265,33 +1265,29 @@
         console.log('Quiz completed, submission flags set - completed:', submissionCompleted, 'in progress:', submissionInProgress);
         
         // Show completion status
-        status.innerHTML = '<span style="color: #34A853;">✓ Quiz completed! Submitting your data to Google Apps Script...</span>';
+        status.innerHTML = '<span style="color: #34A853;">✓ Quiz completed! Redirecting to checkout...</span>';
         
         // Disable the button to prevent further clicks
         nextBtn.disabled = true;
         console.log('Next button disabled to prevent further clicks');
         
-        // Submit to Google Apps Script
-        try {
-          const submissionSuccess = await submitQuizToGoogleScript(answers);
-          if (submissionSuccess) {
-            status.innerHTML = '<span style="color: #34A853;">✓ Quiz data submitted successfully! Redirecting to checkout...</span>';
+        // Submit to Google Apps Script in the background (non-blocking)
+        submitQuizToGoogleScript(answers).then(success => {
+          if (success) {
             console.log('Quiz data submitted to Google Apps Script successfully');
           } else {
-            status.innerHTML = '<span style="color: #FF9500;">⚠ Quiz completed! Redirecting to checkout...</span>';
             console.log('Quiz data submission failed, but continuing to checkout');
           }
-        } catch (error) {
+        }).catch(error => {
           console.error('Error during Google Apps Script submission:', error);
-          status.innerHTML = '<span style="color: #FF9500;">⚠ Quiz completed! Redirecting to checkout...</span>';
-        }
+        });
         
-        // Small delay to show success message before redirect
+        // Redirect immediately without waiting for submission
         setTimeout(() => {
           console.log('Redirecting to checkout...');
           // Redirect to checkout page
           window.location.href = 'checkout.html';
-        }, 2000);
+        }, 1000);
       }
     });
 

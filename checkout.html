@@ -676,49 +676,32 @@
       const buyBtn = document.getElementById('buy-now-btn');
       const btnText = buyBtn.querySelector('.btn-text');
       
-      console.log('Button found:', buyBtn);
-      console.log('Button text found:', btnText);
-      
       // Show loading state
       buyBtn.disabled = true;
       btnText.textContent = 'Processing...';
-      console.log('Button disabled and text updated');
       
-      // Simulate order processing
-      setTimeout(() => {
-        btnText.textContent = 'Finalizing order...';
-        console.log('Text updated to: Finalizing order...');
-      }, 1000);
+      // Track conversion immediately (non-blocking)
+      gtag('event', 'purchase', {
+        transaction_id: 'order_' + Date.now(),
+        value: parseFloat(document.getElementById('total').textContent.replace('$', '')),
+        currency: 'USD',
+        items: [{
+          item_id: 'any_brew_subscription',
+          item_name: document.getElementById('product-name').textContent,
+          item_category: 'Coffee Subscription',
+          price: parseFloat(document.getElementById('subtotal').textContent.replace('$', '')),
+          quantity: 2
+        }]
+      });
       
-      // Complete the order after 2 seconds
+      // Show success message briefly
+      showMessage('Order completed! Redirecting...', 'success');
+      
+      // Redirect immediately - no waiting!
       setTimeout(() => {
-        console.log('Completing order...');
-        
-        // Track conversion
-        gtag('event', 'purchase', {
-          transaction_id: 'order_' + Date.now(),
-          value: parseFloat(document.getElementById('total').textContent.replace('$', '')),
-          currency: 'USD',
-          items: [{
-            item_id: 'any_brew_subscription',
-            item_name: document.getElementById('product-name').textContent,
-            item_category: 'Coffee Subscription',
-            price: parseFloat(document.getElementById('subtotal').textContent.replace('$', '')),
-            quantity: 2
-          }]
-        });
-
-        // Show success message
-        showMessage('Order completed successfully! Redirecting to confirmation...', 'success');
-        console.log('Success message shown');
-        
-        // Redirect to thank you page
-        setTimeout(() => {
-          console.log('Redirecting to thanks.html');
-          window.location.href = 'thanks.html';
-        }, 2000);
-        
-      }, 2000);
+        console.log('Redirecting to thanks.html');
+        window.location.href = 'thanks.html';
+      }, 500);
     }
 
 
