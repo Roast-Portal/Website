@@ -41,7 +41,7 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/font-system.css">
+  <link rel="stylesheet" href="css/clean.css">
   <style>
     :root{
       --bg-primary:#ffffff;
@@ -424,12 +424,12 @@
     }
     
     .quiz-container {
-      opacity: 0;
+      opacity: 1;
       transition: opacity 0.8s var(--ease);
     }
     
-    .quiz-container.show {
-      opacity: 1;
+    .quiz-container.hidden {
+      opacity: 0;
     }
     
     @media (prefers-reduced-motion: reduce){
@@ -1390,12 +1390,21 @@
     function handleSubscriptionIntro() {
       const introElement = document.getElementById('subscription-intro');
       const beginBtn = document.getElementById('begin-btn');
+      const quizContainer = document.querySelector('.quiz-container');
       
       if (!introElement || !beginBtn) return;
+      
+      // Hide quiz container initially
+      if (quizContainer) {
+        quizContainer.classList.add('hidden');
+      }
       
       // Check if user has already seen the intro in this session
       if (sessionStorage.getItem('quiz_intro_shown')) {
         introElement.remove();
+        if (quizContainer) {
+          quizContainer.classList.remove('hidden');
+        }
         return;
       }
       
@@ -1420,7 +1429,7 @@
           // Show quiz container
           const quizContainer = document.querySelector('.quiz-container');
           if (quizContainer) {
-            quizContainer.classList.add('show');
+            quizContainer.classList.remove('hidden');
           }
           
           // Remove intro element after fade out animation completes
@@ -1449,6 +1458,15 @@
         navToggle.classList.toggle('nav-toggle-open');
       });
     }
+    
+    // Fallback: ensure quiz is visible after 3 seconds even if intro fails
+    setTimeout(() => {
+      const quizContainer = document.querySelector('.quiz-container');
+      if (quizContainer && quizContainer.classList.contains('hidden')) {
+        console.log('Fallback: showing quiz container');
+        quizContainer.classList.remove('hidden');
+      }
+    }, 3000);
     
     renderStep();
   </script>
