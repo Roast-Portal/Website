@@ -38,18 +38,128 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/clean.css">
   <style>
-    :root{--bg:#ffffff;--text:#1a1a1a;--sub:#4a4a4a;--blue:#0071E3}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text)}
-    .container{max-width:900px;margin:0 auto;padding:28px}
-    .surface{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.06);padding:28px;text-align:center}
-    h1{font-size:32px;letter-spacing:-.02em;margin:0 0 8px}
-    p.lead{color:var(--sub);font-size:18px;margin:0 0 20px}
-    .card{display:grid;gap:10px;justify-items:center}
-    .badge{display:inline-block;background:var(--blue);color:#fff;padding:6px 12px;border-radius:999px;box-shadow:0 8px 20px rgba(0,113,227,.28);font-size:12px}
-    .btn{appearance:none;border:1px solid rgba(0,0,0,.1);background:#fff;color:#1d1d1f;padding:10px 16px;border-radius:999px;cursor:pointer;font-size:14px;box-shadow:0 1px 6px rgba(0,0,0,.06);transition:transform .15s ease,box-shadow .2s ease}
-    .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
-    .btn.primary{background:var(--blue);color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(0,113,227,.28)}
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --text-primary: #1a1a1a;
+      --text-secondary: #4a4a4a;
+      --border: rgba(0,0,0,0.1);
+      --shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 6rem 2rem 2rem 2rem;
+    }
+
+    .surface {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    p.lead {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--text-primary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn.primary {
+      background: var(--text-primary);
+      color: white;
+    }
+
+    .btn.primary:hover {
+      background: #333;
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border-color: var(--text-primary);
+    }
+
+    .btn.secondary:hover {
+      background: var(--text-primary);
+      color: white;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 6rem 1rem 2rem 1rem;
+      }
+      
+      .surface {
+        padding: 2rem 1.5rem;
+      }
+      
+      .button-group {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -77,8 +187,8 @@
         <span class="badge" id="greet">Thank you</span>
         <h1 id="headline">Your Any Brew<sup>™</sup> is being crafted</h1>
         <p class="lead" id="message">Our coffee experts are preparing your personalized Any Brew<sup>™</sup> formula. You'll receive your first shipment in 3-5 business days.</p>
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:6px">
-          <button class="btn" type="button" onclick="return gtag_report_conversion('index.html');">Back to site</button>
+        <div class="button-group">
+          <button class="btn secondary" type="button" onclick="return gtag_report_conversion('index.html');">Back to site</button>
           <button class="btn primary" type="button" onclick="return gtag_report_conversion('checkout.html?review=1');">Review order</button>
         </div>
       </div>
