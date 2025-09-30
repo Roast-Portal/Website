@@ -774,15 +774,10 @@
       }
       productDetails.textContent = orderDetails;
       
-      // Update button price - get the calculated total
-      const totalElement = document.getElementById('total');
-      if (totalElement && totalElement.textContent !== '$0.00') {
-        btnPrice.textContent = totalElement.textContent;
-          } else {
-        // Fallback: calculate the price directly
-        const pricing = calculatePricing(quizData);
-        btnPrice.textContent = `$${pricing.total}`;
-      }
+      // Update button price - calculate directly to ensure accuracy
+      const pricing = calculatePricing(quizData);
+      btnPrice.textContent = `$${pricing.total}`;
+      console.log('Updated button price to:', btnPrice.textContent);
     }
 
     // Initialize when page loads
