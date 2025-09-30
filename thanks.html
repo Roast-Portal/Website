@@ -53,12 +53,30 @@
   </style>
 </head>
 <body>
+  <!-- Navigation -->
+  <header class="nav">
+    <div class="container">
+      <div class="nav-content">
+        <a class="logo" href="index.html">ROAST PORTAL</a>
+        <nav class="nav-links">
+          <a class="btn btn--ghost" href="login.html">Login</a>
+          <a class="btn btn--primary" href="javascript:void(0)" onclick="return gtag_report_conversion('quiz.html');">Subscribe now</a>
+        </nav>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
   <div class="container">
     <div class="surface">
       <div class="card">
         <span class="badge" id="greet">Thank you</span>
-        <h1 id="headline">Our roasters are warming up</h1>
-        <p class="lead" id="message">We're not quite live yet. We'll reach out soon to see if you'd like to join our beta tasting program.</p>
+        <h1 id="headline">Your Any Brew<sup>™</sup> is being crafted</h1>
+        <p class="lead" id="message">Our coffee experts are preparing your personalized Any Brew<sup>™</sup> formula. You'll receive your first shipment in 3-5 business days.</p>
         <div style="display:flex;gap:10px;justify-content:center;margin-top:6px">
           <button class="btn" type="button" onclick="return gtag_report_conversion('index.html');">Back to site</button>
           <button class="btn primary" type="button" onclick="return gtag_report_conversion('checkout.html?review=1');">Review order</button>
@@ -86,6 +104,17 @@
         // localStorage.removeItem('rp_quiz');
       } catch (e) {
         console.log('Cleanup failed:', e);
+      }
+      
+      // Mobile navigation toggle
+      const navToggle = document.querySelector('.nav-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      
+      if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => {
+          navLinks.classList.toggle('nav-open');
+          navToggle.classList.toggle('nav-toggle-open');
+        });
       }
     })();
   </script>
