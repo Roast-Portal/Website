@@ -525,7 +525,7 @@
           
           <div class="pricing-breakdown">
             <div class="price-line">
-              <span class="label">Any Brew™ (2 bottles)</span>
+              <span class="label">Any Brew™ (2 bottles, 14 drinks)</span>
               <span class="amount" id="subtotal">$0.00</span>
             </div>
             <div class="price-line">
@@ -606,7 +606,11 @@
         pricePerDrink = 5.50;
       }
 
-      const subtotal = pricePerDrink * 2; // 2 bottles
+      const drinksPerBottle = 7; // Each bottle makes 7 drinks
+      const numberOfBottles = 2; // 2 bottles per shipment
+      const totalDrinks = drinksPerBottle * numberOfBottles; // 14 drinks total
+      
+      const subtotal = pricePerDrink * totalDrinks; // Price per drink × 14 drinks
       const shipping = 4.95;
       const tax = subtotal * 0.08;
       const total = subtotal + shipping + tax;
