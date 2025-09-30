@@ -862,6 +862,14 @@
     }
 
     function mapPrice(per){
+      // Handle new text-based price tiers
+      if (typeof per === 'string') {
+        if (per.includes('$3.50')) return 3.50;
+        if (per.includes('$4.50')) return 4.50;
+        if (per.includes('$5.50')) return 5.50;
+      }
+      
+      // Fallback to old numeric logic for backward compatibility
       const val = parseNumberLike(per, 20);
       const pct = (val - 8) / (36 - 8);
       const price = Math.max(2, Math.min(9, +(2 + 7 * pct).toFixed(2)));
