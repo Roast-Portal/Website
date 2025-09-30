@@ -874,7 +874,15 @@
     }
 
     function loadData(){
-      try{ return JSON.parse(safeGetLS('rp_quiz') || '{}'); }catch{ return {}; }
+      try{ 
+        const data = JSON.parse(safeGetLS('rp_quiz') || '{}');
+        console.log('Checkout loadData - Raw localStorage data:', safeGetLS('rp_quiz'));
+        console.log('Checkout loadData - Parsed data:', data);
+        return data;
+      }catch(error){ 
+        console.error('Checkout loadData error:', error);
+        return {}; 
+      }
     }
 
     function topFlavors(d){
@@ -1059,11 +1067,28 @@
       const d = loadData();
       const p = compute(d);
       const el = document.getElementById('checkout');
-      if (!el) return;
-      el.setAttribute('aria-busy','true');
-      el.innerHTML = template(d, p);
-      el.removeAttribute('aria-busy');
-      bindHandlers(d, p);
+      
+      console.log('Checkout render - Data loaded:', d);
+      console.log('Checkout render - Computed pricing:', p);
+      console.log('Checkout render - Element found:', !!el);
+      
+      if (!el) {
+        console.error('Checkout element not found!');
+        return;
+      }
+      
+      try {
+        el.setAttribute('aria-busy','true');
+        const html = template(d, p);
+        console.log('Checkout render - Template generated:', html.substring(0, 200) + '...');
+        el.innerHTML = html;
+        el.removeAttribute('aria-busy');
+        bindHandlers(d, p);
+        console.log('Checkout render - Successfully rendered');
+      } catch (error) {
+        console.error('Checkout render error:', error);
+        el.innerHTML = '<div style="padding: 2rem; text-align: center;"><h2>Error loading checkout</h2><p>Please try refreshing the page or go back to the quiz.</p></div>';
+      }
     }
 
     // ---- Order Completion ----
@@ -1426,6 +1451,23 @@
 
     // Initial render
     render();
+    
+    // Fallback: if no data after 1 second, show error message
+    setTimeout(() => {
+      const checkoutEl = document.getElementById('checkout');
+      if (checkoutEl && (!checkoutEl.innerHTML || checkoutEl.innerHTML.trim() === '')) {
+        console.log('Checkout fallback: showing no data message');
+        checkoutEl.innerHTML = `
+          <div style="padding: 2rem; text-align: center; max-width: 600px; margin: 0 auto;">
+            <h2>No Quiz Data Found</h2>
+            <p>It looks like you didn't complete the quiz. Please go back and complete the quiz first.</p>
+            <div style="margin-top: 2rem;">
+              <a href="quiz.html" class="btn primary" style="display: inline-block; padding: 12px 24px; background: #0071E3; color: white; text-decoration: none; border-radius: 8px;">Take Quiz</a>
+            </div>
+          </div>
+        `;
+      }
+    }, 1000);
     
     // Clear quiz completion state when landing on checkout page
     // This allows users to complete their purchase
